@@ -4,6 +4,7 @@ import Sensenet from './Sensenet';
 import { Repository } from 'sn-client-js'
 import { combineReducers } from 'redux'
 import { Store, Actions, Reducers } from 'sn-redux'
+import 'rxjs'
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
