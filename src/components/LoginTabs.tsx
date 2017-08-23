@@ -63,7 +63,7 @@ class LoginTabs extends React.Component<{}, { value }> {
                                 to='/login' />
                             <Tab
                                 key='registration'
-                                label='Registration'
+                                label='Register'
                                 style={styles.tabLink}
                                 component={Link}
                                 to='/registration' />

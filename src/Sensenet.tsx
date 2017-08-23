@@ -5,7 +5,8 @@ import 'typeface-roboto'
 import { connect } from 'react-redux';
 import {
   BrowserRouter as Router,
-  Route
+  Route,
+  withRouter 
 } from 'react-router-dom'
 import { Reducers, Actions } from 'sn-redux'
 import { Dashboard } from './pages/Dashboard'

@@ -1,5 +1,6 @@
 import * as React from 'react'
 import LoginTabs from '../components/LoginTabs'
+import { WelcomeMessage } from '../components/WelcomeMessage'
 
 const logo = require('../assets/logo.png');
 
@@ -10,7 +11,7 @@ export const Registration = () => (
     </div>
 
     <LoginTabs />
-
+    <WelcomeMessage />
     <div>
       <h2>Registration</h2>
     </div>
