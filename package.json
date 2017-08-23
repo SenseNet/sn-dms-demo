@@ -36,6 +36,7 @@
     "material-ui": "^1.0.0-beta.6",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "react-redux": "^5.0.6",
     "sn-client-js": "^2.3.0",
     "sn-controls-react": "^1.0.0-beta.1",
     "sn-redux": "^3.0.0",
