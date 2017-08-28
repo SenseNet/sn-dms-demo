@@ -137,7 +137,7 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
   }
 
   handleConfirmPasswordBlur(e) {
-    if (this.confirmPasswords(e.target.value, this.state.password)) {
+    if (e.target.value.length !== 0 && this.confirmPasswords(e.target.value, this.state.password)) {
       this.setState({
         confirmpassword: e.target.value,
         confirmPasswordErrorMessage: '',
@@ -169,6 +169,48 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
     return p1 === p2;
   }
 
+  formSubmit(e) {
+    if (this.valid(e)) {
+      this.props.registration(this.state.email, this.state.password)
+      this.setState({
+        isButtonDisabled: true
+      })
+    }
+  }
+
+  valid(e) {
+    let valid = true;
+    if (this.state.email === '' || !this.validateEmail(this.state.email)) {
+      valid = false;
+      this.setState({
+        emailErrorMessage: resources.EMAIL_IS_NOT_VALID_MESSAGE,
+        emailError: true
+      })
+    }
+    if (this.state.password === '' || !this.validatePassword(this.state.password)) {
+      valid = false;
+      this.setState({
+        passwordErrorMessage: resources.PASSWORD_IS_NOT_VALID_MESSAGE,
+        passwordError: true
+      })
+    }
+    if (this.state.confirmpassword === '') {
+      valid = false;
+      this.setState({
+        confirmPasswordErrorMessage: resources.PASSWORD_IS_NOT_VALID_MESSAGE,
+        confirmPasswordError: true
+      })
+    }
+    if (!this.confirmPasswords(this.state.password, this.state.confirmpassword)) {
+      valid = false;
+      this.setState({
+        confirmPasswordErrorMessage: resources.PASSWORDS_SHOULD_MATCH,
+        confirmPasswordError: true
+      })
+    }
+    return valid;
+  }
+
   render() {
     return (
       <div>
@@ -183,8 +225,7 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
           <MuiThemeProvider theme={muiTheme}>
             <form onSubmit={e => {
               e.preventDefault()
-              // TODO: form submit
-              // this.formSubmit(e)
+              this.formSubmit(e)
             }}>
               <FormControl
                 error={this.state.emailError || (this.props.registrationError && this.props.registrationError.length) > 0 ? true : false}
