@@ -1,8 +1,9 @@
 import * as React from 'react'
+import { connect } from 'react-redux';
+import { Reducers } from 'sn-redux'
 import LoginTabs from '../components/LoginTabs'
 import { WelcomeMessage } from '../components/WelcomeMessage'
 import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
 import Input from 'material-ui/Input';
 import InputLabel from 'material-ui/Input/InputLabel';
 import FormControl from 'material-ui/Form/FormControl';
@@ -29,78 +30,166 @@ const styles = {
     width: '100%'
   },
   formControl: {
-    margin: 20,
+    marginTop: '20px 0px',
   }
 }
 
-export const Registration = ({ registration, props }) => {
+import { resources } from '../assets/resources'
 
-  let email, password;
+interface IRegistrationProps {
+  registration,
+  params,
+  registrationError
+}
 
-  function handleChange(e) {
-    if (e.target.id === 'email')
-      email = e.target.value
-    if (e.target.id === 'password')
-      password = e.target.value
+interface IRegistrationState {
+  email,
+  password,
+  password2,
+  emailError,
+  passwordError,
+  emailErrorMessage,
+  passwordErrorMessage,
+  formIsValid,
+  isButtonDisabled
+}
+
+class Registration extends React.Component<IRegistrationProps, IRegistrationState> {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      email: '',
+      password: '',
+      password2: '',
+      emailError: false,
+      passwordError: false,
+      emailErrorMessage: '',
+      passwordErrorMessage: '',
+      formIsValid: false,
+      isButtonDisabled: false
+    }
+
+    this.handleEmailBlur = this.handleEmailBlur.bind(this);
+    this.handleEmailChange = this.handleEmailChange.bind(this);
   }
 
-  function isNotValid() {
-    return true
+  handleEmailBlur(e) {
+    if (this.validateEmail(e.target.value)) {
+      this.setState({
+        email: e.target.value,
+        emailErrorMessage: '',
+        emailError: false
+      })
+    }
+    else {
+      this.setState({
+        emailErrorMessage: resources.EMAIL_IS_NOT_VALID_MESSAGE,
+        emailError: true
+      })
+    }
   }
 
-  return (
-    <div>
-      <div className='Sensenet-header'>
-        <img src={logo} className='Sensenet-logo' alt='logo' />
-      </div>
+  handleEmailChange(e) {
+    this.setState({
+      email: e.target.value
+    })
+  }
 
-      <LoginTabs />
-      <WelcomeMessage />
+  validateEmail(text) {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(text);
+  }
+
+  render() {
+    return (
       <div>
-        <MuiThemeProvider theme={muiTheme}>
-          <form onSubmit={e => {
-            e.preventDefault()
-            registration(email, password)
-          }}>
+        <div className='Sensenet-header'>
+          <img src={logo} className='Sensenet-logo' alt='logo' />
+        </div>
 
-            {/* {
-        user.FieldMappings.map(function (e, i) {
-          return (
-            React.createElement(
-              user.FieldMappings[i].ControlType,
-              {
-                ...user.FieldMappings[i].ClientSettings,
-                'data-actionName': 'new',
-                'data-fieldValue': '',
-                'className': user.FieldMappings[i].ClientSettings.key
-              })
-          )
-        })
-      } */}
-            <FormControl
-              error={isNotValid() ? true : false}
-              fullWidth
-              required>
-              <InputLabel htmlFor='email'>E-mail</InputLabel>
-              <Input type='email' id='email' onChange={handleChange} fullWidth autoFocus placeholder='E-mail' />
-              <FormHelperText>Error message! Something is not okay.</FormHelperText>
-            </FormControl>
-            <TextField
-              id='password'
-              type='password'
-              label='Password'
-              InputProps={{ placeholder: 'Password' }}
-              fullWidth
-              //error
-              margin='normal'
-              helperText='Error message! Something is not okay.'
-              helperTextClassName='error'
-              required
-            />
-            <Button type='submit' color='primary' style={styles.button}>Register</Button>
-          </form>
-        </MuiThemeProvider>
+        <LoginTabs />
+        <WelcomeMessage />
+
+        <div>
+          <MuiThemeProvider theme={muiTheme}>
+            <form onSubmit={e => {
+              e.preventDefault()
+              // TODO: form submit
+              // this.formSubmit(e)
+            }}>
+              <FormControl
+                error={this.state.emailError || (this.props.registrationError && this.props.registrationError.length) > 0 ? true : false}
+                fullWidth
+                required
+                style={styles.formControl}>
+                <InputLabel htmlFor='email'>{resources.EMAIL_INPUT_LABEL}</InputLabel>
+                <Input
+                  id='email'
+                  onBlur={(event) => this.handleEmailBlur(event)}
+                  onChange={(event) => this.handleEmailChange(event)}
+                  fullWidth
+                  autoFocus
+                  placeholder={resources.EMAIL_INPUT_FORMAT_PLACEHOLDER} />
+                <FormHelperText>{this.state.emailErrorMessage}</FormHelperText>
+              </FormControl>
+              <FormControl
+                error={this.state.passwordError || (this.props.registrationError && this.props.registrationError.length) ? true : false}
+                fullWidth
+                required
+                style={styles.formControl}>
+                <InputLabel htmlFor='password'>{resources.PASSWORD_INPUT_LABEL}</InputLabel>
+                <Input
+                  type='password'
+                  id='password'
+                  //TODO: onblur
+                  //onBlur={(event) => this.handlePasswordBlur(event)}
+                  //TODO: onchange
+                  //onChange={(event) => this.handlePasswordChange(event)}
+                  fullWidth
+                  placeholder={resources.PASSWORD_INPUT_PLACEHOLDER} />
+                <FormHelperText>{this.state.passwordErrorMessage}</FormHelperText>
+              </FormControl>
+              <FormControl
+                error={this.state.passwordError || (this.props.registrationError && this.props.registrationError.length) ? true : false}
+                fullWidth
+                required
+                style={styles.formControl}>
+                <InputLabel htmlFor='password'>{resources.PASSWORD_INPUT_LABEL}</InputLabel>
+                <Input
+                  type='password'
+                  id='password2'
+                  //TODO: onblur
+                  //onBlur={(event) => this.handlePasswordBlur(event)}
+                  //TODO: onchange
+                  //onChange={(event) => this.handlePasswordChange(event)}
+                  fullWidth
+                  placeholder={resources.PASSWORD_INPUT_PLACEHOLDER} />
+                <FormHelperText>{this.state.passwordErrorMessage}</FormHelperText>
+              </FormControl>
+              <FormControl>
+                <FormHelperText error>{this.props.registrationError && this.props.registrationError.length ? resources.WRONG_USERNAME_OR_PASSWORD : ''}</FormHelperText>
+              </FormControl>
+              <Button 
+              type='submit' 
+              color='primary' 
+              style={styles.button} 
+              //TODO: disabled button
+              //disabled={this.buttonIsDisabled ? true : false}
+              >
+              {resources.REGISTRATION_BUTTON_TEXT}</Button>
+            </form>
+          </MuiThemeProvider>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 }
+
+const mapStateToProps = (state, match) => {
+  return {
+    registrationError: ''
+  }
+}
+
+export default connect(mapStateToProps, {})(Registration)
