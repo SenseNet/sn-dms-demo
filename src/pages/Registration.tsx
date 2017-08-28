@@ -45,7 +45,7 @@ interface IRegistrationProps {
 interface IRegistrationState {
   email,
   password,
-  password2,
+  confirmpassword,
   emailError,
   passwordError,
   emailErrorMessage,
@@ -61,7 +61,7 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
     this.state = {
       email: '',
       password: '',
-      password2: '',
+      confirmpassword: '',
       emailError: false,
       passwordError: false,
       emailErrorMessage: '',
@@ -99,6 +99,37 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
   validateEmail(text) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(text);
+  }
+
+  handlePasswordBlur(e) {
+    if (this.validatePassword(e.target.value)) {
+      this.setState({
+        password: e.target.value,
+        passwordErrorMessage: '',
+        passwordError: false
+      })
+    }
+    else {
+      this.setState({
+        passwordErrorMessage: resources.PASSWORD_SHOULD_BE_VALID,
+        passwordError: true
+      })
+    }
+  }
+
+  handlePasswordChange(e) {
+    this.setState({
+      password: e.target.value
+    })
+  }
+
+  validatePassword(text) {
+    const re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+    return re.test(text);
+  }
+
+  confirmPasswords(p1, p2) {
+    return p1 === p2;
   }
 
   render() {
@@ -142,10 +173,8 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
                 <Input
                   type='password'
                   id='password'
-                  //TODO: onblur
-                  //onBlur={(event) => this.handlePasswordBlur(event)}
-                  //TODO: onchange
-                  //onChange={(event) => this.handlePasswordChange(event)}
+                  onBlur={(event) => this.handlePasswordBlur(event)}
+                  onChange={(event) => this.handlePasswordChange(event)}
                   fullWidth
                   placeholder={resources.PASSWORD_INPUT_PLACEHOLDER} />
                 <FormHelperText>{this.state.passwordErrorMessage}</FormHelperText>
@@ -155,10 +184,10 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
                 fullWidth
                 required
                 style={styles.formControl}>
-                <InputLabel htmlFor='password'>{resources.PASSWORD_INPUT_LABEL}</InputLabel>
+                <InputLabel htmlFor='password'>{resources.CONFIRM_PASSWORD_INPUT_LABEL}</InputLabel>
                 <Input
                   type='password'
-                  id='password2'
+                  id='confirmpassword'
                   //TODO: onblur
                   //onBlur={(event) => this.handlePasswordBlur(event)}
                   //TODO: onchange
@@ -170,14 +199,14 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
               <FormControl>
                 <FormHelperText error>{this.props.registrationError && this.props.registrationError.length ? resources.WRONG_USERNAME_OR_PASSWORD : ''}</FormHelperText>
               </FormControl>
-              <Button 
-              type='submit' 
-              color='primary' 
-              style={styles.button} 
+              <Button
+                type='submit'
+                color='primary'
+                style={styles.button}
               //TODO: disabled button
               //disabled={this.buttonIsDisabled ? true : false}
               >
-              {resources.REGISTRATION_BUTTON_TEXT}</Button>
+                {resources.REGISTRATION_BUTTON_TEXT}</Button>
             </form>
           </MuiThemeProvider>
         </div>
