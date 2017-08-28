@@ -13,10 +13,12 @@ import { Reducers, Actions } from 'sn-redux'
 import { Dashboard } from './pages/Dashboard'
 import Login from './pages/Login'
 import Registration from './pages/Registration'
+import { DMSActions } from './Actions'
 
 interface ISensenetProps {
   store,
   repository,
+  history,
   loginState,
   loginError: string,
   registrationError: string,
@@ -61,7 +63,7 @@ class Sensenet extends React.Component<ISensenetProps, { isAuthenticated: boolea
               : <Redirect key='dashboard' to='/' />
           }}
         />
-        <Route path='/registration' render={() => <Registration />} />
+        <Route path='/registration' render={() => <Registration registration={this.props.registrationClick} history={history} />} />
       </div>
     );
   }
@@ -77,9 +79,11 @@ const mapStateToProps = (state, match) => {
 }
 
 const userLogin = Actions.UserLogin;
+const userRegistration = DMSActions.UserRegistration;
 
 export default withRouter(connect(
   mapStateToProps,
   {
-    loginClick: userLogin
+    loginClick: userLogin,
+    registrationClick: userRegistration
   })(Sensenet));

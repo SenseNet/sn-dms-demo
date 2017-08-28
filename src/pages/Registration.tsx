@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux';
 import { Reducers } from 'sn-redux'
+import { DMSReducers } from '../Reducers'
 import LoginTabs from '../components/LoginTabs'
 import { WelcomeMessage } from '../components/WelcomeMessage'
 import Button from 'material-ui/Button';
@@ -10,6 +11,8 @@ import FormControl from 'material-ui/Form/FormControl';
 import FormHelperText from 'material-ui/Form/FormHelperText';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import createMuiTheme from 'material-ui/styles/theme'
+import { CircularProgress } from 'material-ui/Progress';
+import { withRouter } from 'react-router-dom'
 
 const logo = require('../assets/logo.png');
 
@@ -31,15 +34,26 @@ const styles = {
   },
   formControl: {
     marginTop: '20px 0px',
+  },
+  progress: {
+    position: 'absolute' as any,
+    width: 300,
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    textAlign: 'center',
+    zIndex: 10,
+    padding: '120px 0'
   }
 }
 
 import { resources } from '../assets/resources'
 
 interface IRegistrationProps {
+  history,
   registration,
   params,
-  registrationError
+  registrationError,
+  inProgress,
+  isRegistered
 }
 
 interface IRegistrationState {
@@ -81,7 +95,6 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
     this.handleConfirmPasswordBlur = this.handleConfirmPasswordBlur.bind(this);
     this.handleConfirmPasswordChange = this.handleConfirmPasswordChange.bind(this);
   }
-
   handleEmailBlur(e) {
     if (this.validateEmail(e.target.value)) {
       this.setState({
@@ -97,18 +110,15 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
       })
     }
   }
-
   handleEmailChange(e) {
     this.setState({
       email: e.target.value
     })
   }
-
   validateEmail(text) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(text);
   }
-
   handlePasswordBlur(e) {
     if (this.validatePassword(e.target.value)) {
       this.setState({
@@ -124,18 +134,15 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
       })
     }
   }
-
   handlePasswordChange(e) {
     this.setState({
       password: e.target.value
     })
   }
-
   validatePassword(text) {
     const re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
     return re.test(text);
   }
-
   handleConfirmPasswordBlur(e) {
     if (e.target.value.length !== 0 && this.confirmPasswords(e.target.value, this.state.password)) {
       this.setState({
@@ -164,11 +171,9 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
       })
     }
   }
-
   confirmPasswords(p1, p2) {
     return p1 === p2;
   }
-
   formSubmit(e) {
     if (this.valid(e)) {
       this.props.registration(this.state.email, this.state.password)
@@ -177,7 +182,6 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
       })
     }
   }
-
   valid(e) {
     let valid = true;
     if (this.state.email === '' || !this.validateEmail(this.state.email)) {
@@ -210,7 +214,6 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
     }
     return valid;
   }
-
   render() {
     return (
       <div>
@@ -223,67 +226,71 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
 
         <div>
           <MuiThemeProvider theme={muiTheme}>
-            <form onSubmit={e => {
-              e.preventDefault()
-              this.formSubmit(e)
-            }}>
-              <FormControl
-                error={this.state.emailError || (this.props.registrationError && this.props.registrationError.length) > 0 ? true : false}
-                fullWidth
-                required
-                style={styles.formControl}>
-                <InputLabel htmlFor='email'>{resources.EMAIL_INPUT_LABEL}</InputLabel>
-                <Input
-                  id='email'
-                  onBlur={(event) => this.handleEmailBlur(event)}
-                  onChange={(event) => this.handleEmailChange(event)}
+            <div>
+              {this.props.isRegistered ? this.props.history.push('/login') : false}
+              {this.props.inProgress ? <div style={styles.progress}><CircularProgress color='accent' /></div> : ''}
+              <form onSubmit={e => {
+                e.preventDefault()
+                this.formSubmit(e)
+              }}>
+                <FormControl
+                  error={this.state.emailError || (this.props.registrationError && this.props.registrationError.length) > 0 ? true : false}
                   fullWidth
-                  autoFocus
-                  placeholder={resources.EMAIL_INPUT_FORMAT_PLACEHOLDER} />
-                <FormHelperText>{this.state.emailErrorMessage}</FormHelperText>
-              </FormControl>
-              <FormControl
-                error={this.state.passwordError || (this.props.registrationError && this.props.registrationError.length) ? true : false}
-                fullWidth
-                required
-                style={styles.formControl}>
-                <InputLabel htmlFor='password'>{resources.PASSWORD_INPUT_LABEL}</InputLabel>
-                <Input
-                  type='password'
-                  id='password'
-                  onBlur={(event) => this.handlePasswordBlur(event)}
-                  onChange={(event) => this.handlePasswordChange(event)}
+                  required
+                  style={styles.formControl}>
+                  <InputLabel htmlFor='email'>{resources.EMAIL_INPUT_LABEL}</InputLabel>
+                  <Input
+                    id='email'
+                    onBlur={(event) => this.handleEmailBlur(event)}
+                    onChange={(event) => this.handleEmailChange(event)}
+                    fullWidth
+                    autoFocus
+                    placeholder={resources.EMAIL_INPUT_FORMAT_PLACEHOLDER} />
+                  <FormHelperText>{this.state.emailErrorMessage}</FormHelperText>
+                </FormControl>
+                <FormControl
+                  error={this.state.passwordError ? true : false}
                   fullWidth
-                  placeholder={resources.PASSWORD_INPUT_PLACEHOLDER} />
-                <FormHelperText>{this.state.passwordErrorMessage}</FormHelperText>
-              </FormControl>
-              <FormControl
-                error={this.state.confirmPasswordError || (this.props.registrationError && this.props.registrationError.length) ? true : false}
-                fullWidth
-                required
-                style={styles.formControl}>
-                <InputLabel htmlFor='password'>{resources.CONFIRM_PASSWORD_INPUT_LABEL}</InputLabel>
-                <Input
-                  type='password'
-                  id='confirmpassword'
-                  onBlur={(event) => this.handleConfirmPasswordBlur(event)}
-                  onChange={(event) => this.handleConfirmPasswordChange(event)}
+                  required
+                  style={styles.formControl}>
+                  <InputLabel htmlFor='password'>{resources.PASSWORD_INPUT_LABEL}</InputLabel>
+                  <Input
+                    type='password'
+                    id='password'
+                    onBlur={(event) => this.handlePasswordBlur(event)}
+                    onChange={(event) => this.handlePasswordChange(event)}
+                    fullWidth
+                    placeholder={resources.PASSWORD_INPUT_PLACEHOLDER} />
+                  <FormHelperText>{this.state.passwordErrorMessage}</FormHelperText>
+                </FormControl>
+                <FormControl
+                  error={this.state.confirmPasswordError ? true : false}
                   fullWidth
-                  placeholder={resources.PASSWORD_INPUT_PLACEHOLDER} />
-                <FormHelperText>{this.state.confirmPasswordErrorMessage}</FormHelperText>
-              </FormControl>
-              <FormControl>
-                <FormHelperText error>{this.props.registrationError && this.props.registrationError.length ? resources.WRONG_USERNAME_OR_PASSWORD : ''}</FormHelperText>
-              </FormControl>
-              <Button
-                type='submit'
-                color='primary'
-                style={styles.button}
-              //TODO: disabled button
-              //disabled={this.buttonIsDisabled ? true : false}
-              >
-                {resources.REGISTRATION_BUTTON_TEXT}</Button>
-            </form>
+                  required
+                  style={styles.formControl}>
+                  <InputLabel htmlFor='password'>{resources.CONFIRM_PASSWORD_INPUT_LABEL}</InputLabel>
+                  <Input
+                    type='password'
+                    id='confirmpassword'
+                    onBlur={(event) => this.handleConfirmPasswordBlur(event)}
+                    onChange={(event) => this.handleConfirmPasswordChange(event)}
+                    fullWidth
+                    placeholder={resources.PASSWORD_INPUT_PLACEHOLDER} />
+                  <FormHelperText>{this.state.confirmPasswordErrorMessage}</FormHelperText>
+                </FormControl>
+                <FormControl>
+                  <FormHelperText error>{this.props.registrationError && this.props.registrationError.length ? this.props.registrationError : ''}</FormHelperText>
+                </FormControl>
+                <Button
+                  type='submit'
+                  color='primary'
+                  style={styles.button}
+                //TODO: disabled button
+                //disabled={this.buttonIsDisabled ? true : false}
+                >
+                  {resources.REGISTRATION_BUTTON_TEXT}</Button>
+              </form>
+            </div>
           </MuiThemeProvider>
         </div>
       </div>
@@ -293,8 +300,10 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
 
 const mapStateToProps = (state, match) => {
   return {
-    registrationError: ''
+    registrationError: DMSReducers.getRegistrationError(state.register),
+    inProgress: DMSReducers.registrationInProgress(state.register),
+    isRegistered: DMSReducers.registrationIsDone(state.register)
   }
 }
 
-export default connect(mapStateToProps, {})(Registration)
+export default withRouter(connect(mapStateToProps, {})(Registration))
