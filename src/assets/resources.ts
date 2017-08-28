@@ -10,4 +10,6 @@ export const resources = {
     LOGIN_TAB_TEXT: 'Login',
     REGISTER_TAB_TEXT: 'Register',
     WELCOME_MESSAGE: 'Welcome to the sensenet ECM Document Management System Experiment! We are thrilled to have you here. Please log in, or register!',
+    REGISTRATION_BUTTON_TEXT: 'Register',
+    EMAIL_INPUT_FORMAT_PLACEHOLDER: 'example@domain.com'
 }
