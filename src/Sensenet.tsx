@@ -12,18 +12,19 @@ import {
 import { Reducers, Actions } from 'sn-redux'
 import { Dashboard } from './pages/Dashboard'
 import Login from './pages/Login'
-import { Registration } from './pages/Registration'
+import Registration from './pages/Registration'
 
 interface ISensenetProps {
   store,
   repository,
   loginState,
   loginError: string,
+  registrationError: string,
   loginClick: Function,
   registrationClick: Function
 }
 
-class Sensenet extends React.Component<ISensenetProps, { isAuthenticated: boolean, params, loginError }> {
+class Sensenet extends React.Component<ISensenetProps, { isAuthenticated: boolean, params, loginError, registrationError }> {
   public name: string = '';
   public password: string = '';
 
@@ -33,7 +34,8 @@ class Sensenet extends React.Component<ISensenetProps, { isAuthenticated: boolea
     this.state = {
       params: this.props,
       isAuthenticated: false,
-      loginError: this.props.loginError || ''
+      loginError: this.props.loginError || '',
+      registrationError: this.props.loginError || ''
     }
   }
 
@@ -59,7 +61,7 @@ class Sensenet extends React.Component<ISensenetProps, { isAuthenticated: boolea
               : <Redirect key='dashboard' to='/' />
           }}
         />
-        < Route path='/registration' render={() => <Registration registration={this.props.registrationClick} props={{ name: this.name, password: this.password }} />} />
+        <Route path='/registration' render={() => <Registration />} />
       </div>
     );
   }
@@ -69,16 +71,15 @@ const mapStateToProps = (state, match) => {
   return {
     loginState: Reducers.getAuthenticationStatus(state.sensenet),
     loginError: Reducers.getAuthenticationError(state.sensenet),
+    registrationError: '',
     store: state
   }
 }
 
 const userLogin = Actions.UserLogin;
-const userRegistration = () => { };
 
 export default withRouter(connect(
   mapStateToProps,
   {
-    loginClick: userLogin,
-    registrationClick: userRegistration
+    loginClick: userLogin
   })(Sensenet));
