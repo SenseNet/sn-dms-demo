@@ -48,8 +48,10 @@ interface IRegistrationState {
   confirmpassword,
   emailError,
   passwordError,
+  confirmPasswordError,
   emailErrorMessage,
   passwordErrorMessage,
+  confirmPasswordErrorMessage,
   formIsValid,
   isButtonDisabled
 }
@@ -67,11 +69,17 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
       emailErrorMessage: '',
       passwordErrorMessage: '',
       formIsValid: false,
-      isButtonDisabled: false
+      isButtonDisabled: false,
+      confirmPasswordError: false,
+      confirmPasswordErrorMessage: ''
     }
 
     this.handleEmailBlur = this.handleEmailBlur.bind(this);
     this.handleEmailChange = this.handleEmailChange.bind(this);
+    this.handlePasswordBlur = this.handlePasswordBlur.bind(this);
+    this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.handleConfirmPasswordBlur = this.handleConfirmPasswordBlur.bind(this);
+    this.handleConfirmPasswordChange = this.handleConfirmPasswordChange.bind(this);
   }
 
   handleEmailBlur(e) {
@@ -128,6 +136,35 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
     return re.test(text);
   }
 
+  handleConfirmPasswordBlur(e) {
+    if (this.confirmPasswords(e.target.value, this.state.password)) {
+      this.setState({
+        confirmpassword: e.target.value,
+        confirmPasswordErrorMessage: '',
+        confirmPasswordError: false
+      })
+    }
+    else if (!this.validatePassword(e.target.value)) {
+      this.setState({
+        passwordErrorMessage: resources.PASSWORD_SHOULD_BE_VALID,
+        passwordError: true
+      })
+    }
+    else {
+      this.setState({
+        confirmPasswordErrorMessage: resources.PASSWORDS_SHOULD_MATCH,
+        confirmPasswordError: true
+      })
+    }
+  }
+  handleConfirmPasswordChange(e) {
+    if (this.validatePassword(e.target.value) && this.confirmPasswords(e.target.value, this.state.password)) {
+      this.setState({
+        confirmpassword: e.target.value
+      })
+    }
+  }
+
   confirmPasswords(p1, p2) {
     return p1 === p2;
   }
@@ -180,7 +217,7 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
                 <FormHelperText>{this.state.passwordErrorMessage}</FormHelperText>
               </FormControl>
               <FormControl
-                error={this.state.passwordError || (this.props.registrationError && this.props.registrationError.length) ? true : false}
+                error={this.state.confirmPasswordError || (this.props.registrationError && this.props.registrationError.length) ? true : false}
                 fullWidth
                 required
                 style={styles.formControl}>
@@ -188,13 +225,11 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
                 <Input
                   type='password'
                   id='confirmpassword'
-                  //TODO: onblur
-                  //onBlur={(event) => this.handlePasswordBlur(event)}
-                  //TODO: onchange
-                  //onChange={(event) => this.handlePasswordChange(event)}
+                  onBlur={(event) => this.handleConfirmPasswordBlur(event)}
+                  onChange={(event) => this.handleConfirmPasswordChange(event)}
                   fullWidth
                   placeholder={resources.PASSWORD_INPUT_PLACEHOLDER} />
-                <FormHelperText>{this.state.passwordErrorMessage}</FormHelperText>
+                <FormHelperText>{this.state.confirmPasswordErrorMessage}</FormHelperText>
               </FormControl>
               <FormControl>
                 <FormHelperText error>{this.props.registrationError && this.props.registrationError.length ? resources.WRONG_USERNAME_OR_PASSWORD : ''}</FormHelperText>

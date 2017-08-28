@@ -13,5 +13,6 @@ export const resources = {
     REGISTRATION_BUTTON_TEXT: 'Register',
     EMAIL_INPUT_FORMAT_PLACEHOLDER: 'example@domain.com',
     CONFIRM_PASSWORD_INPUT_LABEL: 'Confirm password',
-    PASSWORD_SHOULD_BE_VALID: 'Password needs to contain at least 8 characters, needs to contain numbers, capitals and special characters!'
+    PASSWORD_SHOULD_BE_VALID: 'Password needs to contain at least 8 characters, needs to contain numbers, capitals and special characters!',
+    PASSWORDS_SHOULD_MATCH: 'Password does not match the confirm password'
 }
