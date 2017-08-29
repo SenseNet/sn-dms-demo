@@ -23,7 +23,7 @@
   "homepage": "https://sensenet.com",
   "config": {
     "commitizen": {
-      "path": "cz-conventional-changelog"
+      "path": "sensenet-kfi-cz-conventional-changelog"
     }
   },
   "dependencies": {
@@ -59,6 +59,7 @@
     "react-error-overlay": "^1.0.8",
     "react-google-recaptcha": "^0.8.1",
     "react-redux": "^5.0.6",
+    "sensenet-kfi-cz-conventional-changelog": "^1.0.0",
     "sn-client-js": "^2.3.0",
     "sn-controls-react": "^1.0.0-beta.1",
     "sn-redux": "^3.0.1",
