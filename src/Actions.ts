@@ -11,4 +11,7 @@ export module DMSActions {
         type: 'USER_REGISTRATION_FAILURE',
         message: error.message
     })
+    export const VerifyCaptchaSuccess = (response: any) => ({
+        type: 'VERIFY_CAPTCHA_SUCCESS'
+    })
 }

@@ -23,7 +23,8 @@ interface ISensenetProps {
   loginError: string,
   registrationError: string,
   loginClick: Function,
-  registrationClick: Function
+  registrationClick: Function,
+  recaptchaCallback: Function
 }
 
 class Sensenet extends React.Component<ISensenetProps, { isAuthenticated: boolean, params, loginError, registrationError }> {
@@ -63,7 +64,7 @@ class Sensenet extends React.Component<ISensenetProps, { isAuthenticated: boolea
               : <Redirect key='dashboard' to='/' />
           }}
         />
-        <Route path='/registration' render={() => <Registration registration={this.props.registrationClick} history={history} />} />
+        <Route path='/registration' render={() => <Registration registration={this.props.registrationClick} history={history} verify={this.props.recaptchaCallback} />} />
       </div>
     );
   }
@@ -80,10 +81,12 @@ const mapStateToProps = (state, match) => {
 
 const userLogin = Actions.UserLogin;
 const userRegistration = DMSActions.UserRegistration;
+const verifyCaptcha = DMSActions.VerifyCaptchaSuccess;
 
 export default withRouter(connect(
   mapStateToProps,
   {
     loginClick: userLogin,
-    registrationClick: userRegistration
+    registrationClick: userRegistration,
+    recaptchaCallback: verifyCaptcha
   })(Sensenet));

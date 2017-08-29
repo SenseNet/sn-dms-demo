@@ -44,11 +44,21 @@ export module DMSReducers {
         }
     }
 
+    const captcha = (state = false, action) => {
+        switch (action.type) {
+            case 'VERIFY_CAPTCHA_SUCCESS':
+                return true
+            default:
+                return state
+        }
+    }
+
     export const register = combineReducers({
         email,
         registrationError,
         isRegistering,
-        registrationDone
+        registrationDone,
+        captcha
     })
 
     export const getRegistrationError = (state) => {
@@ -64,5 +74,9 @@ export module DMSReducers {
 
     export const getRegisteredEmail = (state) => {
         return state.email
+    }
+
+    export const captchaIsVerified = (state) => {
+        return state.captcha
     }
 }

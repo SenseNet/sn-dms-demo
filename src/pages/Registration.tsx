@@ -13,6 +13,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import createMuiTheme from 'material-ui/styles/theme'
 import { CircularProgress } from 'material-ui/Progress';
 import { withRouter } from 'react-router-dom'
+import GoogleReCaptcha from '../components/GoogleReCaptcha'
 
 const logo = require('../assets/logo.png');
 
@@ -50,10 +51,12 @@ import { resources } from '../assets/resources'
 interface IRegistrationProps {
   history,
   registration,
+  verify,
   params,
   registrationError,
   inProgress,
-  isRegistered
+  isRegistered,
+  isNotARobot
 }
 
 interface IRegistrationState {
@@ -67,7 +70,9 @@ interface IRegistrationState {
   passwordErrorMessage,
   confirmPasswordErrorMessage,
   formIsValid,
-  isButtonDisabled
+  isButtonDisabled,
+  captchaError,
+  captchaErrorMessage
 }
 
 class Registration extends React.Component<IRegistrationProps, IRegistrationState> {
@@ -85,7 +90,9 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
       formIsValid: false,
       isButtonDisabled: false,
       confirmPasswordError: false,
-      confirmPasswordErrorMessage: ''
+      confirmPasswordErrorMessage: '',
+      captchaError: false,
+      captchaErrorMessage: ''
     }
 
     this.handleEmailBlur = this.handleEmailBlur.bind(this);
@@ -212,6 +219,13 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
         confirmPasswordError: true
       })
     }
+    if (!this.props.isNotARobot) {
+      valid = false;
+      this.setState({
+        captchaErrorMessage: resources.CAPTCHA_ERROR,
+        captchaError: true
+      })
+    }
     return valid;
   }
   render() {
@@ -279,7 +293,11 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
                   <FormHelperText>{this.state.confirmPasswordErrorMessage}</FormHelperText>
                 </FormControl>
                 <FormControl>
-                  <FormHelperText error>{this.props.registrationError && this.props.registrationError.length ? this.props.registrationError : ''}</FormHelperText>
+                  <GoogleReCaptcha verify={this.props.verify} />
+                  <FormHelperText error>{this.state.captchaError && this.state.captchaErrorMessage.length > 0 ? this.state.captchaErrorMessage : ''}</FormHelperText>
+                </FormControl>
+                <FormControl>
+                  <FormHelperText error>{this.props.registrationError && this.props.registrationError.length > 0 ? this.props.registrationError : ''}</FormHelperText>
                 </FormControl>
                 <Button
                   type='submit'
@@ -302,7 +320,8 @@ const mapStateToProps = (state, match) => {
   return {
     registrationError: DMSReducers.getRegistrationError(state.register),
     inProgress: DMSReducers.registrationInProgress(state.register),
-    isRegistered: DMSReducers.registrationIsDone(state.register)
+    isRegistered: DMSReducers.registrationIsDone(state.register),
+    isNotARobot: DMSReducers.captchaIsVerified(state.register)
   }
 }
 
