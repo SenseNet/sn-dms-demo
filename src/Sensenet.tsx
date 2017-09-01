@@ -31,11 +31,9 @@ const muiTheme = createMuiTheme({
 })
 
 interface ISensenetProps {
-  store,
   repository,
   history,
   loginState,
-  loggedinUser,
   loginError: string,
   registrationError: string,
   loginClick: Function,
@@ -102,8 +100,7 @@ const mapStateToProps = (state, match) => {
   return {
     loginState: Reducers.getAuthenticationStatus(state.sensenet),
     loginError: Reducers.getAuthenticationError(state.sensenet),
-    registrationError: '',
-    store: state
+    registrationError: ''
   }
 }
 

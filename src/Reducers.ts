@@ -83,4 +83,12 @@ export module DMSReducers {
     export const getAuthenticatedUser = (state) => {
         return state.session.user
     }
+
+    export const getChildrenItems = (state) => {
+        return state.children.entities
+    }
+
+    export const getCurrentContentPath = (state) => {
+        return state.Path
+    }
 }

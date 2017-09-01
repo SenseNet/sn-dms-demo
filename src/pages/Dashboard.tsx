@@ -1,8 +1,18 @@
 import * as React from 'react'
 import Header from '../components/Header'
 import { FloatingActionButton } from '../components/FloatingActionButton'
+import DocumentLibrary from '../components/DocumentLibrary'
 
-class Dashboard extends React.Component<{ match, loggedinUser }, { currentId }>{
+const styles = {
+    dashBoarInner: {
+        padding: 60
+    },
+    root: {
+        background: '#eee'
+    }
+}
+
+class Dashboard extends React.Component<{ match }, { currentId }>{
     constructor(props) {
         super(props)
         this.state = {
@@ -11,8 +21,11 @@ class Dashboard extends React.Component<{ match, loggedinUser }, { currentId }>{
     }
     render() {
         return (
-            <div>
+            <div style={styles.root}>
                 <Header />
+                <div style={styles.dashBoarInner}>
+                    <DocumentLibrary />
+                </div>
                 <FloatingActionButton />
             </div>
         )
