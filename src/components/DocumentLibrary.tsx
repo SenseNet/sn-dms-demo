@@ -27,7 +27,6 @@ interface IDocumentLibraryProps {
     children,
     ids,
     loggedinUser,
-    loadContent: Function,
     fetchContent: Function,
     errorMessage: string,
     isFetching: boolean
@@ -42,12 +41,7 @@ class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, p
         }
     }
     componentDidMount() {
-        this.loadContent()
         this.fetchData();
-    }
-    loadContent() {
-
-        this.props.loadContent(this.state.path)
     }
     fetchData() {
         let optionObj = {
