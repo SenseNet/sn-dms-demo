@@ -10,6 +10,9 @@ import Table, {
 } from 'material-ui/Table';
 import Checkbox from 'material-ui/Checkbox';
 import MenuIcon from 'material-ui-icons/MoreVert';
+import Icon from 'material-ui/Icon';
+import { icons } from '../assets/icons'
+import Moment from 'react-moment';
 
 const styles = {
     list: {
@@ -23,8 +26,14 @@ const styles = {
         width: 30,
         cursor: 'pointer'
     },
+    typeIcon: {
+        width: 30
+    },
     loader: {
         margin: '0 auto'
+    },
+    displayName: {
+        fontWeight: 'bold'
     }
 }
 
@@ -33,7 +42,7 @@ interface TodoListProps {
     children
 }
 
-export class ContentList extends React.Component<TodoListProps, {selected}> {
+export class ContentList extends React.Component<TodoListProps, { selected }> {
     constructor(props) {
         super(props)
         this.state = {
@@ -68,9 +77,13 @@ export class ContentList extends React.Component<TodoListProps, {selected}> {
                                     checked={isSelected}
                                 />
                             </TableCell>
-                            <TableCell disablePadding>{content.Type}</TableCell>
-                            <TableCell>{content.DisplayName}</TableCell>
-                            <TableCell>{content.ModificationDate}</TableCell>
+                            <TableCell style={styles.typeIcon} disablePadding><Icon color='primary'>{icons[content.Icon]}</Icon></TableCell>
+                            <TableCell style={styles.displayName}>{content.DisplayName}</TableCell>
+                            <TableCell>
+                                <Moment fromNow>
+                                    {content.ModificationDate}
+                                </Moment>
+                            </TableCell>
                             <TableCell>-</TableCell>
                             <TableCell style={styles.actionMenuButton}>
                                 <MenuIcon />
