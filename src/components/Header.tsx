@@ -1,14 +1,13 @@
 import * as React from 'react'
-import { DMSReducers } from '../Reducers'
 import { connect } from 'react-redux';
-
+import { Actions } from 'sn-redux';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
 import AppBarLogo from '../components/AppBarLogo'
 import { QuickSearch } from '../components/QuickSearch'
-import UserPanel from '../components/UserPanel'
+import UserActionMenu from '../components/UserActionMenu'
 
 
 const styles = {
@@ -17,7 +16,7 @@ const styles = {
     }
 }
 
-class Header extends React.Component<{loggedinUser}, {}>{
+class Header extends React.Component<{}, {}>{
     render() {
         return (
             <AppBar position='static'>
@@ -27,7 +26,7 @@ class Header extends React.Component<{loggedinUser}, {}>{
                     </IconButton>
                     <AppBarLogo history />
                     <QuickSearch />
-                    <UserPanel user={this.props.loggedinUser} />
+                    <UserActionMenu />
                 </Toolbar>
             </AppBar>
         )
@@ -35,13 +34,4 @@ class Header extends React.Component<{loggedinUser}, {}>{
 }
 
 
-const mapStateToProps = (state, match) => {
-    return {
-        loggedinUser: DMSReducers.getAuthenticatedUser(state.sensenet)
-    }
-}
-
-export default connect(
-    mapStateToProps,
-    {
-    })(Header);
+export default Header;

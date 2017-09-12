@@ -36,9 +36,10 @@ interface ISensenetProps {
   loginState,
   loginError: string,
   registrationError: string,
-  loginClick: Function,
-  registrationClick: Function,
-  recaptchaCallback: Function
+  login: Function,
+  registration: Function,
+  recaptchaCallback: Function,
+  clearRegistration: Function
 }
 
 class Sensenet extends React.Component<ISensenetProps, { isAuthenticated: boolean, params, loginError, registrationError }> {
@@ -55,7 +56,6 @@ class Sensenet extends React.Component<ISensenetProps, { isAuthenticated: boolea
       registrationError: this.props.loginError || ''
     }
   }
-
   render() {
     return (
 
@@ -76,13 +76,13 @@ class Sensenet extends React.Component<ISensenetProps, { isAuthenticated: boolea
             render={routerProps => {
               const status = this.props.loginState === 1;
               return status ?
-                <Login login={this.props.loginClick} params={{ error: this.props.loginError }} />
+                <Login login={this.props.login} params={{ error: this.props.loginError }} clear={this.props.clearRegistration} />
                 : <Redirect key='dashboard' to='/' />
             }}
           />
           <Route
             path='/registration'
-            render={() => <Registration registration={this.props.registrationClick} history={history} verify={this.props.recaptchaCallback} />} />
+            render={() => <Registration registration={this.props.registration} history={history} verify={this.props.recaptchaCallback} />} />
           <Route path='/:id'
             render={routerProps => {
               const status = this.props.loginState === 1;
@@ -107,11 +107,13 @@ const mapStateToProps = (state, match) => {
 const userLogin = Actions.UserLogin;
 const userRegistration = DMSActions.UserRegistration;
 const verifyCaptcha = DMSActions.VerifyCaptchaSuccess;
+const clearReg = DMSActions.ClearRegistration;
 
 export default withRouter(connect(
   mapStateToProps,
   {
-    loginClick: userLogin,
-    registrationClick: userRegistration,
-    recaptchaCallback: verifyCaptcha
+    login: userLogin,
+    registration: userRegistration,
+    recaptchaCallback: verifyCaptcha,
+    clearRegistration: clearReg
   })(Sensenet));

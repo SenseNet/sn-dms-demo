@@ -40,7 +40,9 @@ import { resources } from '../assets/resources'
 interface ILoginProps {
   login,
   params,
-  loginError
+  loginError,
+  clear,
+  isRegistered
 }
 
 interface ILoginState {
@@ -162,6 +164,12 @@ class Login extends React.Component<ILoginProps, ILoginState> {
     return this.state.isButtonDisabled;
   }
 
+  componentDidMount() {
+    this.props.isRegistered ?
+      this.props.clear() :
+      false
+  }
+
   render() {
     return (
       <div className='Sensenet'>
@@ -211,7 +219,7 @@ class Login extends React.Component<ILoginProps, ILoginState> {
               <FormControl>
                 <FormHelperText error>{this.props.loginError && this.props.loginError.length ? resources.WRONG_USERNAME_OR_PASSWORD : ''}</FormHelperText>
               </FormControl>
-              <Button type='submit' color='primary' style={styles.button} disabled={this.state.isButtonDisabled}>{resources.LOGIN_BUTTON_TEXT}</Button>
+              <Button type='submit' color='primary' style={styles.button} disabled={this.props.loginError === null && this.state.isButtonDisabled}>{resources.LOGIN_BUTTON_TEXT}</Button>
             </form>
           </MuiThemeProvider>
         </div>
@@ -222,7 +230,8 @@ class Login extends React.Component<ILoginProps, ILoginState> {
 
 const mapStateToProps = (state, match) => {
   return {
-    loginError: Reducers.getAuthenticationError(state.sensenet)
+    loginError: Reducers.getAuthenticationError(state.sensenet),
+    isRegistered: DMSReducers.registrationIsDone
   }
 }
 

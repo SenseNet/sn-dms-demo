@@ -38,6 +38,7 @@ export module DMSReducers {
                 return true
             case 'USER_REGISTRATION_REQUEST':
             case 'USER_REGISTRATION_FAILURE':
+            case 'CLEAR_USER_REGISTRATION':
                 return false
             default:
                 return state
@@ -79,7 +80,6 @@ export module DMSReducers {
     export const captchaIsVerified = (state) => {
         return state.captcha
     }
-
     export const getAuthenticatedUser = (state) => {
         return state.session.user
     }
