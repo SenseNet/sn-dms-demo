@@ -15,9 +15,11 @@ interface IUserActionMenu {
 const actions = [
     {
         name: 'Logout',
-        displayName: 'Logout',
+        displayName: resources.LOGOUT,
     }
 ];
+
+import { resources } from '../assets/resources'
 
 const styles = {
     menuIcon: {
@@ -60,7 +62,7 @@ class UserActionMenu extends React.Component<IUserActionMenu, { anchorEl, open, 
         return (
             <div>
                 <IconButton
-                    aria-label='Open menu'
+                    aria-label={resources.OPEN_MENU}
                     aria-owns={this.state.open ? 'long-menu' : null}
                     aria-haspopup='true'
                     onClick={this.handleClick}
