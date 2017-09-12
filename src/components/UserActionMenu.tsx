@@ -1,9 +1,11 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Actions } from 'sn-redux'
+import { DMSReducers } from '../Reducers'
 import IconButton from 'material-ui/IconButton';
 import Menu, { MenuItem } from 'material-ui/Menu';
-import MoreVertIcon from 'material-ui-icons/MoreVert';
+import ArrowDownIcon from 'material-ui-icons/KeyboardArrowDown';
+import UserPanel from './UserPanel'
 
 interface IUserActionMenu {
     loggedinUser,
@@ -19,11 +21,16 @@ const actions = [
 
 const styles = {
     menuIcon: {
-        color: '#fff'
+        color: '#fff',
+        width: 80
+    },
+    arrowButton: {
+        marginLeft: 0
+    },
+    menu: {
+        marginTop: 40
     }
 }
-
-const ITEM_HEIGHT = 48;
 
 class UserActionMenu extends React.Component<IUserActionMenu, { anchorEl, open, selectedIndex }>{
     constructor(props) {
@@ -34,7 +41,7 @@ class UserActionMenu extends React.Component<IUserActionMenu, { anchorEl, open, 
             selectedIndex: 1
         }
     }
-    
+
     handleClick = event => {
         this.setState({ open: true, anchorEl: event.currentTarget });
     };
@@ -59,13 +66,16 @@ class UserActionMenu extends React.Component<IUserActionMenu, { anchorEl, open, 
                     onClick={this.handleClick}
                     style={styles.menuIcon}
                 >
-                    <MoreVertIcon />
+
+                    <UserPanel user={this.props.loggedinUser} />
+                    <ArrowDownIcon style={styles.arrowButton} />
                 </IconButton>
                 <Menu
                     id='long-menu'
                     anchorEl={this.state.anchorEl}
                     open={this.state.open}
                     onRequestClose={this.handleRequestClose}
+                    style={styles.menu}
                 >
                     {actions.map((action, index) => (
                         <MenuItem
@@ -85,7 +95,7 @@ const userLogout = Actions.UserLogout;
 
 const mapStateToProps = (state, match) => {
     return {
-
+        loggedinUser: DMSReducers.getAuthenticatedUser(state.sensenet)
     }
 }
 
