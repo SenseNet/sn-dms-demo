@@ -26,7 +26,7 @@ export module DMSEpics {
                     '/Root/Profiles/Public/' + action.user.Name + '/Document_Library'
                 return dependencies.repository.Load(path, { select: 'all' })
                     .map((response) => {
-                        store.dispatch(Actions.RequestContent(path, { select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Icon'] }))
+                        store.dispatch(Actions.RequestContent(path, { select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Icon'], orderby: ['IsFolder desc', 'DisplayName asc'] as any }))
                         return Actions.ReceiveLoadedContent(response, action.options)
                     })
                     .catch(error => {
