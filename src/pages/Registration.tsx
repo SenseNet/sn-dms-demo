@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux';
 import { Reducers } from 'sn-redux'
+import { DMSActions } from '../Actions'
 import { DMSReducers } from '../Reducers'
 import LoginTabs from '../components/LoginTabs'
 import { WelcomeMessage } from '../components/WelcomeMessage'
@@ -9,24 +10,11 @@ import Input from 'material-ui/Input';
 import InputLabel from 'material-ui/Input/InputLabel';
 import FormControl from 'material-ui/Form/FormControl';
 import FormHelperText from 'material-ui/Form/FormHelperText';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import createMuiTheme from 'material-ui/styles/theme'
 import { CircularProgress } from 'material-ui/Progress';
 import { withRouter } from 'react-router-dom'
 import GoogleReCaptcha from '../components/GoogleReCaptcha'
 
 const logo = require('../assets/logo.png');
-
-import lightBlue from 'material-ui/colors/lightBlue'
-import pink from 'material-ui/colors/pink'
-import createPalette from 'material-ui/styles/palette'
-
-const muiTheme = createMuiTheme({
-  palette: createPalette({
-    primary: lightBlue,
-    accent: pink
-  })
-})
 
 const styles = {
   button: {
@@ -107,7 +95,8 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
       this.setState({
         email: e.target.value,
         emailErrorMessage: '',
-        emailError: false
+        emailError: false,
+        isButtonDisabled: false
       })
     }
     else {
@@ -119,7 +108,8 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
   }
   handleEmailChange(e) {
     this.setState({
-      email: e.target.value
+      email: e.target.value,
+      isButtonDisabled: false
     })
   }
   validateEmail(text) {
@@ -131,7 +121,8 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
       this.setState({
         password: e.target.value,
         passwordErrorMessage: '',
-        passwordError: false
+        passwordError: false,
+        isButtonDisabled: false
       })
     }
     else {
@@ -143,11 +134,13 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
   }
   handlePasswordChange(e) {
     this.setState({
-      password: e.target.value
+      password: e.target.value,
+      isButtonDisabled: false
     })
   }
   validatePassword(text) {
-    const re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+
+    const re = /^([a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]*[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]){3}[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]*$/;
     return re.test(text);
   }
   handleConfirmPasswordBlur(e) {
@@ -155,7 +148,8 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
       this.setState({
         confirmpassword: e.target.value,
         confirmPasswordErrorMessage: '',
-        confirmPasswordError: false
+        confirmPasswordError: false,
+        isButtonDisabled: false
       })
     }
     else if (!this.validatePassword(e.target.value)) {
@@ -174,7 +168,8 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
   handleConfirmPasswordChange(e) {
     if (this.validatePassword(e.target.value) && this.confirmPasswords(e.target.value, this.state.password)) {
       this.setState({
-        confirmpassword: e.target.value
+        confirmpassword: e.target.value,
+        isButtonDisabled: false
       })
     }
   }
@@ -230,7 +225,7 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
   }
   render() {
     return (
-      <div>
+      <div className='Sensenet'>
         <div className='Sensenet-header'>
           <img src={logo} className='Sensenet-logo' alt='logo' />
         </div>
@@ -239,77 +234,77 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
         <WelcomeMessage />
 
         <div>
-          <MuiThemeProvider theme={muiTheme}>
-            <div>
-              {this.props.isRegistered ? this.props.history.push('/login') : false}
-              {this.props.inProgress ? <div style={styles.progress}><CircularProgress color='accent' /></div> : ''}
-              <form onSubmit={e => {
-                e.preventDefault()
-                this.formSubmit(e)
-              }}>
-                <FormControl
-                  error={this.state.emailError || (this.props.registrationError && this.props.registrationError.length) > 0 ? true : false}
+          <div>
+            {this.props.isRegistered ?
+              this.props.history.push('/login') :
+              false}
+            {
+              this.props.inProgress ? <div style={styles.progress}><CircularProgress color='accent' /></div> : ''}
+            <form onSubmit={e => {
+              e.preventDefault()
+              this.formSubmit(e)
+            }}>
+              <FormControl
+                error={this.state.emailError || (this.props.registrationError && this.props.registrationError.length) > 0 ? true : false}
+                fullWidth
+                required
+                style={styles.formControl}>
+                <InputLabel htmlFor='email'>{resources.EMAIL_INPUT_LABEL}</InputLabel>
+                <Input
+                  id='email'
+                  onBlur={(event) => this.handleEmailBlur(event)}
+                  onChange={(event) => this.handleEmailChange(event)}
                   fullWidth
-                  required
-                  style={styles.formControl}>
-                  <InputLabel htmlFor='email'>{resources.EMAIL_INPUT_LABEL}</InputLabel>
-                  <Input
-                    id='email'
-                    onBlur={(event) => this.handleEmailBlur(event)}
-                    onChange={(event) => this.handleEmailChange(event)}
-                    fullWidth
-                    autoFocus
-                    placeholder={resources.EMAIL_INPUT_FORMAT_PLACEHOLDER} />
-                  <FormHelperText>{this.state.emailErrorMessage}</FormHelperText>
-                </FormControl>
-                <FormControl
-                  error={this.state.passwordError ? true : false}
+                  autoFocus
+                  placeholder={resources.EMAIL_INPUT_FORMAT_PLACEHOLDER} />
+                <FormHelperText>{this.state.emailErrorMessage}</FormHelperText>
+              </FormControl>
+              <FormControl
+                error={this.state.passwordError ? true : false}
+                fullWidth
+                required
+                style={styles.formControl}>
+                <InputLabel htmlFor='password'>{resources.PASSWORD_INPUT_LABEL}</InputLabel>
+                <Input
+                  type='password'
+                  id='password'
+                  onBlur={(event) => this.handlePasswordBlur(event)}
+                  onChange={(event) => this.handlePasswordChange(event)}
                   fullWidth
-                  required
-                  style={styles.formControl}>
-                  <InputLabel htmlFor='password'>{resources.PASSWORD_INPUT_LABEL}</InputLabel>
-                  <Input
-                    type='password'
-                    id='password'
-                    onBlur={(event) => this.handlePasswordBlur(event)}
-                    onChange={(event) => this.handlePasswordChange(event)}
-                    fullWidth
-                    placeholder={resources.PASSWORD_INPUT_PLACEHOLDER} />
-                  <FormHelperText>{this.state.passwordErrorMessage}</FormHelperText>
-                </FormControl>
-                <FormControl
-                  error={this.state.confirmPasswordError ? true : false}
+                  placeholder={resources.PASSWORD_INPUT_PLACEHOLDER} />
+                <FormHelperText>{this.state.passwordErrorMessage}</FormHelperText>
+              </FormControl>
+              <FormControl
+                error={this.state.confirmPasswordError ? true : false}
+                fullWidth
+                required
+                style={styles.formControl}>
+                <InputLabel htmlFor='password'>{resources.CONFIRM_PASSWORD_INPUT_LABEL}</InputLabel>
+                <Input
+                  type='password'
+                  id='confirmpassword'
+                  onBlur={(event) => this.handleConfirmPasswordBlur(event)}
+                  onChange={(event) => this.handleConfirmPasswordChange(event)}
                   fullWidth
-                  required
-                  style={styles.formControl}>
-                  <InputLabel htmlFor='password'>{resources.CONFIRM_PASSWORD_INPUT_LABEL}</InputLabel>
-                  <Input
-                    type='password'
-                    id='confirmpassword'
-                    onBlur={(event) => this.handleConfirmPasswordBlur(event)}
-                    onChange={(event) => this.handleConfirmPasswordChange(event)}
-                    fullWidth
-                    placeholder={resources.PASSWORD_INPUT_PLACEHOLDER} />
-                  <FormHelperText>{this.state.confirmPasswordErrorMessage}</FormHelperText>
-                </FormControl>
-                <FormControl>
-                  <GoogleReCaptcha verify={this.props.verify} />
-                  <FormHelperText error>{this.state.captchaError && this.state.captchaErrorMessage.length > 0 ? this.state.captchaErrorMessage : ''}</FormHelperText>
-                </FormControl>
-                <FormControl>
-                  <FormHelperText error>{this.props.registrationError && this.props.registrationError.length > 0 ? this.props.registrationError : ''}</FormHelperText>
-                </FormControl>
-                <Button
-                  type='submit'
-                  color='primary'
-                  style={styles.button}
-                //TODO: disabled button
-                //disabled={this.buttonIsDisabled ? true : false}
-                >
-                  {resources.REGISTRATION_BUTTON_TEXT}</Button>
-              </form>
-            </div>
-          </MuiThemeProvider>
+                  placeholder={resources.PASSWORD_INPUT_PLACEHOLDER} />
+                <FormHelperText>{this.state.confirmPasswordErrorMessage}</FormHelperText>
+              </FormControl>
+              <FormControl>
+                <GoogleReCaptcha verify={this.props.verify} />
+                <FormHelperText error>{this.state.captchaError && this.state.captchaErrorMessage.length > 0 ? this.state.captchaErrorMessage : ''}</FormHelperText>
+              </FormControl>
+              <FormControl>
+                <FormHelperText error>{this.props.registrationError && this.props.registrationError.length > 0 ? this.props.registrationError : ''}</FormHelperText>
+              </FormControl>
+              <Button
+                type='submit'
+                color='primary'
+                style={styles.button}
+                disabled={this.state.isButtonDisabled}
+              >
+                {resources.REGISTRATION_BUTTON_TEXT}</Button>
+            </form>
+          </div>
         </div>
       </div>
     )
@@ -325,4 +320,5 @@ const mapStateToProps = (state, match) => {
   }
 }
 
-export default withRouter(connect(mapStateToProps, {})(Registration))
+export default withRouter(connect(mapStateToProps, {
+})(Registration))
