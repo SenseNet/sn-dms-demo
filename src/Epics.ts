@@ -22,6 +22,7 @@ export module DMSEpics {
     export const loadProfileDoclibEpic = (action$, store, dependencies?: { repository: Repository.BaseRepository }) => {
         return action$.ofType('USER_CHANGED')
             .mergeMap(action => {
+                const id = location.href
                 const path = action.user.Name === 'Visitor' ? '/Root' :
                     '/Root/Profiles/Public/' + action.user.Name + '/Document_Library'
                 return dependencies.repository.Load(path, { select: 'all' })
@@ -39,7 +40,7 @@ export module DMSEpics {
     export const rootEpic = combineEpics(
         Epics.rootEpic,
         registrationEpic,
-        loadProfileDoclibEpic
+        //loadProfileDoclibEpic
     );
 
 }
