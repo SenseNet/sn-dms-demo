@@ -8,7 +8,7 @@ const styles = {
         padding: 60
     },
     root: {
-        background: '#eee'
+        background: '#efefef'
     }
 }
 
@@ -16,7 +16,7 @@ class Dashboard extends React.Component<{ match }, { currentId }>{
     constructor(props) {
         super(props)
         this.state = {
-            currentId: this.props.match.params.id ? this.props.match.params.id : '/Root'
+            currentId: this.props.match.params.id ? this.props.match.params.id : ''
         }
     }
     render() {
@@ -24,7 +24,7 @@ class Dashboard extends React.Component<{ match }, { currentId }>{
             <div style={styles.root}>
                 <Header />
                 <div style={styles.dashBoarInner}>
-                    <DocumentLibrary />
+                    <DocumentLibrary currentId={this.state.currentId} />
                 </div>
                 <FloatingActionButton />
             </div>
