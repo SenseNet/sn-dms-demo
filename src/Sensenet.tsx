@@ -65,7 +65,7 @@ class Sensenet extends React.Component<ISensenetProps, { isAuthenticated: boolea
             exact
             path='/'
             render={routerProps => {
-              const status = this.props.loginState === 1;
+              const status = this.props.loginState !== 2;
               return status ?
                 <Redirect key='login' to='/login' />
                 : <Dashboard {...routerProps} />;
@@ -74,7 +74,7 @@ class Sensenet extends React.Component<ISensenetProps, { isAuthenticated: boolea
           <Route
             path='/login'
             render={routerProps => {
-              const status = this.props.loginState === 1;
+              const status = this.props.loginState !== 2;
               return status ?
                 <Login login={this.props.login} params={{ error: this.props.loginError }} clear={this.props.clearRegistration} />
                 : <Redirect key='dashboard' to='/' />
@@ -85,7 +85,7 @@ class Sensenet extends React.Component<ISensenetProps, { isAuthenticated: boolea
             render={() => <Registration registration={this.props.registration} history={history} verify={this.props.recaptchaCallback} />} />
           <Route path='/:id'
             render={routerProps => {
-              const status = this.props.loginState === 1;
+              const status = this.props.loginState !== 2;
               return status ?
                 <Redirect key='login' to='/login' />
                 : <Dashboard {...routerProps} />;
