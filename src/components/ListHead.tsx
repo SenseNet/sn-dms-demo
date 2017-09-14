@@ -18,7 +18,8 @@ interface IListHeadProps {
     onRequestSort,
     onSelectAllClick,
     order,
-    orderBy
+    orderBy,
+    count
 }
 
 export class ListHead extends React.Component<IListHeadProps, {}> {
@@ -35,8 +36,8 @@ export class ListHead extends React.Component<IListHeadProps, {}> {
                 <TableRow>
                     <TableCell checkbox>
                         <Checkbox
-                            indeterminate={numSelected > 0 && numSelected < 5}
-                            checked={numSelected === 5}
+                            indeterminate={numSelected > 0 && numSelected < this.props.count}
+                            checked={numSelected === this.props.count}
                             onChange={onSelectAllClick}
                         />
                     </TableCell>

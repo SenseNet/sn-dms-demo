@@ -80,7 +80,6 @@ class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, i
         if (this.props.loggedinUser.userName !== 'Visitor') {
             return <ContentList
                 children={this.props.children}
-                ids={this.props.ids}
                 currentId={this.props.currentId}
             //onTodoClick={this.props.onTodoClick} 
             //onDeleteClick={this.props.onDeleteClick} 

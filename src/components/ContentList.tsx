@@ -21,7 +21,7 @@ import { ParentFolderTableRow } from './ParentFolderTableRow'
 
 const styles = {
     selectedRow: {
-        
+
     },
     actionMenuButton: {
         width: 30,
@@ -40,6 +40,11 @@ const styles = {
     },
     displayName: {
         fontWeight: 'bold'
+    },
+    hoveredDisplayName: {
+        fontWeight: 'bold',
+        color: '#03a9f4',
+        textDecoration: 'underline'
     },
     icon: {
         verticalAlign: 'middle',
@@ -61,7 +66,7 @@ const styles = {
 
     },
     hoveredCheckbox: {
-        
+
     }
 }
 
@@ -74,7 +79,7 @@ interface TodoListProps {
     selected: Number[]
 }
 
-class ContentList extends React.Component<TodoListProps, { selected, order, orderBy, data, hovered }> {
+class ContentList extends React.Component<TodoListProps, { selected, ids, order, orderBy, data, hovered }> {
     constructor(props) {
         super(props)
         this.state = {
@@ -82,18 +87,42 @@ class ContentList extends React.Component<TodoListProps, { selected, order, orde
             order: 'desc',
             orderBy: 'IsFolder',
             data: this.props.children,
-            hovered: null
+            hovered: null,
+            ids: this.props.ids
         };
 
         this.isSelected = this.isSelected.bind(this);
         this.isHovered = this.isHovered.bind(this)
     }
-    handleClick(e, id) { 
+    componentDidUpdate(prevOps) {
+        if (this.props.children !== prevOps.children) {
+            this.setState({
+                data: this.props.children
+            })
+        }
+    }
+    handleRowClick(e, id) {
         this.props.selected.indexOf(id) > -1 ?
-        this.props.deselect(id) :
-        this.props.select(id)
+            this.props.deselect(id) :
+            this.props.select(id)
 
-        this.setState({ selected: this.props.selected });
+        const { selected } = this.state;
+        const selectedIndex = selected.indexOf(id);
+        let newSelected = [];
+        if (selectedIndex === -1) {
+            newSelected = newSelected.concat(selected, id);
+        } else if (selectedIndex === 0) {
+            newSelected = newSelected.concat(selected.slice(1));
+        } else if (selectedIndex === selected.length - 1) {
+            newSelected = newSelected.concat(selected.slice(0, -1));
+        } else if (selectedIndex > 0) {
+            newSelected = newSelected.concat(
+                selected.slice(0, selectedIndex),
+                selected.slice(selectedIndex + 1),
+            );
+        }
+
+        this.setState({ selected: newSelected });
     }
     handleKeyDown(e, id) { }
     handleRequestSort = (event, property) => {
@@ -112,17 +141,17 @@ class ContentList extends React.Component<TodoListProps, { selected, order, orde
     };
     handleSelectAllClick = (event, checked) => {
         if (checked) {
-            this.setState({ selected: this.state.data.map(n => n.id) });
+            this.setState({ selected: this.props.ids });
             return;
         }
         this.setState({ selected: [] });
     };
-    handleMouseEnter(e, id) {
+    handleRowMouseEnter(e, id) {
         this.setState({
             hovered: id
         })
     }
-    handleMouseLeave() {
+    handleRowMouseLeave() {
         this.setState({
             hovered: null
         })
@@ -139,6 +168,7 @@ class ContentList extends React.Component<TodoListProps, { selected, order, orde
                 orderBy={this.state.orderBy}
                 onSelectAllClick={this.handleSelectAllClick}
                 onRequestSort={this.handleRequestSort}
+                count={this.props.ids.length}
             />
             <TableBody style={styles.table}>
                 {this.props.currentId && this.props.currentId.length > 0 ?
@@ -154,14 +184,14 @@ class ContentList extends React.Component<TodoListProps, { selected, order, orde
                     return (
                         <TableRow
                             hover
-                            onClick={event => this.handleClick(event, content.Id)}
+                            onClick={event => this.handleRowClick(event, content.Id)}
                             onKeyDown={event => this.handleKeyDown(event, content.Id)}
                             role='checkbox'
                             aria-checked={isSelected}
                             tabIndex='-1'
                             key={content.Id}
-                            onMouseEnter={event => this.handleMouseEnter(event, content.Id)}
-                            onMouseLeave={event => this.handleMouseLeave()}
+                            onMouseEnter={event => this.handleRowMouseEnter(event, content.Id)}
+                            onMouseLeave={event => this.handleRowMouseLeave()}
                             selected={isSelected}
                             style={isSelected ? styles.selectedRow : null}
                         >
@@ -174,7 +204,9 @@ class ContentList extends React.Component<TodoListProps, { selected, order, orde
                                 />
                             </TableCell>
                             <TableCell style={styles.typeIcon} disablePadding><Icon color='primary'>{icons[content.Icon]}</Icon></TableCell>
-                            <TableCell style={styles.displayName}>{content.DisplayName}</TableCell>
+                            <TableCell style={isHovered ? styles.hoveredDisplayName : styles.displayName}>
+                                {content.DisplayName}
+                            </TableCell>
                             <TableCell>
                                 <Moment fromNow>
                                     {content.ModificationDate}
@@ -183,7 +215,7 @@ class ContentList extends React.Component<TodoListProps, { selected, order, orde
                             <TableCell style={styles.actionMenuButton}>
                                 <MenuIcon style={
                                     isHovered ? styles.hoveredIcon : styles.icon &&
-                                    isSelected ? styles.selectedIcon : styles.icon
+                                        isSelected ? styles.selectedIcon : styles.icon
                                 } />
                             </TableCell>
                         </TableRow>
@@ -198,7 +230,8 @@ const selectContent = Actions;
 
 const mapStateToProps = (state, match) => {
     return {
-        selected: Reducers.getSelectedContent(state.sensenet)
+        selected: Reducers.getSelectedContent(state.sensenet),
+        ids: Reducers.getIds(state.sensenet.children)
     }
 }
 export default connect(mapStateToProps, {
