@@ -1,6 +1,8 @@
 
 import * as React from 'react'
 import * as keycode from 'keycode';
+import { connect } from 'react-redux';
+import { Actions, Reducers } from 'sn-redux'
 import Table, {
     TableBody,
     TableCell,
@@ -14,8 +16,13 @@ import Icon from 'material-ui/Icon';
 import { icons } from '../assets/icons'
 import Moment from 'react-moment';
 import { ListHead } from './ListHead'
+import { SharedItemsTableRow } from './SharedItemsTableRow'
+import { ParentFolderTableRow } from './ParentFolderTableRow'
 
 const styles = {
+    selectedRow: {
+        
+    },
     actionMenuButton: {
         width: 30,
         cursor: 'pointer'
@@ -35,65 +42,115 @@ const styles = {
         fontWeight: 'bold'
     },
     icon: {
+        verticalAlign: 'middle',
+        opacity: 0
+    },
+    selectedIcon: {
         verticalAlign: 'middle'
+    },
+    hoveredIcon: {
+        verticalAlign: 'middle'
+    },
+    table: {
+        background: '#fff'
+    },
+    checkbox: {
+        opacity: 0
+    },
+    selectedCheckbox: {
+
+    },
+    hoveredCheckbox: {
+        
     }
 }
 
 interface TodoListProps {
     ids,
-    children
+    children,
+    currentId,
+    select: Function,
+    deselect: Function,
+    selected: Number[]
 }
 
-export class ContentList extends React.Component<TodoListProps, { selected, order, orderBy, data }> {
+class ContentList extends React.Component<TodoListProps, { selected, order, orderBy, data, hovered }> {
     constructor(props) {
         super(props)
         this.state = {
             selected: [],
             order: 'desc',
-            orderBy: 'Type',
-            data: this.props.children
+            orderBy: 'IsFolder',
+            data: this.props.children,
+            hovered: null
         };
 
         this.isSelected = this.isSelected.bind(this);
+        this.isHovered = this.isHovered.bind(this)
     }
-    handleClick(e, id) { }
+    handleClick(e, id) { 
+        this.props.selected.indexOf(id) > -1 ?
+        this.props.deselect(id) :
+        this.props.select(id)
+
+        this.setState({ selected: this.props.selected });
+    }
     handleKeyDown(e, id) { }
     handleRequestSort = (event, property) => {
         const orderBy = property;
         let order = 'desc';
-    
+
         if (this.state.orderBy === property && this.state.order === 'desc') {
-          order = 'asc';
+            order = 'asc';
         }
-    
+
         const data = this.state.data.sort(
-          (a, b) => (order === 'desc' ? b[orderBy] > a[orderBy] : a[orderBy] > b[orderBy]),
+            (a, b) => (order === 'desc' ? b[orderBy] > a[orderBy] : a[orderBy] > b[orderBy]),
         );
-    
+
         this.setState({ data, order, orderBy });
-      };
+    };
     handleSelectAllClick = (event, checked) => {
         if (checked) {
-          this.setState({ selected: this.state.data.map(n => n.id) });
-          return;
+            this.setState({ selected: this.state.data.map(n => n.id) });
+            return;
         }
         this.setState({ selected: [] });
-      };
+    };
+    handleMouseEnter(e, id) {
+        this.setState({
+            hovered: id
+        })
+    }
+    handleMouseLeave() {
+        this.setState({
+            hovered: null
+        })
+    }
     isSelected(id) { return this.state.selected.indexOf(id) !== -1; }
+    isHovered(id) {
+        return this.state.hovered === id
+    }
     render() {
         return (<Table>
             <ListHead
-            numSelected={this.state.selected.length}
-            order={this.state.order}
-            orderBy={this.state.orderBy}
-            onSelectAllClick={this.handleSelectAllClick}
-            onRequestSort={this.handleRequestSort}
-          />
-            <TableBody>
+                numSelected={this.state.selected.length}
+                order={this.state.order}
+                orderBy={this.state.orderBy}
+                onSelectAllClick={this.handleSelectAllClick}
+                onRequestSort={this.handleRequestSort}
+            />
+            <TableBody style={styles.table}>
+                {this.props.currentId && this.props.currentId.length > 0 ?
+                    <ParentFolderTableRow currentId={this.props.currentId} /> :
+                    <SharedItemsTableRow currentId={this.props.currentId} />
+                }
+
                 {this.props.ids.map(n => {
                     //TODO: selection, action, reducer, meg minden
                     let content = this.props.children[n];
-                    const isSelected = this.isSelected(content.id);
+                    const isSelected = this.isSelected(content.Id);
+                    const isHovered = this.isHovered(content.Id);
                     return (
                         <TableRow
                             hover
@@ -103,11 +160,17 @@ export class ContentList extends React.Component<TodoListProps, { selected, orde
                             aria-checked={isSelected}
                             tabIndex='-1'
                             key={content.Id}
-                        //selected={isSelected}
+                            onMouseEnter={event => this.handleMouseEnter(event, content.Id)}
+                            onMouseLeave={event => this.handleMouseLeave()}
+                            selected={isSelected}
+                            style={isSelected ? styles.selectedRow : null}
                         >
                             <TableCell checkbox style={styles.checkboxButton}>
                                 <Checkbox
                                     checked={isSelected}
+                                    style={
+                                        isSelected ? styles.selectedCheckbox : styles.checkbox &&
+                                            isHovered ? styles.hoveredCheckbox : styles.checkbox}
                                 />
                             </TableCell>
                             <TableCell style={styles.typeIcon} disablePadding><Icon color='primary'>{icons[content.Icon]}</Icon></TableCell>
@@ -118,7 +181,10 @@ export class ContentList extends React.Component<TodoListProps, { selected, orde
                                 </Moment>
                             </TableCell>
                             <TableCell style={styles.actionMenuButton}>
-                                <MenuIcon style={styles.icon} />
+                                <MenuIcon style={
+                                    isHovered ? styles.hoveredIcon : styles.icon &&
+                                    isSelected ? styles.selectedIcon : styles.icon
+                                } />
                             </TableCell>
                         </TableRow>
                     );
@@ -127,3 +193,15 @@ export class ContentList extends React.Component<TodoListProps, { selected, orde
         </Table>)
     }
 }
+
+const selectContent = Actions;
+
+const mapStateToProps = (state, match) => {
+    return {
+        selected: Reducers.getSelectedContent(state.sensenet)
+    }
+}
+export default connect(mapStateToProps, {
+    select: Actions.SelectContent,
+    deselect: Actions.DeSelectContent
+})(ContentList)

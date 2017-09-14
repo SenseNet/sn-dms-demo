@@ -5,7 +5,7 @@ import { DMSReducers } from '../Reducers'
 import { DMSActions } from '../Actions'
 import { Actions, Reducers } from 'sn-redux'
 import { FetchError } from './FetchError'
-import { ContentList } from './ContentList'
+import ContentList from './ContentList'
 import { CircularProgress } from 'material-ui/Progress';
 
 const styles = {
@@ -23,6 +23,7 @@ const styles = {
 }
 
 interface IDocumentLibraryProps {
+    currentId,
     path,
     children,
     ids,
@@ -32,22 +33,32 @@ interface IDocumentLibraryProps {
     isFetching: boolean
 }
 
-class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, path }>{
+class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, id, orderby }>{
     constructor(props) {
         super(props)
         this.state = {
-            select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type'],
-            path: '/Root/Profiles/' + this.props.loggedinUser.userName + '/DocumentLibrary'
+            select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder'],
+            orderby: ['IsFolder desc', 'DisplayName asc'] as any,
+            id: this.props.currentId
         }
     }
     componentDidMount() {
-        this.fetchData();
+        if (this.props.loggedinUser.userName !== 'Visitor') {
+            this.fetchData();
+        }
     }
+    componentDidUpdate(prevOps) {
+        if (this.props.loggedinUser.userName !== prevOps.loggedinUser.userName) {
+          this.fetchData();
+        }
+      }
     fetchData() {
         let optionObj = {
-            select: this.state.select
+            select: this.state.select,
+            orderby: this.state.orderby
         }
-        this.props.fetchContent(this.state.path, optionObj);
+        const path = `/Root/Profiles/Public/${this.props.loggedinUser.userName}/Document_Library${this.props.currentId ? `/${this.props.currentId}` : ''}`;
+        this.props.fetchContent(path, optionObj);
     }
 
     render() {
@@ -58,7 +69,7 @@ class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, p
                 </div>
             )
         }
-        if (this.props.errorMessage && this.props.children.length > 0) {
+        if (this.props.errorMessage && this.props.errorMessage.length > 0) {
             return (
                 <FetchError
                     message={this.props.errorMessage}
@@ -66,12 +77,16 @@ class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, p
                 />
             )
         }
-        return <ContentList
-            children={this.props.children}
-            ids={this.props.ids}
-        //onTodoClick={this.props.onTodoClick} 
-        //onDeleteClick={this.props.onDeleteClick} 
-        />
+        if (this.props.loggedinUser.userName !== 'Visitor') {
+            return <ContentList
+                children={this.props.children}
+                ids={this.props.ids}
+                currentId={this.props.currentId}
+            //onTodoClick={this.props.onTodoClick} 
+            //onDeleteClick={this.props.onDeleteClick} 
+            />
+        }
+        return <div></div>
     }
 }
 
@@ -83,8 +98,8 @@ const mapStateToProps = (state, match) => {
         path: DMSReducers.getCurrentContentPath(state.sensenet.currentcontent),
         children: DMSReducers.getChildrenItems(state.sensenet),
         ids: Reducers.getIds(state.sensenet.children),
-        errorMessage: Reducers.getError(state),
-        isFetching: Reducers.getFetching(state)
+        errorMessage: Reducers.getError(state.sensenet.children),
+        isFetching: Reducers.getFetching(state.sensenet.children)
     }
 }
 
