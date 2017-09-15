@@ -18,13 +18,15 @@ import 'rxjs'
 
 const sensenet = Reducers.sensenet;
 const register = DMSReducers.register;
+const actionmenu = DMSReducers.actionmenu;
 const myReducer = combineReducers({
   sensenet,
-  register
+  register,
+  actionmenu
 });
 
 const repository = new Repository.SnRepository({
-  RepositoryUrl: process.env.REACT_APP_SERVICE_URL || 'https://sn-local'
+  RepositoryUrl: process.env.REACT_APP_SERVICE_URL || 'https://sn-local/'
 });
 
 repository.Config
@@ -37,7 +39,7 @@ ReactDOM.render(
 
   <Provider store={store}>
     <Router basename='/'>
-    <Sensenet store={store} repository={repository} history={history} />
+      <Sensenet store={store} repository={repository} history={history} />
     </Router>
   </Provider>,
   document.getElementById('root') as HTMLElement

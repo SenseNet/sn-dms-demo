@@ -3,6 +3,7 @@ import * as React from 'react'
 import * as keycode from 'keycode';
 import { connect } from 'react-redux';
 import { Actions, Reducers } from 'sn-redux'
+import { DMSActions } from '../Actions'
 import Table, {
     TableBody,
     TableCell,
@@ -13,11 +14,13 @@ import Table, {
 import Checkbox from 'material-ui/Checkbox';
 import MenuIcon from 'material-ui-icons/MoreVert';
 import Icon from 'material-ui/Icon';
+import IconButton from 'material-ui/IconButton';
 import { icons } from '../assets/icons'
 import Moment from 'react-moment';
 import { ListHead } from './ListHead'
 import { SharedItemsTableRow } from './SharedItemsTableRow'
 import { ParentFolderTableRow } from './ParentFolderTableRow'
+import ActionMenu from './ActionMenu'
 
 const styles = {
     selectedRow: {
@@ -76,10 +79,26 @@ interface TodoListProps {
     currentId,
     select: Function,
     deselect: Function,
-    selected: Number[]
+    getActions: Function,
+    selected: Number[],
+    opened: Number,
+    actions,
+    triggerActionMenu: Function
 }
 
-class ContentList extends React.Component<TodoListProps, { selected, ids, order, orderBy, data, hovered }> {
+interface TodoListState {
+    selected,
+    ids,
+    order,
+    orderBy,
+    data,
+    hovered,
+    opened,
+    actionMenuIsOpen,
+    anchorEl
+}
+
+class ContentList extends React.Component<TodoListProps, TodoListState> {
     constructor(props) {
         super(props)
         this.state = {
@@ -88,11 +107,15 @@ class ContentList extends React.Component<TodoListProps, { selected, ids, order,
             orderBy: 'IsFolder',
             data: this.props.children,
             hovered: null,
-            ids: this.props.ids
+            ids: this.props.ids,
+            opened: this.props.opened,
+            actionMenuIsOpen: false,
+            anchorEl: null
         };
 
         this.isSelected = this.isSelected.bind(this);
         this.isHovered = this.isHovered.bind(this)
+        this.handleContextMenu = this.handleContextMenu.bind(this)
     }
     componentDidUpdate(prevOps) {
         if (this.props.children !== prevOps.children) {
@@ -124,6 +147,17 @@ class ContentList extends React.Component<TodoListProps, { selected, ids, order,
 
         this.setState({ selected: newSelected });
     }
+    handleContextMenu(e, content) {
+        e.preventDefault()
+        this.props.getActions(content, 'DMSListItem') && this.props.triggerActionMenu(e.currentTarget)
+    }
+    handleActionMenuClick(e, content) {
+        this.props.triggerActionMenu(e.currentTarget)
+        this.props.getActions(content, 'DMSListItem') && this.setState({ anchorEl: e.currentTarget })
+    }
+    handleActionMenuClose = (e) => {
+        this.props.triggerActionMenu(e.currentTarget, false)
+    };
     handleKeyDown(e, id) { }
     handleRequestSort = (event, property) => {
         const orderBy = property;
@@ -160,8 +194,9 @@ class ContentList extends React.Component<TodoListProps, { selected, ids, order,
     isHovered(id) {
         return this.state.hovered === id
     }
+    isOpened(id) { return this.state.opened === id }
     render() {
-        return (<Table>
+        return (<div><Table>
             <ListHead
                 numSelected={this.state.selected.length}
                 order={this.state.order}
@@ -184,7 +219,6 @@ class ContentList extends React.Component<TodoListProps, { selected, ids, order,
                     return (
                         <TableRow
                             hover
-                            onClick={event => this.handleRowClick(event, content.Id)}
                             onKeyDown={event => this.handleKeyDown(event, content.Id)}
                             role='checkbox'
                             aria-checked={isSelected}
@@ -194,6 +228,7 @@ class ContentList extends React.Component<TodoListProps, { selected, ids, order,
                             onMouseLeave={event => this.handleRowMouseLeave()}
                             selected={isSelected}
                             style={isSelected ? styles.selectedRow : null}
+                            onContextMenu={event => this.handleContextMenu(event, content)}
                         >
                             <TableCell checkbox style={styles.checkboxButton}>
                                 <Checkbox
@@ -203,38 +238,56 @@ class ContentList extends React.Component<TodoListProps, { selected, ids, order,
                                             isHovered ? styles.hoveredCheckbox : styles.checkbox}
                                 />
                             </TableCell>
-                            <TableCell style={styles.typeIcon} disablePadding><Icon color='primary'>{icons[content.Icon]}</Icon></TableCell>
-                            <TableCell style={isHovered ? styles.hoveredDisplayName : styles.displayName}>
+                            <TableCell
+                                style={styles.typeIcon}
+                                disablePadding
+                                onClick={event => this.handleRowClick(event, content.Id)}><Icon color='primary'>{icons[content.Icon]}</Icon></TableCell>
+                            <TableCell
+                                style={isHovered ? styles.hoveredDisplayName : styles.displayName}
+                                onClick={event => this.handleRowClick(event, content.Id)}>
                                 {content.DisplayName}
                             </TableCell>
-                            <TableCell>
+                            <TableCell
+                                onClick={event => this.handleRowClick(event, content.Id)}>
                                 <Moment fromNow>
                                     {content.ModificationDate}
                                 </Moment>
                             </TableCell>
                             <TableCell style={styles.actionMenuButton}>
-                                <MenuIcon style={
-                                    isHovered ? styles.hoveredIcon : styles.icon &&
-                                        isSelected ? styles.selectedIcon : styles.icon
-                                } />
+                                <IconButton
+                                    aria-label='Menu'
+                                    aria-owns={this.state.actionMenuIsOpen}
+                                    onClick={event => this.handleActionMenuClick(event, content)}
+                                >
+                                    <MenuIcon style={
+                                        isHovered ? styles.hoveredIcon : styles.icon &&
+                                            isSelected ? styles.selectedIcon : styles.icon
+                                    } />
+                                </IconButton>
                             </TableCell>
                         </TableRow>
                     );
                 })}
             </TableBody>
-        </Table>)
+        </Table>
+            <ActionMenu
+                open={this.state.actionMenuIsOpen}
+                handleRequestClose={this.handleActionMenuClose}
+                anchorEl={this.state.anchorEl} />
+        </div>)
     }
 }
-
-const selectContent = Actions;
 
 const mapStateToProps = (state, match) => {
     return {
         selected: Reducers.getSelectedContent(state.sensenet),
-        ids: Reducers.getIds(state.sensenet.children)
+        ids: Reducers.getIds(state.sensenet.children),
+        opened: Reducers.getOpenedContent(state.sensenet.children)
     }
 }
 export default connect(mapStateToProps, {
     select: Actions.SelectContent,
-    deselect: Actions.DeSelectContent
+    deselect: Actions.DeSelectContent,
+    getActions: Actions.RequestContentActions,
+    triggerActionMenu: DMSActions.TriggerActionMenu
 })(ContentList)
