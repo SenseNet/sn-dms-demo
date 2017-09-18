@@ -7,7 +7,7 @@ import {
 import * as keycode from 'keycode';
 import { connect } from 'react-redux';
 import { Actions, Reducers } from 'sn-redux'
-import { DMSActions } from '../Actions'
+import { DMSActions } from '../../Actions'
 import Table, {
     TableBody,
     TableCell,
@@ -19,12 +19,12 @@ import Checkbox from 'material-ui/Checkbox';
 import MenuIcon from 'material-ui-icons/MoreVert';
 import Icon from 'material-ui/Icon';
 import IconButton from 'material-ui/IconButton';
-import { icons } from '../assets/icons'
+import { icons } from '../../assets/icons'
 import Moment from 'react-moment';
 import { ListHead } from './ListHead'
 import { SharedItemsTableRow } from './SharedItemsTableRow'
 import { ParentFolderTableRow } from './ParentFolderTableRow'
-import ActionMenu from './ActionMenu'
+import ActionMenu from '../ActionMenu'
 
 const styles = {
     selectedRow: {

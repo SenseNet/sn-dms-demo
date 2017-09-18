@@ -5,7 +5,7 @@ import { DMSReducers } from '../Reducers'
 import { DMSActions } from '../Actions'
 import { Actions, Reducers } from 'sn-redux'
 import { FetchError } from './FetchError'
-import ContentList from './ContentList'
+import ContentList from './ContentList/ContentList'
 import { CircularProgress } from 'material-ui/Progress';
 
 const styles = {

@@ -7,7 +7,7 @@ import Table, {
     TableSortLabel,
 } from 'material-ui/Table';
 import Icon from 'material-ui/Icon';
-import { icons } from '../assets/icons'
+import { icons } from '../../assets/icons'
 
 const styles = {
     actionMenuButton: {
