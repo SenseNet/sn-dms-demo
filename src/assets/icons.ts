@@ -3,6 +3,7 @@ export const icons = {
     word: 'insert_drive_file',
     Folder: 'folder',
     SmartFolder: 'folder_shared',
+    image: 'photo',
     rename: 'text_fields',
     copy: 'content_copy',
     move: 'input',

@@ -23,14 +23,15 @@ const styles = {
 }
 
 interface IDocumentLibraryProps {
-    currentId,
+    currentContent,
     path,
     children,
     ids,
     loggedinUser,
     fetchContent: Function,
     errorMessage: string,
-    isFetching: boolean
+    isFetching: boolean,
+    parentId
 }
 
 class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, id, orderby }>{
@@ -39,26 +40,36 @@ class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, i
         this.state = {
             select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder'],
             orderby: ['IsFolder desc', 'DisplayName asc'] as any,
-            id: this.props.currentId
+            id: this.props.currentContent.Id
         }
     }
     componentDidMount() {
-        if (this.props.loggedinUser.userName !== 'Visitor') {
+        if (this.props.loggedinUser.userName !== 'Visitor' && this.props.currentContent.Id === 'undefined') {
             this.fetchData();
         }
     }
     componentDidUpdate(prevOps) {
         if (this.props.loggedinUser.userName !== prevOps.loggedinUser.userName) {
-          this.fetchData();
+            this.fetchData()
         }
-      }
-    fetchData() {
+        if (typeof this.props.currentContent.Id !== 'undefined' &&
+            typeof prevOps.currentContent.Id !== 'undefined' &&
+            this.props.currentContent.Id !== prevOps.currentContent.Id) {
+            this.fetchData(this.props.currentContent.Id)
+        }
+    }
+    fetchData(id?: number) {
         let optionObj = {
             select: this.state.select,
             orderby: this.state.orderby
         }
-        const path = `/Root/Profiles/Public/${this.props.loggedinUser.userName}/Document_Library${this.props.currentId ? `/${this.props.currentId}` : ''}`;
+        const path = id && typeof id !== 'undefined' ?
+            `${this.props.currentContent.Path}` :
+            `/Root/Profiles/Public/${this.props.loggedinUser.userName}/Document_Library`;
         this.props.fetchContent(path, optionObj);
+        this.setState({
+            id: this.props.currentContent.Id
+        })
     }
 
     render() {
@@ -80,7 +91,7 @@ class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, i
         if (this.props.loggedinUser.userName !== 'Visitor') {
             return <ContentList
                 children={this.props.children}
-                currentId={this.props.currentId}
+                currentId={this.props.parentId}
             //onTodoClick={this.props.onTodoClick} 
             //onDeleteClick={this.props.onDeleteClick} 
             />
@@ -98,7 +109,8 @@ const mapStateToProps = (state, match) => {
         children: DMSReducers.getChildrenItems(state.sensenet),
         ids: Reducers.getIds(state.sensenet.children),
         errorMessage: Reducers.getError(state.sensenet.children),
-        isFetching: Reducers.getFetching(state.sensenet.children)
+        isFetching: Reducers.getFetching(state.sensenet.children),
+        currentContent: Reducers.getCurrentContent(state.sensenet)
     }
 }
 

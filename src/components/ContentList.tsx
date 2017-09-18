@@ -1,5 +1,9 @@
 
 import * as React from 'react'
+import {
+    Redirect,
+    withRouter
+} from 'react-router-dom'
 import * as keycode from 'keycode';
 import { connect } from 'react-redux';
 import { Actions, Reducers } from 'sn-redux'
@@ -47,7 +51,8 @@ const styles = {
     hoveredDisplayName: {
         fontWeight: 'bold',
         color: '#03a9f4',
-        textDecoration: 'underline'
+        textDecoration: 'underline',
+        cursor: 'pointer'
     },
     icon: {
         verticalAlign: 'middle',
@@ -83,7 +88,8 @@ interface TodoListProps {
     selected: Number[],
     opened: Number,
     actions,
-    triggerActionMenu: Function
+    triggerActionMenu: Function,
+    history
 }
 
 interface TodoListState {
@@ -146,6 +152,9 @@ class ContentList extends React.Component<TodoListProps, TodoListState> {
         }
 
         this.setState({ selected: newSelected });
+    }
+    handleRowDoubleClick(e, id) {
+        this.props.history.push(`/${id}`)
     }
     handleContextMenu(e, content) {
         e.preventDefault()
@@ -241,14 +250,19 @@ class ContentList extends React.Component<TodoListProps, TodoListState> {
                             <TableCell
                                 style={styles.typeIcon}
                                 disablePadding
-                                onClick={event => this.handleRowClick(event, content.Id)}><Icon color='primary'>{icons[content.Icon]}</Icon></TableCell>
+                                onClick={event => this.handleRowClick(event, content.Id)}
+                                onDoubleClick={event => this.handleRowDoubleClick(event, content.Id)}>
+                                <Icon color='primary'>{icons[content.Icon]}</Icon>
+                            </TableCell>
                             <TableCell
                                 style={isHovered ? styles.hoveredDisplayName : styles.displayName}
-                                onClick={event => this.handleRowClick(event, content.Id)}>
+                                onClick={event => this.handleRowClick(event, content.Id)}
+                                onDoubleClick={event => this.handleRowDoubleClick(event, content.Id)}>
                                 {content.DisplayName}
                             </TableCell>
                             <TableCell
-                                onClick={event => this.handleRowClick(event, content.Id)}>
+                                onClick={event => this.handleRowClick(event, content.Id)}
+                                onDoubleClick={event => this.handleRowDoubleClick(event, content.Id)}>
                                 <Moment fromNow>
                                     {content.ModificationDate}
                                 </Moment>
@@ -285,9 +299,9 @@ const mapStateToProps = (state, match) => {
         opened: Reducers.getOpenedContent(state.sensenet.children)
     }
 }
-export default connect(mapStateToProps, {
+export default withRouter(connect(mapStateToProps, {
     select: Actions.SelectContent,
     deselect: Actions.DeSelectContent,
     getActions: Actions.RequestContentActions,
     triggerActionMenu: DMSActions.TriggerActionMenu
-})(ContentList)
+})(ContentList))
