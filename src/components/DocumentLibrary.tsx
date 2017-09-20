@@ -28,6 +28,7 @@ interface IDocumentLibraryProps {
     children,
     ids,
     loggedinUser,
+    loadContent: Function,
     fetchContent: Function,
     errorMessage: string,
     isFetching: boolean,
@@ -39,7 +40,7 @@ class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, i
         super(props)
         this.state = {
             select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder'],
-            orderby: ['IsFolder desc', 'DisplayName asc'] as any,
+            orderby: ['IsFolder desc', 'DisplayName asc'],
             id: this.props.currentContent.Id
         }
     }
@@ -49,6 +50,7 @@ class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, i
         }
     }
     componentDidUpdate(prevOps) {
+        console.log(prevOps)
         if (this.props.loggedinUser.userName !== prevOps.loggedinUser.userName) {
             this.fetchData()
         }
@@ -71,6 +73,16 @@ class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, i
             id: this.props.currentContent.Id
         })
     }
+    loadData(id?: number) {
+        let parentoptionObj = {
+            select: ['Id', 'Path', 'Name', 'DisplayName', 'Type', 'Icon', 'ParentId']
+        }
+        const path = id && typeof id !== 'undefined' ?
+            `${this.props.currentContent.Path}` :
+            `/Root/Profiles/Public/${this.props.loggedinUser.userName}/Document_Library`;
+
+        this.props.loadContent(typeof id !== 'undefined' ? id : path, parentoptionObj)
+    }
 
     render() {
         if (this.props.isFetching && this.props.children.length > 0) {
@@ -91,15 +103,15 @@ class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, i
         if (this.props.loggedinUser.userName !== 'Visitor') {
             return <ContentList
                 children={this.props.children}
-                currentId={this.props.parentId}
-            //onTodoClick={this.props.onTodoClick} 
-            //onDeleteClick={this.props.onDeleteClick} 
+                currentId={this.props.currentContent.Id}
+                parentId={() => this.props.currentContent.ParentId}
             />
         }
         return <div></div>
     }
 }
 
+const loadContentAction = Actions.LoadContent;
 const fetchContentAction = Actions.RequestContent;
 
 const mapStateToProps = (state, match) => {
@@ -115,5 +127,6 @@ const mapStateToProps = (state, match) => {
 }
 
 export default connect(mapStateToProps, {
+    loadContent: loadContentAction,
     fetchContent: fetchContentAction
 })(DocumentLibrary)
