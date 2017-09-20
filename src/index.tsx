@@ -26,7 +26,8 @@ const myReducer = combineReducers({
 });
 
 const repository = new Repository.SnRepository({
-  RepositoryUrl: process.env.REACT_APP_SERVICE_URL || 'https://dmsservice.demo.sensenet.com/'
+  RepositoryUrl: process.env.REACT_APP_SERVICE_URL || 'https://sn-local/',
+  RequiredSelect: ['Id', 'Path', 'Name', 'Type', 'ParentId']
 });
 
 repository.Config
@@ -36,7 +37,6 @@ store.dispatch(Actions.InitSensenetStore('/Root/Sites/Default_Site', { select: '
 
 
 ReactDOM.render(
-
   <Provider store={store}>
     <Router basename='/'>
       <Sensenet store={store} repository={repository} history={history} />
