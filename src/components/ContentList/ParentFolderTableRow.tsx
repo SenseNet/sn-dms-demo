@@ -40,7 +40,7 @@ const styles = {
 }
 
 interface IParentFolderTableRow {
-    currentId,
+    parentId    
 }
 
 export class ParentFolderTableRow extends React.Component<IParentFolderTableRow, {}>{
@@ -50,15 +50,15 @@ export class ParentFolderTableRow extends React.Component<IParentFolderTableRow,
         return (
             <TableRow
                 hover
-                onClick={event => this.handleClick(event, this.props.currentId)}
-                onKeyDown={event => this.handleKeyDown(event, this.props.currentId)}
+                onClick={event => this.handleClick(event, this.props.parentId)}
+                onKeyDown={event => this.handleKeyDown(event, this.props.parentId)}
                 tabIndex='-1'
-                key={this.props.currentId}
+                //key={this.props.parentId}
             >
                 <TableCell checkbox style={styles.checkboxButton}></TableCell>
                 <TableCell style={styles.parentDisplayName} disablePadding>[ ... ]</TableCell>
                 <TableCell style={styles.displayName}></TableCell>
-                <TableCell></TableCell>
+                <TableCell>aaa{this.props.parentId}</TableCell>
                 <TableCell style={styles.actionMenuButton}></TableCell>
             </TableRow>
         )

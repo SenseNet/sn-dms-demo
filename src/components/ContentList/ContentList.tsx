@@ -89,7 +89,8 @@ interface TodoListProps {
     opened: Number,
     actions,
     triggerActionMenu: Function,
-    history
+    history,
+    parentId
 }
 
 interface TodoListState {
@@ -205,7 +206,8 @@ class ContentList extends React.Component<TodoListProps, TodoListState> {
     }
     isOpened(id) { return this.state.opened === id }
     render() {
-        return (<div><Table>
+        return (<div>
+            <Table>
             <ListHead
                 numSelected={this.state.selected.length}
                 order={this.state.order}
@@ -215,8 +217,9 @@ class ContentList extends React.Component<TodoListProps, TodoListState> {
                 count={this.props.ids.length}
             />
             <TableBody style={styles.table}>
+                {this.props.currentId && this.props.currentId.length > 0}
                 {this.props.currentId && this.props.currentId.length > 0 ?
-                    <ParentFolderTableRow currentId={this.props.currentId} /> :
+                    <ParentFolderTableRow parentId={this.props.parentId} /> :
                     <SharedItemsTableRow currentId={this.props.currentId} />
                 }
 
