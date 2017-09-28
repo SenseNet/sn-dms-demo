@@ -17,13 +17,16 @@ export module DMSActions {
     export const ClearRegistration = () => ({
         type: 'CLEAR_USER_REGISTRATION'
     })
-    export const TriggerActionMenu = (element, open?: boolean) => ({
-        type: 'TRIGGER_ACTIONMENU',
-        open,
-        element
-    })
     export const SetCurrentId = (id) => ({
         type: 'SET_CURRENT_ID',
         id
+    })
+    export const OpenActionMenu = (actions, element) => ({
+        type: 'OPEN_ACTIONMENU',
+        actions,
+        element
+    })
+    export const CloseActionMenu = () => ({
+        type: 'CLOSE_ACTIONMENU'
     })
 }
