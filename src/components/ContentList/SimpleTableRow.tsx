@@ -13,12 +13,9 @@ import Table, {
     TableCell
 } from 'material-ui/Table';
 import Checkbox from 'material-ui/Checkbox';
-import MoreVert from 'material-ui-icons/MoreVert';
-import Icon from 'material-ui/Icon';
-import IconButton from 'material-ui/IconButton';
-import { icons } from '../../assets/icons'
-import Moment from 'react-moment';
-import TextField from 'material-ui/TextField';
+import DisplayNameCell from './TableCells/DisplayNameCell'
+import MenuCell from './TableCells/MenuCell'
+import { IconCell, DateCell } from './TableCells'
 
 const styles = {
     selectedRow: {
@@ -36,37 +33,6 @@ const styles = {
     },
     hoveredCheckbox: {
         opacity: 1
-    },
-    typeIcon: {
-        width: 30,
-        lineHeight: '9px'
-    },
-    displayName: {
-        fontWeight: 'bold'
-    },
-    hoveredDisplayName: {
-        fontWeight: 'bold',
-        color: '#03a9f4',
-        textDecoration: 'underline',
-        cursor: 'pointer'
-    },
-    actionMenuButton: {
-        width: 30,
-        cursor: 'pointer'
-    },
-    editedTitle: {
-        fontWeight: 'normal',
-        fontStyle: 'italic'
-    },
-    icon: {
-        verticalAlign: 'middle',
-        opacity: 0
-    },
-    selectedIcon: {
-        verticalAlign: 'middle'
-    },
-    hoveredIcon: {
-        verticalAlign: 'middle'
     },
 }
 
@@ -88,8 +54,6 @@ interface ISimpleTableRowState {
     opened,
     actionMenuIsOpen,
     anchorEl,
-    clicks,
-    edited,
     selected
 }
 
@@ -102,32 +66,15 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
             hovered: null,
             opened: this.props.opened,
             actionMenuIsOpen: false,
-            anchorEl: null,
-            clicks: 0,
-            edited: {
-                id: null,
-                oldText: '',
-                newText: ''
-            }
+            anchorEl: null
         }
         this.handleContextMenu = this.handleContextMenu.bind(this)
-        this.handleTitleClick = this.handleTitleClick.bind(this)
-        this.handleTitleLongClick = this.handleTitleLongClick.bind(this)
-        this.handleTitleInputBlur = this.handleTitleInputBlur.bind(this)
-        this.handleTitleChange = this.handleTitleChange.bind(this)
     }
-    componentDidUpdate(){
+    componentDidUpdate() {
         this.handleRowDoubleClick = this.handleRowDoubleClick.bind(this)
         this.handleRowSingleClick = this.handleRowSingleClick.bind(this)
     }
     handleRowSingleClick(e, id) {
-        this.setState({
-            edited: {
-                id: null,
-                oldText: '',
-                newText: ''
-            }
-        })
         this.props.selected.indexOf(id) > -1 ?
             this.props.deselect(id) :
             this.props.select(id)
@@ -153,57 +100,10 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
     handleRowDoubleClick(e, id) {
         this.props.history.push(`/${id}`)
     }
-    handleTitleClick(e) {
-        let that = this;
-        that.setState({
-            clicks: this.state.clicks + 1
-        })
-        console.log(this)
-        if (that.state.clicks === 1) {
-            setTimeout(function () {
-                if (that.state.clicks === 1) {
-                    //that.handleRowSingleClick(e, id);
-                } else {
-                    //that.handleTitleLongClick(e, id)
-                }
-                that.setState({
-                    clicks: 0
-                })
-            }, 1000);
-        }
-    }
-    handleTitleLongClick(e, id) {
-        this.setState({
-            edited: {
-                id: id,
-                oldText: e.target.value,
-                newText: e.target.value
-            }
-        })
-    }
-    handleTitleChange(e, id) {
-        this.setState({
-            edited: {
-                id: id,
-                oldText: this.state.edited.oldText,
-                newText: e.target.value
-            }
-        })
-    }
-    handleTitleInputBlur(e, id) {
-        console.log(e.target.value)
-    }
     handleContextMenu(e, content) {
         e.preventDefault()
         this.props.getActions(content, 'DMSListItem') && this.props.triggerActionMenu(e.currentTarget)
     }
-    handleActionMenuClick(e, content) {
-        this.props.triggerActionMenu(e.currentTarget)
-        this.props.getActions(content, 'DMSListItem') && this.setState({ anchorEl: e.currentTarget })
-    }
-    handleActionMenuClose = (e) => {
-        this.props.triggerActionMenu(e.currentTarget, false)
-    };
     handleKeyDown(e, id) { }
     handleRowMouseEnter(e, id) {
         this.setState({
@@ -215,16 +115,16 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
             hovered: null
         })
     }
-    isSelected(id) { return this.state.selected.indexOf(id) !== -1; }
+    isSelected(id) {
+        return this.props.selected.indexOf(id) !== -1;
+    }
     isHovered(id) {
         return this.state.hovered === id
     }
-    isEdited(id) { return this.state.edited.id === id }
     render() {
         const content = this.props.content;
         const isSelected = this.isSelected(content.Id);
         const isHovered = this.isHovered(content.Id);
-        const isEdited = this.isEdited(content.Id);
         return (
             <TableRow
                 hover
@@ -251,46 +151,26 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
                         />
                     </div>
                 </TableCell>
-                <TableCell
-                    style={styles.typeIcon}
-                    disablePadding
-                    onClick={event => this.handleRowSingleClick(event, content.Id)}
-                    onDoubleClick={event => this.handleRowDoubleClick(event, content.Id)}>
-                    <Icon color='primary'>{icons[content.Icon]}</Icon>
-                </TableCell>
-                <TableCell
-                    style={isHovered && !isEdited ? styles.hoveredDisplayName : styles.displayName as any}
-                    onClick={event => this.handleTitleClick(event)}
-                    onDoubleClick={event => this.handleRowDoubleClick(event, content.Id)}>
-                    {isEdited ?
-                        <TextField
-                            autoFocus
-                            defaultValue={content.DisplayName}
-                            margin='dense'
-                            style={styles.editedTitle as any}
-                            onChange={event => this.handleTitleChange(event, content.Id)}
-                            onBlur={event => this.handleTitleInputBlur(event, content.Id)} /> :
-                        content.DisplayName}
-                </TableCell>
-                <TableCell
-                    onClick={event => this.handleRowSingleClick(event, content.Id)}
-                    onDoubleClick={event => this.handleRowDoubleClick(event, content.Id)}>
-                    <Moment fromNow>
-                        {content.ModificationDate}
-                    </Moment>
-                </TableCell>
-                <TableCell style={styles.actionMenuButton}>
-                    <IconButton
-                        aria-label='Menu'
-                        aria-owns={this.state.actionMenuIsOpen}
-                        onClick={event => this.handleActionMenuClick(event, content)}
-                    >
-                        <MoreVert style={
-                            isHovered ? styles.hoveredIcon : styles.icon &&
-                                isSelected ? styles.selectedIcon : styles.icon
-                        } />
-                    </IconButton>
-                </TableCell>
+                <IconCell
+                    id={content.Id}
+                    icon={content.Icon}
+                    handleRowSingleClick={this.handleRowSingleClick}
+                    handleRowDoubleClick={this.handleRowDoubleClick} />
+                <DisplayNameCell
+                    content={content}
+                    isHovered={isHovered}
+                    handleRowSingleClick={event => this.handleRowSingleClick(event, content.Id)}
+                    handleRowDoubleClick={event => this.handleRowDoubleClick(event, content.Id)} />
+                <DateCell
+                    id={content.Id}
+                    date={content.ModificationDate}
+                    handleRowDoubleClick={this.handleRowDoubleClick}
+                    handleRowSingleClick={this.handleRowSingleClick} />
+                <MenuCell
+                    content={content}
+                    isHovered={isHovered}
+                    isSelected={isSelected}
+                    actionMenuIsOpen={this.state.actionMenuIsOpen} />
             </TableRow>
         )
     }

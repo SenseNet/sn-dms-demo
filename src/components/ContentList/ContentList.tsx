@@ -1,8 +1,5 @@
 
 import * as React from 'react'
-import {
-    withRouter
-} from 'react-router-dom'
 import * as keycode from 'keycode';
 import { connect } from 'react-redux';
 import { Actions, Reducers } from 'sn-redux'
@@ -32,15 +29,12 @@ interface ContentListProps {
     ids,
     children,
     currentId,
-    select: Function,
-    deselect: Function,
-    getActions: Function,
     selected: Number[],
-    opened: Number,
-    triggerActionMenu: Function,
     history,
     parentId,
-    rootId
+    rootId,
+    select: Function,
+    deselect: Function,
 }
 
 interface ContentListState {
@@ -86,9 +80,11 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
     handleSelectAllClick = (event, checked) => {
         if (checked) {
             this.setState({ selected: this.props.ids });
+            this.props.ids.map(id => this.props.select(id))
             return;
         }
         this.setState({ selected: [] });
+        this.props.ids.map(id => this.props.deselect(id))
     };
     isChildrenFolder() {
         let urlArray = location.href.split('/')
@@ -115,7 +111,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                     {this.props.ids.map(n => {
                         let content = this.props.children[n];
                         return (
-                            <SimpleTableRow content={content}  key={content.Id} />
+                            <SimpleTableRow content={content} key={content.Id} />
                         );
                     })}
                 </TableBody>
@@ -130,15 +126,12 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
 
 const mapStateToProps = (state, match) => {
     return {
-        selected: Reducers.getSelectedContent(state.sensenet),
         ids: Reducers.getIds(state.sensenet.children),
-        opened: Reducers.getOpenedContent(state.sensenet.children),
-        rootId: DMSReducers.getRootId(state)
+        rootId: DMSReducers.getRootId(state),
+        selected: Reducers.getSelectedContent(state.sensenet)
     }
 }
-export default withRouter(connect(mapStateToProps, {
+export default connect(mapStateToProps, {
     select: Actions.SelectContent,
     deselect: Actions.DeSelectContent,
-    getActions: Actions.RequestContentActions,
-    triggerActionMenu: DMSActions.TriggerActionMenu
-})(ContentList))
+})(ContentList)
