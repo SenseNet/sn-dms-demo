@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Reducers } from 'sn-redux'
+import { DMSActions } from '../Actions'
 import { DMSReducers } from '../Reducers'
 import Menu, { MenuItem } from 'material-ui/Menu';
 import Icon from 'material-ui/Icon';
@@ -11,48 +12,54 @@ const styles = {
     actionMenuItem: {
         lineHeight: '26px'
     },
-    actionIcon: { 
-        fontSize: 20 ,
+    actionIcon: {
+        fontSize: 20,
         verticalAlign: 'middle',
         marginRight: 5
+    },
+    actionMenu: {
+        display: 'none'
+    },
+    open: {
+        display: 'block'
     }
 }
 
 interface IActionMenuProps {
     actions,
-    handleRequestClose,
-    open,
+    isOpen,
     anchorElement
 }
 
-class ActionMenu extends React.Component<IActionMenuProps, { open }>{
+class ActionMenu extends React.Component<IActionMenuProps, {}>{
     constructor(props) {
         super(props)
-        this.state = {
-            open: this.props.open
-        }
     }
     render() {
+        const { isOpen, anchorElement, actions } = this.props
         return (
             <div>
-                <Menu
+                <ul
                     id='actionMenu'
-                    anchorEl={this.props.anchorElement}
-                    open={this.props.open}
-                    onRequestClose={this.props.handleRequestClose}
+                    style={
+                        isOpen ? styles.open : styles.actionMenu
+                    }
                 >
                     {this.props.actions.map(action => {
                         return (
-                            <MenuItem
+                            <li
                                 key={action.Name}
-                                onClick={this.props.handleRequestClose}
                                 style={styles.actionMenuItem}>
-                                <Icon color='accent' style={styles.actionIcon}>{icons[action.Icon]}</Icon>
+                                <Icon color='accent' style={styles.actionIcon}>{
+                                    action.Icon === 'Application' ?
+                                        icons[action.Name.toLowerCase()] :
+                                        icons[action.Icon]
+                                }</Icon>
                                 {action.DisplayName}
-                            </MenuItem>
+                            </li>
                         )
                     })}
-                </Menu>
+                </ul>
             </div>
         )
     }
@@ -60,10 +67,13 @@ class ActionMenu extends React.Component<IActionMenuProps, { open }>{
 
 const mapStateToProps = (state, match) => {
     return {
-        actions: Reducers.getChildrenActions(state.sensenet.children),
-        open: DMSReducers.actionmenuIsOpen(state.actionmenu),
+        actions: DMSReducers.getActions(state.actionmenu),
+        isOpen: DMSReducers.actionmenuIsOpen(state.actionmenu),
         anchorElement: DMSReducers.getActionMenuAnchor(state.actionmenu)
     }
 }
 
-export default connect(mapStateToProps, {})(ActionMenu)
+export default connect(mapStateToProps, {
+    open: DMSActions.OpenActionMenu,
+    close: DMSActions.CloseActionMenu
+})(ActionMenu)
