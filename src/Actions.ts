@@ -21,10 +21,10 @@ export module DMSActions {
         type: 'SET_CURRENT_ID',
         id
     })
-    export const OpenActionMenu = (actions, element) => ({
+    export const OpenActionMenu = (actions, position) => ({
         type: 'OPEN_ACTIONMENU',
         actions,
-        element
+        position
     })
     export const CloseActionMenu = () => ({
         type: 'CLOSE_ACTIONMENU'

@@ -34,14 +34,15 @@ interface IMenuCellProps {
     actionMenuIsOpen: boolean
 }
 interface IMenuCellState {
-    anchorEl
+    anchorTop,
+    anchorLeft
 }
 
 class MenuCell extends React.Component<IMenuCellProps, IMenuCellState>{
     handleActionMenuClick(e, content) {
         this.props.closeActionMenu()
-        this.props.openActionMenu(this.props.actions, e.currentTarget)
-        this.setState({ anchorEl: e.currentTarget })
+        this.props.openActionMenu(this.props.actions, { top: e.currentTarget.offsetTop, left: e.currentTarget.offsetLeft - e.currentTarget.offsetWidth })
+        this.setState({ anchorTop: e.clientY, anchorLeft: e.clientX })
     }
     handleActionMenuClose = (e) => {
         this.props.closeActionMenu()

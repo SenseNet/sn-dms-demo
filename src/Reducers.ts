@@ -84,10 +84,10 @@ export module DMSReducers {
         }
     }
 
-    export const element = (state = null, action) => {
+    export const position = (state = null, action) => {
         switch (action.type) {
             case 'OPEN_ACTIONMENU':
-                return action.element
+                return action.position
             default:
                 return state
         }
@@ -139,7 +139,7 @@ export module DMSReducers {
     export const actionmenu = combineReducers({
         actions,
         open,
-        element
+        position
     })
 
     export const getRegistrationError = (state) => {
@@ -176,8 +176,8 @@ export module DMSReducers {
         return state.open
     }
 
-    export const getActionMenuAnchor = (state) => {
-        return state.element
+    export const getActionMenuPosition = (state) => {
+        return state.position
     }
 
     export const getParentId = (state) => {
