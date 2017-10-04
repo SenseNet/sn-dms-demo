@@ -80,11 +80,12 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
     handleSelectAllClick = (event, checked) => {
         if (checked) {
             this.setState({ selected: this.props.ids });
-            this.props.ids.map(id => this.props.select(id))
+            console.log(this.props.selected)
+            this.props.ids.map(id => this.props.selected.indexOf(id) > -1 ? null : this.props.select(id))
             return;
         }
         this.setState({ selected: [] });
-        this.props.ids.map(id => this.props.deselect(id))
+        this.props.ids.map(id => { console.log(id); this.props.deselect(id) })
     };
     isChildrenFolder() {
         let urlArray = location.href.split('/')

@@ -99,7 +99,6 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
         this.setState({ selected: newSelected });
     }
     handleRowDoubleClick(e, id, type) {
-        console.log(type)
         if (type === 'Folder')
             this.props.history.push(`/${id}`)
         else
