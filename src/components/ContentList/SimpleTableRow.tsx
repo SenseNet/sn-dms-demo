@@ -98,8 +98,12 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
 
         this.setState({ selected: newSelected });
     }
-    handleRowDoubleClick(e, id) {
-        this.props.history.push(`/${id}`)
+    handleRowDoubleClick(e, id, type) {
+        console.log(type)
+        if (type === 'Folder')
+            this.props.history.push(`/${id}`)
+        else
+            console.log('open preview')
     }
     handleContextMenu(e, content) {
         e.preventDefault()
@@ -143,7 +147,7 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
                     checkbox
                     style={styles.checkboxButton}
                     onClick={event => this.handleRowSingleClick(event, content.Id)}
-                    onDoubleClick={event => this.handleRowDoubleClick(event, content.Id)}>
+                    onDoubleClick={event => this.handleRowDoubleClick(event, content.Id, content._type)}>
                     <div style={
                         isSelected ? styles.selectedCheckbox : styles.checkbox &&
                             isHovered ? styles.hoveredCheckbox : styles.checkbox}>
@@ -156,12 +160,12 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
                     id={content.Id}
                     icon={content.Icon}
                     handleRowSingleClick={this.handleRowSingleClick}
-                    handleRowDoubleClick={this.handleRowDoubleClick} />
+                    handleRowDoubleClick={event => this.handleRowDoubleClick(event, content.Id, content._type)} />
                 <DisplayNameCell
                     content={content}
                     isHovered={isHovered}
                     handleRowSingleClick={event => this.handleRowSingleClick(event, content.Id)}
-                    handleRowDoubleClick={event => this.handleRowDoubleClick(event, content.Id)} />
+                    handleRowDoubleClick={event => this.handleRowDoubleClick(event, content.Id, content._type)} />
                 <DateCell
                     id={content.Id}
                     date={content.ModificationDate}
