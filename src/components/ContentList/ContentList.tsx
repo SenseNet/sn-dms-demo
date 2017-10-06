@@ -1,10 +1,13 @@
 
 import * as React from 'react'
-import * as keycode from 'keycode';
+import { Key } from 'ts-keycode-enum';
 import { connect } from 'react-redux';
 import { Actions, Reducers } from 'sn-redux'
 import { DMSReducers } from '../../Reducers'
 import { DMSActions } from '../../Actions'
+import {
+    withRouter
+} from 'react-router-dom'
 import Table, {
     TableBody,
     TableHead,
@@ -26,15 +29,17 @@ const styles = {
 }
 
 interface ContentListProps {
-    ids,
+    ids: number[],
     children,
-    currentId,
-    selected: Number[],
+    currentId: number,
+    selected: number[],
     history,
-    parentId,
-    rootId,
+    parentId: number,
+    rootId: number,
     select: Function,
     deselect: Function,
+    delete: Function,
+    deleteBatch: Function
 }
 
 interface ContentListState {
@@ -42,7 +47,8 @@ interface ContentListState {
     order,
     orderBy,
     data,
-    selected
+    selected,
+    active
 }
 
 class ContentList extends React.Component<ContentListProps, ContentListState> {
@@ -53,8 +59,11 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
             orderBy: 'IsFolder',
             data: this.props.children,
             ids: this.props.ids,
-            selected: []
+            selected: [],
+            active: null
         };
+        this.handleRowSingleClick = this.handleRowSingleClick.bind(this)
+        this.handleRowDoubleClick = this.handleRowDoubleClick.bind(this)
     }
     componentDidUpdate(prevOps) {
         if (this.props.children !== prevOps.children) {
@@ -63,29 +72,112 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
             })
         }
     }
-    handleRequestSort = (event, property) => {
-        const orderBy = property;
-        let order = 'desc';
+    handleRowSingleClick(e, id) {
+        this.props.selected.indexOf(id) > -1 ?
+            this.props.deselect(id) :
+            this.props.select(id)
 
-        if (this.state.orderBy === property && this.state.order === 'desc') {
-            order = 'asc';
+        const { selected } = this.state;
+        const selectedIndex = selected.indexOf(id);
+        let newSelected = [];
+        if (selectedIndex === -1) {
+            newSelected = newSelected.concat(selected, id);
+        } else if (selectedIndex === 0) {
+            newSelected = newSelected.concat(selected.slice(1));
+        } else if (selectedIndex === selected.length - 1) {
+            newSelected = newSelected.concat(selected.slice(0, -1));
+        } else if (selectedIndex > 0) {
+            newSelected = newSelected.concat(
+                selected.slice(0, selectedIndex),
+                selected.slice(selectedIndex + 1),
+            );
         }
 
-        const data = this.state.data.sort(
-            (a, b) => (order === 'desc' ? b[orderBy] > a[orderBy] : a[orderBy] > b[orderBy]),
-        );
+        this.setState({ selected: newSelected, active: id });
+    }
+    handleRowDoubleClick(e, id, type) {
+        if (type === 'Folder')
+            this.props.history.push(`/${id}`)
+        else
+            console.log('open preview')
+    }
+    handleKeyDown(e) {
+        if (e.target instanceof HTMLInputElement)
+            return null
+        else {
+            const ctrl = e.ctrlKey ? true : false;
+            const alt = e.altKey ? true : false;
+            const shift = e.shiftKey ? true : false;
+            const id = Number(e.target.id)
+            const type = this.state.data[id]._type
+            this.setState({
+                active: id
+            })
+            switch (e.which) {
+                case Key.Space:
+                    e.preventDefault()
+                    this.handleRowSingleClick(e, id)
+                    break
+                case Key.Enter:
+                    e.preventDefault()
+                    console.log('dblclick')
+                    this.handleRowDoubleClick(e, id, type)
+                    break
+                case Key.UpArrow:
+                    if (shift) {
+                        const upperItemIndex = this.props.ids.indexOf(Number(this.state.active)) - 1
+                        upperItemIndex > -1 ?
+                            this.handleRowSingleClick(e, this.props.ids[upperItemIndex]) :
+                            null
+                    }
+                    break
+                case Key.DownArrow:
+                    if (shift) {
+                        const upperItemIndex = this.props.ids.indexOf(Number(this.state.active)) + 1
+                        upperItemIndex < this.props.ids.length ?
+                            this.handleRowSingleClick(e, this.props.ids[upperItemIndex]) :
+                            null
+                    }
+                    break
+                case Key.Delete:
+                    const permanent = shift ? true : false;
+                    this.props.selected.length > 1 ?
+                        this.props.deleteBatch(this.props.selected, permanent) :
+                        this.props.delete(this.props.selected[0], permanent)
+                    break
+                case Key.A:
+                    if (ctrl) {
+                        e.preventDefault()
+                        this.handleSelectAllClick(e, true)
+                    }
+                    break
+                default:
+                    break
+            }
+        }
+    }
+    handleRequestSort = (event, property) => {
+        // const orderBy = property;
+        // let order = 'desc';
 
-        this.setState({ data, order, orderBy });
+        // if (this.state.orderBy === property && this.state.order === 'desc') {
+        //     order = 'asc';
+        // }
+        // console.log(this.state.data)
+        // const data = this.state.data.sort(
+        //     (a, b) => (order === 'desc' ? b[orderBy] > a[orderBy] : a[orderBy] > b[orderBy]),
+        // );
+
+        // this.setState({ data, order, orderBy });
     };
     handleSelectAllClick = (event, checked) => {
         if (checked) {
             this.setState({ selected: this.props.ids });
-            console.log(this.props.selected)
             this.props.ids.map(id => this.props.selected.indexOf(id) > -1 ? null : this.props.select(id))
             return;
         }
         this.setState({ selected: [] });
-        this.props.ids.map(id => { console.log(id); this.props.deselect(id) })
+        this.props.ids.map(id => { this.props.deselect(id) })
     };
     isChildrenFolder() {
         let urlArray = location.href.split('/')
@@ -94,7 +186,8 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
     }
     render() {
         return (<div>
-            <Table>
+            <Table
+                onKeyDown={event => this.handleKeyDown(event)}>
                 <ListHead
                     numSelected={this.state.selected.length}
                     order={this.state.order}
@@ -112,7 +205,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                     {this.props.ids.map(n => {
                         let content = this.props.children[n];
                         return (
-                            <SimpleTableRow content={content} key={content.Id} />
+                            <SimpleTableRow content={content} key={content.Id} handleRowDoubleClick={this.handleRowDoubleClick} handleRowSingleClick={this.handleRowSingleClick} />
                         );
                     })}
                 </TableBody>
@@ -126,10 +219,12 @@ const mapStateToProps = (state, match) => {
     return {
         ids: Reducers.getIds(state.sensenet.children),
         rootId: DMSReducers.getRootId(state),
-        selected: Reducers.getSelectedContent(state.sensenet)
+        selected: Reducers.getSelectedContent(state.sensenet),
     }
 }
-export default connect(mapStateToProps, {
+export default withRouter(connect(mapStateToProps, {
     select: Actions.SelectContent,
     deselect: Actions.DeSelectContent,
-})(ContentList)
+    delete: Actions.Delete,
+    deleteBatch: Actions.DeleteBatch
+})(ContentList))
