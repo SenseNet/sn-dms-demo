@@ -1,6 +1,10 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import Sensenet from './Sensenet';
+import {
+  MemoryRouter
+} from 'react-router-dom'
+import { Provider } from 'react-redux';
+import Sensenet from '../Sensenet';
 import { Repository } from 'sn-client-js'
 import { combineReducers } from 'redux'
 import { Store, Actions, Reducers } from 'sn-redux'
@@ -17,9 +21,12 @@ it('renders without crashing', () => {
   const repository = new Repository.SnRepository({
     RepositoryUrl: 'https://sn-services/'
   });
-  
-  const store = Store.configureStore(myReducer, null, undefined, {}, repository)
-  store.dispatch(Actions.InitSensenetStore('/Root/Sites/Default_Site/tasks', { select: 'all', filter: "isof('Task')" }))
 
-  //ReactDOM.render(<Sensenet store={store} repository={repository} />, div);
+  const store = Store.configureStore(myReducer, null, undefined, {}, repository)
+
+  ReactDOM.render(
+    <Provider store={store}>
+      <MemoryRouter><Sensenet store={store} repository={repository} />
+      </MemoryRouter>
+    </Provider>, div);
 });
