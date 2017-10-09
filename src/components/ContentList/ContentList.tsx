@@ -103,17 +103,18 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
             console.log('open preview')
     }
     handleKeyDown(e) {
-        if (e.target instanceof HTMLInputElement)
+        if (e.target.getAttribute('type') === 'text')
             return null
         else {
             const ctrl = e.ctrlKey ? true : false;
             const alt = e.altKey ? true : false;
             const shift = e.shiftKey ? true : false;
-            const id = Number(e.target.id)
+            const id = Number(e.target.closest('tr').id)
             const type = this.state.data[id]._type
             this.setState({
                 active: id
             })
+            console.log(e.which)
             switch (e.which) {
                 case Key.Space:
                     e.preventDefault()
