@@ -7,6 +7,7 @@ import { Actions, Reducers } from 'sn-redux'
 import { DMSReducers } from '../../Reducers'
 import { DMSActions } from '../../Actions'
 
+import MediaQuery from 'react-responsive';
 import Table, {
     TableRow,
     TableCell
@@ -73,12 +74,12 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
         }
         this.handleContextMenu = this.handleContextMenu.bind(this)
     }
-    
+
     handleContextMenu(e, content) {
         e.preventDefault()
         this.props.openActionMenu(content.Actions, content.Id, { top: e.clientY, left: e.clientX })
     }
-    
+
     handleRowMouseEnter(e, id) {
         this.setState({
             hovered: id
@@ -116,6 +117,7 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
                 <TableCell
                     checkbox
                     style={styles.checkboxButton}
+
                     onClick={event => this.props.handleRowSingleClick(event, content.Id)}
                     onDoubleClick={event => this.props.handleRowDoubleClick(event, content.Id, content._type)}>
                     <div style={
@@ -136,11 +138,13 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
                     isHovered={isHovered}
                     handleRowSingleClick={event => this.props.handleRowSingleClick(event, content.Id)}
                     handleRowDoubleClick={event => this.props.handleRowDoubleClick(event, content.Id, content._type)} />
-                <DateCell
-                    id={content.Id}
-                    date={content.ModificationDate}
-                    handleRowDoubleClick={this.props.handleRowDoubleClick}
-                    handleRowSingleClick={this.props.handleRowSingleClick} />
+                <MediaQuery minDeviceWidth={700}>
+                    <DateCell
+                        id={content.Id}
+                        date={content.ModificationDate}
+                        handleRowDoubleClick={this.props.handleRowDoubleClick}
+                        handleRowSingleClick={this.props.handleRowSingleClick} />
+                </MediaQuery>
                 <MenuCell
                     content={content}
                     isHovered={isHovered}

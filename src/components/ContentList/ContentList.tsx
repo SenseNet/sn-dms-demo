@@ -13,6 +13,7 @@ import Table, {
     TableHead,
     TableSortLabel,
 } from 'material-ui/Table';
+import Paper from 'material-ui/Paper';
 import { ListHead } from './ListHead'
 import SimpleTableRow from './SimpleTableRow'
 import { SharedItemsTableRow } from './SharedItemsTableRow'
@@ -20,10 +21,11 @@ import ParentFolderTableRow from './ParentFolderTableRow'
 import ActionMenu from '../ActionMenu'
 
 const styles = {
-    loader: {
-        margin: '0 auto'
+    paper: {
+        width: '100%',
+        overflowX: 'auto',
     },
-    table: {
+    tableBody: {
         background: '#fff'
     },
 }
@@ -114,7 +116,6 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
             this.setState({
                 active: id
             })
-            console.log(e.which)
             switch (e.which) {
                 case Key.Space:
                     e.preventDefault()
@@ -144,8 +145,10 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                 case Key.Delete:
                     const permanent = shift ? true : false;
                     this.props.selected.length > 1 ?
-                        this.props.deleteBatch(this.props.selected, permanent) :
-                        this.props.delete(this.props.selected[0], permanent)
+                        // this.props.deleteBatch(this.props.selected, permanent) :
+                        // this.props.delete(this.props.selected[0], permanent)
+                        console.log('batch delete & permanently= ' + permanent) :
+                        console.log('delete single element & permanently= ' + permanent)
                     break
                 case Key.A:
                     if (ctrl) {
@@ -187,7 +190,8 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
         return !isNaN(id) && isFinite(id) && id !== this.props.rootId;
     }
     render() {
-        return (<div>
+        return (
+            <Paper style={styles.paper as any}>
             <Table
                 onKeyDown={event => this.handleKeyDown(event)}>
                 <ListHead
@@ -198,7 +202,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                     onRequestSort={this.handleRequestSort}
                     count={this.props.ids.length}
                 />
-                <TableBody style={styles.table}>
+                <TableBody style={styles.tableBody}>
                     {this.props.parentId && this.isChildrenFolder() ?
                         <ParentFolderTableRow parentId={this.props.parentId} history={this.props.history} /> :
                         <SharedItemsTableRow currentId={this.props.currentId} />
@@ -212,7 +216,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                 </TableBody>
             </Table>
             <ActionMenu />
-        </div>)
+        </Paper>)
     }
 }
 
