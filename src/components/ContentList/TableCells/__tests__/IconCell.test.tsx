@@ -8,5 +8,5 @@ it('renders without crashing', () => {
         id={1}
         icon='edit'
         handleRowDoubleClick={() => { }}
-        handleRowSingleClick={() => { } />, div);
+        handleRowSingleClick={() => { }} />, div);
 });

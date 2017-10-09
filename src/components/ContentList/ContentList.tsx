@@ -64,6 +64,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
         };
         this.handleRowSingleClick = this.handleRowSingleClick.bind(this)
         this.handleRowDoubleClick = this.handleRowDoubleClick.bind(this)
+        this.handleKeyDown = this.handleKeyDown.bind(this)
     }
     componentDidUpdate(prevOps) {
         if (this.props.children !== prevOps.children) {
@@ -201,7 +202,6 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                         <ParentFolderTableRow parentId={this.props.parentId} history={this.props.history} /> :
                         <SharedItemsTableRow currentId={this.props.currentId} />
                     }
-
                     {this.props.ids.map(n => {
                         let content = this.props.children[n];
                         return (

@@ -5,13 +5,12 @@ import {
 } from 'react-router-dom'
 import { Provider } from 'react-redux';
 import Sensenet from '../Sensenet';
-import { Repository } from 'sn-client-js'
+import { Repository, Content, ContentTypes } from 'sn-client-js'
 import { combineReducers } from 'redux'
 import { Store, Actions, Reducers } from 'sn-redux'
 import 'rxjs'
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
+const div = document.createElement('div');
 
   const sensenet = Reducers.sensenet;
   const myReducer = combineReducers({
@@ -22,11 +21,27 @@ it('renders without crashing', () => {
     RepositoryUrl: 'https://sn-services/'
   });
 
+
+it('renders without crashing', () => {
+  
   const store = Store.configureStore(myReducer, null, undefined, {}, repository)
 
   ReactDOM.render(
     <Provider store={store}>
-      <MemoryRouter><Sensenet store={store} repository={repository} />
+      <MemoryRouter>
+        <Sensenet store={store} repository={repository} />
+      </MemoryRouter>
+    </Provider>, div);
+});
+
+it('renders without crashing', () => {
+  
+  const store = Store.configureStore(myReducer, null, undefined, {}, repository)
+
+  ReactDOM.render(
+    <Provider store={store}>
+      <MemoryRouter>
+        <Sensenet store={store} repository={repository} />
       </MemoryRouter>
     </Provider>, div);
 });
