@@ -27,7 +27,7 @@ const styles = {
     },
     tableBody: {
         background: '#fff'
-    },
+    }
 }
 
 interface ContentListProps {
@@ -40,6 +40,7 @@ interface ContentListProps {
     rootId: number,
     select: Function,
     deselect: Function,
+    clearSelection: Function,
     delete: Function,
     deleteBatch: Function
 }
@@ -76,27 +77,34 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
         }
     }
     handleRowSingleClick(e, id) {
-        this.props.selected.indexOf(id) > -1 ?
-            this.props.deselect(id) :
-            this.props.select(id)
-
-        const { selected } = this.state;
-        const selectedIndex = selected.indexOf(id);
-        let newSelected = [];
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, id);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1),
-            );
+        const { ids, selected } = this.props;
+        if (e.shiftKey) {
+            e.preventDefault()
+            const from = ids.indexOf(selected[selected.length - 1]);
+            const till = ids.indexOf(Number(e.target.closest('tr').id));
+            if (from < till)
+                ids.map((elId, i) => {
+                    if (i > from && i < till + 1) {
+                        this.handleSimpleSelection(elId)
+                    }
+                })
+            else
+                for (let i = ids.length - 1; i > -1; i--) {
+                    if (i < from && i > till - 1) {
+                        this.handleSimpleSelection(ids[i])
+                    }
+                }
+        }
+        else if (e.ctrlKey) {
+            this.handleSimpleSelection(id)
+        }
+        else {
+            e.target.getAttribute('type') !== 'checkbox' ?
+                this.handleSingleSelection(id) :
+                this.handleSimpleSelection(id)
         }
 
-        this.setState({ selected: newSelected, active: id });
+
     }
     handleRowDoubleClick(e, id, type) {
         if (type === 'Folder')
@@ -161,6 +169,34 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
             }
         }
     }
+    handleSimpleSelection(id) {
+        this.props.selected.indexOf(id) > -1 ?
+            this.props.deselect(id) :
+            this.props.select(id)
+
+        const { selected } = this.state;
+        const selectedIndex = selected.indexOf(id);
+        let newSelected = [];
+        if (selectedIndex === -1) {
+            newSelected = newSelected.concat(selected, id);
+        } else if (selectedIndex === 0) {
+            newSelected = newSelected.concat(selected.slice(1));
+        } else if (selectedIndex === selected.length - 1) {
+            newSelected = newSelected.concat(selected.slice(0, -1));
+        } else if (selectedIndex > 0) {
+            newSelected = newSelected.concat(
+                selected.slice(0, selectedIndex),
+                selected.slice(selectedIndex + 1),
+            );
+        }
+
+        this.setState({ selected: newSelected, active: id });
+    }
+    handleSingleSelection(id) {
+        this.props.clearSelection()
+        this.props.select(id)
+        this.setState({ selected: [id], active: id });
+    }
     handleRequestSort = (event, property) => {
         // const orderBy = property;
         // let order = 'desc';
@@ -192,31 +228,35 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
     render() {
         return (
             <Paper style={styles.paper as any}>
-            <Table
-                onKeyDown={event => this.handleKeyDown(event)}>
-                <ListHead
-                    numSelected={this.state.selected.length}
-                    order={this.state.order}
-                    orderBy={this.state.orderBy}
-                    onSelectAllClick={this.handleSelectAllClick}
-                    onRequestSort={this.handleRequestSort}
-                    count={this.props.ids.length}
-                />
-                <TableBody style={styles.tableBody}>
-                    {this.props.parentId && this.isChildrenFolder() ?
-                        <ParentFolderTableRow parentId={this.props.parentId} history={this.props.history} /> :
-                        <SharedItemsTableRow currentId={this.props.currentId} />
-                    }
-                    {this.props.ids.map(n => {
-                        let content = this.props.children[n];
-                        return (
-                            <SimpleTableRow content={content} key={content.Id} handleRowDoubleClick={this.handleRowDoubleClick} handleRowSingleClick={this.handleRowSingleClick} />
-                        );
-                    })}
-                </TableBody>
-            </Table>
-            <ActionMenu />
-        </Paper>)
+                <Table
+                    onKeyDown={event => this.handleKeyDown(event)}>
+                    <ListHead
+                        numSelected={this.state.selected.length}
+                        order={this.state.order}
+                        orderBy={this.state.orderBy}
+                        onSelectAllClick={this.handleSelectAllClick}
+                        onRequestSort={this.handleRequestSort}
+                        count={this.props.ids.length}
+                    />
+                    <TableBody style={styles.tableBody}>
+                        {this.props.parentId && this.isChildrenFolder() ?
+                            <ParentFolderTableRow parentId={this.props.parentId} history={this.props.history} /> :
+                            <SharedItemsTableRow currentId={this.props.currentId} />
+                        }
+                        {this.props.ids.map(n => {
+                            let content = this.props.children[n];
+                            return (
+                                <SimpleTableRow
+                                    content={content}
+                                    key={content.Id}
+                                    handleRowDoubleClick={this.handleRowDoubleClick}
+                                    handleRowSingleClick={this.handleRowSingleClick} />
+                            );
+                        })}
+                    </TableBody>
+                </Table>
+                <ActionMenu />
+            </Paper>)
     }
 }
 
@@ -230,6 +270,7 @@ const mapStateToProps = (state, match) => {
 export default withRouter(connect(mapStateToProps, {
     select: Actions.SelectContent,
     deselect: Actions.DeSelectContent,
+    clearSelection: Actions.ClearSelection,
     delete: Actions.Delete,
     deleteBatch: Actions.DeleteBatch
 })(ContentList))

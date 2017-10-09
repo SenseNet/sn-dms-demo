@@ -34,6 +34,14 @@ const styles = {
     hoveredCheckbox: {
         opacity: 1
     },
+    row: {
+        WebkitTouchCallout: 'none',
+        WebkitUserSelect: 'none',
+        KhtmlUserSelect: 'none',
+        MozUserSelect: 'none',
+        MsUserSelect: 'none',
+        UserSelect: 'none'
+    }
 }
 
 interface ISimpleTableRowProps {
@@ -110,7 +118,8 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
                 onMouseEnter={event => this.handleRowMouseEnter(event, content.Id)}
                 onMouseLeave={event => this.handleRowMouseLeave()}
                 selected={isSelected}
-                style={isSelected ? styles.selectedRow : null}
+                style={isSelected ? { ...styles.selectedRow, ...styles.row } :
+                    styles.row}
                 onContextMenu={event => this.handleContextMenu(event, content)}
                 id={content.Id}
             >
