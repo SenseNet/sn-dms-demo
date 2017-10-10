@@ -92,7 +92,7 @@ const mapStateToProps = (state, match) => {
     return {
         loggedinUser: DMSReducers.getAuthenticatedUser(state.sensenet),
         currentContent: Reducers.getCurrentContent(state.sensenet),
-        currentId: DMSReducers.getCurrentId(state)
+        currentId: DMSReducers.getCurrentId(state.dms)
     }
 }
 

@@ -267,7 +267,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
 const mapStateToProps = (state, match) => {
     return {
         ids: Reducers.getIds(state.sensenet.children),
-        rootId: DMSReducers.getRootId(state),
+        rootId: DMSReducers.getRootId(state.dms),
         selected: Reducers.getSelectedContent(state.sensenet),
     }
 }
