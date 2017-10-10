@@ -123,20 +123,22 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
                 onContextMenu={event => this.handleContextMenu(event, content)}
                 id={content.Id}
             >
-                <TableCell
-                    padding='checkbox'
-                    style={styles.checkboxButton}
+                <MediaQuery minDeviceWidth={700}>
+                    <TableCell
+                        padding='checkbox'
+                        style={styles.checkboxButton}
 
-                    onClick={event => this.props.handleRowSingleClick(event, content.Id)}
-                    onDoubleClick={event => this.props.handleRowDoubleClick(event, content.Id, content._type)}>
-                    <div style={
-                        isSelected ? styles.selectedCheckbox : styles.checkbox &&
-                            isHovered ? styles.hoveredCheckbox : styles.checkbox}>
-                        <Checkbox
-                            checked={isSelected}
-                        />
-                    </div>
-                </TableCell>
+                        onClick={event => this.props.handleRowSingleClick(event, content.Id)}
+                        onDoubleClick={event => this.props.handleRowDoubleClick(event, content.Id, content._type)}>
+                        <div style={
+                            isSelected ? styles.selectedCheckbox : styles.checkbox &&
+                                isHovered ? styles.hoveredCheckbox : styles.checkbox}>
+                            <Checkbox
+                                checked={isSelected}
+                            />
+                        </div>
+                    </TableCell>
+                </MediaQuery>
                 <IconCell
                     id={content.Id}
                     icon={content.Icon}

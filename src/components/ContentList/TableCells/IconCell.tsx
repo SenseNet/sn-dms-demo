@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { TableCell } from 'material-ui/Table';
 import Icon from 'material-ui/Icon';
+import MediaQuery from 'react-responsive';
 
 import { icons } from '../../../assets/icons'
 
@@ -23,13 +24,18 @@ export class IconCell extends React.Component<IIconCellProps, IIconCellState>{
     render() {
         const { id, icon } = this.props
         return (
-            <TableCell
-                style={styles.typeIcon}
-                padding='none'
-                onClick={event => this.props.handleRowSingleClick(event, id)}
-                onDoubleClick={event => this.props.handleRowDoubleClick(event, id)}>
-                <Icon color='primary'>{icons[icon]}</Icon>
-            </TableCell>
+            <MediaQuery minDeviceWidth={700}>
+                {(matches) => {
+                    const padding = matches ? 'none' : 'checkbox';
+                    return <TableCell
+                        style={styles.typeIcon}
+                        padding={padding}
+                        onClick={event => this.props.handleRowSingleClick(event, id)}
+                        onDoubleClick={event => this.props.handleRowDoubleClick(event, id)}>
+                        <Icon color='primary'>{icons[icon]}</Icon>
+                    </TableCell>
+                }}
+            </MediaQuery>
         )
     }
 }
