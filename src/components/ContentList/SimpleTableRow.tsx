@@ -156,11 +156,15 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
                         handleRowDoubleClick={this.props.handleRowDoubleClick}
                         handleRowSingleClick={this.props.handleRowSingleClick} />
                 </MediaQuery>
-                <MenuCell
-                    content={content}
-                    isHovered={isHovered}
-                    isSelected={isSelected}
-                    actionMenuIsOpen={this.state.actionMenuIsOpen} />
+                <MediaQuery minDeviceWidth={700}>
+                    {(matches) => {
+                        return <MenuCell
+                            content={content}
+                            isHovered={matches ? isHovered : true}
+                            isSelected={isSelected}
+                            actionMenuIsOpen={this.state.actionMenuIsOpen} />
+                    }}
+                </MediaQuery>
             </TableRow>
         )
     }

@@ -26,7 +26,7 @@ export class IconCell extends React.Component<IIconCellProps, IIconCellState>{
         return (
             <MediaQuery minDeviceWidth={700}>
                 {(matches) => {
-                    const padding = matches ? 'none' : 'checkbox';
+                    const padding = matches ? 'none' : 'dense';
                     return <TableCell
                         style={styles.typeIcon}
                         padding={padding}
