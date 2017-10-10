@@ -77,8 +77,10 @@ class ParentFolderTableRow extends React.Component<IParentFolderTableRow, {}>{
                 </MediaQuery>
                 <TableCell style={styles.displayName as any}
                     onDoubleClick={event => this.handleDoubleClick(event, this.props.parentId)}></TableCell>
-                <TableCell
-                    onDoubleClick={event => this.handleDoubleClick(event, this.props.parentId)}></TableCell>
+                <MediaQuery minDeviceWidth={700}>
+                    <TableCell
+                        onDoubleClick={event => this.handleDoubleClick(event, this.props.parentId)}></TableCell>
+                </MediaQuery>
                 <MediaQuery minDeviceWidth={700}>
                     {(matches) => {
                         const padding = matches ? 'none' : 'checkbox';
