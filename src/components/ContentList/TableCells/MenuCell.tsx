@@ -54,7 +54,6 @@ class MenuCell extends React.Component<IMenuCellProps, IMenuCellState>{
             <MediaQuery minDeviceWidth={700}>
                 {(matches) => {
                     const padding = matches ? 'none' : 'checkbox';
-                    console.log(padding)
                     return <TableCell style={styles.actionMenuButton}
                         padding={padding}>
                         <IconButton

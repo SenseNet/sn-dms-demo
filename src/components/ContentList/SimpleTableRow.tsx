@@ -142,6 +142,7 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
                 <IconCell
                     id={content.Id}
                     icon={content.Icon}
+                    selected={isSelected}
                     handleRowSingleClick={this.props.handleRowSingleClick}
                     handleRowDoubleClick={event => this.props.handleRowDoubleClick(event, content.Id, content._type)} />
                 <DisplayNameCell

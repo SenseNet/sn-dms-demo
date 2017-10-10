@@ -14,7 +14,7 @@ const styles = {
         padding: 60
     },
     dashBoardInnerMobile: {
-        padding: '60px 0'
+        padding: '30px 0 0'
     },
     root: {
         background: '#efefef'
