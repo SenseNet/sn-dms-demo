@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Actions, Reducers } from 'sn-redux'
 import { DMSActions } from '../Actions'
 import { DMSReducers } from '../Reducers'
-import Menu, { MenuItem } from 'material-ui/Menu';
+import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import Icon from 'material-ui/Icon';
 
 import { icons } from '../assets/icons'
@@ -16,7 +16,8 @@ const styles = {
         margin: 0,
         padding: '8px 0 8px',
         position: 'relative',
-        flex: '1 1 auto'
+        flex: '1 1 auto',
+        fontSize: '16px'
     },
     actionMenuItem: {
         listStyleType: 'none',
@@ -49,21 +50,7 @@ const styles = {
         backgroundColor: 'rgba(0, 0, 0, 0.12)'
     },
     actionIcon: {
-        fontSize: 16,
-        verticalAlign: 'middle',
-        marginRight: 5
-    },
-    fixer: {
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        display: 'block',
-        zIndex: 0,
-        position: 'absolute',
-        overflow: 'hidden',
-        borderRadius: 'inherit',
-        pointerEvents: 'none',
+        marginRight: 0
     },
     open: {
         display: 'block',
@@ -168,7 +155,7 @@ class ActionMenu extends React.Component<IActionMenuProps, IActionMenuState>{
         return (
             // TODO menu open animation
             <div style={isOpen ? { ...styles.open, ...positionStyles.positions as any } : styles.actionMenu}>
-                <ul
+                <List
                     id='actionMenu'
                     role='menu'
                     style={styles.actionMenuList as any}
@@ -176,7 +163,7 @@ class ActionMenu extends React.Component<IActionMenuProps, IActionMenuState>{
                     {this.props.actions.map(action => {
                         const isHovered = this.isHovered(action.Name);
                         return (
-                            <li
+                            <ListItem
                                 key={action.Name}
                                 role='menuitem'
                                 style={isHovered ? { ...styles.actionMenuItem, ...styles.selectedActionMenuItem } : styles.actionMenuItem as any}
@@ -185,17 +172,18 @@ class ActionMenu extends React.Component<IActionMenuProps, IActionMenuState>{
                                 onClick={event => this.handleMenuItemClick(event, action.Name)}
                                 onMouseDown={event => this.handleMouseDown(event)}
                                 onMouseUp={event => this.handleMouseUp(event)} >
-                                <Icon color='accent' style={styles.actionIcon}>{
-                                    action.Icon === 'Application' ?
-                                        icons[action.Name.toLowerCase()] :
-                                        icons[action.Icon.toLowerCase()]
-                                }</Icon>
-                                {action.DisplayName}
-                                <span style={styles.fixer as any}></span>
-                            </li>
+                                <ListItemIcon style={styles.actionIcon}>
+                                    <Icon color='accent'>{
+                                        action.Icon === 'Application' ?
+                                            icons[action.Name.toLowerCase()] :
+                                            icons[action.Icon.toLowerCase()]
+                                    }</Icon>
+                                </ListItemIcon>
+                                <ListItemText primary={action.DisplayName} />
+                            </ListItem>
                         )
                     })}
-                </ul>
+                </List>
             </div>
         )
     }
