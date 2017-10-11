@@ -74,6 +74,7 @@ describe('OpenActionMenu', () => {
             type: 'OPEN_ACTIONMENU',
             actions: ['Move', 'Copy'],
             id: 1,
+            title: 'sample doc',
             position: {
                 top: 2,
                 left: 2
