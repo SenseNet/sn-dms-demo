@@ -4,6 +4,8 @@ import { Actions, Reducers } from 'sn-redux'
 import { DMSActions } from '../Actions'
 import { DMSReducers } from '../Reducers'
 import ActionList from './ActionList'
+import MediaQuery from 'react-responsive';
+import Dialog, { DialogTitle } from 'material-ui/Dialog';
 
 const styles = {
     actionMenu: {
@@ -29,6 +31,7 @@ const styles = {
 interface IActionMenuProps {
     actions,
     id,
+    title,
     isOpen,
     position,
     currentContent,
@@ -85,9 +88,18 @@ class ActionMenu extends React.Component<IActionMenuProps, IActionMenuState>{
             }
         }
         return (
-            <div style={isOpen ? { ...styles.open, ...positionStyles.positions as any } : styles.actionMenu}>
-                <ActionList handleActionMenuClose={this.handleActionMenuClose} id={this.props.id} handleMouseUp={this.handleMouseUp} handleMouseDown={this.handleMouseDown} />
-            </div>
+            <MediaQuery minDeviceWidth={700}>
+                {(matches) => {
+                    return matches ?
+                        <div style={isOpen ? { ...styles.open, ...positionStyles.positions as any } : styles.actionMenu}>
+                            <ActionList handleActionMenuClose={this.handleActionMenuClose} id={this.props.id} handleMouseUp={this.handleMouseUp} handleMouseDown={this.handleMouseDown} />
+                        </div> :
+                        <Dialog onRequestClose={this.handleActionMenuClose} open={isOpen}>
+                            <DialogTitle>{this.props.title}</DialogTitle>
+                            <ActionList handleActionMenuClose={this.handleActionMenuClose} id={this.props.id} handleMouseUp={this.handleMouseUp} handleMouseDown={this.handleMouseDown} />
+                        </Dialog>
+                }}
+            </MediaQuery>
         )
     }
 }
@@ -98,7 +110,8 @@ const mapStateToProps = (state, match) => {
     return {
         isOpen: DMSReducers.actionmenuIsOpen(state.dms.actionmenu),
         position: DMSReducers.getActionMenuPosition(state.dms.actionmenu),
-        id: DMSReducers.getItemOnActionMenuIsOpen(state.dms.actionmenu)
+        id: DMSReducers.getItemOnActionMenuIsOpen(state.dms.actionmenu),
+        title: DMSReducers.getItemTitleOnActionMenuIsOpen(state.dms.actionmenu)
     }
 }
 
