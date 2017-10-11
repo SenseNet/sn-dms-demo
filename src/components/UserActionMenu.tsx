@@ -42,7 +42,6 @@ class UserActionMenu extends React.Component<IUserActionMenu, { anchorEl, open, 
             selectedIndex: 1
         }
     }
-
     handleClick = event => {
         this.setState({ open: true, anchorEl: event.currentTarget });
     };

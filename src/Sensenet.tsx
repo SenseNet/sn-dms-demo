@@ -33,6 +33,7 @@ interface ISensenetProps {
   repository,
   history,
   loginState,
+  loggedinUser,
   loginError: string,
   registrationError: string,
   login: Function,
