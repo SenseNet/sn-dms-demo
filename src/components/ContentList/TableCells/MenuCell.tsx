@@ -82,8 +82,6 @@ const mapStateToProps = (state, match) => {
     }
 }
 export default connect(mapStateToProps, {
-    select: Actions.SelectContent,
-    deselect: Actions.DeSelectContent,
     openActionMenu: DMSActions.OpenActionMenu,
     closeActionMenu: DMSActions.CloseActionMenu
 })(MenuCell)

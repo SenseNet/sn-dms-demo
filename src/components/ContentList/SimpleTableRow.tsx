@@ -47,8 +47,6 @@ const styles = {
 interface ISimpleTableRowProps {
     content,
     ids,
-    select: Function,
-    deselect: Function,
     getActions: Function,
     opened: Number,
     openActionMenu: Function,
@@ -179,8 +177,6 @@ const mapStateToProps = (state, match) => {
     }
 }
 export default withRouter(connect(mapStateToProps, {
-    select: Actions.SelectContent,
-    deselect: Actions.DeSelectContent,
     getActions: Actions.RequestContentActions,
     openActionMenu: DMSActions.OpenActionMenu,
     closeActionMenu: DMSActions.CloseActionMenu
