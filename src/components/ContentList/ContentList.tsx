@@ -54,7 +54,8 @@ interface ContentListProps {
     delete: Function,
     deleteBatch: Function,
     selectionModeOn: Function,
-    selectionModeOff: Function
+    selectionModeOff: Function,
+    selectionModeIsOn: boolean
 }
 
 interface ContentListState {
@@ -89,7 +90,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
             })
         }
     }
-    handleRowSingleClick(e, id) {
+    handleRowSingleClick(e, id, m) {
         const { ids, selected } = this.props;
         if (e.shiftKey) {
             e.preventDefault()
@@ -112,7 +113,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
             this.handleSimpleSelection(id)
         }
         else {
-            e.target.getAttribute('type') !== 'checkbox' ?
+            e.target.getAttribute('type') !== 'checkbox' && !this.props.selectionModeIsOn ?
                 this.handleSingleSelection(id) :
                 this.handleSimpleSelection(id)
         }
@@ -283,7 +284,8 @@ const mapStateToProps = (state, match) => {
         selected: Reducers.getSelectedContent(state.sensenet),
         isFetching: Reducers.getFetching(state.sensenet.children),
         isLoading: DMSReducers.getLoading(state.dms),
-        edited: DMSReducers.getEditedItemId(state.dms)
+        edited: DMSReducers.getEditedItemId(state.dms),
+        selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms)
     }
 }
 export default withRouter(connect(mapStateToProps, {
