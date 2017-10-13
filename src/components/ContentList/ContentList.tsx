@@ -26,7 +26,7 @@ import SelectionBox from '../SelectionBox'
 const styles = {
     paper: {
         width: '100%',
-        overflowX: 'auto',
+        overflow: 'hidden'
     },
     tableBody: {
         background: '#fff'
