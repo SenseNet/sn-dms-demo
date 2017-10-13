@@ -90,6 +90,12 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                 data: this.props.children
             })
         }
+        if (this.props.selected.length > 0 && !prevOps.selectionModeIsOn) {
+            this.props.selectionModeOn()
+        }
+        else if (this.props.selected.length === 0 && prevOps.selectionModeIsOn) {
+            this.props.selectionModeOff()
+        }
     }
     handleRowSingleClick(e, id, m) {
         const { ids, selected } = this.props;
@@ -118,8 +124,6 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                 this.handleSingleSelection(id) :
                 this.handleSimpleSelection(id)
         }
-
-
     }
     handleRowDoubleClick(e, id, type) {
         if (type === 'Folder')
