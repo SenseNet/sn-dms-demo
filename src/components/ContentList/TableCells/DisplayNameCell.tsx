@@ -103,13 +103,14 @@ class DisplayNameCell extends React.Component<IDisplayNameCellProps, IDisplayNam
     render() {
         const content = this.props.currentContent
         const isEdited = this.isEdited(this.props.content.Id);
+        const { handleRowSingleClick, handleRowDoubleClick} = this.props
         return (
             <MediaQuery minDeviceWidth={700}>
                 {(matches) => {
                     return <TableCell
                         style={this.props.isHovered && !isEdited ? styles.hoveredDisplayName : styles.displayName as any}
-                        onClick={event => matches ? this.props.handleRowSingleClick(event, content.id) : event.preventDefault()}
-                        onDoubleClick={event => matches ? this.props.handleRowDoubleClick(event, this.props.content.Id) : event.preventDefault()}>
+                        onClick={event => handleRowSingleClick(event, content.id)}
+                        onDoubleClick={event => handleRowDoubleClick(event, this.props.content.Id)}>
                         {isEdited ?
                             <TextField
                                 id='renameInput'

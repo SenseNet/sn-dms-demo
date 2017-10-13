@@ -81,6 +81,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
         this.handleRowSingleClick = this.handleRowSingleClick.bind(this)
         this.handleRowDoubleClick = this.handleRowDoubleClick.bind(this)
         this.handleKeyDown = this.handleKeyDown.bind(this)
+        this.handleTap = this.handleTap.bind(this)
     }
 
     componentDidUpdate(prevOps) {
@@ -223,6 +224,12 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
         this.setState({ selected: [] });
         this.props.ids.map(id => { this.props.deselect(id) })
     };
+    handleTap(e, id, type) {
+        if (type === 'Folder')
+            this.props.history.push(`/${id}`)
+        else
+            console.log('open preview')
+    }
     isChildrenFolder() {
         let urlArray = location.href.split('/')
         let id = parseInt(urlArray[urlArray.length - 1]);
@@ -263,7 +270,8 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                                             content={content}
                                             key={content.Id}
                                             handleRowDoubleClick={this.handleRowDoubleClick}
-                                            handleRowSingleClick={this.handleRowSingleClick} />
+                                            handleRowSingleClick={this.handleRowSingleClick}
+                                            handleTap={this.handleTap} />
                                     );
                                 })
                             }

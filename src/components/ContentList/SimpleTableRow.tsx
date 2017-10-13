@@ -57,6 +57,7 @@ interface ISimpleTableRowProps {
     selected,
     handleRowDoubleClick: Function,
     handleRowSingleClick: Function,
+    handleTap: Function,
     selectionModeOn: Function,
     selectionModeOff: Function
 }
@@ -105,15 +106,15 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
     isHovered(id) {
         return this.state.hovered === id
     }
+
     handleIconTap(e, id, type) {
         this.props.handleRowSingleClick(e, id)
         this.props.selectionModeOn()
     }
     render() {
-        const content = this.props.content;
+        const { content, handleRowSingleClick, handleRowDoubleClick, handleTap } = this.props
         const isSelected = this.isSelected(content.Id);
         const isHovered = this.isHovered(content.Id);
-        const { handleRowSingleClick, handleRowDoubleClick } = this.props
         return (
             <TableRow
                 hover
@@ -160,8 +161,8 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
                         return <DisplayNameCell
                             content={content}
                             isHovered={isHovered}
-                            handleRowSingleClick={event => matches ? this.props.handleRowSingleClick(event, content.Id) : event.preventDefault()}
-                            handleRowDoubleClick={event => matches ? this.props.handleRowDoubleClick(event, content.Id, content._type) : event.preventDefault()} />
+                            handleRowSingleClick={event => matches ? handleRowSingleClick(event, content.Id) : handleTap(event, content.Id, content._type)}
+                            handleRowDoubleClick={event => matches ? handleRowDoubleClick(event, content.Id, content._type) : event.preventDefault()} />
                     }}
                 </MediaQuery>
                 <MediaQuery minDeviceWidth={700}>
