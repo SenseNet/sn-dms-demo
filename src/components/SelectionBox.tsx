@@ -51,7 +51,7 @@ class SelectionBox extends React.Component<ISelectionBoxProps, ISelectionBoxStat
     }
     handleClick(e) { 
         const rect = e.currentTarget.getBoundingClientRect()
-        this.props.openActionMenu(batchActions, this.props.selected, `${this.props.selected.length} Items selected`, { top: rect.top - 150, left: rect.left })
+        this.props.openActionMenu(batchActions, this.props.selected, `${this.props.selected.length} Items selected`, { top: rect.top - 200, left: rect.left })
     }
     render() {
         const { selected, classes } = this.props
