@@ -29,6 +29,11 @@ const batchActions = [
         DisplayName : 'Delete selected',
         Icon: 'delete',
         Name: 'DeleteBatch'
+    },
+    {
+        DisplayName : 'Clear selection',
+        Icon: 'clear',
+        Name: 'ClearSelection'
     }
 ]
 
