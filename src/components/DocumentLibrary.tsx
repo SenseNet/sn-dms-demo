@@ -5,10 +5,11 @@ import {
 import { connect } from 'react-redux';
 import { DMSReducers } from '../Reducers'
 import { DMSActions } from '../Actions'
+import { Content, ContentTypes } from 'sn-client-js'
 import { Actions, Reducers } from 'sn-redux'
 import { FetchError } from './FetchError'
 import { DragDropContext } from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-backend'
+import HTML5Backend, { NativeTypes } from 'react-dnd-html5-backend'
 import ContentList from './ContentList/ContentList'
 
 interface IDocumentLibraryProps {
@@ -24,8 +25,12 @@ interface IDocumentLibraryProps {
     setCurrentId: Function
 }
 
+interface IDocumentLibraryState {
+    select, id, orderby, filter, expand, scenario, droppedFiles
+}
+
 @DragDropContext(HTML5Backend)
-class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, id, orderby, filter, expand, scenario }>{
+class DocumentLibrary extends React.Component<IDocumentLibraryProps, IDocumentLibraryState>{
     constructor(props) {
         super(props)
         this.state = {
@@ -34,8 +39,10 @@ class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, i
             orderby: ['IsFolder desc', 'DisplayName asc'],
             filter: "ContentType ne 'SystemFolder'",
             scenario: 'DMSListItem',
-            id: this.props.currentContent.Id
+            id: this.props.currentContent.Id,
+            droppedFiles: []
         }
+        this.handleFileDrop = this.handleFileDrop.bind(this)
     }
     componentDidMount() {
         if (!this.props.cId)
@@ -69,8 +76,22 @@ class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, i
             id: this.props.cId
         })
     }
+    handleFileDrop(item, monitor) {
+        const content: Content = this.props.currentContent
+        if (monitor) {
+            console.log(monitor.getItem())
+            const droppedFiles = monitor.getItem().files
 
+            let akarmi = content.UploadFile({ File: droppedFiles[0], ContentType: ContentTypes.File, Overwrite: true, Body: null, PropertyName: 'Binary' })
+            akarmi.subscribe(p => {
+                console.log(p.Completed)
+            })
+            this.setState({ droppedFiles })
+        }
+    }
     render() {
+        const { FILE } = NativeTypes
+        const { droppedFiles } = this.state
         if (this.props.errorMessage && this.props.errorMessage.length > 0) {
             return (
                 <FetchError
@@ -79,11 +100,15 @@ class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, i
                 />
             )
         }
-        return <ContentList
+        return <div>
+            <ContentList
                 children={this.props.children}
                 currentId={this.props.currentContent.Id}
                 parentId={this.props.currentContent.ParentId}
+                accepts={[FILE]}
+                onDrop={this.handleFileDrop}
             />
+        </div>
     }
 }
 
