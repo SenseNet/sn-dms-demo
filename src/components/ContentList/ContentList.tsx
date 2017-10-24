@@ -106,11 +106,20 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                 data: this.props.children
             })
         }
+        
         if (this.props.selected.length > 0 && !prevOps.selectionModeIsOn) {
             this.props.selectionModeOn()
         }
         else if (this.props.selected.length === 0 && prevOps.selectionModeIsOn) {
             this.props.selectionModeOff()
+        }
+    }
+    componentWillReceiveProps(nextProps) {
+        if (this.props.ids.length !== nextProps.ids.length) {
+            
+            this.setState({
+                data: nextProps.children
+            })
         }
     }
     handleRowSingleClick(e, id, m) {
@@ -300,7 +309,8 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                                 </tr>
                                 : this.props.ids.map(n => {
                                     let content = this.props.children[n];
-                                    return (
+
+                                    return typeof content !== 'undefined' ? (
                                         <SimpleTableRow
                                             content={content}
                                             key={content.Id}
@@ -308,7 +318,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                                             handleRowSingleClick={this.handleRowSingleClick}
                                             handleTap={this.handleTap}
                                             isCopy={this.state.copy} />
-                                    );
+                                    ) : null
                                 })
                             }
 

@@ -22,7 +22,8 @@ interface IDocumentLibraryProps {
     errorMessage: string,
     currentId,
     cId,
-    setCurrentId: Function
+    setCurrentId: Function,
+    uploadContent: Function
 }
 
 interface IDocumentLibraryState {
@@ -78,14 +79,14 @@ class DocumentLibrary extends React.Component<IDocumentLibraryProps, IDocumentLi
     }
     handleFileDrop(item, monitor) {
         const content: Content = this.props.currentContent
+        const { uploadContent } = this.props
         if (monitor) {
-            console.log(monitor.getItem())
             const droppedFiles = monitor.getItem().files
 
-            let akarmi = content.UploadFile({ File: droppedFiles[0], ContentType: ContentTypes.File, Overwrite: true, Body: null, PropertyName: 'Binary' })
-            akarmi.subscribe(p => {
-                console.log(p.Completed)
+            droppedFiles.map(file => {
+               uploadContent(content, file)
             })
+
             this.setState({ droppedFiles })
         }
     }
@@ -114,6 +115,7 @@ class DocumentLibrary extends React.Component<IDocumentLibraryProps, IDocumentLi
 
 const loadContentAction = Actions.LoadContent;
 const fetchContentAction = Actions.RequestContent;
+const uploadContentAction = Actions.UploadRequest
 
 const mapStateToProps = (state, match) => {
     return {
@@ -130,5 +132,6 @@ const mapStateToProps = (state, match) => {
 
 export default withRouter(connect(mapStateToProps, {
     fetchContent: fetchContentAction,
-    setCurrentId: DMSActions.SetCurrentId
+    setCurrentId: DMSActions.SetCurrentId,
+    uploadContent: uploadContentAction
 })(DocumentLibrary))
