@@ -93,6 +93,15 @@ export module DMSReducers {
         }
     }
 
+    export const title = (state = '', action) => {
+        switch (action.type) {
+            case 'OPEN_ACTIONMENU':
+                return action.title
+            default:
+                return state
+        }
+    }
+
     export const position = (state = null, action) => {
         switch (action.type) {
             case 'OPEN_ACTIONMENU':
@@ -167,11 +176,24 @@ export module DMSReducers {
         }
     }
 
+    export const isSelectionModeOn = (state = false, action) => {
+        switch (action.type) {
+            case 'SELECTION_MODE_ON':
+                return true
+            case 'SELECTION_MODE_OFF':
+            case 'CLEAR_SELECTION':
+                return false
+            default:
+                return state
+        }
+    }
+
     export const actionmenu = combineReducers({
         actions,
         open,
         position,
-        id
+        id,
+        title
     })
 
     export const dms = combineReducers({
@@ -181,7 +203,8 @@ export module DMSReducers {
         currentId,
         rootId,
         register,
-        isLoading
+        isLoading,
+        isSelectionModeOn
     })
 
     export const getRegistrationError = (state) => {
@@ -248,5 +271,11 @@ export module DMSReducers {
     }
     export const getLoading = (state) => {
         return state.isLoading
+    }
+    export const getItemTitleOnActionMenuIsOpen = (state) => {
+        return state.title
+    }
+    export const getIsSelectionModeOn = (state) => {
+        return state.isSelectionModeOn
     }
 }

@@ -108,6 +108,15 @@ describe('id reducer', () => {
     });
 })
 
+describe('title reducer', () => {
+    it('should return the initial state', () => {
+        expect(DMSReducers.title(undefined, {})).toEqual('');
+    });
+    it('should return the opened content items id', () => {
+        expect(DMSReducers.title(undefined, { type: 'OPEN_ACTIONMENU', title: 'sample' })).toEqual('sample');
+    });
+})
+
 describe('position reducer', () => {
     it('should return the initial state', () => {
         expect(DMSReducers.position(undefined, {})).toEqual(null);
@@ -156,6 +165,15 @@ describe('isLoading reducer', () => {
     });
     it('should return the current state of loading', () => {
         expect(DMSReducers.isLoading(undefined, { type: 'LOAD_CONTENT_REQUEST' })).toEqual(true);
+    });
+})
+
+describe('isSelectionModeOn reducer', () => {
+    it('should return the initial state', () => {
+        expect(DMSReducers.isSelectionModeOn(undefined, {})).toEqual(false);
+    });
+    it('should return the current state of selection mode', () => {
+        expect(DMSReducers.isSelectionModeOn(undefined, { type: 'SELECTION_MODE_ON' })).toEqual(true);
     });
 })
 
@@ -381,5 +399,22 @@ describe('getItemOnActionMenuIsOpen', () => {
     }
     it('should return the id of the item on which the actionmenu was opened', () => {
         expect(DMSReducers.getItemOnActionMenuIsOpen(state)).toEqual(123)
+    })
+})
+describe('getItemOnActionMenuIsOpen', () => {
+    const state = {
+        title: 'sample'
+    }
+    it('should return the title of the item on which the actionmenu was opened', () => {
+        expect(DMSReducers.getItemTitleOnActionMenuIsOpen(state)).toEqual('sample')
+    })
+})
+
+describe('getIsSelectionModeOn', () => {
+    const state = {
+        isSelectionModeOn: true
+    }
+    it('should return whether the selection mode is on or off', () => {
+        expect(DMSReducers.getIsSelectionModeOn(state)).toEqual(true)
     })
 })

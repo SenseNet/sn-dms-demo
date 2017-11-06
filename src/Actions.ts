@@ -25,13 +25,20 @@ export module DMSActions {
         type: 'SET_EDITED_ID',
         id
     })
-    export const OpenActionMenu = (actions, id, position) => ({
+    export const OpenActionMenu = (actions, id, title, position) => ({
         type: 'OPEN_ACTIONMENU',
         actions,
         id,
+        title,
         position
     })
     export const CloseActionMenu = () => ({
         type: 'CLOSE_ACTIONMENU'
+    })
+    export const SelectionModeOn = () => ({
+        type: 'SELECTION_MODE_ON'
+    })
+    export const SelectionModeOff = () => ({
+        type: 'SELECTION_MODE_OFF'
     })
 }
