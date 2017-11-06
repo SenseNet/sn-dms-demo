@@ -74,12 +74,13 @@ describe('OpenActionMenu', () => {
             type: 'OPEN_ACTIONMENU',
             actions: ['Move', 'Copy'],
             id: 1,
+            title: 'sample doc',
             position: {
                 top: 2,
                 left: 2
             }
         }
-        expect(DMSActions.OpenActionMenu(['Move', 'Copy'], 1, { top: 2, left: 2 })).toEqual(expectedAction)
+        expect(DMSActions.OpenActionMenu(['Move', 'Copy'], 1, 'sample doc', { top: 2, left: 2 })).toEqual(expectedAction)
     })
 })
 
@@ -89,5 +90,23 @@ describe('CloseActionMenu', () => {
             type: 'CLOSE_ACTIONMENU'
         }
         expect(DMSActions.CloseActionMenu()).toEqual(expectedAction)
+    })
+})
+
+describe('SelectionModeOn', () => {
+    it('should create an action to handle selection mode', () => {
+        const expectedAction = {
+            type: 'SELECTION_MODE_ON'
+        }
+        expect(DMSActions.SelectionModeOn()).toEqual(expectedAction)
+    })
+})
+
+describe('SelectionModeOff', () => {
+    it('should create an action to handle selection mode', () => {
+        const expectedAction = {
+            type: 'SELECTION_MODE_OFF'
+        }
+        expect(DMSActions.SelectionModeOff()).toEqual(expectedAction)
     })
 })
