@@ -163,7 +163,7 @@ const mapStateToProps = (state, match) => {
     return {
         currentContent: Reducers.getContent(state.sensenet.children.entities, match.content.Id),
         edited: DMSReducers.getEditedItemId(state.dms),
-        selected: Reducers.getSelectedContent(state.sensenet)
+        selected: Reducers.getSelectedContentIds(state.sensenet)
     }
 }
 

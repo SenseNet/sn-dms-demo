@@ -56,7 +56,7 @@ class DateCell extends React.Component<IDateCellProps, {}>{
 
 const mapStateToProps = (state, match) => {
     return {
-        selected: Reducers.getSelectedContent(state.sensenet)
+        selected: Reducers.getSelectedContentIds(state.sensenet)
     }
 }
 
