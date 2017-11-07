@@ -45,6 +45,7 @@ interface ContentListProps {
     children,
     currentId: number,
     selected: number[],
+    selectedContentItems,
     history,
     parentId: number,
     edited: number,
@@ -56,6 +57,8 @@ interface ContentListProps {
     clearSelection: Function,
     delete: Function,
     deleteBatch: Function,
+    copyBatch: Function,
+    moveBatch: Function,
     selectionModeOn: Function,
     selectionModeOff: Function,
     selectionModeIsOn: boolean,
@@ -106,7 +109,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                 data: this.props.children
             })
         }
-        
+
         if (this.props.selected.length > 0 && !prevOps.selectionModeIsOn) {
             this.props.selectionModeOn()
         }
@@ -116,7 +119,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
     }
     componentWillReceiveProps(nextProps) {
         if (this.props.ids.length !== nextProps.ids.length) {
-            
+
             this.setState({
                 data: nextProps.children
             })
@@ -181,7 +184,6 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                     break
                 case Key.Enter:
                     e.preventDefault()
-                    console.log('dblclick')
                     this.handleRowDoubleClick(e, id, type)
                     break
                 case Key.UpArrow:
@@ -202,11 +204,12 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                     break
                 case Key.Delete:
                     const permanent = shift ? true : false;
-                    this.props.selected.length > 1 ?
-                        // this.props.deleteBatch(this.props.selected, permanent) :
-                        // this.props.delete(this.props.selected[0], permanent)
-                        console.log('batch delete & permanently= ' + permanent) :
-                        console.log('delete single element & permanently= ' + permanent)
+                    if (this.props.selected.length > 0) {
+                        this.props.deleteBatch(this.props.selectedContentItems, permanent)
+                        this.props.clearSelection()
+                    }
+                    // console.log('batch delete & permanently= ' + permanent) :
+                    // console.log('delete single element & permanently= ' + permanent)
                     break
                 case Key.A:
                     if (ctrl) {
@@ -336,6 +339,7 @@ const mapStateToProps = (state, match) => {
         ids: Reducers.getIds(state.sensenet.children),
         rootId: DMSReducers.getRootId(state.dms),
         selected: Reducers.getSelectedContentIds(state.sensenet),
+        selectedContentItems: Reducers.getSelectedContentItems(state.sensenet),
         isFetching: Reducers.getFetching(state.sensenet.children),
         isLoading: DMSReducers.getLoading(state.dms),
         edited: DMSReducers.getEditedItemId(state.dms),
@@ -348,6 +352,8 @@ export default withRouter(connect(mapStateToProps, {
     clearSelection: Actions.ClearSelection,
     delete: Actions.Delete,
     deleteBatch: Actions.DeleteBatch,
+    copyBatch: Actions.CopyBatch,
+    moveBatch: Actions.MoveBatch,
     selectionModeOn: DMSActions.SelectionModeOn,
     selectionModeOff: DMSActions.SelectionModeOff
 })(ContentList))
