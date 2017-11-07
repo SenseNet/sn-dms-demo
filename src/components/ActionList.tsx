@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Actions } from 'sn-redux'
+import { Actions, Reducers } from 'sn-redux'
 import { DMSActions } from '../Actions'
 import { DMSReducers } from '../Reducers'
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
@@ -54,11 +54,13 @@ const styles = {
 interface IActionListProps {
     actions,
     id,
+    selected,
     setEdited: Function,
     handleActionMenuClose: Function,
     handleMouseDown: Function,
     handleMouseUp: Function,
-    clearSelection: Function
+    clearSelection: Function,
+    deleteBatch: Function
 }
 
 interface IActionListState {
@@ -97,6 +99,11 @@ class ActionList extends React.Component<IActionListProps, IActionListState> {
             case 'ClearSelection':
                 this.props.handleActionMenuClose()
                 this.props.clearSelection()
+                break
+            case 'DeleteBatch':
+                this.props.handleActionMenuClose()
+                this.props.clearSelection()
+                this.props.deleteBatch(this.props.selected, false)
                 break
             default:
                 console.log(`${action} is clicked`)
@@ -139,11 +146,13 @@ class ActionList extends React.Component<IActionListProps, IActionListState> {
 
 const mapStateToProps = (state, match) => {
     return {
-        actions: DMSReducers.getActions(state.dms.actionmenu)
+        actions: DMSReducers.getActions(state.dms.actionmenu),
+        selected: Reducers.getSelectedContentItems(state.sensenet)
     }
 }
 
 export default connect(mapStateToProps, {
     setEdited: DMSActions.SetEditedContentId,
-    clearSelection: Actions.ClearSelection
+    clearSelection: Actions.ClearSelection,
+    deleteBatch: Actions.DeleteBatch
 })(ActionList)
