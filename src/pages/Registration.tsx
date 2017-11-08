@@ -13,6 +13,7 @@ import FormHelperText from 'material-ui/Form/FormHelperText';
 import { CircularProgress } from 'material-ui/Progress';
 import { withRouter } from 'react-router-dom'
 import GoogleReCaptcha from '../components/GoogleReCaptcha'
+import MediaQuery from 'react-responsive';
 
 const logo = require('../assets/logo.png');
 
@@ -31,7 +32,17 @@ const styles = {
     textAlign: 'center',
     zIndex: 10,
     padding: '120px 0'
-  }
+  },
+  logo: {
+    backgroundColor: '#fff',
+    padding: '60px',
+    color: '#444',
+    textAlign: 'center'
+  },
+  logoMobile: {
+    padding: '50px  0',
+    textAlign: 'center'
+  },
 }
 
 import { resources } from '../assets/resources'
@@ -227,7 +238,11 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
     return (
       <div className='Sensenet'>
         <div className='Sensenet-header'>
-          <img src={logo} className='Sensenet-logo' alt='logo' />
+        <MediaQuery minDeviceWidth={700}>
+            {(matches) => {
+              return <img src={logo} width={matches ? '60%' : '50%'} className='Sensenet-logo' style={matches ? styles.logo : styles.logoMobile} alt='logo' />
+            }}
+          </MediaQuery>
         </div>
 
         <LoginTabs />
