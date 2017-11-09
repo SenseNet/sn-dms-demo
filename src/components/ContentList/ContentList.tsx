@@ -21,9 +21,8 @@ import { ListHead } from './ListHead'
 import SimpleTableRow from './SimpleTableRow'
 import { SharedItemsTableRow } from './SharedItemsTableRow'
 import ParentFolderTableRow from './ParentFolderTableRow'
-import ActionMenu from '../ActionMenu'
+import ActionMenu from '../ActionMenu/ActionMenu'
 import SelectionBox from '../SelectionBox'
-import { ClickHandlers } from '../../ClickHandlers'
 import { DragAndDrop } from '../../DragAndDrop'
 
 const styles = {
@@ -208,8 +207,6 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                         this.props.deleteBatch(this.props.selectedContentItems, permanent)
                         this.props.clearSelection()
                     }
-                    // console.log('batch delete & permanently= ' + permanent) :
-                    // console.log('delete single element & permanently= ' + permanent)
                     break
                 case Key.A:
                     if (ctrl) {

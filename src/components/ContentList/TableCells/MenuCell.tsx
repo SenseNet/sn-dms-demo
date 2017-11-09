@@ -46,9 +46,6 @@ class MenuCell extends React.Component<IMenuCellProps, IMenuCellState>{
         this.props.openActionMenu(this.props.actions, content.Id, content.DisplayName, { top: e.currentTarget.offsetTop, left: e.currentTarget.offsetLeft - e.currentTarget.offsetWidth - 100 })
         this.setState({ anchorTop: e.clientY, anchorLeft: e.clientX })
     }
-    handleActionMenuClose = (e) => {
-        this.props.closeActionMenu()
-    };
     render() {
         const { isSelected, isHovered, content, actionMenuIsOpen, selectionModeOn } = this.props
         return (
