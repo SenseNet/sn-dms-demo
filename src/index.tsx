@@ -7,6 +7,7 @@ import Sensenet from './Sensenet';
 import { combineReducers } from 'redux'
 import { Repository } from 'sn-client-js'
 import { Store, Actions, Reducers } from 'sn-redux'
+import { AddGoogleAuth } from 'sn-client-auth-google';
 import registerServiceWorker from './registerServiceWorker';
 import { Provider } from 'react-redux';
 import { DMSEpics } from './Epics'
@@ -28,7 +29,11 @@ const repository = new Repository.SnRepository({
   RequiredSelect: ['Id', 'Path', 'Name', 'Type', 'ParentId']
 });
 
-repository.Config
+AddGoogleAuth(repository, {
+  ClientId: '590484552404-d6motta5d9qeh0ln81in80fn6mqf608e.apps.googleusercontent.com',
+  RedirectUri: 'http://localhost:24969/',
+  Scope: ['email', 'profile']
+})
 
 const store = Store.configureStore(myReducer, DMSEpics.rootEpic, undefined, {}, repository)
 store.dispatch(Actions.InitSensenetStore('/Root/Sites/Default_Site', { select: 'all' }))
