@@ -30,9 +30,7 @@ const repository = new Repository.SnRepository({
 });
 
 AddGoogleAuth(repository, {
-  ClientId: '590484552404-d6motta5d9qeh0ln81in80fn6mqf608e.apps.googleusercontent.com',
-  RedirectUri: 'http://localhost:24969/',
-  Scope: ['email', 'profile']
+  ClientId: '73112141646-arluftr2qfh044in5b397ru5gqo4m1v8.apps.googleusercontent.com'
 })
 
 const store = Store.configureStore(myReducer, DMSEpics.rootEpic, undefined, {}, repository)

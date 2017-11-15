@@ -5,6 +5,7 @@ import { DMSActions } from '../Actions'
 import { DMSReducers } from '../Reducers'
 import LoginTabs from '../components/LoginTabs'
 import { WelcomeMessage } from '../components/WelcomeMessage'
+import { OauthRow } from '../components/OAuthRow'
 import Button from 'material-ui/Button';
 import Input from 'material-ui/Input';
 import InputLabel from 'material-ui/Input/InputLabel';
@@ -238,7 +239,7 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
     return (
       <div className='Sensenet'>
         <div className='Sensenet-header'>
-        <MediaQuery minDeviceWidth={700}>
+          <MediaQuery minDeviceWidth={700}>
             {(matches) => {
               return <img src={logo} width={matches ? '60%' : '50%'} className='Sensenet-logo' style={matches ? styles.logo : styles.logoMobile} alt='logo' />
             }}
@@ -319,6 +320,7 @@ class Registration extends React.Component<IRegistrationProps, IRegistrationStat
               >
                 {resources.REGISTRATION_BUTTON_TEXT}</Button>
             </form>
+            <OauthRow />
           </div>
         </div>
       </div>

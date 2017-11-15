@@ -236,8 +236,8 @@ class Login extends React.Component<ILoginProps, ILoginState> {
               </FormControl>
               <Button type='submit' color='primary' style={styles.button} disabled={this.props.loginError === null && this.state.isButtonDisabled}>{resources.LOGIN_BUTTON_TEXT}</Button>
             </form>
-            <OauthRow />
           </MuiThemeProvider>
+          <OauthRow />
         </div>
       </div>
     )
