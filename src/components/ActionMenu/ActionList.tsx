@@ -134,7 +134,7 @@ class ActionList extends React.Component<IActionListProps, IActionListState> {
         const fileList = e.target.files
         const files = Array.from(fileList)
         files.map(file => {
-            this.props.uploadContent(this.props.currentContent, file)
+            this.props.uploadContent(this.props.currentContent, file, undefined, undefined, null, undefined, 'DMSListItem')
         })
     }
     render() {

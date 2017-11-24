@@ -77,7 +77,7 @@ const mapStateToProps = (state, match) => {
         selected: Reducers.getSelectedContentIds(state.sensenet),
         opened: Reducers.getOpenedContent(state.sensenet.children),
         actions: DMSReducers.getActionsOfAContent(state.sensenet.children.entities[match.content.Id]),
-        selectionModeOn: DMSReducers.getIsSelectionModeOn(state.dms)
+        selectionModeOn: DMSReducers.getIsSelectionModeOn(state.dms),
     }
 }
 export default connect(mapStateToProps, {

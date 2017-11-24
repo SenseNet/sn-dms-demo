@@ -26,7 +26,8 @@ const myReducer = combineReducers({
 
 const repository = new Repository.SnRepository({
   RepositoryUrl: process.env.REACT_APP_SERVICE_URL || 'https://dmsservice.demo.sensenet.com',
-  RequiredSelect: ['Id', 'Path', 'Name', 'Type', 'ParentId']
+  RequiredSelect: ['Id', 'Path', 'Name', 'Type', 'ParentId', 'Actions'],
+  DefaultExpand: ['Actions']
 });
 
 AddGoogleAuth(repository, {

@@ -172,50 +172,52 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
             return null
         else {
             const id = Number(e.target.closest('tr').id)
-            const type = this.props.children[id]._type
-            this.setState({
-                active: id
-            })
-            switch (e.which) {
-                case Key.Space:
-                    e.preventDefault()
-                    this.handleSimpleSelection(id)
-                    break
-                case Key.Enter:
-                    e.preventDefault()
-                    this.handleRowDoubleClick(e, id, type)
-                    break
-                case Key.UpArrow:
-                    if (shift) {
-                        const upperItemIndex = this.props.ids.indexOf(Number(this.state.active)) - 1
-                        upperItemIndex > -1 ?
-                            this.handleSimpleSelection(this.props.ids[upperItemIndex]) :
-                            null
-                    }
-                    break
-                case Key.DownArrow:
-                    if (shift) {
-                        const upperItemIndex = this.props.ids.indexOf(Number(this.state.active)) + 1
-                        upperItemIndex < this.props.ids.length ?
-                            this.handleSimpleSelection(this.props.ids[upperItemIndex]) :
-                            null
-                    }
-                    break
-                case Key.Delete:
-                    const permanent = shift ? true : false;
-                    if (this.props.selected.length > 0) {
-                        this.props.deleteBatch(this.props.selectedContentItems, permanent)
-                        this.props.clearSelection()
-                    }
-                    break
-                case Key.A:
-                    if (ctrl) {
+            if (id !== 0) {
+                const type = this.props.children[id]._type
+                this.setState({
+                    active: id
+                })
+                switch (e.which) {
+                    case Key.Space:
                         e.preventDefault()
-                        this.handleSelectAllClick(e, true)
-                    }
-                    break
-                default:
-                    break
+                        this.handleSimpleSelection(id)
+                        break
+                    case Key.Enter:
+                        e.preventDefault()
+                        this.handleRowDoubleClick(e, id, type)
+                        break
+                    case Key.UpArrow:
+                        if (shift) {
+                            const upperItemIndex = this.props.ids.indexOf(Number(this.state.active)) - 1
+                            upperItemIndex > -1 ?
+                                this.handleSimpleSelection(this.props.ids[upperItemIndex]) :
+                                null
+                        }
+                        break
+                    case Key.DownArrow:
+                        if (shift) {
+                            const upperItemIndex = this.props.ids.indexOf(Number(this.state.active)) + 1
+                            upperItemIndex < this.props.ids.length ?
+                                this.handleSimpleSelection(this.props.ids[upperItemIndex]) :
+                                null
+                        }
+                        break
+                    case Key.Delete:
+                        const permanent = shift ? true : false;
+                        if (this.props.selected.length > 0) {
+                            this.props.deleteBatch(this.props.selectedContentItems, permanent)
+                            this.props.clearSelection()
+                        }
+                        break
+                    case Key.A:
+                        if (ctrl) {
+                            e.preventDefault()
+                            this.handleSelectAllClick(e, true)
+                        }
+                        break
+                    default:
+                        break
+                }
             }
         }
     }
