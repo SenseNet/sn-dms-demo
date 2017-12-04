@@ -4,6 +4,7 @@ import { Reducers } from 'sn-redux'
 import { DMSReducers } from '../Reducers'
 import LoginTabs from '../components/LoginTabs'
 import { WelcomeMessage } from '../components/WelcomeMessage'
+import { OauthRow } from '../components/OAuthRow'
 import Button from 'material-ui/Button';
 import Input from 'material-ui/Input';
 import InputLabel from 'material-ui/Input/InputLabel';
@@ -11,6 +12,7 @@ import FormControl from 'material-ui/Form/FormControl';
 import FormHelperText from 'material-ui/Form/FormHelperText';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import createMuiTheme from 'material-ui/styles/createMuiTheme';
+import MediaQuery from 'react-responsive';
 
 const logo = require('../assets/logo.png');
 
@@ -31,7 +33,17 @@ const styles = {
   },
   formControl: {
     marginTop: '20px 0px',
-  }
+  },
+  logo: {
+    backgroundColor: '#fff',
+    padding: '60px',
+    color: '#444',
+    textAlign: 'center'
+  },
+  logoMobile: {
+    padding: '50px  0',
+    textAlign: 'center'
+  },
 }
 
 import { resources } from '../assets/resources'
@@ -173,7 +185,11 @@ class Login extends React.Component<ILoginProps, ILoginState> {
     return (
       <div className='Sensenet'>
         <div className='Sensenet-header'>
-          <img src={logo} className='Sensenet-logo' alt='logo' />
+          <MediaQuery minDeviceWidth={700}>
+            {(matches) => {
+              return <img src={logo} width={matches ? '60%' : '50%'} className='Sensenet-logo' style={matches ? styles.logo : styles.logoMobile} alt='logo' />
+            }}
+          </MediaQuery>
         </div>
 
         <LoginTabs />
@@ -221,6 +237,7 @@ class Login extends React.Component<ILoginProps, ILoginState> {
               <Button type='submit' color='primary' style={styles.button} disabled={this.props.loginError === null && this.state.isButtonDisabled}>{resources.LOGIN_BUTTON_TEXT}</Button>
             </form>
           </MuiThemeProvider>
+          <OauthRow />
         </div>
       </div>
     )

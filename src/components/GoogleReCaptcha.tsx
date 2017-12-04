@@ -19,7 +19,7 @@ class GoogleReCaptcha extends React.Component<{ verify }, { recaptchaResponse }>
         return (
             <ReCAPTCHA
                 ref='recaptcha'
-                sitekey={process.env.REACT_APP_RECAPTCHA_KEY}
+                sitekey={process.env.REACT_APP_RECAPTCHA_KEY || '6LcRiy4UAAAAANJjCL8H5c4WG2YeejRuA35e1gcU'}
                 onChange={this.onChange.bind(this)}
             />
         )
@@ -28,7 +28,7 @@ class GoogleReCaptcha extends React.Component<{ verify }, { recaptchaResponse }>
 
 const mapStateToProps = (state, match) => {
     return {
-        isNotARobot: DMSReducers.captchaIsVerified(state.register)
+        isNotARobot: DMSReducers.captchaIsVerified(state.dms.register)
     }
 }
 

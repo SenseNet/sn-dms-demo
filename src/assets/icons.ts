@@ -7,8 +7,13 @@ export const icons = {
     rename: 'text_fields',
     copy: 'content_copy',
     move: 'input',
-    delete: 'clear',
+    delete: 'delete',
+    clear: 'clear',
     arrowRight: 'keyboard_arrow_right',
+    arrowLeft: 'keyboard_arrow_left',
     sharecontent: 'share',
-    starcontent: 'star'
+    starcontent: 'star',
+    edit: 'mode_edit',
+    tick: 'done',
+    upload: 'file_upload'
 }

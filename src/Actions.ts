@@ -4,14 +4,14 @@ export module DMSActions {
         email,
         password
     })
-    export const UserRegistrationSuccess = (response: any) => ({
+    export const UserRegistrationSuccess = () => ({
         type: 'USER_REGISTRATION_SUCCESS'
     })
     export const UserRegistrationFailure = (error: any) => ({
         type: 'USER_REGISTRATION_FAILURE',
         message: error.message
     })
-    export const VerifyCaptchaSuccess = (response: any) => ({
+    export const VerifyCaptchaSuccess = () => ({
         type: 'VERIFY_CAPTCHA_SUCCESS'
     })
     export const ClearRegistration = () => ({
@@ -25,13 +25,20 @@ export module DMSActions {
         type: 'SET_EDITED_ID',
         id
     })
-    export const OpenActionMenu = (actions, id, position) => ({
+    export const OpenActionMenu = (actions, id, title, position, customItems?) => ({
         type: 'OPEN_ACTIONMENU',
-        actions,
+        actions: customItems && customItems.length > 0 ? customItems : actions,
         id,
+        title,
         position
     })
     export const CloseActionMenu = () => ({
         type: 'CLOSE_ACTIONMENU'
+    })
+    export const SelectionModeOn = () => ({
+        type: 'SELECTION_MODE_ON'
+    })
+    export const SelectionModeOff = () => ({
+        type: 'SELECTION_MODE_OFF'
     })
 }

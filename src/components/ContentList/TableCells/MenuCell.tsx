@@ -6,6 +6,7 @@ import IconButton from 'material-ui/IconButton';
 import { Actions, Reducers } from 'sn-redux'
 import { DMSActions } from '../../../Actions'
 import { DMSReducers } from '../../../Reducers'
+import MediaQuery from 'react-responsive';
 
 const styles = {
     actionMenuButton: {
@@ -31,7 +32,8 @@ interface IMenuCellProps {
     isSelected: boolean,
     openActionMenu: Function,
     closeActionMenu: Function,
-    actionMenuIsOpen: boolean
+    actionMenuIsOpen: boolean,
+    selectionModeOn: boolean
 }
 interface IMenuCellState {
     anchorTop,
@@ -41,27 +43,30 @@ interface IMenuCellState {
 class MenuCell extends React.Component<IMenuCellProps, IMenuCellState>{
     handleActionMenuClick(e, content) {
         this.props.closeActionMenu()
-        this.props.openActionMenu(this.props.actions, content.Id, { top: e.currentTarget.offsetTop, left: e.currentTarget.offsetLeft - e.currentTarget.offsetWidth })
+        this.props.openActionMenu(this.props.actions, content.Id, content.DisplayName, { top: e.currentTarget.offsetTop, left: e.currentTarget.offsetLeft - e.currentTarget.offsetWidth - 100 })
         this.setState({ anchorTop: e.clientY, anchorLeft: e.clientX })
     }
-    handleActionMenuClose = (e) => {
-        this.props.closeActionMenu()
-    };
     render() {
-        const { isSelected, isHovered, content, actionMenuIsOpen } = this.props
+        const { isSelected, isHovered, content, actionMenuIsOpen, selectionModeOn } = this.props
         return (
-            <TableCell style={styles.actionMenuButton}>
-                <IconButton
-                    aria-label='Menu'
-                    aria-owns={actionMenuIsOpen}
-                    onClick={event => this.handleActionMenuClick(event, content)}
-                >
-                    <MoreVert style={
-                        isHovered ? styles.hoveredIcon : styles.icon &&
-                            isSelected ? styles.selectedIcon : styles.icon
-                    } />
-                </IconButton>
-            </TableCell>
+            <MediaQuery minDeviceWidth={700}>
+                {(matches) => {
+                    const padding = matches ? 'none' : 'checkbox';
+                    return <TableCell style={styles.actionMenuButton}
+                        padding={padding}>
+                        <IconButton
+                            aria-label='Menu'
+                            aria-owns={actionMenuIsOpen}
+                            onClick={event => !selectionModeOn ? this.handleActionMenuClick(event, content) : null}
+                        >
+                            <MoreVert style={
+                                isHovered && !selectionModeOn ? styles.hoveredIcon : styles.icon &&
+                                    isSelected && !selectionModeOn ? styles.selectedIcon : styles.icon
+                            } />
+                        </IconButton>
+                    </TableCell>
+                }}
+            </MediaQuery>
         )
     }
 }
@@ -69,14 +74,13 @@ class MenuCell extends React.Component<IMenuCellProps, IMenuCellState>{
 
 const mapStateToProps = (state, match) => {
     return {
-        selected: Reducers.getSelectedContent(state.sensenet),
+        selected: Reducers.getSelectedContentIds(state.sensenet),
         opened: Reducers.getOpenedContent(state.sensenet.children),
-        actions: DMSReducers.getActionsOfAContent(state.sensenet.children.entities[match.content.Id])
+        actions: DMSReducers.getActionsOfAContent(state.sensenet.children.entities[match.content.Id]),
+        selectionModeOn: DMSReducers.getIsSelectionModeOn(state.dms),
     }
 }
 export default connect(mapStateToProps, {
-    select: Actions.SelectContent,
-    deselect: Actions.DeSelectContent,
     openActionMenu: DMSActions.OpenActionMenu,
     closeActionMenu: DMSActions.CloseActionMenu
 })(MenuCell)

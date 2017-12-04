@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { resources } from './assets/resources'
 export module DMSReducers {
-    const email = (state = '', action) => {
+    export const email = (state = '', action) => {
         switch (action.type) {
             case 'USER_REGISTRATION_REQUEST':
                 return action.email
@@ -12,15 +12,15 @@ export module DMSReducers {
                 return state
         }
     }
-    const registrationError = (state = '', action) => {
+    export const registrationError = (state = null, action) => {
         switch (action.type) {
             case 'USER_REGISTRATION_FAILURE':
                 return resources.USER_IS_ALREADY_REGISTERED
             default:
-                return null
+                return state
         }
     }
-    const isRegistering = (state = false, action) => {
+    export const isRegistering = (state = false, action) => {
         switch (action.type) {
             case 'USER_REGISTRATION_REQUEST':
                 return true
@@ -32,7 +32,7 @@ export module DMSReducers {
         }
     }
 
-    const registrationDone = (state = false, action) => {
+    export const registrationDone = (state = false, action) => {
         switch (action.type) {
             case 'USER_REGISTRATION_SUCCESS':
                 return true
@@ -45,7 +45,7 @@ export module DMSReducers {
         }
     }
 
-    const captcha = (state = false, action) => {
+    export const captcha = (state = false, action) => {
         switch (action.type) {
             case 'VERIFY_CAPTCHA_SUCCESS':
                 return true
@@ -88,6 +88,15 @@ export module DMSReducers {
         switch (action.type) {
             case 'OPEN_ACTIONMENU':
                 return action.id
+            default:
+                return state
+        }
+    }
+
+    export const title = (state = '', action) => {
+        switch (action.type) {
+            case 'OPEN_ACTIONMENU':
+                return action.title
             default:
                 return state
         }
@@ -156,11 +165,46 @@ export module DMSReducers {
         }
     }
 
+    export const isLoading = (state = false, action) => {
+        switch (action.type) {
+            case 'LOAD_CONTENT_SUCCESS':
+                return false
+            case 'LOAD_CONTENT_REQUEST':
+                return true
+            default:
+                return state
+        }
+    }
+
+    export const isSelectionModeOn = (state = false, action) => {
+        switch (action.type) {
+            case 'SELECTION_MODE_ON':
+                return true
+            case 'SELECTION_MODE_OFF':
+            case 'CLEAR_SELECTION':
+                return false
+            default:
+                return state
+        }
+    }
+
     export const actionmenu = combineReducers({
         actions,
         open,
         position,
-        id
+        id,
+        title
+    })
+
+    export const dms = combineReducers({
+        actionmenu,
+        breadcrumb,
+        editedItemId,
+        currentId,
+        rootId,
+        register,
+        isLoading,
+        isSelectionModeOn
     })
 
     export const getRegistrationError = (state) => {
@@ -224,5 +268,17 @@ export module DMSReducers {
     }
     export const getItemOnActionMenuIsOpen = (state) => {
         return state.id
+    }
+    export const getLoading = (state) => {
+        return state.isLoading
+    }
+    export const getItemTitleOnActionMenuIsOpen = (state) => {
+        return state.title
+    }
+    export const getIsSelectionModeOn = (state) => {
+        return state.isSelectionModeOn
+    }
+    export const getAddNewActions = (state) => {
+        state.addnew
     }
 }

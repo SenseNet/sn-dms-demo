@@ -34,19 +34,19 @@ export class ListHead extends React.Component<IListHeadProps, {}> {
         return (
             <TableHead>
                 <TableRow>
-                    <TableCell checkbox>
-                        <Checkbox
-                            indeterminate={numSelected > 0 && numSelected < this.props.count}
-                            checked={numSelected === this.props.count}
-                            onChange={onSelectAllClick}
-                        />
-                    </TableCell>
+                        <TableCell padding='checkbox'>
+                            <Checkbox
+                                indeterminate={numSelected > 0 && numSelected < this.props.count}
+                                checked={numSelected === this.props.count}
+                                onChange={onSelectAllClick}
+                            />
+                        </TableCell>
                     {columnData.map(column => {
                         return (
                             <TableCell
                                 key={column.id}
                                 numeric={column.numeric}
-                                disablePadding={column.disablePadding}
+                                padding={column.disablePadding ? 'none' : 'dense'}
                             >
                                 <TableSortLabel
                                     active={orderBy === column.id}

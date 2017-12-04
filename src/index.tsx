@@ -7,6 +7,7 @@ import Sensenet from './Sensenet';
 import { combineReducers } from 'redux'
 import { Repository } from 'sn-client-js'
 import { Store, Actions, Reducers } from 'sn-redux'
+import { AddGoogleAuth } from 'sn-client-auth-google';
 import registerServiceWorker from './registerServiceWorker';
 import { Provider } from 'react-redux';
 import { DMSEpics } from './Epics'
@@ -17,28 +18,21 @@ import './index.css';
 import 'rxjs'
 
 const sensenet = Reducers.sensenet;
-const register = DMSReducers.register;
-const actionmenu = DMSReducers.actionmenu;
-const rootId = DMSReducers.rootId;
-const breadcrumb = DMSReducers.breadcrumb;
-const currentId = DMSReducers.currentId;
-const editedItemId = DMSReducers.editedItemId;
+const dms = DMSReducers.dms;
 const myReducer = combineReducers({
   sensenet,
-  register,
-  rootId,
-  actionmenu,
-  breadcrumb,
-  currentId,
-  editedItemId
+  dms
 });
 
 const repository = new Repository.SnRepository({
   RepositoryUrl: process.env.REACT_APP_SERVICE_URL || 'https://dmsservice.demo.sensenet.com',
-  RequiredSelect: ['Id', 'Path', 'Name', 'Type', 'ParentId']
+  RequiredSelect: ['Id', 'Path', 'Name', 'Type', 'ParentId', 'Actions'],
+  DefaultExpand: ['Actions']
 });
 
-repository.Config
+AddGoogleAuth(repository, {
+  ClientId: '188576321252-ok4dg714hibsrjpt6luaee0u1jc56r7l.apps.googleusercontent.com'
+})
 
 const store = Store.configureStore(myReducer, DMSEpics.rootEpic, undefined, {}, repository)
 store.dispatch(Actions.InitSensenetStore('/Root/Sites/Default_Site', { select: 'all' }))

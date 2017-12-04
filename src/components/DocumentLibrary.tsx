@@ -5,24 +5,12 @@ import {
 import { connect } from 'react-redux';
 import { DMSReducers } from '../Reducers'
 import { DMSActions } from '../Actions'
+import { Content, ContentTypes } from 'sn-client-js'
 import { Actions, Reducers } from 'sn-redux'
 import { FetchError } from './FetchError'
+import { DragDropContext } from 'react-dnd'
+import HTML5Backend, { NativeTypes } from 'react-dnd-html5-backend'
 import ContentList from './ContentList/ContentList'
-import { CircularProgress } from 'material-ui/Progress';
-
-const styles = {
-    actionMenuButton: {
-        width: 30,
-        cursor: 'pointer'
-    },
-    checkboxButton: {
-        width: 30,
-        cursor: 'pointer'
-    },
-    loader: {
-        margin: '0 auto'
-    }
-}
 
 interface IDocumentLibraryProps {
     currentContent,
@@ -32,13 +20,18 @@ interface IDocumentLibraryProps {
     loggedinUser,
     fetchContent: Function,
     errorMessage: string,
-    isFetching: boolean,
     currentId,
     cId,
-    setCurrentId: Function
+    setCurrentId: Function,
+    uploadContent: Function
 }
 
-class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, id, orderby, filter, expand, scenario }>{
+interface IDocumentLibraryState {
+    select, id, orderby, filter, expand, scenario, droppedFiles
+}
+
+@DragDropContext(HTML5Backend)
+class DocumentLibrary extends React.Component<IDocumentLibraryProps, IDocumentLibraryState>{
     constructor(props) {
         super(props)
         this.state = {
@@ -47,8 +40,10 @@ class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, i
             orderby: ['IsFolder desc', 'DisplayName asc'],
             filter: "ContentType ne 'SystemFolder'",
             scenario: 'DMSListItem',
-            id: this.props.currentContent.Id
+            id: this.props.currentContent.Id,
+            droppedFiles: []
         }
+        this.handleFileDrop = this.handleFileDrop.bind(this)
     }
     componentDidMount() {
         if (!this.props.cId)
@@ -82,15 +77,22 @@ class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, i
             id: this.props.cId
         })
     }
+    handleFileDrop(item, monitor) {
+        const content: Content = this.props.currentContent
+        const { uploadContent } = this.props
+        if (monitor) {
+            const droppedFiles = monitor.getItem().files
 
-    render() {
-        if (this.props.isFetching && this.props.children.length > 0) {
-            return (
-                <div style={styles.loader}>
-                    <CircularProgress color='accent' size={50} />
-                </div>
-            )
+            droppedFiles.map(file => {
+               uploadContent(content, file, undefined, undefined, null, undefined, 'DMSListItem')
+            })
+
+            this.setState({ droppedFiles })
         }
+    }
+    render() {
+        const { FILE } = NativeTypes
+        const { droppedFiles } = this.state
         if (this.props.errorMessage && this.props.errorMessage.length > 0) {
             return (
                 <FetchError
@@ -99,16 +101,21 @@ class DocumentLibrary extends React.Component<IDocumentLibraryProps, { select, i
                 />
             )
         }
-        return <ContentList
-            children={this.props.children}
-            currentId={this.props.currentContent.Id}
-            parentId={this.props.currentContent.ParentId}
-        />
+        return <div>
+            <ContentList
+                children={this.props.children}
+                currentId={this.props.currentContent.Id}
+                parentId={this.props.currentContent.ParentId}
+                accepts={[FILE]}
+                onDrop={this.handleFileDrop}
+            />
+        </div>
     }
 }
 
 const loadContentAction = Actions.LoadContent;
 const fetchContentAction = Actions.RequestContent;
+const uploadContentAction = Actions.UploadRequest
 
 const mapStateToProps = (state, match) => {
     return {
@@ -117,14 +124,14 @@ const mapStateToProps = (state, match) => {
         children: DMSReducers.getChildrenItems(state.sensenet),
         ids: Reducers.getIds(state.sensenet.children),
         errorMessage: Reducers.getError(state.sensenet.children),
-        isFetching: Reducers.getFetching(state.sensenet.children),
         currentContent: Reducers.getCurrentContent(state.sensenet),
         currentId: Number(match.match.url.replace('/', '')),
-        cId: DMSReducers.getCurrentId(state)
+        cId: DMSReducers.getCurrentId(state.dms)
     }
 }
 
 export default withRouter(connect(mapStateToProps, {
     fetchContent: fetchContentAction,
-    setCurrentId: DMSActions.SetCurrentId
+    setCurrentId: DMSActions.SetCurrentId,
+    uploadContent: uploadContentAction
 })(DocumentLibrary))
