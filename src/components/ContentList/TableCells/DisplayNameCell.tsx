@@ -76,7 +76,6 @@ class DisplayNameCell extends React.Component<IDisplayNameCellProps, IDisplayNam
         }
 
         this.handleTitleClick = this.handleTitleClick.bind(this)
-        this.handleTitleLongClick = this.handleTitleLongClick.bind(this)
         this.handleTitleInputBlur = this.handleTitleInputBlur.bind(this)
         this.handleTitleChange = this.handleTitleChange.bind(this)
     }
@@ -84,14 +83,7 @@ class DisplayNameCell extends React.Component<IDisplayNameCellProps, IDisplayNam
         let that = this;
         if (e.target.id !== 'renameInput') {
             e.preventDefault()
-            that.handleTitleLongClick(e, id)
         }
-    }
-    handleTitleLongClick(e, id) {
-        this.setState({
-            edited: id
-        })
-        this.props.setEdited(id)
     }
     handleTitleChange(e) {
         this.setState({
