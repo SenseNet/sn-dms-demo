@@ -140,8 +140,8 @@ class ActionList extends React.Component<IActionListProps, IActionListState> {
     render() {
 
         return <List
-            id='actionMenu'
-            role='menu'
+            id="actionMenu"
+            role="menu"
             style={styles.actionMenuList as any}
         >
             {this.props.actions.map(action => {
@@ -151,13 +151,13 @@ class ActionList extends React.Component<IActionListProps, IActionListState> {
                     inner = <div style={styles.uploadContainer}>
                         <input
                             style={styles.fileinput}
-                            id='file'
+                            id="file"
                             multiple
-                            type='file'
+                            type="file"
                             onChange={event => this.handleFileUpload(event)} />
-                        <label htmlFor='file' style={styles.uploadLabel}>
+                        <label htmlFor="file" style={styles.uploadLabel}>
                             <ListItemIcon style={{ ...styles.actionIcon, ...styles.uploadIcon }}>
-                                <Icon color='accent'>{
+                                <Icon color="accent">{
                                     action.Icon === 'Application' ?
                                         icons[action.Name.toLowerCase()] :
                                         icons[action.Icon.toLowerCase()]
@@ -173,7 +173,7 @@ class ActionList extends React.Component<IActionListProps, IActionListState> {
                 return (
                     <ListItem
                         key={action.Name}
-                        role='menuitem'
+                        role="menuitem"
                         style={isHovered ? { ...styles.actionMenuItem, ...styles.selectedActionMenuItem } : styles.actionMenuItem as any}
                         onMouseEnter={event => this.handleMouseEnter(event, action.Name)}
                         onMouseLeave={event => this.handleMouseLeave()}
@@ -183,7 +183,7 @@ class ActionList extends React.Component<IActionListProps, IActionListState> {
 
                         {action.Name !== 'Upload' ?
                             <ListItemIcon style={styles.actionIcon}>
-                                <Icon color='accent'>{
+                                <Icon color="accent">{
                                     action.Icon === 'Application' ?
                                         icons[action.Name.toLowerCase()] :
                                         icons[action.Icon.toLowerCase()]

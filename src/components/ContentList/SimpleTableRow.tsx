@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import { Actions, Reducers } from 'sn-redux'
 import { DMSReducers } from '../../Reducers'
 import { DMSActions } from '../../Actions'
-
 import MediaQuery from 'react-responsive';
 import Table, {
     TableRow,
@@ -120,7 +119,7 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
             <TableRow
                 hover
                 //onKeyDown={event => this.handleKeyDown(event, content.Id, content._type)}
-                role='checkbox'
+                role="checkbox"
                 aria-checked={isSelected}
                 tabIndex={-1}
                 onMouseEnter={event => this.handleRowMouseEnter(event, content.Id)}
@@ -133,7 +132,7 @@ class SimpleTableRow extends React.Component<ISimpleTableRowProps, ISimpleTableR
             >
                 <MediaQuery minDeviceWidth={700}>
                     <TableCell
-                        padding='checkbox'
+                        padding="checkbox"
                         style={styles.checkboxButton}
 
                         onClick={event => handleRowSingleClick(event, content)}
