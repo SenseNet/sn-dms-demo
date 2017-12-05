@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { Actions } from 'sn-redux'
 import { DMSActions } from '../Actions'
 import { DMSReducers } from '../Reducers'
+import { Content } from 'sn-client-js'
 import Button from 'material-ui/Button';
 import Add from 'material-ui-icons/Add';
 import ActionMenu from './ActionMenu/ActionMenu'
@@ -21,7 +22,7 @@ const styles = {
 
 interface IFloatingActionButton {
     actionMenuIsOpen: boolean,
-    content,
+    content: Content,
     actions,
     openActionMenu: Function,
     closeActionMenu: Function,

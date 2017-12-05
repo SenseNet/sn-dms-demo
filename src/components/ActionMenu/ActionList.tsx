@@ -130,7 +130,7 @@ class ActionList extends React.Component<IActionListProps, IActionListState> {
                 break
         }
     }
-    handleFileUpload(e){
+    handleFileUpload(e) {
         const fileList = e.target.files
         const files = Array.from(fileList)
         files.map(file => {
@@ -144,7 +144,7 @@ class ActionList extends React.Component<IActionListProps, IActionListState> {
             role="menu"
             style={styles.actionMenuList as any}
         >
-            {this.props.actions.map(action => {
+            {this.props.actions.map((action, index) => {
                 const isHovered = this.isHovered(action.Name);
                 let inner = null
                 if (action.Name === 'Upload') {
@@ -172,7 +172,7 @@ class ActionList extends React.Component<IActionListProps, IActionListState> {
                 }
                 return (
                     <ListItem
-                        key={action.Name}
+                        key={`${action.Name}-${index}`}
                         role="menuitem"
                         style={isHovered ? { ...styles.actionMenuItem, ...styles.selectedActionMenuItem } : styles.actionMenuItem as any}
                         onMouseEnter={event => this.handleMouseEnter(event, action.Name)}
