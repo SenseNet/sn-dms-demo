@@ -24,7 +24,6 @@ interface IIconCellState { }
 export class IconCell extends React.Component<IIconCellProps, IIconCellState>{
     render() {
         const { id, icon, selected } = this.props
-        console.log(selected)
         return (
             <MediaQuery minDeviceWidth={700}>
                 {(matches) => {

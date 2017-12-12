@@ -153,8 +153,10 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
         }
     }
     handleRowDoubleClick(e, id, type) {
-        if (type === 'Folder')
+        if (type === 'Folder'){
             this.props.history.push(`/${id}`)
+            this.props.deselect(this.props.children[id])
+        }
         else
             console.log('open preview')
     }
