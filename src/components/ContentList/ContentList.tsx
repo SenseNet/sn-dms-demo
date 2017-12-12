@@ -162,6 +162,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
         const ctrl = e.ctrlKey ? true : false;
         const alt = e.altKey ? true : false;
         const shift = e.shiftKey ? true : false;
+        const { children } = this.props
 
         if (ctrl)
             this.setState({
@@ -173,14 +174,14 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
         else {
             const id = Number(e.target.closest('tr').id)
             if (id !== 0) {
-                const type = this.props.children[id]._type
+                const type = children[id]._type
                 this.setState({
                     active: id
                 })
                 switch (e.which) {
                     case Key.Space:
                         e.preventDefault()
-                        this.handleSimpleSelection(id)
+                        this.handleSimpleSelection(children[id])
                         break
                     case Key.Enter:
                         e.preventDefault()
