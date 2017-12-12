@@ -319,7 +319,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                                             key={content.Id}
                                             handleRowDoubleClick={this.handleRowDoubleClick}
                                             handleRowSingleClick={this.handleRowSingleClick}
-                                            handleTap={this.handleTap}
+                                            handleTap={e => this.handleTap(e, content.Id, content._type )}
                                             isCopy={this.state.copy} />
                                     ) : null
                                 })
