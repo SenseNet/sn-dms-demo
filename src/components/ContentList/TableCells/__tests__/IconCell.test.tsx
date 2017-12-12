@@ -8,6 +8,10 @@ it('renders without crashing', () => {
         id={1}
         icon='edit'
         selected={false}
-        handleRowDoubleClick={() => { }}
-        handleRowSingleClick={() => { }} />, div);
+        handleRowDoubleClick={() => { 
+            //
+        }}
+        handleRowSingleClick={() => { 
+            //
+        }} />, div);
 });

@@ -7,6 +7,10 @@ it('renders without crashing', () => {
     ReactDOM.render(<DateCell
         id={1}
         date='2017-10-05'
-        handleRowDoubleClick={() => { }}
-        handleRowSingleClick={() => { }} />, div);
+        handleRowDoubleClick={() => { 
+            //
+        }}
+        handleRowSingleClick={() => { 
+            //
+        }} />, div);
 });
