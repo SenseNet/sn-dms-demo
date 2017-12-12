@@ -162,7 +162,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
         const ctrl = e.ctrlKey ? true : false;
         const alt = e.altKey ? true : false;
         const shift = e.shiftKey ? true : false;
-        const { children } = this.props
+        const { children, ids } = this.props
 
         if (ctrl)
             this.setState({
@@ -189,17 +189,17 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                         break
                     case Key.UpArrow:
                         if (shift) {
-                            const upperItemIndex = this.props.ids.indexOf(Number(this.state.active)) - 1
+                            const upperItemIndex = ids.indexOf(Number(this.state.active)) - 1
                             upperItemIndex > -1 ?
-                                this.handleSimpleSelection(this.props.ids[upperItemIndex]) :
+                                this.handleSimpleSelection(children[ids[upperItemIndex]]) :
                                 null
                         }
                         break
                     case Key.DownArrow:
                         if (shift) {
-                            const upperItemIndex = this.props.ids.indexOf(Number(this.state.active)) + 1
-                            upperItemIndex < this.props.ids.length ?
-                                this.handleSimpleSelection(this.props.ids[upperItemIndex]) :
+                            const upperItemIndex = ids.indexOf(Number(this.state.active)) + 1
+                            upperItemIndex < ids.length ?
+                                this.handleSimpleSelection(children[ids[upperItemIndex]]) :
                                 null
                         }
                         break
