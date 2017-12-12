@@ -6,7 +6,7 @@ it('renders without crashing', () => {
     const div = document.createElement('div');
     ReactDOM.render(<DateCell
         id={1}
-        date='2017-10-05'
+        date="2017-10-05"
         handleRowDoubleClick={() => { 
             //
         }}
