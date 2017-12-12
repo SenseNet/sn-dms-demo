@@ -144,7 +144,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                 }
         }
         else if (e.ctrlKey) {
-            this.handleSimpleSelection(content.Id)
+            this.handleSimpleSelection(content)
         }
         else {
             e.target.getAttribute('type') !== 'checkbox' && window.innerWidth >= 700 ?
