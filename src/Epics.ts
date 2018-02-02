@@ -22,11 +22,11 @@ export module DMSEpics {
 
     export const deleteSuccessEpic = action$ =>
         action$.ofType('DELETE_CONTENT_SUCCESS', 'DELETE_BATCH_SUCCESS')
-            .mapTo(DMSActions.OpenMessageBar(MessageMode.info, { message: 'vmi is deleted successfully' }));
+            .mapTo(DMSActions.OpenMessageBar(MessageMode.info, { message: 'Delete was successfully' }));
 
     export const deleteFailureEpic = action$ =>
         action$.ofType('DELETE_CONTENT_FAILURE', 'DELETE_BATCH_FAILURE')
-            .mapTo(DMSActions.OpenMessageBar(MessageMode.error, { message: 'vmi error happened during deletion of x' }));
+            .mergeMap(action => DMSActions.OpenMessageBar(MessageMode.error, { message: action.error }));
 
     export const rootEpic = combineEpics(
         Epics.rootEpic,
