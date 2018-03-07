@@ -40,7 +40,7 @@ store.dispatch(Actions.InitSensenetStore('/Root/Sites/Default_Site', { select: '
 ReactDOM.render(
   <Provider store={store}>
     <Router basename="/">
-      <Sensenet store={store} repository={repository} history={history} />
+      <Sensenet repository={repository} history={history} />
     </Router>
   </Provider>,
   document.getElementById('root') as HTMLElement
