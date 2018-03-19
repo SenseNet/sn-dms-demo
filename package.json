@@ -101,7 +101,6 @@
     "report-coverage": "cat ./coverage/lcov.info | codecov"
   },
   "jest": {
-    "mapCoverage": true,
     "collectCoverageFrom": [
       "src/**/*.{ts,tsx}",
       "!src/index.tsx",
