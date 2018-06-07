@@ -205,13 +205,13 @@ class Login extends React.Component<LoginProps, LoginState> {
                 fullWidth
                 required
                 style={styles.formControl}>
-                <InputLabel htmlFor="email">{resources.EMAIL_INPUT_LABEL}</InputLabel>
                 <TextField
                   id="email"
                   onBlur={(event) => this.handleEmailBlur(event)}
                   onChange={(event) => this.handleEmailChange(event)}
                   fullWidth
                   autoFocus
+                  label={resources.EMAIL_INPUT_LABEL}
                   placeholder={resources.EMAIL_INPUT_PLACEHOLDER} />
                 <FormHelperText>{this.state.emailErrorMessage}</FormHelperText>
               </FormControl>
@@ -220,13 +220,13 @@ class Login extends React.Component<LoginProps, LoginState> {
                 fullWidth
                 required
                 style={styles.formControl}>
-                <InputLabel htmlFor="password">{resources.PASSWORD_INPUT_LABEL}</InputLabel>
                 <TextField
                   type="password"
                   id="password"
                   onBlur={(event) => this.handlePasswordBlur(event)}
                   onChange={(event) => this.handlePasswordChange(event)}
                   fullWidth
+                  label={resources.PASSWORD_INPUT_LABEL}
                   placeholder={resources.PASSWORD_INPUT_PLACEHOLDER} />
                 <FormHelperText>{this.state.passwordErrorMessage}</FormHelperText>
               </FormControl>
