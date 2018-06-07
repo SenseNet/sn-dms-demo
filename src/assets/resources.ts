@@ -19,4 +19,7 @@ export const resources = {
     CAPTCHA_ERROR: 'Please complete the captcha!',
     OPEN_MENU: 'Open menu',
     LOGOUT: 'Logout',
+    UPLOAD_BUTTON_TITLE: 'Upload',
+    UPLOAD_BAR_TITLE: 'Uploads',
+    UPLOAD_BAR_CLOSE_TITLE: 'Close',
 }
