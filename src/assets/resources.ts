@@ -19,4 +19,6 @@ export const resources = {
     CAPTCHA_ERROR: 'Please complete the captcha!',
     OPEN_MENU: 'Open menu',
     LOGOUT: 'Logout',
+    MYPROFILE: 'My profile',
+    SETTINGS: 'Settings',
 }
