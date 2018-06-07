@@ -1,4 +1,5 @@
-import Dialog, { DialogTitle } from 'material-ui/Dialog'
+import Dialog from '@material-ui/core/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -11,11 +12,11 @@ const styles = {
         display: 'none',
     },
     open: {
-        display: 'block',
-        position: 'absolute',
+        display: 'block' as any,
+        position: 'absolute' as any,
         zIndex: 10,
         maxHeight: 'calc(100vh - 96px)',
-        WebkitOverflowScrolling: 'touch',
+        WebkitOverflowScrolling: 'touch' as any,
         minWidth: 16,
         minHeight: 16,
         transform: 'scale(1, 1)',

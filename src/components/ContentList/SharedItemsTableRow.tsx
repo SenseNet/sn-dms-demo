@@ -1,8 +1,6 @@
-import Icon from 'material-ui/Icon'
-import {
-    TableCell,
-    TableRow,
-} from 'material-ui/Table'
+import Icon from '@material-ui/core/Icon'
+import TableCell from '@material-ui/core/TableCell'
+import TableRow from '@material-ui/core/TableRow'
 import * as React from 'react'
 import MediaQuery from 'react-responsive'
 import { icons } from '../../assets/icons'
@@ -10,11 +8,11 @@ import { icons } from '../../assets/icons'
 const styles = {
     actionMenuButton: {
         width: 30,
-        cursor: 'pointer',
+        cursor: 'pointer'as any,
     },
     checkboxButton: {
         width: 30,
-        cursor: 'pointer',
+        cursor: 'pointer'as any,
     },
     typeIcon: {
         width: 30,
@@ -24,10 +22,10 @@ const styles = {
         margin: '0 auto',
     },
     displayName: {
-        fontWeight: 'bold',
+        fontWeight: 'bold'as any,
     },
     icon: {
-        verticalAlign: 'middle',
+        verticalAlign: 'middle'as any,
     },
     table: {
         background: '#fff',

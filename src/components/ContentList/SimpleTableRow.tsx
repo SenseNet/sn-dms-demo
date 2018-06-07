@@ -1,9 +1,8 @@
+import Checkbox from '@material-ui/core/Checkbox'
 import { Reducers } from '@sensenet/redux'
-import Checkbox from 'material-ui/Checkbox'
-import {
-    TableCell,
-    TableRow,
-} from 'material-ui/Table'
+
+import TableCell from '@material-ui/core/TableCell'
+import TableRow from '@material-ui/core/TableRow'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -22,7 +21,7 @@ const styles = {
     },
     checkboxButton: {
         width: 30,
-        cursor: 'pointer',
+        cursor: 'pointer' as any,
     },
     checkbox: {
         opacity: 0,
@@ -34,12 +33,12 @@ const styles = {
         opacity: 1,
     },
     row: {
-        WebkitTouchCallout: 'none',
-        WebkitUserSelect: 'none',
-        KhtmlUserSelect: 'none',
-        MozUserSelect: 'none',
-        MsUserSelect: 'none',
-        UserSelect: 'none',
+        WebkitTouchCallout: 'none'as any,
+        WebkitUserSelect: 'none'as any,
+        KhtmlUserSelect: 'none'as any,
+        MozUserSelect: 'none'as any,
+        MsUserSelect: 'none'as any,
+        UserSelect: 'none'as any,
     },
 }
 

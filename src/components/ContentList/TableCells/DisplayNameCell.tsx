@@ -1,6 +1,6 @@
+import TableCell from '@material-ui/core/TableCell'
+import TextField from '@material-ui/core/TextField'
 import { Actions, Reducers } from '@sensenet/redux'
-import { TableCell } from 'material-ui/Table'
-import TextField from 'material-ui/TextField'
 import * as React from 'react'
 import { DropTarget } from 'react-dnd'
 import { DragSource } from 'react-dnd'
@@ -12,20 +12,20 @@ import * as DMSReducers from '../../../Reducers'
 
 const styles = {
     displayName: {
-        fontWeight: 'bold',
+        fontWeight: 'bold' as any,
     },
     hoveredDisplayName: {
-        fontWeight: 'bold',
+        fontWeight: 'bold' as any,
         color: '#03a9f4',
-        textDecoration: 'underline',
-        cursor: 'pointer',
+        textDecoration: 'underline' as any,
+        cursor: 'pointer' as any,
     },
     displayNameDiv: {
         padding: '16px 24px',
     },
     editedTitle: {
-        fontWeight: 'normal',
-        fontStyle: 'italic',
+        fontWeight: 'normal' as any,
+        fontStyle: 'italic' as any,
     },
 }
 
