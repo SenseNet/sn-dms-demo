@@ -1,6 +1,7 @@
+import IconButton from '@material-ui/core/IconButton'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
 import { Actions } from '@sensenet/redux'
-import IconButton from 'material-ui/IconButton'
-import Menu, { MenuItem } from 'material-ui/Menu'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -30,7 +31,7 @@ const styles = {
         width: 80,
     },
     menuIconMobile: {
-        width: 'auto',
+        width: 'auto' as any,
         marginLeft: '16px',
     },
     arrowButton: {

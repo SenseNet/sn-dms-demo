@@ -1,6 +1,6 @@
-import Search from 'material-ui-icons/Search'
-import IconButton from 'material-ui/IconButton'
-import TextField from 'material-ui/TextField'
+import IconButton from '@material-ui/core/IconButton'
+import TextField from '@material-ui/core/TextField'
+import Search from '@material-ui/icons/Search'
 import * as React from 'react'
 import MediaQuery from 'react-responsive'
 
@@ -19,7 +19,7 @@ const styles = {
     },
     searchButton: {
         color: '#fff',
-        verticalAlign: 'middle',
+        verticalAlign: 'middle' as any,
     },
     icon: {
         width: 40,
@@ -27,7 +27,7 @@ const styles = {
         padding: 5,
         top: 0,
         color: '#fff',
-        verticalAlign: 'middle',
+        verticalAlign: 'middle' as any,
     },
     animationStyle: {
         transition: 'width 0.75s cubic-bezier(0.000, 0.795, 0.000, 1.000)',

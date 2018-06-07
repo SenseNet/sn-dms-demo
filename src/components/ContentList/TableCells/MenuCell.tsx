@@ -1,7 +1,7 @@
+import IconButton from '@material-ui/core/IconButton'
+import TableCell from '@material-ui/core/TableCell'
+import MoreVert from '@material-ui/icons/MoreVert'
 import { Reducers } from '@sensenet/redux'
-import MoreVert from 'material-ui-icons/MoreVert'
-import IconButton from 'material-ui/IconButton'
-import { TableCell } from 'material-ui/Table'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -11,17 +11,17 @@ import * as DMSReducers from '../../../Reducers'
 const styles = {
     actionMenuButton: {
         width: 30,
-        cursor: 'pointer',
+        cursor: 'pointer' as any,
     },
     icon: {
-        verticalAlign: 'middle',
+        verticalAlign: 'middle' as any,
         opacity: 0,
     },
     selectedIcon: {
-        verticalAlign: 'middle',
+        verticalAlign: 'middle' as any,
     },
     hoveredIcon: {
-        verticalAlign: 'middle',
+        verticalAlign: 'middle' as any,
     },
 }
 

@@ -10,7 +10,7 @@ const styles = {
         flex: 1,
         color: '#fff',
         width: 40,
-        textDecoration: 'none',
+        textDecoration: 'none' as any,
         fontFamily: 'roboto',
         marginLeft: 24,
     },
@@ -22,17 +22,17 @@ const styles = {
     logoImg: {
         maxWidth: 30,
         maHeight: 30,
-        verticalAlign: 'middle',
+        verticalAlign: 'middle' as any,
         marginRight: 10,
     },
     logoImgMobile: {
         maxWidth: 30,
         maHeight: 30,
-        verticalAlign: 'middle',
+        verticalAlign: 'middle' as any,
         marginRight: 0,
     },
     logoText: {
-        display: 'inline-block',
+        display: 'inline-block' as any,
     },
 }
 
@@ -46,7 +46,7 @@ const appBarLogo = () => (
                 return <Link to="/" style={styles.logo} >
                     <img src={sensenetLogo} alt="sensenet" aria-label="sensenet" style={styles.logoImg} />
                     <span style={styles.logoText}>
-                        sensenet ECM
+                        sensenet DMS
                         </span>
                 </Link>
             } else {

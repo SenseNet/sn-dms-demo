@@ -1,9 +1,9 @@
-import Button from 'material-ui/Button'
-import FormControl from 'material-ui/Form/FormControl'
-import FormHelperText from 'material-ui/Form/FormHelperText'
-import Input from 'material-ui/Input'
-import InputLabel from 'material-ui/Input/InputLabel'
-import { CircularProgress } from 'material-ui/Progress'
+import Button from '@material-ui/core/Button'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import FormControl from '@material-ui/core/FormControl'
+import FormHelperText from '@material-ui/core/FormHelperText'
+import InputLabel from '@material-ui/core/InputLabel'
+import TextField from '@material-ui/core/TextField'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -29,7 +29,7 @@ const styles = {
     position: 'absolute' as any,
     width: 300,
     backgroundColor: 'rgba(255,255,255,0.5)',
-    textAlign: 'center',
+    textAlign: 'center' as any,
     zIndex: 10,
     padding: '120px 0',
   },
@@ -37,11 +37,11 @@ const styles = {
     backgroundColor: '#fff',
     padding: '60px',
     color: '#444',
-    textAlign: 'center',
+    textAlign: 'center' as any,
   },
   logoMobile: {
     padding: '50px  0',
-    textAlign: 'center',
+    textAlign: 'center' as any,
   },
 }
 
@@ -261,7 +261,7 @@ class Registration extends React.Component<RegistrationProps, RegistrationState>
                 required
                 style={styles.formControl}>
                 <InputLabel htmlFor="email">{resources.EMAIL_INPUT_LABEL}</InputLabel>
-                <Input
+                <TextField
                   id="email"
                   onBlur={(event) => this.handleEmailBlur(event)}
                   onChange={(event) => this.handleEmailChange(event)}
@@ -276,7 +276,7 @@ class Registration extends React.Component<RegistrationProps, RegistrationState>
                 required
                 style={styles.formControl}>
                 <InputLabel htmlFor="password">{resources.PASSWORD_INPUT_LABEL}</InputLabel>
-                <Input
+                <TextField
                   type="password"
                   id="password"
                   onBlur={(event) => this.handlePasswordBlur(event)}
@@ -291,7 +291,7 @@ class Registration extends React.Component<RegistrationProps, RegistrationState>
                 required
                 style={styles.formControl}>
                 <InputLabel htmlFor="password">{resources.CONFIRM_PASSWORD_INPUT_LABEL}</InputLabel>
-                <Input
+                <TextField
                   type="password"
                   id="confirmpassword"
                   onBlur={(event) => this.handleConfirmPasswordBlur(event)}
@@ -315,7 +315,7 @@ class Registration extends React.Component<RegistrationProps, RegistrationState>
               >
                 {resources.REGISTRATION_BUTTON_TEXT}</Button>
             </form>
-            <OauthRow />
+            <OauthRow oAuthProvider={this.props.params.oAuthProvider} />
           </div>
         </div>
       </div>
