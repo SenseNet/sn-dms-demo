@@ -1,3 +1,5 @@
+import { IUploadProgressInfo } from '@sensenet/client-core'
+import { File as SnFile } from '@sensenet/default-content-types'
 import { combineReducers } from 'redux'
 import { resources } from './assets/resources'
 
@@ -270,6 +272,48 @@ export const messagebar = combineReducers({
     horizontal,
 })
 
+export const uploads = <T extends SnFile = SnFile>(state: { uploads: Array<IUploadProgressInfo<T>>, showProgress: boolean } = { uploads: [], showProgress: false }, action) => {
+    switch (action.Type) {
+        case 'UPLOAD_ADD_ITEM':
+            return {
+                ...state,
+                showProgress: true,
+                uploads: [
+                    ...state.uploads,
+                    action.uploadItem,
+                ],
+            }
+        case 'UPLOAD_UPDATE_ITEM':
+            return {
+                ...state,
+                showProgress: true,
+                uploads: state.uploads.map((uploadItem) => {
+                    if (uploadItem.createdContent.Id === action.uploadItem.createdContent.Id) {
+                        return action.uploadItem
+                    }
+                    return uploadItem
+                }),
+            }
+        case 'UPLOAD_REMOVE_ITEM':
+            return {
+                ...state,
+                showProgress: true,
+                uploads: state.uploads.filter((u) => u.createdContent.Id !== action.uploadItem.createdContent.Id),
+            }
+        case 'UPLOAD_HIDE_PROGRESS':
+            return {
+                ...state,
+                showProgress: false,
+            }
+        case 'UPLOAD_SHOW_PROGRESS':
+            return {
+                ...state,
+                showProgress: false,
+            }
+    }
+    return state
+}
+
 export const dms = combineReducers({
     messagebar,
     actionmenu,
@@ -281,6 +325,7 @@ export const dms = combineReducers({
     register,
     isLoading,
     isSelectionModeOn,
+    uploads,
 })
 
 export const getRegistrationError = (state) => {

@@ -1,4 +1,5 @@
-import { Repository } from '@sensenet/client-core'
+import { IUploadFromEventOptions, IUploadProgressInfo, Repository, Upload } from '@sensenet/client-core'
+import { File as SnFile } from '@sensenet/default-content-types'
 
 enum MessageMode { error = 'error', warning = 'warning', info = 'info' }
 
@@ -58,4 +59,38 @@ export const openMessageBar = (mode: MessageMode, content, vertical?, horizontal
 })
 export const closeMessageBar = () => ({
     type: 'CLOSE_MESSAGE_BAR',
+})
+
+export const uploadFileWithProgress = <T extends SnFile = SnFile>(options: Exclude<{ repository: Repository }, IUploadFromEventOptions<T>>) => ({
+    // ToDo: Track progress with an observable
+    // maybe with an upload uploader progress updater init?
+    payload: async (repository: Repository) => {
+        const uploadProgress = await Upload.fromDropEvent({
+            ...options,
+            repository,
+        } as IUploadFromEventOptions<T>)
+    },
+})
+
+export const addUploadItem = <T extends SnFile = SnFile>(uploadItem: IUploadProgressInfo<T>) => ({
+    type: 'UPLOAD_ADD_ITEM',
+    uploadItem,
+})
+
+export const updateUploadItem = <T extends SnFile = SnFile>(uploadItem: IUploadProgressInfo<T>) => ({
+    type: 'UPLOAD_UPDATE_ITEM',
+    uploadItem,
+})
+
+export const removeUploadItem = <T extends SnFile = SnFile>(uploadItem: IUploadProgressInfo<T>) => ({
+    type: 'UPLOAD_REMOVE_ITEM',
+    uploadItem,
+})
+
+export const showUploadProgress = () => ({
+    type: 'UPLOAD_SHOW_PROGRESS',
+})
+
+export const hideUploadProgress = () => ({
+    type: 'UPLOAD_HIDE_PROGRESS',
 })
