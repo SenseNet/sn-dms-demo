@@ -20,6 +20,8 @@ export const resources = {
     OPEN_MENU: 'Open menu',
     LOGOUT: 'Logout',
     UPLOAD_BUTTON_TITLE: 'Upload',
+    UPLOAD_BUTTON_UPLOAD_FILE_TITLE: 'Upload file',
+    UPLOAD_BUTTON_UPLOAD_FOLDER_TITLE: 'Upload folder',
     UPLOAD_BAR_TITLE: 'Uploads',
     UPLOAD_BAR_CLOSE_TITLE: 'Close',
 }

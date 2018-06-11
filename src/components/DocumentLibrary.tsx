@@ -10,6 +10,7 @@ import * as DMSActions from '../Actions'
 import * as DMSReducers from '../Reducers'
 import ContentList from './ContentList/ContentList'
 import { FetchError } from './FetchError'
+import { UploadButton } from './Upload/UploadButton'
 
 interface DocumentLibraryProps {
     currentContent,
@@ -106,6 +107,8 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps, DocumentLibr
             )
         }
         return <div>
+            { /** temp to test button functionality */}
+            <UploadButton handleUpload={(ev) => this.handleFileDrop(ev, null as any)} uploadPath={this.props.currentContent.Path} />
             <ContentList
                 children={this.props.children}
                 currentId={this.props.currentContent.Id}
