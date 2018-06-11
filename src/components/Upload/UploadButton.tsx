@@ -1,4 +1,4 @@
-import { Button, ClickAwayListener, ListItemIcon, Menu, MenuItem, MuiThemeProvider } from '@material-ui/core'
+import { Button, ListItemIcon, Menu, MenuItem } from '@material-ui/core'
 import { FileUpload } from '@material-ui/icons'
 import * as React from 'react'
 import { v1 } from 'uuid'
