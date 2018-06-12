@@ -23,7 +23,8 @@ interface DocumentLibraryProps {
     currentId,
     cId,
     setCurrentId,
-    uploadContent
+    uploadContent,
+    uploadFileList: typeof DMSActions.uploadFileList,
 }
 
 interface DocumentLibraryState {
@@ -108,7 +109,14 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps, DocumentLibr
         }
         return <div>
             { /** temp to test button functionality */}
-            <UploadButton handleUpload={(ev) => this.handleFileDrop(ev, null as any)} uploadPath={this.props.currentContent.Path} />
+            <UploadButton multiple={true} handleUpload={(fileList) => this.props.uploadFileList({
+                fileList,
+                createFolders: true,
+                contentTypeName: 'File',
+                binaryPropertyName: 'Binary',
+                overwrite: false,
+                parentPath: this.props.currentContent.Path,
+                })} uploadPath={this.props.currentContent.Path} />
             <ContentList
                 children={this.props.children}
                 currentId={this.props.currentContent.Id}
@@ -140,4 +148,5 @@ export default withRouter(connect(mapStateToProps, {
     fetchContent: fetchContentAction,
     setCurrentId: DMSActions.setCurrentId,
     uploadContent: uploadContentAction,
+    uploadFileList: DMSActions.uploadFileList,
 })(DocumentLibrary))

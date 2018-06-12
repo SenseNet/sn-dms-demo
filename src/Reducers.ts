@@ -272,7 +272,7 @@ export const messagebar = combineReducers({
     horizontal,
 })
 
-export const uploads = <T extends SnFile = SnFile>(state: { uploads: Array<IUploadProgressInfo<T>>, showProgress: boolean } = { uploads: [], showProgress: false }, action) => {
+export const uploads = (state: { uploads: IUploadProgressInfo[], showProgress: boolean } = { uploads: [], showProgress: false }, action) => {
     switch (action.Type) {
         case 'UPLOAD_ADD_ITEM':
             return {

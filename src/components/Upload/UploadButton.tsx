@@ -8,7 +8,7 @@ export interface UploadButtonProps {
     uploadPath: string
     accept?: string
     multiple?: boolean
-    handleUpload: (ev: React.FormEvent<HTMLElement>) => void
+    handleUpload: (files: FileList) => void
 }
 
 export interface UploadButtonState {
@@ -30,7 +30,7 @@ export class UploadButton extends React.Component<UploadButtonProps, UploadButto
 
     private async handleUpload(ev: React.ChangeEvent<HTMLInputElement>) {
         ev.persist()
-        await this.props.handleUpload(ev)
+        await this.props.handleUpload(ev.target.files)
     }
 
     private toggleOpen(ev: React.MouseEvent<HTMLElement>) {

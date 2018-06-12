@@ -1,5 +1,8 @@
-import { IUploadFromEventOptions, IUploadProgressInfo, Repository, Upload } from '@sensenet/client-core'
+import { IUploadFromEventOptions, IUploadFromFileListOptions, IUploadOptions, IUploadProgressInfo, Repository, Upload } from '@sensenet/client-core'
+import { ObservableValue, usingAsync } from '@sensenet/client-utils'
 import { File as SnFile } from '@sensenet/default-content-types'
+import { Action, ActionCreator, Dispatch } from 'redux'
+import { ThunkAction } from 'redux-thunk'
 
 enum MessageMode { error = 'error', warning = 'warning', info = 'info' }
 
@@ -61,28 +64,39 @@ export const closeMessageBar = () => ({
     type: 'CLOSE_MESSAGE_BAR',
 })
 
-export const uploadFileWithProgress = <T extends SnFile = SnFile>(options: Exclude<{ repository: Repository }, IUploadFromEventOptions<T>>) => ({
-    // ToDo: Track progress with an observable
-    // maybe with an upload uploader progress updater init?
-    payload: async (repository: Repository) => {
-        const uploadProgress = await Upload.fromDropEvent({
-            ...options,
-            repository,
-        } as IUploadFromEventOptions<T>)
-    },
-})
+export const uploadFileList = <T extends SnFile>(options: Pick<IUploadFromFileListOptions<T>, Exclude<keyof IUploadFromFileListOptions<T>, 'repository'>>) =>
+    async (dispatch: Dispatch<{}>, getState, api: Repository) => {
 
-export const addUploadItem = <T extends SnFile = SnFile>(uploadItem: IUploadProgressInfo<T>) => ({
+        const progressObservable = new ObservableValue<IUploadProgressInfo>()
+
+        const observer = progressObservable.subscribe((currentValue) => {
+            dispatch(addUploadItem(currentValue))
+            observer.dispose()
+        })
+
+        usingAsync(progressObservable, async (progress) => {
+            progress.subscribe((currentValue) => {
+                dispatch(updateUploadItem(currentValue))
+            })
+            await Upload.fromFileList({
+                ...options,
+                repository: api,
+                progressObservable: progress ,
+            })
+        })
+    }
+
+export const addUploadItem = (uploadItem: IUploadProgressInfo) => ({
     type: 'UPLOAD_ADD_ITEM',
     uploadItem,
 })
 
-export const updateUploadItem = <T extends SnFile = SnFile>(uploadItem: IUploadProgressInfo<T>) => ({
+export const updateUploadItem = (uploadItem: IUploadProgressInfo) => ({
     type: 'UPLOAD_UPDATE_ITEM',
     uploadItem,
 })
 
-export const removeUploadItem = <T extends SnFile = SnFile>(uploadItem: IUploadProgressInfo<T>) => ({
+export const removeUploadItem = (uploadItem: IUploadProgressInfo) => ({
     type: 'UPLOAD_REMOVE_ITEM',
     uploadItem,
 })

@@ -1,13 +1,12 @@
 import { IconButton, Snackbar } from '@material-ui/core'
 import { Close } from '@material-ui/icons'
 import { IUploadProgressInfo } from '@sensenet/client-core'
-import { File as SnFile } from '@sensenet/default-content-types'
 import * as React from 'react'
 import { resources } from '../../assets/resources'
 
 export interface UploadBarProps {
-    items: Array<IUploadProgressInfo<SnFile>>
-    handleSelectItem?: (item: IUploadProgressInfo<SnFile>) => void
+    items: IUploadProgressInfo[]
+    handleSelectItem?: (item: IUploadProgressInfo) => void
 }
 
 export interface UploadBarState {
