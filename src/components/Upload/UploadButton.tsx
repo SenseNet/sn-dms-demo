@@ -5,10 +5,10 @@ import { v1 } from 'uuid'
 import { resources } from '../../assets/resources'
 
 export interface UploadButtonProps {
-    uploadPath: string
     accept?: string
     multiple?: boolean
     handleUpload: (files: FileList) => void
+    style: React.CSSProperties
 }
 
 export interface UploadButtonState {
@@ -48,7 +48,7 @@ export class UploadButton extends React.Component<UploadButtonProps, UploadButto
     }
 
     public render() {
-        return (<div>
+        return (<div style={this.props.style}>
             <Button
                 aria-owns={this.state.anchorElement ? this.uploadMenuId : null}
                 aria-haspopup={true}
@@ -57,6 +57,7 @@ export class UploadButton extends React.Component<UploadButtonProps, UploadButto
                 color="primary"
                 style={{
                     color: '#fff',
+                    width: '100%',
                 }}
                 onClick={(ev) => this.toggleOpen(ev)}>
                 <FileUpload />
@@ -111,21 +112,6 @@ export class UploadButton extends React.Component<UploadButtonProps, UploadButto
                     }
                 />
             </div>
-
-            {/* <input
-                        style={{ visibility: 'hidden' }}
-                        accept={this.props.accept}
-                        multiple={this.props.multiple}
-                        id={this.buttonId}
-                        type="file"
-                        onChange={(ev) => this.handleUpload(ev)}
-                    />
-                    <label htmlFor={this.buttonId}>
-                        <Button variant="contained" component="span" color="primary">
-                            <FileUpload />
-                            {resources.UPLOAD_BUTTON_UPLOAD_FILE_TITLE}
-                        </Button>
-                    </label> */}
         </div >
         )
     }
