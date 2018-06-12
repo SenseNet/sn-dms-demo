@@ -24,4 +24,6 @@ export const resources = {
     UPLOAD_BUTTON_UPLOAD_FOLDER_TITLE: 'Upload folder',
     UPLOAD_BAR_TITLE: 'Uploads',
     UPLOAD_BAR_CLOSE_TITLE: 'Close',
+    MYPROFILE: 'My profile',
+    SETTINGS: 'Settings',
 }

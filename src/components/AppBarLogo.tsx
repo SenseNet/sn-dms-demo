@@ -11,28 +11,32 @@ const styles = {
         color: '#fff',
         width: 40,
         textDecoration: 'none' as any,
-        fontFamily: 'roboto',
-        marginLeft: 24,
+        fontFamily: 'Raleway Regular',
+    },
+    logoSpan: {
+        fontFamily: 'Raleway Regular',
+        fontWeight: '600' as any,
     },
     logoMobile: {
         flex: 1,
         marginLeft: 0,
-        width: 30,
+        width: 25,
     },
     logoImg: {
-        maxWidth: 30,
-        maHeight: 30,
+        maxWidth: 25,
+        maHeight: 25,
         verticalAlign: 'middle' as any,
-        marginRight: 10,
+        marginRight: 5,
     },
     logoImgMobile: {
-        maxWidth: 30,
-        maHeight: 30,
+        maxWidth: 25,
+        maHeight: 25,
         verticalAlign: 'middle' as any,
         marginRight: 0,
     },
     logoText: {
         display: 'inline-block' as any,
+        verticalAlign: 'middle' as any,
     },
 }
 
@@ -46,7 +50,7 @@ const appBarLogo = () => (
                 return <Link to="/" style={styles.logo} >
                     <img src={sensenetLogo} alt="sensenet" aria-label="sensenet" style={styles.logoImg} />
                     <span style={styles.logoText}>
-                        sensenet DMS
+                        <span style={styles.logoSpan}>sense</span>net
                         </span>
                 </Link>
             } else {

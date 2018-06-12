@@ -19,4 +19,7 @@ export const icons = {
     edit: 'mode_edit',
     tick: 'done',
     upload: 'file_upload',
+    logout: 'power_settings_new',
+    settings: 'settings',
+    profile: 'person',
 }

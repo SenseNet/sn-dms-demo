@@ -1,17 +1,31 @@
+import { withStyles } from '@material-ui/core'
 import Checkbox from '@material-ui/core/Checkbox'
+import createStyles from '@material-ui/core/styles/createStyles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import TableSortLabel from '@material-ui/core/TableSortLabel'
+import CheckBoxIcon from '@material-ui/icons/CheckBox'
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 import * as React from 'react'
 
 const columnData = [
-    { id: 'Icon', numeric: false, disablePadding: true, label: 'Type' },
-    { id: 'DisplayName', numeric: false, disablePadding: false, label: 'Display Name' },
-    { id: 'ModificationDate', numeric: false, disablePadding: false, label: 'Last modified' },
+    // { id: 'Icon', numeric: false, disablePadding: true, label: 'Type' },
+    { id: 'DisplayName', numeric: false, disablePadding: true, label: 'Display Name' },
+    { id: 'ModificationDate', numeric: false, disablePadding: true, label: 'Last modified' },
+    { id: 'Owner', numeric: false, disablePadding: true, label: 'Owner' },
 ]
+
+const style = (theme) => createStyles({
+    root: {
+        color: '#ccc',
+    },
+    sizeIcon: {
+        fontSize: 20,
+    },
+})
 
 interface ListHeadProps {
     numSelected,
@@ -19,26 +33,34 @@ interface ListHeadProps {
     onSelectAllClick,
     order,
     orderBy,
-    count
+    count,
+    classes
 }
 
-export class ListHead extends React.Component<ListHeadProps, {}> {
+class ListHead extends React.Component<ListHeadProps, {}> {
     public createSortHandler = (property) => (event) => {
         this.props.onRequestSort(event, property)
     }
     public render() {
-        const { onSelectAllClick, order, orderBy, numSelected } = this.props
+        const { onSelectAllClick, order, orderBy, numSelected, classes } = this.props
 
         return (
             <TableHead>
                 <TableRow>
-                        <TableCell padding="checkbox">
-                            <Checkbox
-                                indeterminate={numSelected > 0 && numSelected < this.props.count}
-                                checked={numSelected === this.props.count}
-                                onChange={onSelectAllClick}
-                            />
-                        </TableCell>
+                    <TableCell padding="none">
+                        <Checkbox
+                            indeterminate={numSelected > 0 && numSelected < this.props.count}
+                            checked={numSelected === this.props.count}
+                            onChange={onSelectAllClick}
+                            color="primary"
+                            classes={{
+                                root: classes.root,
+                            }}
+                            style={{ fontSize: 20 }}
+                            icon={<CheckBoxOutlineBlankIcon className={classes.sizeIcon} />}
+                            checkedIcon={<CheckBoxIcon className={classes.sizeIcon} />}
+                        />
+                    </TableCell>
                     {columnData.map((column) => {
                         return (
                             <TableCell
@@ -63,3 +85,5 @@ export class ListHead extends React.Component<ListHeadProps, {}> {
         )
     }
 }
+
+export default withStyles(style)(ListHead)

@@ -27,8 +27,8 @@ const myReducer = combineReducers({
 
 const repository = new Repository({
   repositoryUrl: process.env.REACT_APP_SERVICE_URL || 'https://dmsservice.demo.sensenet.com',
-  requiredSelect: ['Id', 'Path', 'Name', 'Type', 'ParentId', 'Actions', 'Avatar'] as any,
-  defaultExpand: ['Actions'] as any,
+  requiredSelect: ['Id', 'Path', 'Name', 'Type', 'ParentId', 'Actions', 'Avatar', 'Owner'] as any,
+  defaultExpand: ['Actions', 'Owner'] as any,
 })
 const jwt = new JwtService(repository)
 const googleOauthProvider = addGoogleAuth(jwt, {clientId: '188576321252-cad8ho16mf68imajdvai6e2cpl3iv8ss.apps.googleusercontent.com'})
@@ -37,6 +37,7 @@ const options = {
   repository,
   rootReducer: myReducer,
   middlewares: [thunk.withExtraArgument(repository)],
+  logger: true,
 } as Store.CreateStoreOptions<any>
 const store = Store.createSensenetStore(options)
 
