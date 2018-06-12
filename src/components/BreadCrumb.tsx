@@ -1,7 +1,5 @@
-import AppBar from '@material-ui/core/AppBar'
 import Button from '@material-ui/core/Button'
 import Icon from '@material-ui/core/Icon'
-import Toolbar from '@material-ui/core/Toolbar'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -14,7 +12,8 @@ import { icons } from '../assets/icons'
 const styles = {
     breadCrumb: {},
     breadCrumbItem: {
-        color: '#fff',
+        textTransform: 'none',
+        fontWeight: 'bold',
     },
     breadCrumbIcon: {
         marginLeft: 30,
@@ -41,37 +40,33 @@ class BreadCrumb extends React.Component<{ breadcrumb, history }, {}> {
     }
     public render() {
         return <div style={styles.breadCrumb}>
-            <AppBar position="static">
-                <Toolbar>
-                    <MediaQuery minDeviceWidth={700}>
-                        {(matches) => {
-                            return this.props.breadcrumb.map((n, i) => {
-                                if (matches) {
-                                    return <Button onClick={(event) => this.handleClick(event, n.id)}
-                                        key={n.id}
-                                        style={styles.breadCrumbItem}>
-                                        {n.name}
-                                        {i !== (this.props.breadcrumb.length - 1) ?
-                                            <Icon style={styles.breadCrumbIcon}>{icons.arrowRight}</Icon> :
-                                            ''}
-                                    </Button>
-                                } else if (!matches && i === (this.props.breadcrumb.length - 1)) {
-                                    return <Button onClick={(event) => this.handleClick(event, n.id)}
-                                        key={n.id}
-                                        style={styles.breadCrumbItem}>
-                                        {this.props.breadcrumb.length > 1 ?
-                                            <Icon style={styles.breadCrumbIconLeft}>{icons.arrowLeft}</Icon> :
-                                            ''}
-                                        {n.name}
-                                    </Button>
-                                } else {
-                                    return null
-                                }
-                            })
-                        }}
-                    </MediaQuery>
-                </Toolbar>
-            </AppBar>
+            <MediaQuery minDeviceWidth={700}>
+                {(matches) => {
+                    return this.props.breadcrumb.map((n, i) => {
+                        if (matches) {
+                            return <Button onClick={(event) => this.handleClick(event, n.id)}
+                                key={n.id}
+                                style={styles.breadCrumbItem as any}>
+                                {n.name}
+                                {i !== (this.props.breadcrumb.length - 1) ?
+                                    <Icon style={styles.breadCrumbIcon}>{icons.arrowRight}</Icon> :
+                                    ''}
+                            </Button>
+                        } else if (!matches && i === (this.props.breadcrumb.length - 1)) {
+                            return <Button onClick={(event) => this.handleClick(event, n.id)}
+                                key={n.id}
+                                style={styles.breadCrumbItem as any}>
+                                {this.props.breadcrumb.length > 1 ?
+                                    <Icon style={styles.breadCrumbIconLeft}>{icons.arrowLeft}</Icon> :
+                                    ''}
+                                {n.name}
+                            </Button>
+                        } else {
+                            return null
+                        }
+                    })
+                }}
+            </MediaQuery>
         </div>
     }
 }

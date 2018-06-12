@@ -4,7 +4,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import * as DMSActions from '../Actions'
-import BreadCrumb from '../components/BreadCrumb'
+import { ListToolbar } from '../components/ContentList/ListToolbar'
 import DashboarDrawer from '../components/DashboardDrawer'
 import DocumentLibrary from '../components/DocumentLibrary'
 import FloatingActionButton from '../components/FloatingActionButton'
@@ -97,14 +97,14 @@ class Dashboard extends React.Component<DashboardProps, { currentId }> {
                             <DashboarDrawer />
                             <div style={styles.main}>
                                 <div style={{ height: 48, width: '100%' }}></div>
-                                <BreadCrumb />
+                                <ListToolbar />
                                 <DocumentLibrary parentId={id} />
                             </div>
                         </div>
                     } else {
                         return <div style={styles.root}>
                             <div style={styles.dashBoardInnerMobile}>
-                                <BreadCrumb />
+                                <ListToolbar />
                                 <DocumentLibrary parentId={id} />
                             </div>
                         </div>
