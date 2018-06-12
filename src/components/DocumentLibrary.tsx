@@ -35,7 +35,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps, DocumentLibr
         super(props)
         this.state = {
             select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner'],
-            expand: ['Actions'],
+            expand: ['Actions', 'Owner'],
             orderby: ['IsFolder desc', 'DisplayName asc'],
             filter: 'ContentType ne \'SystemFolder\'',
             scenario: 'DMSListItem',

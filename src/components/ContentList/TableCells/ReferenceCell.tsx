@@ -7,8 +7,9 @@ import { connect } from 'react-redux'
 import * as DragAndDrop from '../../../DragAndDrop'
 
 const styles = {
-    cellPadding: {
-        padding: '16px 24px',
+    selected: {
+        color: '#016D9E',
+        fontWeight: 'bold' as any,
     },
 }
 
@@ -20,7 +21,8 @@ interface ReferenceCellProps {
     connectDropTarget,
     isCopy,
     fieldName,
-    optionName
+    optionName,
+    isSelected
 }
 
 @DropTarget('row', DragAndDrop.rowTarget, (conn, monitor) => ({
@@ -34,7 +36,7 @@ class ReferenceCell extends React.Component<ReferenceCellProps, {}> {
         super(props)
     }
     public render() {
-        const { content, handleRowSingleClick, handleRowDoubleClick, connectDragSource, connectDropTarget, isCopy, fieldName, optionName } = this.props
+        const { content, handleRowSingleClick, handleRowDoubleClick, connectDragSource, connectDropTarget, isCopy, fieldName, optionName, isSelected } = this.props
         const dropEffect = isCopy ? 'copy' : 'move'
         const isVmi = true
         return (
@@ -42,7 +44,7 @@ class ReferenceCell extends React.Component<ReferenceCellProps, {}> {
                 padding="none"
                 onClick={(event) => handleRowSingleClick(event, content.Id)}
                 onDoubleClick={(event) => handleRowDoubleClick(event, content.Id)}>
-                {!isVmi ? null : connectDragSource(connectDropTarget(<div style={styles.cellPadding}>
+                {!isVmi ? null : connectDragSource(connectDropTarget(<div style={isSelected ? styles.selected : null }>
                     {content[fieldName][optionName]}
                 </div>,
                 ), { dropEffect })}

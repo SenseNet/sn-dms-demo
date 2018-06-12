@@ -15,7 +15,7 @@ import * as DMSActions from '../../Actions'
 import * as DragAndDrop from '../../DragAndDrop'
 import * as DMSReducers from '../../Reducers'
 import ActionMenu from '../ActionMenu/ActionMenu'
-import SelectionBox from '../SelectionBox'
+// import SelectionBox from '../SelectionBox'
 import ListHead from './ListHead'
 import ParentFolderTableRow from './ParentFolderTableRow'
 import { SharedItemsTableRow } from './SharedItemsTableRow'
@@ -325,7 +325,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                     </TableBody>
                 </Table>
                 <ActionMenu />
-                <SelectionBox />
+                {/* <SelectionBox /> */}
             </div>)
     }
 }

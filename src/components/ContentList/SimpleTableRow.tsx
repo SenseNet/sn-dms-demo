@@ -5,6 +5,8 @@ import { withStyles } from '@material-ui/core'
 import createStyles from '@material-ui/core/styles/createStyles'
 import TableCell from '@material-ui/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
+import CheckBoxIcon from '@material-ui/icons/CheckBox'
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -48,6 +50,9 @@ const styles = {
 const style = (theme) => createStyles({
     root: {
         color: '#ccc',
+    },
+    sizeIcon: {
+        fontSize: 20,
     },
 })
 
@@ -139,9 +144,8 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
             >
                 <MediaQuery minDeviceWidth={700}>
                     <TableCell
-                        padding="checkbox"
+                        padding="none"
                         style={styles.checkboxButton}
-
                         onClick={(event) => handleRowSingleClick(event, content)}
                         onDoubleClick={(event) => handleRowDoubleClick(event, content.Id, content.Type)}>
                         <div>
@@ -150,7 +154,9 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
                                 color="primary"
                                 classes={{
                                     root: classes.root,
-                                  }}
+                                }}
+                                icon={<CheckBoxOutlineBlankIcon className={classes.sizeIcon} />}
+                                checkedIcon={<CheckBoxIcon className={classes.sizeIcon} />}
                             />
                         </div>
                     </TableCell>
@@ -173,7 +179,8 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
                             icon={content.Icon}
                             handleRowSingleClick={(event) => matches ? handleRowSingleClick(event, content) : handleTap(event, content, content.Type)}
                             handleRowDoubleClick={(event) => matches ? handleRowDoubleClick(event, content.Id, content.Type) : event.preventDefault()}
-                            isCopy={isCopy} />
+                            isCopy={isCopy}
+                            isSelected={isSelected} />
                     }}
                 </MediaQuery>
                 <MediaQuery minDeviceWidth={700}>
@@ -182,16 +189,8 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
                         date={content.ModificationDate}
                         handleRowDoubleClick={this.props.handleRowDoubleClick}
                         handleRowSingleClick={this.props.handleRowSingleClick}
-                        isCopy={isCopy} />
-                </MediaQuery>
-                <MediaQuery minDeviceWidth={700}>
-                    {(matches) => {
-                        return <MenuCell
-                            content={content}
-                            isHovered={matches ? isHovered : true}
-                            isSelected={isSelected}
-                            actionMenuIsOpen={this.state.actionMenuIsOpen} />
-                    }}
+                        isCopy={isCopy}
+                        isSelected={isSelected} />
                 </MediaQuery>
                 <MediaQuery minDeviceWidth={700}>
                     {(matches) => {
@@ -201,7 +200,17 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
                             handleRowSingleClick={this.props.handleRowSingleClick}
                             isCopy={isCopy}
                             fieldName="Owner"
-                            optionName="FullName" />
+                            optionName="FullName"
+                            isSelected={isSelected} />
+                    }}
+                </MediaQuery>
+                <MediaQuery minDeviceWidth={700}>
+                    {(matches) => {
+                        return <MenuCell
+                            content={content}
+                            isHovered={matches ? isHovered : true}
+                            isSelected={isSelected}
+                            actionMenuIsOpen={this.state.actionMenuIsOpen} />
                     }}
                 </MediaQuery>
             </TableRow>

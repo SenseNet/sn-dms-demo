@@ -8,8 +8,9 @@ import { connect } from 'react-redux'
 import * as DragAndDrop from '../../../DragAndDrop'
 
 const styles = {
-    cellPadding: {
-        padding: '16px 24px',
+    selected: {
+        color: '#016D9E',
+        fontWeight: 'bold' as any,
     },
 }
 
@@ -23,7 +24,8 @@ interface DateCellProps {
     isDragging: boolean,
     isCopy: boolean,
     selected,
-    selectedContentItems
+    selectedContentItems,
+    isSelected
 }
 
 @DropTarget('row', DragAndDrop.rowTarget, (conn, monitor) => ({
@@ -37,7 +39,7 @@ class DateCell extends React.Component<DateCellProps, {}> {
         super(props)
     }
     public render() {
-        const { content, date, handleRowSingleClick, handleRowDoubleClick, connectDragSource, connectDropTarget, isCopy } = this.props
+        const { content, date, handleRowSingleClick, handleRowDoubleClick, connectDragSource, connectDropTarget, isCopy, isSelected } = this.props
         const dropEffect = isCopy ? 'copy' : 'move'
         const isVmi = true
         return (
@@ -45,7 +47,8 @@ class DateCell extends React.Component<DateCellProps, {}> {
                 padding="none"
                 onClick={(event) => handleRowSingleClick(event, content.Id)}
                 onDoubleClick={(event) => handleRowDoubleClick(event, content.Id)}>
-                {!isVmi ? null : connectDragSource(connectDropTarget(<div style={styles.cellPadding}>
+                {!isVmi ? null : connectDragSource(connectDropTarget(<div
+                style={isSelected ? {...styles.selected} : null}>
                     <Moment fromNow>
                         {date}
                     </Moment>

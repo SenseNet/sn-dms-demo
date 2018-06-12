@@ -35,6 +35,7 @@ const googleOauthProvider = addGoogleAuth(jwt, {clientId: '188576321252-cad8ho16
 const options = {
   repository,
   rootReducer: myReducer,
+  logger: true,
 } as Store.CreateStoreOptions<any>
 const store = Store.createSensenetStore(options)
 
