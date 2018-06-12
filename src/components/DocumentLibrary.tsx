@@ -1,4 +1,3 @@
-import { IUploadProgressInfo } from '@sensenet/client-core'
 import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { DragDropContext } from 'react-dnd'
@@ -11,8 +10,6 @@ import * as DMSActions from '../Actions'
 import * as DMSReducers from '../Reducers'
 import ContentList from './ContentList/ContentList'
 import { FetchError } from './FetchError'
-import { UploadBar } from './Upload/UploadBar'
-import { UploadButton } from './Upload/UploadButton'
 
 interface DocumentLibraryProps {
     currentContent,
@@ -25,10 +22,7 @@ interface DocumentLibraryProps {
     currentId,
     cId,
     setCurrentId,
-    uploadContent,
-    uploadFileList: typeof DMSActions.uploadFileList,
-    uploadItems: IUploadProgressInfo[]
-    showUploads: boolean
+    uploadContent
 }
 
 interface DocumentLibraryState {
@@ -113,15 +107,6 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps, DocumentLibr
         }
         return <div>
             { /** temp to test button functionality */}
-            <UploadButton multiple={true} handleUpload={(fileList) => this.props.uploadFileList({
-                fileList,
-                createFolders: true,
-                contentTypeName: 'File',
-                binaryPropertyName: 'Binary',
-                overwrite: false,
-                parentPath: this.props.currentContent.Path,
-                })} uploadPath={this.props.currentContent.Path} />
-                <UploadBar items={this.props.uploadItems} isOpened={this.props.showUploads}/>
             <ContentList
                 children={this.props.children}
                 currentId={this.props.currentContent.Id}
@@ -155,5 +140,4 @@ export default withRouter(connect(mapStateToProps, {
     fetchContent: fetchContentAction,
     setCurrentId: DMSActions.setCurrentId,
     uploadContent: uploadContentAction,
-    uploadFileList: DMSActions.uploadFileList,
 })(DocumentLibrary))
