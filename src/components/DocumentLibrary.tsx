@@ -1,3 +1,4 @@
+import { IUploadProgressInfo } from '@sensenet/client-core'
 import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { DragDropContext } from 'react-dnd'
@@ -10,6 +11,7 @@ import * as DMSActions from '../Actions'
 import * as DMSReducers from '../Reducers'
 import ContentList from './ContentList/ContentList'
 import { FetchError } from './FetchError'
+import { UploadBar } from './Upload/UploadBar'
 import { UploadButton } from './Upload/UploadButton'
 
 interface DocumentLibraryProps {
@@ -25,6 +27,8 @@ interface DocumentLibraryProps {
     setCurrentId,
     uploadContent,
     uploadFileList: typeof DMSActions.uploadFileList,
+    uploadItems: IUploadProgressInfo[]
+    showUploads: boolean
 }
 
 interface DocumentLibraryState {
@@ -117,6 +121,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps, DocumentLibr
                 overwrite: false,
                 parentPath: this.props.currentContent.Path,
                 })} uploadPath={this.props.currentContent.Path} />
+                <UploadBar items={this.props.uploadItems} isOpened={this.props.showUploads}/>
             <ContentList
                 children={this.props.children}
                 currentId={this.props.currentContent.Id}
@@ -141,6 +146,8 @@ const mapStateToProps = (state, match) => {
         currentContent: Reducers.getCurrentContent(state.sensenet),
         currentId: Number(match.match.url.replace('/', '')),
         cId: DMSReducers.getCurrentId(state.dms),
+        uploadItems: state.dms.uploads.items,
+        showUploads: state.dms.uploads.showProgress,
     }
 }
 
