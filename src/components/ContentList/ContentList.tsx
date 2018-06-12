@@ -1,6 +1,5 @@
 
 import CircularProgress from '@material-ui/core/CircularProgress'
-import Paper from '@material-ui/core/Paper'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import { Actions, Reducers } from '@sensenet/redux'
@@ -17,7 +16,7 @@ import * as DragAndDrop from '../../DragAndDrop'
 import * as DMSReducers from '../../Reducers'
 import ActionMenu from '../ActionMenu/ActionMenu'
 import SelectionBox from '../SelectionBox'
-import { ListHead } from './ListHead'
+import ListHead from './ListHead'
 import ParentFolderTableRow from './ParentFolderTableRow'
 import { SharedItemsTableRow } from './SharedItemsTableRow'
 import SimpleTableRow from './SimpleTableRow'
@@ -285,49 +284,47 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
         const { connectDropTarget } = this.props
         return connectDropTarget(
             <div>
-                <Paper style={styles.paper as any}>
-                    <Table
-                        onKeyDown={(event) => this.handleKeyDown(event)}
-                        onKeyUp={(event) => this.handleKeyUp(event)}>
-                        <MediaQuery minDeviceWidth={700}>
-                            <ListHead
-                                numSelected={this.state.selected.length}
-                                order={this.state.order}
-                                orderBy={this.state.orderBy}
-                                onSelectAllClick={this.handleSelectAllClick}
-                                onRequestSort={this.handleRequestSort}
-                                count={this.props.ids.length}
-                            />
-                        </MediaQuery>
-                        <TableBody style={styles.tableBody}>
-                            {this.props.parentId && this.isChildrenFolder() ?
+                <Table
+                    onKeyDown={(event) => this.handleKeyDown(event)}
+                    onKeyUp={(event) => this.handleKeyUp(event)}>
+                    <MediaQuery minDeviceWidth={700}>
+                        <ListHead
+                            numSelected={this.state.selected.length}
+                            order={this.state.order}
+                            orderBy={this.state.orderBy}
+                            onSelectAllClick={this.handleSelectAllClick}
+                            onRequestSort={this.handleRequestSort}
+                            count={this.props.ids.length}
+                        />
+                    </MediaQuery>
+                    <TableBody style={styles.tableBody}>
+                        {/* {this.props.parentId && this.isChildrenFolder() ?
                                 <ParentFolderTableRow parentId={this.props.parentId} history={this.props.history} /> :
                                 <SharedItemsTableRow currentId={this.props.currentId} />
-                            }
-                            {this.props.isFetching || this.props.isLoading ?
-                                <tr>
-                                    <td colSpan={5} style={styles.loader}>
-                                        <CircularProgress color="secondary" size={50} />
-                                    </td>
-                                </tr>
-                                : this.props.ids.map((n) => {
-                                    const content = this.props.children[n]
-                                    return typeof content !== 'undefined' ? (
-                                        <SimpleTableRow
-                                            content={content}
-                                            key={content.Id}
-                                            handleRowDoubleClick={this.handleRowDoubleClick}
-                                            handleRowSingleClick={this.handleRowSingleClick}
-                                            handleTap={(e) => this.handleTap(e, content.Id, content.Type )}
-                                            isCopy={this.state.copy} />
-                                    ) : null
-                                })
-                            }
+                            } */}
+                        {this.props.isFetching || this.props.isLoading ?
+                            <tr>
+                                <td colSpan={5} style={styles.loader}>
+                                    <CircularProgress color="secondary" size={50} />
+                                </td>
+                            </tr>
+                            : this.props.ids.map((n) => {
+                                const content = this.props.children[n]
+                                return typeof content !== 'undefined' ? (
+                                    <SimpleTableRow
+                                        content={content}
+                                        key={content.Id}
+                                        handleRowDoubleClick={this.handleRowDoubleClick}
+                                        handleRowSingleClick={this.handleRowSingleClick}
+                                        handleTap={(e) => this.handleTap(e, content.Id, content.Type)}
+                                        isCopy={this.state.copy} />
+                                ) : null
+                            })
+                        }
 
-                        </TableBody>
-                    </Table>
-                    <ActionMenu />
-                </Paper>
+                    </TableBody>
+                </Table>
+                <ActionMenu />
                 <SelectionBox />
             </div>)
     }
