@@ -3,7 +3,7 @@ import TableHead from '@material-ui/core/TableHead'
 import { shallow } from 'enzyme'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import { ListHead } from '../ListHead'
+import ListHead from '../ListHead'
 
 import * as Enzyme from 'enzyme'
 import * as Adapter from 'enzyme-adapter-react-16'

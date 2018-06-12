@@ -3,7 +3,6 @@ import { Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { DragSource } from 'react-dnd'
 import { DropTarget } from 'react-dnd'
-import Moment from 'react-moment'
 import { connect } from 'react-redux'
 import * as DragAndDrop from '../../../DragAndDrop'
 
@@ -13,17 +12,15 @@ const styles = {
     },
 }
 
-interface DateCellProps {
-    date,
+interface ReferenceCellProps {
     content,
     handleRowSingleClick,
     handleRowDoubleClick,
     connectDragSource,
     connectDropTarget,
-    isDragging: boolean,
-    isCopy: boolean,
-    selected,
-    selectedContentItems
+    isCopy,
+    fieldName,
+    optionName
 }
 
 @DropTarget('row', DragAndDrop.rowTarget, (conn, monitor) => ({
@@ -32,12 +29,12 @@ interface DateCellProps {
     canDrop: monitor.canDrop(),
 }))
 @DragSource('row', DragAndDrop.rowSource, DragAndDrop.collect)
-class DateCell extends React.Component<DateCellProps, {}> {
+class ReferenceCell extends React.Component<ReferenceCellProps, {}> {
     constructor(props) {
         super(props)
     }
     public render() {
-        const { content, date, handleRowSingleClick, handleRowDoubleClick, connectDragSource, connectDropTarget, isCopy } = this.props
+        const { content, handleRowSingleClick, handleRowDoubleClick, connectDragSource, connectDropTarget, isCopy, fieldName, optionName } = this.props
         const dropEffect = isCopy ? 'copy' : 'move'
         const isVmi = true
         return (
@@ -46,9 +43,7 @@ class DateCell extends React.Component<DateCellProps, {}> {
                 onClick={(event) => handleRowSingleClick(event, content.Id)}
                 onDoubleClick={(event) => handleRowDoubleClick(event, content.Id)}>
                 {!isVmi ? null : connectDragSource(connectDropTarget(<div style={styles.cellPadding}>
-                    <Moment fromNow>
-                        {date}
-                    </Moment>
+                    {content[fieldName][optionName]}
                 </div>,
                 ), { dropEffect })}
             </TableCell>
@@ -64,4 +59,4 @@ const mapStateToProps = (state, match) => {
 }
 
 export default connect(mapStateToProps, {
-})(DateCell)
+})(ReferenceCell)

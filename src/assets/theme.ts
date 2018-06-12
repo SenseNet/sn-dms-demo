@@ -18,6 +18,13 @@ const theme = createMuiTheme({
             dark: '#3d8b40',
             contrastText: '#fff',
         },
+        error: {
+            main: '#f44336',
+        },
+        text: {
+            primary: '#666',
+            secondary: '#666',
+        },
     },
     typography: {
         // In Japanese the characters are usually larger.

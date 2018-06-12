@@ -1,6 +1,8 @@
 import Checkbox from '@material-ui/core/Checkbox'
 import { Reducers } from '@sensenet/redux'
 
+import { withStyles } from '@material-ui/core'
+import createStyles from '@material-ui/core/styles/createStyles'
 import TableCell from '@material-ui/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
 import * as React from 'react'
@@ -14,6 +16,7 @@ import { IconCell } from './TableCells'
 import DateCell from './TableCells/DateCell'
 import DisplayNameCell from './TableCells/DisplayNameCell'
 import MenuCell from './TableCells/MenuCell'
+import ReferenceCell from './TableCells/ReferenceCell'
 
 const styles = {
     selectedRow: {
@@ -33,14 +36,20 @@ const styles = {
         opacity: 1,
     },
     row: {
-        WebkitTouchCallout: 'none'as any,
-        WebkitUserSelect: 'none'as any,
-        KhtmlUserSelect: 'none'as any,
-        MozUserSelect: 'none'as any,
-        MsUserSelect: 'none'as any,
-        UserSelect: 'none'as any,
+        WebkitTouchCallout: 'none' as any,
+        WebkitUserSelect: 'none' as any,
+        KhtmlUserSelect: 'none' as any,
+        MozUserSelect: 'none' as any,
+        MsUserSelect: 'none' as any,
+        UserSelect: 'none' as any,
     },
 }
+
+const style = (theme) => createStyles({
+    root: {
+        color: '#ccc',
+    },
+})
 
 interface SimpleTableRowProps {
     content,
@@ -57,7 +66,8 @@ interface SimpleTableRowProps {
     handleTap,
     selectionModeOn,
     selectionModeOff,
-    isCopy: boolean
+    isCopy: boolean,
+    classes
 }
 
 interface SimpleTableRowState {
@@ -109,7 +119,7 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
         this.props.handleRowSingleClick(e, content)
     }
     public render() {
-        const { content, handleRowSingleClick, handleRowDoubleClick, handleTap, isCopy } = this.props
+        const { content, handleRowSingleClick, handleRowDoubleClick, handleTap, isCopy, classes } = this.props
         const isSelected = this.isSelected(content.Id)
         const isHovered = this.isHovered(content.Id)
         return (
@@ -134,16 +144,18 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
 
                         onClick={(event) => handleRowSingleClick(event, content)}
                         onDoubleClick={(event) => handleRowDoubleClick(event, content.Id, content.Type)}>
-                        <div style={
-                            isSelected ? styles.selectedCheckbox : styles.checkbox &&
-                                isHovered ? styles.hoveredCheckbox : styles.checkbox}>
+                        <div>
                             <Checkbox
                                 checked={isSelected}
+                                color="primary"
+                                classes={{
+                                    root: classes.root,
+                                  }}
                             />
                         </div>
                     </TableCell>
                 </MediaQuery>
-                <MediaQuery minDeviceWidth={700}>
+                {/* <MediaQuery minDeviceWidth={700}>
                     {(matches) => {
                         return <IconCell
                             id={content.Id}
@@ -152,12 +164,13 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
                             handleRowSingleClick={(event) => matches ? handleRowSingleClick(event, content) : this.handleIconTap(event, content)}
                             handleRowDoubleClick={(event) => matches ? handleRowDoubleClick(event, content.Id, content.Type) : event.preventDefault()} />
                     }}
-                </MediaQuery>
+                </MediaQuery> */}
                 <MediaQuery minDeviceWidth={700}>
                     {(matches) => {
                         return <DisplayNameCell
                             content={content}
                             isHovered={isHovered}
+                            icon={content.Icon}
                             handleRowSingleClick={(event) => matches ? handleRowSingleClick(event, content) : handleTap(event, content, content.Type)}
                             handleRowDoubleClick={(event) => matches ? handleRowDoubleClick(event, content.Id, content.Type) : event.preventDefault()}
                             isCopy={isCopy} />
@@ -180,6 +193,17 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
                             actionMenuIsOpen={this.state.actionMenuIsOpen} />
                     }}
                 </MediaQuery>
+                <MediaQuery minDeviceWidth={700}>
+                    {(matches) => {
+                        return <ReferenceCell
+                            content={content}
+                            handleRowDoubleClick={this.props.handleRowDoubleClick}
+                            handleRowSingleClick={this.props.handleRowSingleClick}
+                            isCopy={isCopy}
+                            fieldName="Owner"
+                            optionName="FullName" />
+                    }}
+                </MediaQuery>
             </TableRow>
         )
     }
@@ -197,4 +221,4 @@ export default withRouter(connect(mapStateToProps, {
     closeActionMenu: DMSActions.closeActionMenu,
     selectionModeOn: DMSActions.selectionModeOn,
     selectionModeOff: DMSActions.selectionModeOff,
-})(SimpleTableRow))
+})(withStyles(style)(SimpleTableRow)))

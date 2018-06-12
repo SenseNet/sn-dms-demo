@@ -1,3 +1,4 @@
+import Icon from '@material-ui/core/Icon'
 import TableCell from '@material-ui/core/TableCell'
 import TextField from '@material-ui/core/TextField'
 import { Actions, Reducers } from '@sensenet/redux'
@@ -7,6 +8,7 @@ import { DragSource } from 'react-dnd'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import * as DMSActions from '../../../Actions'
+import { icons } from '../../../assets/icons'
 import * as DragAndDrop from '../../../DragAndDrop'
 import * as DMSReducers from '../../../Reducers'
 
@@ -51,7 +53,8 @@ interface DisplayNameCellProps {
     copyBatch,
     moveBatch,
     editedFirst: boolean,
-    setEditedFirst
+    setEditedFirst,
+    icon
 }
 
 interface DisplayNameCellState {
@@ -142,7 +145,7 @@ class DisplayNameCell extends React.Component<DisplayNameCellProps, DisplayNameC
     public render() {
         const content = this.props.currentContent
         const isEdited = this.isEdited(this.props.content.Id)
-        const { handleRowSingleClick, handleRowDoubleClick, connectDragSource, connectDropTarget, isCopy } = this.props
+        const { handleRowSingleClick, handleRowDoubleClick, connectDragSource, connectDropTarget, isCopy, icon } = this.props
         const dropEffect = isCopy ? 'copy' : 'move'
         return (
             <MediaQuery minDeviceWidth={700}>
@@ -153,20 +156,24 @@ class DisplayNameCell extends React.Component<DisplayNameCellProps, DisplayNameC
                         onClick={(event) => handleRowSingleClick(event, content.id)}
                         onDoubleClick={(event) => handleRowDoubleClick(event, this.props.content.Id)}>
                         {isEdited ?
-                            <TextField
-                                id="renameInput"
-                                autoFocus={isEdited}
-                                defaultValue={this.props.content.DisplayName}
-                                margin="dense"
-                                style={styles.editedTitle as any}
-                                onChange={(event) => this.handleTitleChange(event)}
-                                onKeyPress={(event) => this.handleKeyPress(event)}
-                                onBlur={(event) => this.handleTitleInputBlur(this.props.content.Id, !matches)}
-                                inputRef={(ref) => this.input = ref}
-                            /> :
+                            <div>
+                                <Icon color="primary">{icons[icon.toLowerCase()]}</Icon>
+                                <TextField
+                                    id="renameInput"
+                                    autoFocus={isEdited}
+                                    defaultValue={this.props.content.DisplayName}
+                                    margin="dense"
+                                    style={styles.editedTitle as any}
+                                    onChange={(event) => this.handleTitleChange(event)}
+                                    onKeyPress={(event) => this.handleKeyPress(event)}
+                                    onBlur={(event) => this.handleTitleInputBlur(this.props.content.Id, !matches)}
+                                    inputRef={(ref) => this.input = ref}
+                                />
+                            </div> :
                             connectDragSource(connectDropTarget(<div
                                 onClick={(event) => matches ? this.handleTitleClick(event, this.props.content.Id) : event.preventDefault()}
-                                style={styles.displayNameDiv}>{this.state.displayName}</div>), { dropEffect })
+                                style={styles.displayNameDiv}>
+                                <Icon color="primary">{icons[icon.toLowerCase()]}</Icon>{this.state.displayName}</div>), { dropEffect })
                         }
                     </TableCell>
                 }}
