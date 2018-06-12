@@ -1,9 +1,11 @@
+
 import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import * as DMSActions from '../Actions'
 import BreadCrumb from '../components/BreadCrumb'
+import DashboarDrawer from '../components/DashboardDrawer'
 import DocumentLibrary from '../components/DocumentLibrary'
 import FloatingActionButton from '../components/FloatingActionButton'
 import Header from '../components/Header'
@@ -18,7 +20,17 @@ const styles = {
         padding: '30px 0 0',
     },
     root: {
-        background: '#efefef',
+        flexGrow: 1,
+        zIndex: 1,
+        overflow: 'hidden' as any,
+        position: 'relative' as any,
+        display: 'flex' as any,
+    },
+    main: {
+        flexGrow: 1,
+        backgroundColor: '#eee',
+        padding: 10,
+        minWidth: 0,
     },
 }
 
@@ -77,26 +89,28 @@ class Dashboard extends React.Component<DashboardProps, { currentId }> {
     public render() {
         const { id } = this.props.match.params
         return (
-            <div style={styles.root}>
-                <Header />
-                <MediaQuery minDeviceWidth={700}>
-                    {(matches) => {
-                        if (matches) {
-                            return <div style={styles.dashBoardInner}>
+            <MediaQuery minDeviceWidth={700}>
+                {(matches) => {
+                    if (matches) {
+                        return <div style={styles.root}>
+                            <Header />
+                            <DashboarDrawer />
+                            <div style={styles.main}>
+                                <div style={{ height: 48, width: '100%' }}></div>
                                 <BreadCrumb />
                                 <DocumentLibrary parentId={id} />
                             </div>
-                        } else {
-                            return <div style={styles.dashBoardInnerMobile}>
+                        </div>
+                    } else {
+                        return <div style={styles.root}>
+                            <div style={styles.dashBoardInnerMobile}>
                                 <BreadCrumb />
                                 <DocumentLibrary parentId={id} />
                             </div>
-                        }
-                    }}
-                </MediaQuery>
-                {!this.props.selectionModeIsOn ? <FloatingActionButton content={this.props.currentContent} /> : null}
-                <MessageBar />
-            </div>
+                        </div>
+                    }
+                }}
+            </MediaQuery>
         )
     }
 }

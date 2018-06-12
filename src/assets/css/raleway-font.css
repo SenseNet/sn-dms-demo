@@ -1,0 +1,51 @@
+@font-face {
+    font-family: 'Raleway Regular';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/raleway-regular.eot'); /* IE9 Compat Modes */
+    src: local('Open Sans'), local('OpenSans'),
+         url('../fonts/raleway-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('../fonts/raleway-regular.woff2') format('woff2'), /* Super Modern Browsers */
+         url('../fonts/raleway-regular.woff') format('woff'), /* Modern Browsers */
+         url('../fonts/raleway-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+         url('../fonts/raleway-regular.svg#OpenSans') format('svg'); /* Legacy iOS */
+  }
+
+@font-face {
+    font-family: 'Raleway Bold';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/raleway-bold.eot'); /* IE9 Compat Modes */
+    src: local('Open Sans'), local('OpenSans'),
+         url('../fonts/raleway-bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('../fonts/raleway-bold.woff2') format('woff2'), /* Super Modern Browsers */
+         url('../fonts/raleway-bold.woff') format('woff'), /* Modern Browsers */
+         url('../fonts/raleway-bold.ttf') format('truetype'), /* Safari, Android, iOS */
+         url('../fonts/raleway-bold.svg#OpenSans') format('svg'); /* Legacy iOS */
+  }
+
+@font-face {
+    font-family: 'Raleway ExtraBold';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/raleway-extrabold.eot'); /* IE9 Compat Modes */
+    src: local('Open Sans'), local('OpenSans'),
+         url('../fonts/raleway-extrabold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('../fonts/raleway-extrabold.woff2') format('woff2'), /* Super Modern Browsers */
+         url('../fonts/raleway-extrabold.woff') format('woff'), /* Modern Browsers */
+         url('../fonts/raleway-extrabold.ttf') format('truetype'), /* Safari, Android, iOS */
+         url('../fonts/raleway-extrabold.svg#OpenSans') format('svg'); /* Legacy iOS */
+  }
+
+  @font-face {
+    font-family: 'Raleway Medium';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/raleway-medium.eot'); /* IE9 Compat Modes */
+    src: local('Open Sans'), local('OpenSans'),
+         url('../fonts/raleway-medium.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('../fonts/raleway-medium.woff2') format('woff2'), /* Super Modern Browsers */
+         url('../fonts/raleway-medium.woff') format('woff'), /* Modern Browsers */
+         url('../fonts/raleway-medium.ttf') format('truetype'), /* Safari, Android, iOS */
+         url('../fonts/raleway-medium.svg#OpenSans') format('svg'); /* Legacy iOS */
+  }

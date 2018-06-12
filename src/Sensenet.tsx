@@ -14,17 +14,8 @@ import Login from './pages/Login'
 import Registration from './pages/Registration'
 import './Sensenet.css'
 
-import lightBlue from '@material-ui/core/colors/lightBlue'
-import pink from '@material-ui/core/colors/pink'
-import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
-
-const muiTheme = createMuiTheme({
-  palette: {
-    primary: lightBlue,
-    secondary: pink,
-  },
-})
+import theme from './assets/theme'
 
 interface SensenetProps {
   repository,
@@ -57,7 +48,7 @@ class Sensenet extends React.Component<SensenetProps, { isAuthenticated: boolean
   public render() {
     return (
 
-      <MuiThemeProvider theme={muiTheme}>
+      <MuiThemeProvider theme={theme}>
         <div className="root">
           <Route
             exact
