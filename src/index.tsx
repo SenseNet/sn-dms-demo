@@ -9,6 +9,7 @@ import {
   HashRouter as Router,
 } from 'react-router-dom'
 import { combineReducers } from 'redux'
+import thunk from 'redux-thunk'
 import * as DMSReducers from './Reducers'
 import registerServiceWorker from './registerServiceWorker'
 import Sensenet from './Sensenet'
@@ -35,6 +36,7 @@ const googleOauthProvider = addGoogleAuth(jwt, {clientId: '188576321252-cad8ho16
 const options = {
   repository,
   rootReducer: myReducer,
+  middlewares: [thunk.withExtraArgument(repository)],
 } as Store.CreateStoreOptions<any>
 const store = Store.createSensenetStore(options)
 
