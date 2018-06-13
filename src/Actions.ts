@@ -1,8 +1,7 @@
-import { IUploadFromEventOptions, IUploadFromFileListOptions, IUploadOptions, IUploadProgressInfo, Repository, Upload } from '@sensenet/client-core'
+import { IContent, IUploadFromFileListOptions, IUploadProgressInfo, Repository, Upload } from '@sensenet/client-core'
 import { ObservableValue, usingAsync } from '@sensenet/client-utils'
-import { File as SnFile } from '@sensenet/default-content-types'
-import { Action, ActionCreator, Dispatch } from 'redux'
-import { ThunkAction } from 'redux-thunk'
+import { File as SnFile, GenericContent } from '@sensenet/default-content-types'
+import { Dispatch } from 'redux'
 
 enum MessageMode { error = 'error', warning = 'warning', info = 'info' }
 
@@ -64,39 +63,49 @@ export const closeMessageBar = () => ({
     type: 'CLOSE_MESSAGE_BAR',
 })
 
+export type ExtendedUploadProgressInfo = IUploadProgressInfo & { content?: GenericContent }
+
 export const uploadFileList = <T extends SnFile>(options: Pick<IUploadFromFileListOptions<T>, Exclude<keyof IUploadFromFileListOptions<T>, 'repository'>>) =>
-    async (dispatch: Dispatch<{}>, getState, api: Repository) => {
-
-        const progressObservable = new ObservableValue<IUploadProgressInfo>()
-
-        const observer = progressObservable.subscribe((currentValue) => {
-            dispatch(addUploadItem(currentValue))
-            observer.dispose()
-        })
-
-        usingAsync(progressObservable, async (progress) => {
-            progress.subscribe((currentValue) => {
-                dispatch(updateUploadItem(currentValue))
+    async (dispatch: Dispatch<{}>, getState: () => any, api: Repository) => {
+        usingAsync(new ObservableValue<IUploadProgressInfo>(), async (progress) => {
+            progress.subscribe(async (currentValue) => {
+                const currentUpload: ExtendedUploadProgressInfo = getState().dms.uploads.uploads.find((u) => u.guid === currentValue.guid)
+                if (currentUpload) {
+                    dispatch(updateUploadItem(currentValue))
+                } else {
+                    dispatch(addUploadItem({
+                        ...currentValue,
+                    }))
+                }
+                if (currentValue.createdContent && !currentUpload.content) {
+                    const content = await api.load<T>({
+                        idOrPath: currentValue.createdContent.Id,
+                        oDataOptions: {
+                            select: ['Id', 'Path', 'DisplayName', 'Icon', 'Name'],
+                        },
+                    })
+                    dispatch(updateUploadItem({ ...currentValue, content: content.d }))
+                }
             })
             await Upload.fromFileList({
                 ...options,
                 repository: api,
-                progressObservable: progress ,
+                progressObservable: progress,
             })
         })
     }
 
-export const addUploadItem = (uploadItem: IUploadProgressInfo) => ({
+export const addUploadItem = <T extends IContent>(uploadItem: ExtendedUploadProgressInfo) => ({
     type: 'UPLOAD_ADD_ITEM',
     uploadItem,
 })
 
-export const updateUploadItem = (uploadItem: IUploadProgressInfo) => ({
+export const updateUploadItem = (uploadItem: ExtendedUploadProgressInfo) => ({
     type: 'UPLOAD_UPDATE_ITEM',
     uploadItem,
 })
 
-export const removeUploadItem = (uploadItem: IUploadProgressInfo) => ({
+export const removeUploadItem = (uploadItem: ExtendedUploadProgressInfo) => ({
     type: 'UPLOAD_REMOVE_ITEM',
     uploadItem,
 })

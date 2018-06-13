@@ -1,6 +1,5 @@
-import { IUploadProgressInfo } from '@sensenet/client-core'
-import { File as SnFile } from '@sensenet/default-content-types'
-import { combineReducers } from 'redux'
+import { AnyAction, combineReducers } from 'redux'
+import { ExtendedUploadProgressInfo } from './Actions'
 import { resources } from './assets/resources'
 
 enum MessageMode { error, warning, info }
@@ -272,8 +271,8 @@ export const messagebar = combineReducers({
     horizontal,
 })
 
-export const uploads = (state: { uploads: IUploadProgressInfo[], showProgress: boolean } = { uploads: [], showProgress: false }, action) => {
-    switch (action.Type) {
+export const uploads = (state: { uploads: ExtendedUploadProgressInfo[], showProgress: boolean } = { uploads: [], showProgress: false }, action: AnyAction) => {
+    switch (action.type) {
         case 'UPLOAD_ADD_ITEM':
             return {
                 ...state,
@@ -288,7 +287,7 @@ export const uploads = (state: { uploads: IUploadProgressInfo[], showProgress: b
                 ...state,
                 showProgress: true,
                 uploads: state.uploads.map((uploadItem) => {
-                    if (uploadItem.createdContent.Id === action.uploadItem.createdContent.Id) {
+                    if (uploadItem.guid === action.uploadItem.guid) {
                         return action.uploadItem
                     }
                     return uploadItem
