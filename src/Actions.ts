@@ -1,4 +1,5 @@
 import { Repository } from '@sensenet/client-core'
+import { IActionModel } from '@sensenet/default-content-types/dist/IActionModel'
 
 enum MessageMode { error = 'error', warning = 'warning', info = 'info' }
 
@@ -58,4 +59,15 @@ export const openMessageBar = (mode: MessageMode, content, vertical?, horizontal
 })
 export const closeMessageBar = () => ({
     type: 'CLOSE_MESSAGE_BAR',
+})
+export const loadListActions = (idOrPath: number | string, scenario?: string, customActions?: IActionModel[]) => ({
+    type: 'LOAD_LIST_ACTIONS',
+    // tslint:disable:completed-docs
+    async payload(repository: Repository): Promise<{ d: IActionModel[] }> {
+        const data: any = await repository.getActions({ idOrPath, scenario })
+        const actions = [...data.d.Actions, ...customActions]
+        return {
+            d: { Actions: actions } as any,
+        }
+    },
 })

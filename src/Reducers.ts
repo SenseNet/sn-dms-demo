@@ -270,6 +270,19 @@ export const messagebar = combineReducers({
     horizontal,
 })
 
+export const toolbarActions = (state = [], action) => {
+    switch (action.type) {
+        case 'LOAD_LIST_ACTIONS_SUCCESS':
+            return action.payload.d.Actions
+        default:
+            return state
+    }
+}
+
+export const toolbar = combineReducers({
+    actions: toolbarActions,
+})
+
 export const dms = combineReducers({
     messagebar,
     actionmenu,
@@ -281,6 +294,7 @@ export const dms = combineReducers({
     register,
     isLoading,
     isSelectionModeOn,
+    toolbar,
 })
 
 export const getRegistrationError = (state) => {
@@ -362,4 +376,7 @@ export const isEditedFirst = (state) => {
 }
 export const getMessageBarProps = (state) => {
     return state.messagebar
+}
+export const getToolbarActions = (state) => {
+    return state && state.actions ? state.actions : []
 }
