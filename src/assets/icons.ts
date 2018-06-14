@@ -1,5 +1,5 @@
 export const icons = {
-    File: 'insert_drive_file',
+    file: 'insert_drive_file',
     word: 'insert_drive_file',
     powerpoint: 'insert_drive_file',
     document: 'insert_drive_file',
@@ -22,5 +22,6 @@ export const icons = {
     logout: 'power_settings_new',
     settings: 'settings',
     profile: 'person',
-    downoload: 'filedownload',
+    download: 'file_download',
+    share: 'share',
 }

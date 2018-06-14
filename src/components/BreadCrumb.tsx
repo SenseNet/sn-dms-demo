@@ -10,7 +10,9 @@ import * as DMSReducers from '../Reducers'
 
 import { icons } from '../assets/icons'
 const styles = {
-    breadCrumb: {},
+    breadCrumb: {
+        flexGrow: 2,
+    },
     breadCrumbItem: {
         textTransform: 'none',
         fontWeight: 'bold',

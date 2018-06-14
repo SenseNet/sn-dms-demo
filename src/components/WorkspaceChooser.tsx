@@ -17,7 +17,7 @@ const styles = {
 export class WorkspaceChooser extends React.Component<{}, {}> {
     public render() {
         return (
-            <div>
+            <div style={{ flex: '0 1 auto' }}>
                 <Button style={styles.button}>
                     <FontAwesome name="sitemap" />
                 </Button>

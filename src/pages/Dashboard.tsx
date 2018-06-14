@@ -66,28 +66,34 @@ class Dashboard extends React.Component<DashboardProps, { currentId }> {
     }
     public componentWillReceiveProps(nextProps) {
         const id = parseInt(nextProps.match.params.id, 10)
-        if (id && !isNaN(id) && isFinite(id)) {
-            this.props.setCurrentId(id)
-        }
-        if (nextProps.currentId &&
-            !isNaN(id) &&
-            id === Number(nextProps.currentId) &&
-            this.props.currentId !== nextProps.currentId) {
-            if (nextProps.loggedinUser.userName !== 'Visitor') {
-
+        if (nextProps.currentId !== undefined && this.props.currentId !== nextProps.currentId) {
+            if (id && !isNaN(id as any) && isFinite(id as any)) {
                 this.props.setCurrentId(id)
-                this.props.loadContent(id)
             }
-        }
-        if (nextProps.loggedinUser.userName !== this.props.loggedinUser.userName) {
-            id ?
-                this.props.setCurrentId(Number(nextProps.match.params.id)) &&
-                this.props.loadContent(Number(nextProps.match.params.id)) :
-                this.props.loadContent(`/Root/Profiles/Public/${nextProps.loggedinUser.userName}/Document_Library`)
+            if (nextProps.currentId &&
+                !isNaN(id as any) &&
+                id === Number(nextProps.currentId) &&
+                this.props.currentId !== nextProps.currentId) {
+                if (nextProps.loggedinUser.userName !== 'Visitor') {
+
+                    this.props.setCurrentId(id)
+                    this.props.loadContent(id)
+                }
+            }
+            if (nextProps.loggedinUser.userName !== this.props.loggedinUser.userName) {
+                id ?
+                    this.props.setCurrentId(Number(nextProps.match.params.id)) &&
+                    this.props.loadContent(Number(nextProps.match.params.id)) :
+                    this.props.setCurrentId(nextProps.currentContent.Id) &&
+                    this.props.loadContent(`/Root/Profiles/Public/${nextProps.loggedinUser.userName}/Document_Library`)
+            } else {
+                this.props.setCurrentId(`/Root/Profiles/Public/${nextProps.loggedinUser.userName}/Document_Library`)
+            }
         }
     }
     public render() {
         const { id } = this.props.match.params
+        const { currentId } = this.state.currentId
         return (
             <MediaQuery minDeviceWidth={700}>
                 {(matches) => {
