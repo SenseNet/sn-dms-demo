@@ -31,10 +31,10 @@ export class UploadBar extends React.Component<UploadBarProps, UploadBarState> {
             const overallProgressPercent = newProps.items.reduce((acc, val) => {
                 return {
                     guid: '',
-                    file: undefined as any,
-                    chunkCount: acc.chunkCount + val.chunkCount,
-                    uploadedChunks: acc.uploadedChunks + val.uploadedChunks,
-                    completed: acc.completed || val.completed,
+                    file: null as any,
+                    chunkCount: (acc.chunkCount || 0) + (val.chunkCount || 1),
+                    uploadedChunks: (acc.uploadedChunks || 0) + (val.uploadedChunks || 0),
+                    completed: acc.completed && val.completed && val.content ? true : false,
                     content: null as any,
                     createdContent: null as any,
                 }
@@ -42,7 +42,7 @@ export class UploadBar extends React.Component<UploadBarProps, UploadBarState> {
             this.setState({
                 ...this.state,
                 isUploadInProgress: !overallProgressPercent.completed,
-                overallProgressPercent: (overallProgressPercent.uploadedChunks / overallProgressPercent.chunkCount) * 100,
+                overallProgressPercent: overallProgressPercent.completed ? 0 : (overallProgressPercent.uploadedChunks / overallProgressPercent.chunkCount) * 100,
             })
         }
     }
@@ -64,14 +64,14 @@ export class UploadBar extends React.Component<UploadBarProps, UploadBarState> {
         >
             <Paper>
                 <List dense={true} subheader={
-                    <ListSubheader style={{ backgroundColor: theme.palette.text.primary, color: theme.palette.primary.contrastText }} >
+                    <ListSubheader style={{ backgroundColor: theme.palette.text.primary, color: theme.palette.primary.contrastText, padding: 0, textIndent: '.5em', lineHeight: '2em' }} >
                         {resources.UPLOAD_BAR_TITLE}
-                    </ListSubheader>}
-                    style={{ maxHeight: 400, maxWidth: 600, overflow: 'auto' }}
-                >
-                    {this.state.isUploadInProgress ?
-                        <LinearProgress variant="determinate" value={this.state.overallProgressPercent} />
+                        {this.state.isUploadInProgress ?
+                        <LinearProgress variant="determinate" color="secondary" style={{backgroundColor: theme.palette.secondary.light}} value={this.state.overallProgressPercent} />
                         : null}
+                    </ListSubheader>}
+                    style={{ maxHeight: 400, minWidth: 300, maxWidth: 600, overflowY: 'auto' }}
+                >
                     {this.props.items && this.props.items.map((item) => (
                         <UploadBarItem key={v1()} item={item} />
                     ))}
