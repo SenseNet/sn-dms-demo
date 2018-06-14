@@ -288,7 +288,10 @@ export const uploads = (state: { uploads: ExtendedUploadProgressInfo[], showProg
                 showProgress: true,
                 uploads: state.uploads.map((uploadItem) => {
                     if (uploadItem.guid === action.uploadItem.guid) {
-                        return action.uploadItem
+                        return {
+                            ...uploadItem,
+                            ...action.uploadItem,
+                        }
                     }
                     return uploadItem
                 }),
