@@ -87,11 +87,18 @@ export const uploadFileList = <T extends SnFile>(options: Pick<IUploadFromFileLi
                     dispatch(updateUploadItem({ ...currentValue, content: content.d }))
                 }
             })
-            await Upload.fromFileList({
-                ...options,
-                repository: api,
-                progressObservable: progress,
-            })
+            try {
+                await Upload.fromFileList({
+                    ...options,
+                    repository: api,
+                    progressObservable: progress,
+                })
+            } catch (error) {
+                progress.setValue({
+                    ...progress.getValue(),
+                    error,
+                })
+            }
         })
     }
 
