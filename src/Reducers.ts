@@ -285,7 +285,6 @@ export const uploads = (state: { uploads: ExtendedUploadProgressInfo[], showProg
         case 'UPLOAD_UPDATE_ITEM':
             return {
                 ...state,
-                showProgress: true,
                 uploads: state.uploads.map((uploadItem) => {
                     if (uploadItem.guid === action.uploadItem.guid) {
                         return {
@@ -299,8 +298,7 @@ export const uploads = (state: { uploads: ExtendedUploadProgressInfo[], showProg
         case 'UPLOAD_REMOVE_ITEM':
             return {
                 ...state,
-                showProgress: true,
-                uploads: state.uploads.filter((u) => u.createdContent.Id !== action.uploadItem.createdContent.Id),
+                uploads: state.uploads.filter((u) => u.guid !== action.uploadItem.guid),
             }
         case 'UPLOAD_HIDE_PROGRESS':
             return {

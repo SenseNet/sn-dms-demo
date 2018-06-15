@@ -67,24 +67,24 @@ export type ExtendedUploadProgressInfo = IUploadProgressInfo & { content?: Gener
 
 export const uploadFileList = <T extends SnFile>(options: Pick<IUploadFromFileListOptions<T>, Exclude<keyof IUploadFromFileListOptions<T>, 'repository'>>) =>
     async (dispatch: Dispatch<{}>, getState: () => any, api: Repository) => {
-        usingAsync(new ObservableValue<IUploadProgressInfo>(), async (progress) => {
+        await usingAsync(new ObservableValue<IUploadProgressInfo>(), async (progress) => {
             progress.subscribe(async (currentValue) => {
                 const currentUpload: ExtendedUploadProgressInfo = getState().dms.uploads.uploads.find((u) => u.guid === currentValue.guid)
                 if (currentUpload) {
                     dispatch(updateUploadItem(currentValue))
+                    if (currentValue.createdContent && !currentUpload.content) {
+                        const content = await api.load<T>({
+                            idOrPath: currentValue.createdContent.Id,
+                            oDataOptions: {
+                                select: ['Id', 'Path', 'DisplayName', 'Icon', 'Name'],
+                            },
+                        })
+                        dispatch(updateUploadItem({ ...currentValue, content: content.d }))
+                    }
                 } else {
                     dispatch(addUploadItem({
                         ...currentValue,
                     }))
-                }
-                if (currentValue.createdContent && !currentUpload.content) {
-                    const content = await api.load<T>({
-                        idOrPath: currentValue.createdContent.Id,
-                        oDataOptions: {
-                            select: ['Id', 'Path', 'DisplayName', 'Icon', 'Name'],
-                        },
-                    })
-                    dispatch(updateUploadItem({ ...currentValue, content: content.d }))
                 }
             })
             try {

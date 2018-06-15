@@ -10,9 +10,20 @@ import { GenericContent } from '@sensenet/default-content-types'
 import { getCurrentContent } from '@sensenet/redux/dist/Reducers'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { uploadFileList } from '../Actions'
+import { hideUploadProgress, removeUploadItem, uploadFileList } from '../Actions'
 import { UploadBar } from './Upload/UploadBar'
 import { UploadButton } from './Upload/UploadButton'
+
+// tslint:disable-next-line:variable-name
+const ConnectedUploadBar = connect((state) => {
+    return {
+        items: state.dms.uploads.uploads,
+        isOpened: state.dms.uploads.showProgress,
+    }
+}, {
+    close: hideUploadProgress,
+    removeItem: removeUploadItem,
+} )(UploadBar)
 
 const drawerWidth = 240
 
@@ -31,6 +42,8 @@ interface DashboarDrawerProps {
     uploadFileList: typeof uploadFileList,
     uploadItems: Array<IUploadProgressInfo & { content: GenericContent }>
     showUploads: boolean
+    hideUploadProgress: () => void,
+    removeUploadItem: typeof removeUploadItem
 
 }
 
@@ -45,18 +58,22 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
             }}
         >
             <div style={{ height: 48 }}></div>
-            <UploadButton
-                style={{ width: '100%' }}
-                multiple={true}
-                handleUpload={(fileList) => this.props.uploadFileList({
-                    fileList,
-                    createFolders: true,
-                    contentTypeName: 'File',
-                    binaryPropertyName: 'Binary',
-                    overwrite: false,
-                    parentPath: this.props.currentContent.Path,
-                })} />
-            <UploadBar items={this.props.uploadItems} isOpened={this.props.showUploads} />
+                <UploadButton
+                    style={{
+                        width: 'calc(100% - 2em)',
+                        margin: '1em',
+                        marginBottom: 0 }}
+                    multiple={true}
+                    handleUpload={(fileList) => this.props.uploadFileList({
+                        fileList,
+                        createFolders: true,
+                        contentTypeName: 'File',
+                        binaryPropertyName: 'Binary',
+                        overwrite: false,
+                        parentPath: this.props.currentContent.Path,
+                    })}
+                    />
+                <ConnectedUploadBar />
 
             <div style={{ padding: 10, fontSize: 14, color: '#666' }}>
                 <List>
@@ -99,8 +116,6 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
 const mapStateToProps = (state) => {
     return {
         currentContent: getCurrentContent(state.sensenet),
-        uploadItems: state.dms.uploads.uploads,
-        showUploads: state.dms.uploads.showProgress,
     }
 }
 

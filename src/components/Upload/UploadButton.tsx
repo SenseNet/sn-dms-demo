@@ -1,4 +1,4 @@
-import { Button, ListItemIcon, Menu, MenuItem } from '@material-ui/core'
+import { Button, ListItemIcon, ListItemText, Menu, MenuItem } from '@material-ui/core'
 import { FileUpload } from '@material-ui/icons'
 import * as React from 'react'
 import { v1 } from 'uuid'
@@ -72,26 +72,29 @@ export class UploadButton extends React.Component<UploadButtonProps, UploadButto
                     horizontal: 'left',
                     vertical: 'bottom',
                 }}
+                style={{
+                    width: '100%',
+                }}
                 onBlur={() => this.closeMenu()}
             >
-                <MenuItem>
-                    <label htmlFor={this.uploadFileButtonId}>
+                <label htmlFor={this.uploadFileButtonId} style={{outline: 'none'}}>
+                    <MenuItem>
                         <ListItemIcon>
                             <FileUpload />
                         </ListItemIcon>
-                        {resources.UPLOAD_BUTTON_UPLOAD_FILE_TITLE}
-                    </label>
-                </MenuItem>
-                <MenuItem>
-                    <label htmlFor={this.uploadFolderButtonId}>
+                        <ListItemText inset primary={resources.UPLOAD_BUTTON_UPLOAD_FILE_TITLE} />
+                    </MenuItem>
+                </label>
+                <label htmlFor={this.uploadFolderButtonId} tabIndex={-1} style={{outline: 'none'}}>
+                    <MenuItem>
                         <ListItemIcon>
                             <FileUpload />
                         </ListItemIcon>
-                        {resources.UPLOAD_BUTTON_UPLOAD_FOLDER_TITLE}
-                    </label>
-                </MenuItem>
+                        <ListItemText inset primary={resources.UPLOAD_BUTTON_UPLOAD_FOLDER_TITLE} />
+                    </MenuItem>
+                </label>
             </Menu>
-            <div style={{ visibility: 'hidden' }}>
+            <div style={{ visibility: 'hidden', display: 'none' }}>
                 <input
                     accept={this.props.accept}
                     multiple={this.props.multiple}

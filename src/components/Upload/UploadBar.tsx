@@ -1,9 +1,8 @@
-import { Icon, IconButton, LinearProgress, List, ListSubheader, Paper, Snackbar } from '@material-ui/core'
+import { IconButton, LinearProgress, List, ListSubheader, Paper, Snackbar } from '@material-ui/core'
 import { Close } from '@material-ui/icons'
 import { IUploadProgressInfo } from '@sensenet/client-core'
 import { GenericContent } from '@sensenet/default-content-types'
 import * as React from 'react'
-import { v1 } from 'uuid'
 import { resources } from '../../assets/resources'
 import theme from '../../assets/theme'
 import { UploadBarItem } from './UploadBarItem'
@@ -11,6 +10,8 @@ import { UploadBarItem } from './UploadBarItem'
 export interface UploadBarProps {
     items: Array<IUploadProgressInfo & { content: GenericContent }>
     isOpened: boolean
+    close: () => void
+    removeItem: (item: IUploadProgressInfo) => void
     handleSelectItem?: (item: IUploadProgressInfo) => void
 }
 
@@ -26,7 +27,7 @@ export class UploadBar extends React.Component<UploadBarProps, UploadBarState> {
         isUploadInProgress: false,
     }
 
-    public componentWillReceiveProps(newProps: this['props']) {
+    public static getDerivedStateFromProps(newProps: UploadBarProps) {
         if (newProps.items && newProps.items.length) {
             const overallProgressPercent = newProps.items.reduce((acc, val) => {
                 return {
@@ -39,12 +40,23 @@ export class UploadBar extends React.Component<UploadBarProps, UploadBarState> {
                     createdContent: null as any,
                 }
             })
-            this.setState({
-                ...this.state,
+            return {
                 isUploadInProgress: !overallProgressPercent.completed,
                 overallProgressPercent: overallProgressPercent.completed ? 0 : (overallProgressPercent.uploadedChunks / overallProgressPercent.chunkCount) * 100,
-            })
+            }
         }
+        return {
+            isUploadInProgress: false,
+            overallProgressPercent: 0,
+        }
+    }
+
+    private onClose() {
+        this.props.close()
+    }
+
+    private onRemoveItem(item: IUploadProgressInfo) {
+        this.props.removeItem(item)
     }
 
     public render() {
@@ -52,28 +64,33 @@ export class UploadBar extends React.Component<UploadBarProps, UploadBarState> {
             open={this.props.isOpened}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             title={resources.UPLOAD_BAR_TITLE}
-            action={[
-                <IconButton
-                    key="close"
-                    aria-label={resources.UPLOAD_BAR_CLOSE_TITLE}
-                    color="inherit"
-                >
-                    <Close />
-                </IconButton>,
-            ]}
         >
             <Paper>
                 <List dense={true} subheader={
                     <ListSubheader style={{ backgroundColor: theme.palette.text.primary, color: theme.palette.primary.contrastText, padding: 0, textIndent: '.5em', lineHeight: '2em' }} >
-                        {resources.UPLOAD_BAR_TITLE}
+                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <div style={{color: '#cecece'}}>{resources.UPLOAD_BAR_TITLE}</div>
+                            <IconButton
+                                style={{
+                                    width: '28px',
+                                    height: '28px',
+                                }}
+                                key="close"
+                                aria-label={resources.UPLOAD_BAR_CLOSE_TITLE}
+                                color="inherit"
+                                onClick={() => this.onClose()}
+                            >
+                                <Close style={{ width: '25px', height: '22px'}} />
+                            </IconButton>
+                        </div>
                         {this.state.isUploadInProgress ?
-                        <LinearProgress variant="determinate" color="secondary" style={{backgroundColor: theme.palette.secondary.light}} value={this.state.overallProgressPercent} />
-                        : null}
+                            <LinearProgress variant="determinate" color="secondary" style={{ backgroundColor: '#C5E1A4' }} value={this.state.overallProgressPercent} />
+                            : null}
                     </ListSubheader>}
                     style={{ maxHeight: 400, minWidth: 300, maxWidth: 600, overflowY: 'auto' }}
                 >
                     {this.props.items && this.props.items.map((item) => (
-                        <UploadBarItem key={v1()} item={item} />
+                        <UploadBarItem remove={(i) => this.onRemoveItem(i)} key={item.guid} item={item} />
                     ))}
                 </List>
             </Paper>

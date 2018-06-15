@@ -1,5 +1,3 @@
-import lightBlue from '@material-ui/core/colors/lightBlue'
-import pink from '@material-ui/core/colors/pink'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 
 import './css/raleway-font.css'
