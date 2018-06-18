@@ -68,26 +68,26 @@ export class UploadBar extends React.Component<UploadBarProps, UploadBarState> {
             <Paper>
                 <List dense={true} subheader={
                     <ListSubheader style={{ backgroundColor: theme.palette.text.primary, color: theme.palette.primary.contrastText, padding: 0, textIndent: '.5em', lineHeight: '2em' }} >
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <div style={{ color: '#cecece' }}>{resources.UPLOAD_BAR_TITLE}</div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 1px 3px 4px' }}>
+                            <div style={{ color: '#dedede', padding: '3px' }}>{resources.UPLOAD_BAR_TITLE}</div>
                             <IconButton
                                 style={{
-                                    width: '28px',
-                                    height: '28px',
+                                    width: '32px',
+                                    height: '32px',
                                 }}
                                 key="close"
                                 aria-label={resources.UPLOAD_BAR_CLOSE_TITLE}
                                 color="inherit"
                                 onClick={() => this.onClose()}
                             >
-                                <Close style={{ width: '25px', height: '22px' }} />
+                                <Close style={{ width: '25px', height: '24px' }} />
                             </IconButton>
                         </div>
                         {this.state.isUploadInProgress ?
                             <LinearProgress variant="determinate" color="secondary" style={{ backgroundColor: '#C5E1A4' }} value={this.state.overallProgressPercent} />
                             : null}
                     </ListSubheader>}
-                    style={{ maxHeight: 400, minWidth: 300, maxWidth: 600, overflowY: 'auto' }}
+                    style={{ maxHeight: 400, minWidth: 300, maxWidth: 600, overflowY: 'auto', paddingBottom: 0 }}
                 >
                     {this.props.items && this.props.items.filter((item) => item.visible).map((item) => (
                         <UploadBarItem remove={(i) => this.onRemoveItem(i)} key={item.guid} item={item} />

@@ -46,7 +46,7 @@ export class UploadBarItem extends React.Component<UploadBarItemProps, UploadBar
 
     public render() {
         return (
-            <ListItem style={{ padding: '.3em', opacity: this.state.isLoading ? 0.65 : 1 }}>
+            <ListItem style={{ padding: '.3em', opacity: this.state.isLoading ? 0.65 : 1, boxShadow: '0px -2px 0px #ddd' }}>
                 <ListItemIcon style={{ marginRight: '-.5em' }}>
                     <Icon style={{ color: theme.palette.secondary.main }}>{this.state.icon}</Icon>
                 </ListItemIcon>
