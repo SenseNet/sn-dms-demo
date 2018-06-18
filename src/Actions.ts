@@ -63,7 +63,7 @@ export const closeMessageBar = () => ({
     type: 'CLOSE_MESSAGE_BAR',
 })
 
-export type ExtendedUploadProgressInfo = IUploadProgressInfo & { content?: GenericContent }
+export type ExtendedUploadProgressInfo = IUploadProgressInfo & { content?: GenericContent, visible?: boolean }
 
 export const uploadFileList = <T extends SnFile>(options: Pick<IUploadFromFileListOptions<T>, Exclude<keyof IUploadFromFileListOptions<T>, 'repository'>>) =>
     async (dispatch: Dispatch<{}>, getState: () => any, api: Repository) => {
@@ -84,6 +84,7 @@ export const uploadFileList = <T extends SnFile>(options: Pick<IUploadFromFileLi
                 } else {
                     dispatch(addUploadItem({
                         ...currentValue,
+                        visible: true,
                     }))
                 }
             })
@@ -114,6 +115,11 @@ export const updateUploadItem = (uploadItem: ExtendedUploadProgressInfo) => ({
 
 export const removeUploadItem = (uploadItem: ExtendedUploadProgressInfo) => ({
     type: 'UPLOAD_REMOVE_ITEM',
+    uploadItem,
+})
+
+export const hideUploadItem = (uploadItem: ExtendedUploadProgressInfo) => ({
+    type: 'UPLOAD_HIDE_ITEM',
     uploadItem,
 })
 

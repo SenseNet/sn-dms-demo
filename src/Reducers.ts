@@ -295,6 +295,20 @@ export const uploads = (state: { uploads: ExtendedUploadProgressInfo[], showProg
                     return uploadItem
                 }),
             }
+        case 'UPLOAD_HIDE_ITEM':
+            return {
+                ...state,
+                uploads: state.uploads.map((uploadItem) => {
+                    if (uploadItem.guid === action.uploadItem.guid) {
+                        return {
+                            ...uploadItem,
+                            ...action.uploadItem,
+                            visible: false,
+                        }
+                    }
+                    return uploadItem
+                }),
+            }
         case 'UPLOAD_REMOVE_ITEM':
             return {
                 ...state,

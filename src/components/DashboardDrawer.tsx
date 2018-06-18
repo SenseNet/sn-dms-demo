@@ -3,7 +3,7 @@ import { IContent, IUploadProgressInfo } from '@sensenet/client-core'
 import { getCurrentContent } from '@sensenet/redux/dist/Reducers'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { hideUploadProgress, removeUploadItem, uploadFileList } from '../Actions'
+import { hideUploadItem, hideUploadProgress, removeUploadItem, uploadFileList } from '../Actions'
 import { UploadBar } from './Upload/UploadBar'
 import { UploadButton } from './Upload/UploadButton'
 
@@ -15,7 +15,7 @@ const ConnectedUploadBar = connect((state) => {
     }
 }, {
         close: hideUploadProgress,
-        removeItem: removeUploadItem,
+        removeItem: hideUploadItem,
     })(UploadBar)
 
 const drawerWidth = 240
