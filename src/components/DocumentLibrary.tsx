@@ -106,7 +106,6 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps, DocumentLibr
             )
         }
         return <div>
-            { /** temp to test button functionality */}
             <ContentList
                 children={this.props.children}
                 currentId={this.props.currentContent.Id}
@@ -131,8 +130,6 @@ const mapStateToProps = (state, match) => {
         currentContent: Reducers.getCurrentContent(state.sensenet),
         currentId: Number(match.match.url.replace('/', '')),
         cId: DMSReducers.getCurrentId(state.dms),
-        uploadItems: state.dms.uploads.items,
-        showUploads: state.dms.uploads.showProgress,
     }
 }
 
