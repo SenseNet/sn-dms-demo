@@ -68,15 +68,15 @@ export const closeMessageBar = () => ({
 
 export type ExtendedUploadProgressInfo = IUploadProgressInfo & { content?: GenericContent, visible?: boolean }
 
-export const trackUploadProgress = async <T extends GenericContent>(currentValue: ExtendedUploadProgressInfo, getState, dispatch, api: Repository) => {
-
-    const methodToDebounce = (parentId: number) => {
-        const currentId = getState().sensenet.currentcontent.content.Id
-        if (currentId === parentId) {
-            dispatch(Actions.requestContent(getState().sensenet.currentcontent.content.Path))
-        }
+function methodToDebounce(parentId: number, getState, dispatch) {
+    const currentId = getState().sensenet.currentcontent.content.Id
+    if (currentId === parentId) {
+        dispatch(Actions.requestContent(getState().sensenet.currentcontent.content.Path))
     }
-    const debounceReloadOnProgress = debounce(methodToDebounce, 2000)
+}
+const debounceReloadOnProgress = debounce(methodToDebounce, 2000)
+
+export const trackUploadProgress = async <T extends GenericContent>(currentValue: ExtendedUploadProgressInfo, getState, dispatch, api: Repository) => {
 
     let currentUpload: ExtendedUploadProgressInfo = getState().dms.uploads.uploads.find((u) => u.guid === currentValue.guid)
     if (currentUpload) {
@@ -97,7 +97,7 @@ export const trackUploadProgress = async <T extends GenericContent>(currentValue
             },
         })
         dispatch(updateUploadItem({ ...currentValue, content: content.d }))
-        debounceReloadOnProgress(content.d.ParentId)
+        debounceReloadOnProgress(content.d.ParentId, getState, dispatch)
     }
 }
 
