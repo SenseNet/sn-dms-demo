@@ -1,4 +1,4 @@
-import { IContent, IUploadFromFileListOptions, IUploadProgressInfo, Repository, Upload } from '@sensenet/client-core'
+import { IContent, IUploadFromEventOptions, IUploadFromFileListOptions, IUploadProgressInfo, Repository, Upload } from '@sensenet/client-core'
 import { ObservableValue, usingAsync } from '@sensenet/client-utils'
 import { File as SnFile, GenericContent } from '@sensenet/default-content-types'
 import { Dispatch } from 'redux'
@@ -103,6 +103,43 @@ export const uploadFileList = <T extends SnFile>(options: Pick<IUploadFromFileLi
         })
     }
 
+export const uploadDataTransfer = <T extends SnFile>(options: Pick<IUploadFromEventOptions<T>, Exclude<keyof IUploadFromEventOptions<T>, 'repository'>>) =>
+    async (dispatch: Dispatch<{}>, getState: () => any, api: Repository) => {
+        await usingAsync(new ObservableValue<IUploadProgressInfo>(), async (progress) => {
+            progress.subscribe(async (currentValue) => {
+                const currentUpload: ExtendedUploadProgressInfo = getState().dms.uploads.uploads.find((u) => u.guid === currentValue.guid)
+                if (currentUpload) {
+                    dispatch(updateUploadItem(currentValue))
+                    if (currentValue.createdContent && !currentUpload.content) {
+                        const content = await api.load<T>({
+                            idOrPath: currentValue.createdContent.Id,
+                            oDataOptions: {
+                                select: ['Id', 'Path', 'DisplayName', 'Icon', 'Name'],
+                            },
+                        })
+                        dispatch(updateUploadItem({ ...currentValue, content: content.d }))
+                    }
+                } else {
+                    dispatch(addUploadItem({
+                        ...currentValue,
+                        visible: true,
+                    }))
+                }
+            })
+            try {
+                await Upload.fromDropEvent({
+                    ...options,
+                    repository: api,
+                    progressObservable: progress,
+                })
+            } catch (error) {
+                progress.setValue({
+                    ...progress.getValue(),
+                    error,
+                })
+            }
+        })
+    }
 export const addUploadItem = <T extends IContent>(uploadItem: ExtendedUploadProgressInfo) => ({
     type: 'UPLOAD_ADD_ITEM',
     uploadItem,
