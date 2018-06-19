@@ -1,8 +1,9 @@
 import { Button, ListItemIcon, ListItemText, Menu, MenuItem } from '@material-ui/core'
-import { FileUpload } from '@material-ui/icons'
+import { FileUpload, Folder, Forward, InsertDriveFile } from '@material-ui/icons'
 import * as React from 'react'
 import { v1 } from 'uuid'
 import { resources } from '../../assets/resources'
+import theme from '../../assets/theme'
 
 export interface UploadButtonProps {
     accept?: string
@@ -77,18 +78,24 @@ export class UploadButton extends React.Component<UploadButtonProps, UploadButto
                 }}
                 onBlur={() => this.closeMenu()}
             >
-                <label htmlFor={this.uploadFileButtonId} style={{outline: 'none'}}>
+                <label htmlFor={this.uploadFileButtonId} style={{ outline: 'none' }}>
                     <MenuItem>
                         <ListItemIcon>
-                            <FileUpload />
+                            <div>
+                                <InsertDriveFile style={{ color: theme.palette.primary.main }} />
+                                <Forward style={{ position: 'absolute', left: '0.86em', top: '0.48em', width: '0.6em', color: 'white', transform: 'rotate(-90deg)' }} />
+                            </div>
                         </ListItemIcon>
                         <ListItemText inset primary={resources.UPLOAD_BUTTON_UPLOAD_FILE_TITLE} />
                     </MenuItem>
                 </label>
-                <label htmlFor={this.uploadFolderButtonId} tabIndex={-1} style={{outline: 'none'}}>
+                <label htmlFor={this.uploadFolderButtonId} tabIndex={-1} style={{ outline: 'none' }}>
                     <MenuItem>
                         <ListItemIcon>
-                            <FileUpload />
+                            <div>
+                                <Folder style={{ color: theme.palette.primary.main }} />
+                                <Forward style={{ position: 'absolute', left: '0.87em', top: '0.42em', width: '0.6em', color: 'white', transform: 'rotate(-90deg)' }} />
+                            </div>
                         </ListItemIcon>
                         <ListItemText inset primary={resources.UPLOAD_BUTTON_UPLOAD_FOLDER_TITLE} />
                     </MenuItem>
