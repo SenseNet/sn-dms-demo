@@ -24,4 +24,5 @@ export const icons = {
     profile: 'person',
     download: 'file_download',
     share: 'share',
+    arrowDropDown: 'arrow_drop_down',
 }
