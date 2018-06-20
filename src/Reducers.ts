@@ -71,6 +71,8 @@ export const actions = (state = [], action) => {
             return action.payload.d.Actions ? action.payload.d.Actions : []
         case 'OPEN_ACTIONMENU':
             return action.actions || []
+        case 'CLOSE_ACTIONMENU':
+            return []
         default:
             return state
     }
@@ -217,8 +219,6 @@ export const userActions = (state = [], action) => {
     switch (action.type) {
         case 'LOAD_USER_ACTIONS_SUCCESS':
             return action.payload.d.Actions ? action.payload.d.Actions : []
-        case 'OPEN_ACTIONMENU':
-            return action.actions || []
         default:
             return state
     }
