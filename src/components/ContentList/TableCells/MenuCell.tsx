@@ -41,10 +41,24 @@ interface MenuCellState {
 }
 
 class MenuCell extends React.Component<MenuCellProps, MenuCellState> {
+    constructor(props) {
+        super(props)
+        this.state = {
+            anchorLeft: 0,
+            anchorTop: 0,
+        }
+        this.handleActionMenuClick = this.handleActionMenuClick.bind(this)
+    }
     public handleActionMenuClick(e, content) {
+        const top = e.pageY - e.target.offsetTop
+        const left = e.pageX - e.target.offsetLeft
         this.props.closeActionMenu()
-        this.props.openActionMenu(this.props.actions, content.Id, content.DisplayName, { top: e.currentTarget.offsetTop, left: e.currentTarget.offsetLeft - e.currentTarget.offsetWidth - 100 })
         this.setState({ anchorTop: e.clientY, anchorLeft: e.clientX })
+        this.props.openActionMenu(content.Actions, content.Id, content.DisplayName, e.currentTarget,
+            {
+                top: e.currentTarget.offsetTop + 40,
+                left: e.currentTarget.offsetLeft,
+            })
     }
     public render() {
         const { isSelected, isHovered, content, actionMenuIsOpen, selectionModeOn } = this.props
@@ -56,6 +70,7 @@ class MenuCell extends React.Component<MenuCellProps, MenuCellState> {
                         padding={padding}>
                         <IconButton
                             aria-label="Menu"
+                            aria-owns="actionmenu"
                             onClick={(event) => !selectionModeOn ? this.handleActionMenuClick(event, content) : null}
                         >
                             <MoreVert style={
