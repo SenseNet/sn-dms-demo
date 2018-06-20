@@ -60,7 +60,6 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps, DocumentLibr
             this.props.currentContent.Path !== nextProps.currentContent.Path
         ) {
             this.fetchData(nextProps.currentContent.Path, nextProps.loggedinUser.userName)
-            this.props.setCurrentId(nextId)
         }
         if (nextProps.loggedinUser.userName !== this.props.loggedinUser.userName) {
             this.fetchData(nextProps.currentContent.Path, nextProps.loggedinUser.userName)

@@ -29,7 +29,7 @@ const styles = {
     main: {
         flexGrow: 1,
         backgroundColor: '#eee',
-        padding: 10,
+        padding: '0 10px 10px',
         minWidth: 0,
     },
 }
@@ -44,7 +44,7 @@ interface DashboardProps {
     selectionModeIsOn: boolean
 }
 
-class Dashboard extends React.Component<DashboardProps, { currentId }> {
+class Dashboard extends React.Component<DashboardProps, { }> {
     constructor(props) {
         super(props)
         this.state = {
@@ -66,16 +66,14 @@ class Dashboard extends React.Component<DashboardProps, { currentId }> {
     }
     public componentWillReceiveProps(nextProps) {
         const id = parseInt(nextProps.match.params.id, 10)
-        if (nextProps.currentId !== undefined && this.props.currentId !== nextProps.currentId) {
+        if ((nextProps.currentId !== undefined && this.props.currentId !== nextProps.currentId) || nextProps.currentId === 'login') {
             if (id && !isNaN(id as any) && isFinite(id as any)) {
                 this.props.setCurrentId(id)
             }
-            if (nextProps.currentId &&
+            if (nextProps.currentId && this.props.currentId !== nextProps.currentId &&
                 !isNaN(id as any) &&
-                id === Number(nextProps.currentId) &&
-                this.props.currentId !== nextProps.currentId) {
+                id === Number(nextProps.currentId)) {
                 if (nextProps.loggedinUser.userName !== 'Visitor') {
-
                     this.props.setCurrentId(id)
                     this.props.loadContent(id)
                 }
@@ -87,13 +85,12 @@ class Dashboard extends React.Component<DashboardProps, { currentId }> {
                     this.props.setCurrentId(nextProps.currentContent.Id) &&
                     this.props.loadContent(`/Root/Profiles/Public/${nextProps.loggedinUser.userName}/Document_Library`)
             } else {
-                this.props.setCurrentId(`/Root/Profiles/Public/${nextProps.loggedinUser.userName}/Document_Library`)
+                this.props.setCurrentId(nextProps.currentContent.Id)
             }
         }
     }
     public render() {
         const { id } = this.props.match.params
-        const { currentId } = this.state.currentId
         return (
             <MediaQuery minDeviceWidth={700}>
                 {(matches) => {
