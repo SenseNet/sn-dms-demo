@@ -1,4 +1,5 @@
-import { combineReducers } from 'redux'
+import { AnyAction, combineReducers } from 'redux'
+import { ExtendedUploadProgressInfo } from './Actions'
 import { resources } from './assets/resources'
 
 enum MessageMode { error, warning, info }
@@ -305,6 +306,63 @@ export const toolbar = combineReducers({
     actions: toolbarActions,
 })
 
+export const uploads = (state: { uploads: ExtendedUploadProgressInfo[], showProgress: boolean } = { uploads: [], showProgress: false }, action: AnyAction) => {
+    switch (action.type) {
+        case 'UPLOAD_ADD_ITEM':
+            return {
+                ...state,
+                showProgress: true,
+                uploads: [
+                    ...state.uploads,
+                    action.uploadItem,
+                ],
+            }
+        case 'UPLOAD_UPDATE_ITEM':
+            return {
+                ...state,
+                uploads: state.uploads.map((uploadItem) => {
+                    if (uploadItem.guid === action.uploadItem.guid) {
+                        return {
+                            ...uploadItem,
+                            ...action.uploadItem,
+                        }
+                    }
+                    return uploadItem
+                }),
+            }
+        case 'UPLOAD_HIDE_ITEM':
+            return {
+                ...state,
+                uploads: state.uploads.map((uploadItem) => {
+                    if (uploadItem.guid === action.uploadItem.guid) {
+                        return {
+                            ...uploadItem,
+                            ...action.uploadItem,
+                            visible: false,
+                        }
+                    }
+                    return uploadItem
+                }),
+            }
+        case 'UPLOAD_REMOVE_ITEM':
+            return {
+                ...state,
+                uploads: state.uploads.filter((u) => u.guid !== action.uploadItem.guid),
+            }
+        case 'UPLOAD_HIDE_PROGRESS':
+            return {
+                ...state,
+                showProgress: false,
+            }
+        case 'UPLOAD_SHOW_PROGRESS':
+            return {
+                ...state,
+                showProgress: false,
+            }
+    }
+    return state
+}
+
 export const dms = combineReducers({
     messagebar,
     actionmenu,
@@ -317,6 +375,7 @@ export const dms = combineReducers({
     isLoading,
     isSelectionModeOn,
     toolbar,
+    uploads,
 })
 
 export const getRegistrationError = (state) => {

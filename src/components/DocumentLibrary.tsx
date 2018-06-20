@@ -1,35 +1,36 @@
+import { GenericContent } from '@sensenet/default-content-types'
 import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { DragDropContext } from 'react-dnd'
-import HTML5Backend, { NativeTypes } from 'react-dnd-html5-backend'
+import HTML5Backend, { NativeTypes } from 'react-dnd-html5-backend-filedrop'
 import { connect } from 'react-redux'
-import {
-    withRouter,
-} from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import * as DMSActions from '../Actions'
 import * as DMSReducers from '../Reducers'
 import ContentList from './ContentList/ContentList'
 import { FetchError } from './FetchError'
 
 interface DocumentLibraryProps {
-    currentContent,
-    path,
+    currentContent: GenericContent,
+    path: string,
     children,
-    ids,
+    ids: number[],
     loggedinUser,
-    fetchContent,
+    fetchContent: typeof fetchContentAction,
     errorMessage: string,
     currentId,
     cId,
-    setCurrentId,
-    uploadContent
+    setCurrentId: typeof DMSActions.setCurrentId,
+    uploadDataTransfer: typeof DMSActions.uploadDataTransfer,
 }
 
 interface DocumentLibraryState {
     select, id, orderby, filter, expand, scenario, droppedFiles, children
 }
 
-@DragDropContext(HTML5Backend)
+@DragDropContext(HTML5Backend, {
+
+})
 class DocumentLibrary extends React.Component<DocumentLibraryProps, DocumentLibraryState> {
     constructor(props) {
         super(props)
@@ -84,14 +85,20 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps, DocumentLibr
         })
     }
     public handleFileDrop(item, monitor) {
-        const { uploadContent, currentContent } = this.props
+
+        const { uploadDataTransfer, currentContent } = this.props
         if (monitor) {
-            const droppedFiles = monitor.getItem().files
-            droppedFiles.map((file) => {
-                uploadContent(currentContent.Path, file, 'File', undefined, null, undefined)
+
+            const dataTransfer = monitor.getItem().dataTransfer
+            uploadDataTransfer({
+                binaryPropertyName: 'Binary',
+                contentTypeName: 'File',
+                createFolders: true,
+                event: new DragEvent('drop', { dataTransfer }),
+                overwrite: false,
+                parentPath: currentContent.Path,
             })
 
-            this.setState({ droppedFiles })
         }
     }
     public render() {
@@ -136,4 +143,5 @@ export default withRouter(connect(mapStateToProps, {
     fetchContent: fetchContentAction,
     setCurrentId: DMSActions.setCurrentId,
     uploadContent: uploadContentAction,
+    uploadDataTransfer: DMSActions.uploadDataTransfer,
 })(DocumentLibrary))

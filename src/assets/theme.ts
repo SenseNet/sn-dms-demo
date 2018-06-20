@@ -1,5 +1,3 @@
-import lightBlue from '@material-ui/core/colors/lightBlue'
-import pink from '@material-ui/core/colors/pink'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 
 import './css/raleway-font.css'
@@ -7,15 +5,15 @@ import './css/raleway-font.css'
 const theme = createMuiTheme({
     palette: {
         primary: {
-            light: '#757ce8',
-            main: '#016D9E',
-            dark: '#014a6b',
+            light: '#509bcf',
+            main: '#016d9e',
+            dark: '#00426f',
             contrastText: '#fff',
         },
         secondary: {
-            light: '#016D9E',
+            light: '#80e27e',
             main: '#4caf50',
-            dark: '#3d8b40',
+            dark: '#087f23',
             contrastText: '#fff',
         },
         error: {
