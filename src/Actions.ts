@@ -30,11 +30,12 @@ export const setEditedContentId = (id) => ({
     type: 'SET_EDITED_ID',
     id,
 })
-export const openActionMenu = (actions, id, title, position, customItems?) => ({
+export const openActionMenu = (actions, id, title, element, position?, customItems?) => ({
     type: 'OPEN_ACTIONMENU',
     actions: customItems && customItems.length > 0 ? customItems : actions,
     id,
     title,
+    element,
     position,
 })
 export const closeActionMenu = () => ({
@@ -65,9 +66,31 @@ export const loadListActions = (idOrPath: number | string, scenario?: string, cu
     // tslint:disable:completed-docs
     async payload(repository: Repository): Promise<{ d: IActionModel[] }> {
         const data: any = await repository.getActions({ idOrPath, scenario })
-        const actions = [...data.d.Actions, ...customActions]
+        const actions = customActions ? [...data.d.Actions, ...customActions] : data.d.Actions
         return {
-            d: { Actions: actions } as any,
+            d: {
+                Actions: actions.sort((a, b) => {
+                    const x = a.Index
+                    const y = b.Index
+                    return ((x < y) ? -1 : ((x > y) ? 1 : 0))
+                }),
+            } as any,
+        }
+    },
+})
+export const loadUserActions = (idOrPath: number | string, scenario?: string, customActions?: IActionModel[]) => ({
+    type: 'LOAD_USER_ACTIONS',
+    async payload(repository: Repository): Promise<{ d: IActionModel[] }> {
+        const data: any = await repository.getActions({ idOrPath, scenario })
+        const actions = customActions ? [...data.d.Actions, ...customActions] : data.d.Actions
+        return {
+            d: {
+                Actions: actions.sort((a, b) => {
+                    const x = a.Index
+                    const y = b.Index
+                    return ((x < y) ? -1 : ((x > y) ? 1 : 0))
+                }),
+            } as any,
         }
     },
 })
