@@ -59,8 +59,6 @@ class UserActionMenu extends React.Component<UserActionMenu, { anchorEl, open, s
     }
     public handleClick = (e) => {
         const { actions, loggedinUser } = this.props
-        const top = e.pageY - e.target.offsetTop
-        const left = e.pageX - e.target.offsetLeft
         this.props.closeActionMenu()
         this.props.openActionMenu(actions, loggedinUser.userName, loggedinUser.fullName, e.currentTarget, {
             top: e.currentTarget.offsetTop + 40,
