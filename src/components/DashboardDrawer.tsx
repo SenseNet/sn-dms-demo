@@ -1,15 +1,26 @@
-import { Theme, withStyles } from '@material-ui/core'
-import Divider from '@material-ui/core/Divider'
-import Drawer from '@material-ui/core/Drawer'
-import Icon from '@material-ui/core/Icon'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
+import { Divider, Drawer, Icon, List, ListItem, ListItemIcon, StyleRulesCallback, withStyles } from '@material-ui/core'
+import { IContent, IUploadProgressInfo } from '@sensenet/client-core'
+import { getCurrentContent } from '@sensenet/redux/dist/Reducers'
 import * as React from 'react'
+import { connect } from 'react-redux'
+import { hideUploadItem, hideUploadProgress, removeUploadItem, uploadFileList } from '../Actions'
+import { UploadBar } from './Upload/UploadBar'
+import { UploadButton } from './Upload/UploadButton'
+
+// tslint:disable-next-line:variable-name
+const ConnectedUploadBar = connect((state) => {
+    return {
+        items: state.dms.uploads.uploads,
+        isOpened: state.dms.uploads.showProgress,
+    }
+}, {
+        close: hideUploadProgress,
+        removeItem: hideUploadItem,
+    })(UploadBar)
 
 const drawerWidth = 240
 
-const styles = (theme) => ({
+const styles: StyleRulesCallback = () => ({
     drawerPaper: {
         position: 'relative',
         width: drawerWidth,
@@ -20,6 +31,13 @@ interface DashboarDrawerProps {
     classes: {
         drawerPaper: string;
     }
+    currentContent: IContent
+    uploadFileList: typeof uploadFileList,
+    uploadItems: IUploadProgressInfo[]
+    showUploads: boolean
+    hideUploadProgress: () => void,
+    removeUploadItem: typeof removeUploadItem
+
 }
 
 class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
@@ -33,9 +51,25 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
             }}
         >
             <div style={{ height: 48 }}></div>
+            <UploadButton
+                style={{
+                    width: 'calc(100% - 2em)',
+                    margin: '1em',
+                    marginBottom: 0,
+                }}
+                multiple={true}
+                handleUpload={(fileList) => this.props.uploadFileList({
+                    fileList,
+                    createFolders: true,
+                    contentTypeName: 'File',
+                    binaryPropertyName: 'Binary',
+                    overwrite: false,
+                    parentPath: this.props.currentContent.Path,
+                })}
+            />
+            <ConnectedUploadBar />
+
             <div style={{ padding: 10, fontSize: 14, color: '#666' }}>
-                {/* upload button helye
-        add button helye */}
                 <List>
                     <li>
                         <Divider />
@@ -73,4 +107,12 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
     }
 }
 
-export default withStyles(styles as any)(DashboardDrawer)
+const mapStateToProps = (state) => {
+    return {
+        currentContent: getCurrentContent(state.sensenet),
+    }
+}
+
+export default (connect(mapStateToProps, {
+    uploadFileList,
+})(withStyles(styles)(DashboardDrawer)))
