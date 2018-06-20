@@ -8,6 +8,7 @@ import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
+import * as DMSActions from '../Actions'
 import * as DMSReducers from '../Reducers'
 import UserPanel from './UserPanel'
 
@@ -15,28 +16,12 @@ import { icons } from '../assets/icons'
 
 interface UserActionMenu {
     loggedinUser,
-    logout
+    logout,
+    loadUserActions,
+    actions,
+    openActionMenu,
+    closeActionMenu,
 }
-
-import { resources } from '../assets/resources'
-
-const actions = [
-    {
-        name: 'Profile',
-        displayName: resources.MYPROFILE,
-        Icon: 'profile',
-    },
-    {
-        name: 'Settings',
-        displayName: resources.SETTINGS,
-        Icon: 'settings',
-    },
-    {
-        name: 'Logout',
-        displayName: resources.LOGOUT,
-        Icon: 'logout',
-    },
-]
 
 const styles = {
     actionmenuContainer: {
@@ -55,20 +40,8 @@ const styles = {
     arrowButton: {
         marginLeft: 0,
     },
-    menu: {
-        marginTop: 30,
-        padding: 0,
-    },
-    menuItem: {
-        padding: '6px 15px',
-        fontSize: '0.9rem',
-    },
     avatar: {
         display: 'inline-block',
-    },
-    actionIcon: {
-        color: '#016D9E',
-        marginRight: 14,
     },
 }
 
@@ -80,16 +53,19 @@ class UserActionMenu extends React.Component<UserActionMenu, { anchorEl, open, s
             open: false,
             selectedIndex: 1,
         }
+        this.props.loadUserActions(`/Root/IMS/Public/${this.props.loggedinUser.userName}`, 'DMSUserActions')
+        this.handleClick = this.handleClick.bind(this)
+        this.handleRequestClose = this.handleRequestClose.bind(this)
     }
-    public handleClick = (event) => {
-        this.setState({ open: true, anchorEl: event.currentTarget })
-    }
-
-    public handleMenuItemClick = (event, index) => {
-        this.setState({ selectedIndex: index, open: false })
-        const actionName = actions[index].name.toLocaleLowerCase()
-        const action = this.props[actionName]
-        action()
+    public handleClick = (e) => {
+        const { actions, loggedinUser } = this.props
+        const top = e.pageY - e.target.offsetTop
+        const left = e.pageX - e.target.offsetLeft
+        this.props.closeActionMenu()
+        this.props.openActionMenu(actions, loggedinUser.userName, loggedinUser.fullName, e.currentTarget, {
+            top: e.currentTarget.offsetTop + 40,
+            left: e.currentTarget.offsetLeft,
+        })
     }
 
     public handleRequestClose = () => {
@@ -99,35 +75,13 @@ class UserActionMenu extends React.Component<UserActionMenu, { anchorEl, open, s
         return (
             <MediaQuery minDeviceWidth={700}>
                 {(matches) => {
-                    return <div style={matches ? null : styles.actionmenuContainer}>
+                    return <div
+                        style={matches ? null : styles.actionmenuContainer}
+                        aria-owns="actionmenu"
+                        onClick={(e) => this.handleClick(e)}>
                         <UserPanel user={this.props.loggedinUser} style={styles.avatar} />
                         <ArrowDropDown
-                            onClick={this.handleClick}
                             style={matches ? styles.menuIcon : { ...styles.menuIcon, ...styles.menuIconMobile }} />
-                        <Menu
-                            id="long-menu"
-                            anchorEl={this.state.anchorEl}
-                            open={this.state.open}
-                            onClose={this.handleRequestClose}
-                            style={styles.menu}
-                        >
-                            {actions.map((action, index) => (
-                                <MenuItem
-                                    key={action.name}
-                                    selected={index === this.state.selectedIndex}
-                                    onClick={(event) => this.handleMenuItemClick(event, index)}
-                                    style={styles.menuItem}>
-                                    <ListItemIcon style={styles.actionIcon}>
-                                        <Icon color="primary">{
-                                            action.Icon === 'Application' ?
-                                                icons[action.name.toLowerCase()] :
-                                                icons[action.Icon.toLowerCase()]
-                                        }</Icon>
-                                    </ListItemIcon>
-                                    {action.displayName}
-                                </MenuItem>
-                            ))}
-                        </Menu>
                     </div>
                 }}
             </MediaQuery>
@@ -140,9 +94,13 @@ const userLogout = Actions.userLogout
 const mapStateToProps = (state, match) => {
     return {
         loggedinUser: DMSReducers.getAuthenticatedUser(state.sensenet),
+        actions: DMSReducers.getUserActions(state.dms.actionmenu),
     }
 }
 
 export default connect(mapStateToProps, {
     logout: userLogout,
+    loadUserActions: DMSActions.loadUserActions,
+    openActionMenu: DMSActions.openActionMenu,
+    closeActionMenu: DMSActions.closeActionMenu,
 })(UserActionMenu)
