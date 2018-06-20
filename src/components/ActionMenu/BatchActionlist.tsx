@@ -3,48 +3,12 @@ import IconButton from '@material-ui/core/IconButton'
 import * as React from 'react'
 import { connect } from 'react-redux'
 
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
+import { IActionModel } from '@sensenet/default-content-types'
 import { Reducers } from '@sensenet/redux'
 import * as DMSActions from '../../Actions'
 import { icons } from '../../assets/icons'
 import * as DMSReducers from '../../Reducers'
-import ActionList from './ActionList'
-
-const toolbarActions = [
-    {
-        Name: 'Download',
-        DisplayName: 'Download',
-        Icon: 'Download',
-        Batch: false,
-    },
-    {
-        Name: 'Share',
-        DisplayName: 'Share',
-        Icon: 'Share',
-        Batch: false,
-    },
-    {
-        Name: 'Delete',
-        DisplayName: 'Delete',
-        Icon: 'Delete',
-        Batch: true,
-    },
-    {
-        Name: 'Copy',
-        DisplayName: 'Copy',
-        Icon: 'Copy',
-        Batch: true,
-    },
-    {
-        Name: 'Move',
-        DisplayName: 'Move',
-        Icon: 'Move',
-        Batch: true,
-    },
-]
 
 const styles = {
     icon: {
@@ -87,7 +51,9 @@ interface BatchActionlistProps {
     currentId: number,
     actions: any[],
     getActions,
-    selected: number[]
+    selected: number[],
+    openActionMenu,
+    closeActionMenu,
 }
 
 const ITEM_HEIGHT = 48
@@ -99,11 +65,15 @@ class BatchActionlist extends React.Component<BatchActionlistProps, { options, a
             options: [],
             anchorEl: null,
         }
+        this.handleClick = this.handleClick.bind(this)
     }
     public componentWillReceiveProps(nextProps) {
         const { actions, currentId, getActions } = this.props
         if (currentId !== nextProps.currentId && actions.length === 0) {
-            getActions(currentId, 'DocLibToolbar', toolbarActions)
+            getActions(nextProps.currentId, 'DMSBatchActions', [{
+                Name: 'Download', DisplayName: 'Download', Icon: 'download', Index: 1,
+
+            } as IActionModel])
         }
         if (this.props.actions.length !== nextProps.actions.length) {
             const optionList = []
@@ -120,8 +90,14 @@ class BatchActionlist extends React.Component<BatchActionlistProps, { options, a
     public isHidden = () => {
         return this.props.selected.length > 0 ? false : true
     }
-    public handleClick = (event) => {
-        this.setState({ anchorEl: event.currentTarget })
+    public handleClick = (e) => {
+        const { actions, currentId } = this.props
+        this.props.closeActionMenu()
+        const ddActions = actions.splice(3)
+        this.props.openActionMenu(ddActions, currentId, currentId, e.currentTarget, {
+            top: e.currentTarget.offsetTop + 150,
+            left: e.currentTarget.offsetLeft,
+        })
     }
 
     public handleClose = () => {
@@ -129,50 +105,28 @@ class BatchActionlist extends React.Component<BatchActionlistProps, { options, a
     }
     public render() {
         const { actions } = this.props
-        const { options, anchorEl } = this.state
+        const { anchorEl } = this.state
         return (
             <ul style={this.isHidden() ? { display: 'none', margin: 0 } : { display: 'block', margin: 0 }}>
                 {actions.map((action, index) => {
-                    return (index < 2) ?
-                        <li key={action.Name} style={styles.icon} aria-label={action.DisplayName}>
+                    return (index < 3) ?
+                        <li key={action.Name} style={styles.icon} aria-label={action.DisplayName} title={action.DisplayName}>
                             <IconButton aria-label={action.DisplayName} disableRipple={true}>
                                 <Icon color="primary" style={styles.icon} >{icons[action.Icon.toLowerCase()]}</Icon>
                             </IconButton>
                         </li>
                         : null
                 })}
-                <li key="More" style={styles.icon}><IconButton
-                    aria-label="More"
-                    aria-owns={anchorEl ? 'long-menu' : null}
-                    aria-haspopup="true"
-                    onClick={this.handleClick}
-                >
-                    <MoreVertIcon color="primary" />
-                </IconButton>
-                    <Menu
-                        id="long-menu"
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={this.handleClose}
-                        style={styles.menu}
+                <li key="More" style={styles.icon}>
+                    <IconButton
+                        aria-label="More"
+                        aria-owns="actionmenu"
+                        aria-haspopup="true"
+                        onClick={(e) => this.handleClick(e)}
+                        style={{ position: 'relative' }}
                     >
-                        {options.map((option) => (
-                            <MenuItem
-                                key={option.Name}
-                                onClick={(event) => this.handleClick}
-                                style={styles.menuItem}>
-                                <ListItemIcon style={styles.actionIcon}>
-                                    <Icon color="primary">{
-                                        option.Icon === 'Application' ?
-                                            icons[option.Name.toLowerCase()] :
-                                            icons[option.Icon.toLowerCase()]
-                                    }</Icon>
-                                </ListItemIcon>
-                                {option.DisplayName}
-                            </MenuItem>
-                        ))}
-                        ))}
-                    </Menu>
+                        <MoreVertIcon color="primary" />
+                    </IconButton>
                 </li>
             </ul>
         )
@@ -189,4 +143,6 @@ const mapStateToProps = (state, match) => {
 
 export default connect(mapStateToProps, {
     getActions: DMSActions.loadListActions,
+    openActionMenu: DMSActions.openActionMenu,
+    closeActionMenu: DMSActions.closeActionMenu,
 })(BatchActionlist)
