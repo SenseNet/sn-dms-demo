@@ -1,118 +1,176 @@
-import Dialog from '@material-ui/core/Dialog'
-import DialogTitle from '@material-ui/core/DialogTitle'
+import { withStyles } from '@material-ui/core'
+import Icon from '@material-ui/core/Icon'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import MediaQuery from 'react-responsive'
 import * as DMSActions from '../../Actions'
 import * as DMSReducers from '../../Reducers'
-import ActionList from './ActionList'
+
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import { icons } from '../../assets/icons'
 
 const styles = {
-    actionMenu: {
-        display: 'none',
+    actionmenuContainer: {
+        flex: 1,
     },
-    open: {
-        display: 'block' as any,
-        position: 'absolute' as any,
-        zIndex: 10,
-        maxHeight: 'calc(100vh - 96px)',
-        WebkitOverflowScrolling: 'touch' as any,
-        minWidth: 16,
-        minHeight: 16,
-        transform: 'scale(1, 1)',
-        transformOrigin: '0px 32px 0px',
-        transition: 'opacity 267ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 178ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-        background: '#fff',
-        boxShadow: '0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12)',
-        borderRadius: 2,
+    menuIcon: {
+        color: '#fff',
+        display: 'inline-block',
+        verticalAlign: 'middle',
+        cursor: 'pointer',
+    },
+    menuIconMobile: {
+        width: 'auto' as any,
+        marginLeft: '16px',
+    },
+    arrowButton: {
+        marginLeft: 0,
+    },
+    menu: {
+        padding: 0,
+    },
+    menuItem: {
+        padding: '6px 15px',
+        fontSize: '0.9rem',
+    },
+    avatar: {
+        display: 'inline-block',
+    },
+    actionIcon: {
+        color: '#016D9E',
+        marginRight: 14,
     },
 }
 
 interface ActionMenuProps {
     actions,
     id,
-    title,
-    isOpen,
-    position,
+    open,
+    selected,
     currentContent,
-    close
+    setEdited,
+    handleMouseDown,
+    handleMouseUp,
+    clearSelection,
+    deleteBatch,
+    uploadContent,
+    anchorElement,
+    closeActionMenu,
+    position,
 }
 
 interface ActionMenuState {
-    mouseIsDownOnMenu
+    hovered,
+    selectedIndex,
+    anchorEl
 }
 
 class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
     constructor(props) {
         super(props)
-
         this.state = {
-            mouseIsDownOnMenu: false,
+            hovered: '',
+            selectedIndex: 1,
+            anchorEl: null,
         }
-
-        this.handleMouseDown = this.handleMouseDown.bind(this)
-        this.handleMouseUp = this.handleMouseUp.bind(this)
-        this.handleActionMenuClose = this.handleActionMenuClose.bind(this)
-        this.handleOutsideClick = this.handleOutsideClick.bind(this)
+        this.handleMouseEnter = this.handleMouseEnter.bind(this)
+        this.handleMouseLeave = this.handleMouseLeave.bind(this)
+        this.handleMenuItemClick = this.handleMenuItemClick.bind(this)
     }
-    public componentDidMount() {
-        window.addEventListener('mousedown', this.handleOutsideClick, false)
+    public componentWillReceiveProps(nextProps) {
+        if (nextProps.open === false) {
+            this.setState({
+                anchorEl: null,
+            })
+        }
     }
-    public handleActionMenuClose() {
-        this.props.close()
+    public isHovered(id) {
+        return this.state.hovered === id
     }
-    public handleMouseDown(e) {
+    public handleMouseEnter(e, name) {
         this.setState({
-            mouseIsDownOnMenu: true,
+            hovered: name,
         })
     }
-    public handleMouseUp(e) {
+    public handleMouseLeave() {
         this.setState({
-            mouseIsDownOnMenu: false,
+            hovered: '',
         })
     }
-    public handleOutsideClick(e) {
-        if (this.state.mouseIsDownOnMenu) {
-            return
-        }
-        if (this.props.isOpen) {
-            this.handleActionMenuClose()
+    public handleClose = () => {
+        this.props.closeActionMenu()
+        this.setState({ anchorEl: null })
+    }
+    public handleMenuItemClick(e, action) {
+        switch (action) {
+            case 'Rename':
+                this.handleClose()
+                this.props.setEdited(this.props.id)
+                break
+            case 'ClearSelection':
+                this.handleClose()
+                this.props.clearSelection()
+                break
+            case 'DeleteBatch':
+                this.handleClose()
+                this.props.clearSelection()
+                this.props.deleteBatch(this.props.selected, false)
+                break
+            default:
+                console.log(`${action} is clicked`)
+                this.handleClose()
+                break
         }
     }
     public render() {
-        const { isOpen, position } = this.props
-        const positionStyles = {
-            positions: {
-                top: position ? `${position.top}px` : 0,
-                left: position ? `${position.left}px` : 0,
-            },
-        }
-        return (
-            <MediaQuery minDeviceWidth={700}>
-                {(matches) => {
-                    return matches ?
-                        <div style={isOpen ? { ...styles.open, ...positionStyles.positions as any } : styles.actionMenu}>
-                            <ActionList handleActionMenuClose={this.handleActionMenuClose} id={this.props.id} handleMouseUp={this.handleMouseUp} handleMouseDown={this.handleMouseDown} />
-                        </div> :
-                        <Dialog onClose={this.handleActionMenuClose} open={isOpen}>
-                            <DialogTitle>{this.props.title}</DialogTitle>
-                            <ActionList handleActionMenuClose={this.handleActionMenuClose} id={this.props.id} handleMouseUp={this.handleMouseUp} handleMouseDown={this.handleMouseDown} />
-                        </Dialog>
-                }}
-            </MediaQuery>
-        )
+        const { actions, open, anchorElement, position } = this.props
+        return <Menu
+            id="actionmenu"
+            open={open}
+            style={styles.menu}
+            onClose={this.handleClose}
+            anchorReference="anchorPosition"
+            anchorPosition={position}
+        >
+            {
+                actions.map((action, index) => {
+                    return <MenuItem
+                        key={action.Name}
+                        selected={index === this.state.selectedIndex}
+                        onClick={(event) => this.handleMenuItemClick(event, index)}
+                        style={styles.menuItem}
+                        title={action.DisplayName}>
+                        <ListItemIcon style={styles.actionIcon}>
+                            <Icon color="primary">{
+                                action.Icon === 'Application' ?
+                                    icons[action.Name.toLowerCase()] :
+                                    icons[action.Icon.toLowerCase()]
+                            }</Icon>
+                        </ListItemIcon>
+                        {action.DisplayName}
+                    </MenuItem>
+                })
+            }
+        </Menu >
     }
 }
 
 const mapStateToProps = (state, match) => {
     return {
-        isOpen: DMSReducers.actionmenuIsOpen(state.dms.actionmenu),
-        position: DMSReducers.getActionMenuPosition(state.dms.actionmenu),
-        id: DMSReducers.getItemOnActionMenuIsOpen(state.dms.actionmenu),
-        title: DMSReducers.getItemTitleOnActionMenuIsOpen(state.dms.actionmenu),
+        actions: DMSReducers.getActions(state.dms.actionmenu),
+        currentContent: Reducers.getCurrentContent(state.sensenet),
+        selected: Reducers.getSelectedContentIds(state.sensenet),
+        open: DMSReducers.actionmenuIsOpen(state.dms.actionmenu),
+        anchorElement: DMSReducers.getAnchorElement(state.dms.actionmenu),
+        position: DMSReducers.getMenuPosition(state.dms.actionmenu),
     }
 }
 
 export default connect(mapStateToProps, {
-    close: DMSActions.closeActionMenu,
+    setEdited: DMSActions.setEditedContentId,
+    clearSelection: Actions.clearSelection,
+    deleteBatch: Actions.deleteBatch,
+    closeActionMenu: DMSActions.closeActionMenu,
 })(ActionMenu)
