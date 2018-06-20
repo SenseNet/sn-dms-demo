@@ -18,7 +18,7 @@ const ConnectedUploadBar = connect((state) => {
         removeItem: hideUploadItem,
     })(UploadBar)
 
-const drawerWidth = 240
+const drawerWidth = 205
 
 const styles: StyleRulesCallback = () => ({
     drawerPaper: {

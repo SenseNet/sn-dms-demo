@@ -5,6 +5,24 @@ import { v1 } from 'uuid'
 import { resources } from '../../assets/resources'
 import theme from '../../assets/theme'
 
+const styles = {
+    menuItem: {
+        padding: '6px 15px',
+        display: 'flex',
+        lineHeight: 1,
+        minWidth: 145,
+    },
+    icon: {
+        flexShrink: 0,
+        marginRight: 14,
+    },
+    text: {
+        padding: 0,
+        fontSize: '0.9rem',
+        fontWeight: 'bold' as any,
+    },
+}
+
 export interface UploadButtonProps {
     accept?: string
     multiple?: boolean
@@ -59,6 +77,11 @@ export class UploadButton extends React.Component<UploadButtonProps, UploadButto
                 style={{
                     color: '#fff',
                     width: '100%',
+                    fontFamily: 'Raleway Medium',
+                    fontWeight: 'bold' as any,
+                    textTransform: 'none',
+                    fontSize: '0.85rem',
+                    letterSpacing: 1,
                 }}
                 onClick={(ev) => this.toggleOpen(ev)}>
                 <FileUpload />
@@ -79,25 +102,25 @@ export class UploadButton extends React.Component<UploadButtonProps, UploadButto
                 onBlur={() => this.closeMenu()}
             >
                 <label htmlFor={this.uploadFileButtonId} style={{ outline: 'none' }}>
-                    <MenuItem>
-                        <ListItemIcon>
+                    <MenuItem style={styles.menuItem}>
+                        <ListItemIcon style={styles.icon}>
                             <div>
                                 <InsertDriveFile style={{ color: theme.palette.primary.main }} />
-                                <Forward style={{ position: 'absolute', left: '0.86em', top: '0.48em', width: '0.6em', color: 'white', transform: 'rotate(-90deg)' }} />
+                                <Forward style={{ position: 'absolute', left: '0.86em', top: '0.28em', width: '0.5em', color: 'white', transform: 'rotate(-90deg)' }} />
                             </div>
                         </ListItemIcon>
-                        <ListItemText inset primary={resources.UPLOAD_BUTTON_UPLOAD_FILE_TITLE} />
+                        <ListItemText style={styles.text} primary={resources.UPLOAD_BUTTON_UPLOAD_FILE_TITLE} disableTypography />
                     </MenuItem>
                 </label>
                 <label htmlFor={this.uploadFolderButtonId} tabIndex={-1} style={{ outline: 'none' }}>
-                    <MenuItem>
-                        <ListItemIcon>
+                    <MenuItem style={styles.menuItem}>
+                        <ListItemIcon style={styles.icon}>
                             <div>
                                 <Folder style={{ color: theme.palette.primary.main }} />
-                                <Forward style={{ position: 'absolute', left: '0.87em', top: '0.42em', width: '0.6em', color: 'white', transform: 'rotate(-90deg)' }} />
+                                <Forward style={{ position: 'absolute', left: '0.87em', top: '0.22em', width: '0.5em', color: 'white', transform: 'rotate(-90deg)' }} />
                             </div>
                         </ListItemIcon>
-                        <ListItemText inset primary={resources.UPLOAD_BUTTON_UPLOAD_FOLDER_TITLE} />
+                        <ListItemText style={styles.text} primary={resources.UPLOAD_BUTTON_UPLOAD_FOLDER_TITLE} disableTypography />
                     </MenuItem>
                 </label>
             </Menu>
