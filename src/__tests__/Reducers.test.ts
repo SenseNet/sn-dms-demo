@@ -126,10 +126,10 @@ describe('title reducer', () => {
 
 describe('position reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.position(undefined, {})).toEqual(null)
+        expect(DMSReducers.anchorElement(undefined, {})).toEqual(null)
     })
     it('should return the opened content items position', () => {
-        expect(DMSReducers.position(undefined, { type: 'OPEN_ACTIONMENU', position: { top: 1, left: 1 } })).toEqual({ top: 1, left: 1 })
+        expect(DMSReducers.anchorElement(undefined, { type: 'OPEN_ACTIONMENU', anchorElement: null })).toEqual(null)
     })
 })
 
@@ -321,18 +321,12 @@ describe('actionmenuIsOpen', () => {
     })
 })
 
-describe('getActionMenuPosition', () => {
+describe('getAnchorElement', () => {
     const state = {
-        position: {
-            top: 1,
-            left: 1,
-        },
+        anchorElement: null,
     }
-    it('should return position of the actionmenu', () => {
-        expect(DMSReducers.getActionMenuPosition(state)).toEqual({
-            top: 1,
-            left: 1,
-        })
+    it('should return the anchor element of the actionmenu', () => {
+        expect(DMSReducers.getAnchorElement(state)).toEqual(null)
     })
 })
 
