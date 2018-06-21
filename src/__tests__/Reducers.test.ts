@@ -129,7 +129,7 @@ describe('position reducer', () => {
         expect(DMSReducers.anchorElement(undefined, {})).toEqual(null)
     })
     it('should return the opened content items position', () => {
-        expect(DMSReducers.anchorElement(undefined, { type: 'OPEN_ACTIONMENU' })).toEqual(null)
+        expect(DMSReducers.anchorElement(undefined, { type: 'OPEN_ACTIONMENU', actions: [], id: 1, element: null })).toEqual(null)
     })
 })
 
