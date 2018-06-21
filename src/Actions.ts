@@ -1,6 +1,7 @@
 import { IContent, IUploadFromEventOptions, IUploadFromFileListOptions, IUploadProgressInfo, Repository, Upload } from '@sensenet/client-core'
 import { ObservableValue, usingAsync } from '@sensenet/client-utils'
 import { File as SnFile, GenericContent } from '@sensenet/default-content-types'
+import { IActionModel } from '@sensenet/default-content-types/dist/IActionModel'
 import { Actions } from '@sensenet/redux'
 import { Dispatch } from 'redux'
 
@@ -35,11 +36,12 @@ export const setEditedContentId = (id) => ({
     type: 'SET_EDITED_ID',
     id,
 })
-export const openActionMenu = (actions, id, title, position, customItems?) => ({
+export const openActionMenu = (actions, id, title, element, position?, customItems?) => ({
     type: 'OPEN_ACTIONMENU',
     actions: customItems && customItems.length > 0 ? customItems : actions,
     id,
     title,
+    element,
     position,
 })
 export const closeActionMenu = () => ({
@@ -64,6 +66,39 @@ export const openMessageBar = (mode: MessageMode, content, vertical?, horizontal
 })
 export const closeMessageBar = () => ({
     type: 'CLOSE_MESSAGE_BAR',
+})
+export const loadListActions = (idOrPath: number | string, scenario?: string, customActions?: IActionModel[]) => ({
+    type: 'LOAD_LIST_ACTIONS',
+    // tslint:disable:completed-docs
+    async payload(repository: Repository): Promise<{ d: IActionModel[] }> {
+        const data: any = await repository.getActions({ idOrPath, scenario })
+        const actions = customActions ? [...data.d.Actions, ...customActions] : data.d.Actions
+        return {
+            d: {
+                Actions: actions.sort((a, b) => {
+                    const x = a.Index
+                    const y = b.Index
+                    return ((x < y) ? -1 : ((x > y) ? 1 : 0))
+                }),
+            } as any,
+        }
+    },
+})
+export const loadUserActions = (idOrPath: number | string, scenario?: string, customActions?: IActionModel[]) => ({
+    type: 'LOAD_USER_ACTIONS',
+    async payload(repository: Repository): Promise<{ d: IActionModel[] }> {
+        const data: any = await repository.getActions({ idOrPath, scenario })
+        const actions = customActions ? [...data.d.Actions, ...customActions] : data.d.Actions
+        return {
+            d: {
+                Actions: actions.sort((a, b) => {
+                    const x = a.Index
+                    const y = b.Index
+                    return ((x < y) ? -1 : ((x > y) ? 1 : 0))
+                }),
+            } as any,
+        }
+    },
 })
 
 export type ExtendedUploadProgressInfo = IUploadProgressInfo & { content?: GenericContent, visible?: boolean }

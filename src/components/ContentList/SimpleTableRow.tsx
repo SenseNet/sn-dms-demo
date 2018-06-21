@@ -14,7 +14,6 @@ import {
     withRouter,
 } from 'react-router-dom'
 import * as DMSActions from '../../Actions'
-import { IconCell } from './TableCells'
 import DateCell from './TableCells/DateCell'
 import DisplayNameCell from './TableCells/DisplayNameCell'
 import MenuCell from './TableCells/MenuCell'
@@ -99,8 +98,11 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
     }
 
     public handleContextMenu(e, content) {
+        const top = e.pageY - e.target.offsetTop
+        const left = e.pageX - e.target.offsetLeft
         e.preventDefault()
-        this.props.openActionMenu(content.Actions, content.Id, content.DisplayName, { top: e.clientY, left: e.clientX })
+        this.props.openActionMenu(content.Actions, content.Id, content.DisplayName, e.currentTarget,
+            { top, left })
     }
 
     public handleRowMouseEnter(e, id) {
@@ -133,6 +135,7 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
                 // onKeyDown={event => this.handleKeyDown(event, content.Id, content.Type)}
                 role="checkbox"
                 aria-checked={isSelected}
+                aria-owns="actionmenu"
                 tabIndex={-1}
                 onMouseEnter={(event) => this.handleRowMouseEnter(event, content.Id)}
                 onMouseLeave={(event) => this.handleRowMouseLeave()}

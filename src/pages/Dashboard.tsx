@@ -4,7 +4,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import * as DMSActions from '../Actions'
-import BreadCrumb from '../components/BreadCrumb'
+import { ListToolbar } from '../components/ContentList/ListToolbar'
 import DashboarDrawer from '../components/DashboardDrawer'
 import DocumentLibrary from '../components/DocumentLibrary'
 import FloatingActionButton from '../components/FloatingActionButton'
@@ -29,7 +29,7 @@ const styles = {
     main: {
         flexGrow: 1,
         backgroundColor: '#eee',
-        padding: 10,
+        padding: '0 10px 10px',
         minWidth: 0,
     },
 }
@@ -44,7 +44,7 @@ interface DashboardProps {
     selectionModeIsOn: boolean
 }
 
-class Dashboard extends React.Component<DashboardProps, { currentId }> {
+class Dashboard extends React.Component<DashboardProps, { }> {
     constructor(props) {
         super(props)
         this.state = {
@@ -66,24 +66,27 @@ class Dashboard extends React.Component<DashboardProps, { currentId }> {
     }
     public componentWillReceiveProps(nextProps) {
         const id = parseInt(nextProps.match.params.id, 10)
-        if (id && !isNaN(id) && isFinite(id)) {
-            this.props.setCurrentId(id)
-        }
-        if (nextProps.currentId &&
-            !isNaN(id) &&
-            id === Number(nextProps.currentId) &&
-            this.props.currentId !== nextProps.currentId) {
-            if (nextProps.loggedinUser.userName !== 'Visitor') {
-
+        if ((nextProps.currentId !== undefined && this.props.currentId !== nextProps.currentId) || nextProps.currentId === 'login') {
+            if (id && !isNaN(id as any) && isFinite(id as any)) {
                 this.props.setCurrentId(id)
-                this.props.loadContent(id)
             }
-        }
-        if (nextProps.loggedinUser.userName !== this.props.loggedinUser.userName) {
-            id ?
-                this.props.setCurrentId(Number(nextProps.match.params.id)) &&
-                this.props.loadContent(Number(nextProps.match.params.id)) :
-                this.props.loadContent(`/Root/Profiles/Public/${nextProps.loggedinUser.userName}/Document_Library`)
+            if (nextProps.currentId && this.props.currentId !== nextProps.currentId &&
+                !isNaN(id as any) &&
+                id === Number(nextProps.currentId)) {
+                if (nextProps.loggedinUser.userName !== 'Visitor') {
+                    this.props.setCurrentId(id)
+                    this.props.loadContent(id)
+                }
+            }
+            if (nextProps.loggedinUser.userName !== this.props.loggedinUser.userName) {
+                id ?
+                    this.props.setCurrentId(Number(nextProps.match.params.id)) &&
+                    this.props.loadContent(Number(nextProps.match.params.id)) :
+                    this.props.setCurrentId(nextProps.currentContent.Id) &&
+                    this.props.loadContent(`/Root/Profiles/Public/${nextProps.loggedinUser.userName}/Document_Library`)
+            } else {
+                this.props.setCurrentId(nextProps.currentContent.Id)
+            }
         }
     }
     public render() {
@@ -97,14 +100,14 @@ class Dashboard extends React.Component<DashboardProps, { currentId }> {
                             <DashboarDrawer />
                             <div style={styles.main}>
                                 <div style={{ height: 48, width: '100%' }}></div>
-                                <BreadCrumb />
+                                <ListToolbar />
                                 <DocumentLibrary parentId={id} />
                             </div>
                         </div>
                     } else {
                         return <div style={styles.root}>
                             <div style={styles.dashBoardInnerMobile}>
-                                <BreadCrumb />
+                                <ListToolbar />
                                 <DocumentLibrary parentId={id} />
                             </div>
                         </div>

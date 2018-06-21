@@ -68,9 +68,11 @@ export const register = combineReducers({
 export const actions = (state = [], action) => {
     switch (action.type) {
         case 'LOAD_CONTENT_ACTIONS_SUCCESS':
-            return action.payload.d.Actions
+            return action.payload.d.Actions ? action.payload.d.Actions : []
         case 'OPEN_ACTIONMENU':
-            return action.actions
+            return action.actions || []
+        case 'CLOSE_ACTIONMENU':
+            return []
         default:
             return state
     }
@@ -105,10 +107,19 @@ export const title = (state = '', action) => {
     }
 }
 
+export const anchorElement = (state = null, action) => {
+    switch (action.type) {
+        case 'OPEN_ACTIONMENU':
+            return action.element
+        default:
+            return state
+    }
+}
+
 export const position = (state = null, action) => {
     switch (action.type) {
         case 'OPEN_ACTIONMENU':
-            return action.position
+            return action.position || null
         default:
             return state
     }
@@ -204,12 +215,23 @@ export const isSelectionModeOn = (state = false, action) => {
     }
 }
 
+export const userActions = (state = [], action) => {
+    switch (action.type) {
+        case 'LOAD_USER_ACTIONS_SUCCESS':
+            return action.payload.d.Actions ? action.payload.d.Actions : []
+        default:
+            return state
+    }
+}
+
 export const actionmenu = combineReducers({
     actions,
     open,
+    anchorElement,
     position,
     id,
     title,
+    userActions,
 })
 
 export const messagebarmode = (state = MessageMode.info, action) => {
@@ -269,6 +291,19 @@ export const messagebar = combineReducers({
     content: messagebarcontent,
     vertical,
     horizontal,
+})
+
+export const toolbarActions = (state = [], action) => {
+    switch (action.type) {
+        case 'LOAD_LIST_ACTIONS_SUCCESS':
+            return action.payload.d.Actions
+        default:
+            return state
+    }
+}
+
+export const toolbar = combineReducers({
+    actions: toolbarActions,
 })
 
 export const uploads = (state: { uploads: ExtendedUploadProgressInfo[], showProgress: boolean } = { uploads: [], showProgress: false }, action: AnyAction) => {
@@ -339,6 +374,7 @@ export const dms = combineReducers({
     register,
     isLoading,
     isSelectionModeOn,
+    toolbar,
     uploads,
 })
 
@@ -376,7 +412,11 @@ export const actionmenuIsOpen = (state) => {
     return state.open
 }
 
-export const getActionMenuPosition = (state) => {
+export const getAnchorElement = (state) => {
+    return state.anchorElement
+}
+
+export const getMenuPosition = (state) => {
     return state.position
 }
 
@@ -393,7 +433,7 @@ export const getCurrentId = (state) => {
     return state.currentId
 }
 export const getActionsOfAContent = (state) => {
-    return state.Actions
+    return state.actions
 }
 export const getActions = (state) => {
     return state.actions
@@ -421,4 +461,10 @@ export const isEditedFirst = (state) => {
 }
 export const getMessageBarProps = (state) => {
     return state.messagebar
+}
+export const getToolbarActions = (state) => {
+    return state && state.actions ? state.actions : []
+}
+export const getUserActions = (state) => {
+    return state.userActions
 }

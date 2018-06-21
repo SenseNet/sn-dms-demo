@@ -18,7 +18,7 @@ const ConnectedUploadBar = connect((state) => {
         removeItem: hideUploadItem,
     })(UploadBar)
 
-const drawerWidth = 240
+const drawerWidth = 205
 
 const styles: StyleRulesCallback = () => ({
     drawerPaper: {
@@ -74,7 +74,7 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
                     <li>
                         <Divider />
                     </li>
-                    <ListItem style={{ padding: '20px 10px' }}>
+                    <ListItem style={{ padding: '20px 10px', fontWeight: 'bold', fontFamily: 'Raleway Regular' }}>
                         <ListItemIcon>
                             <Icon color="primary">people</Icon>
                         </ListItemIcon>
@@ -83,7 +83,7 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
                     <li>
                         <Divider />
                     </li>
-                    <ListItem style={{ padding: '20px 10px' }}>
+                    <ListItem style={{ padding: '20px 10px', fontWeight: 'bold', fontFamily: 'Raleway Regular' }}>
                         <ListItemIcon>
                             <Icon color="primary">star</Icon>
                         </ListItemIcon>
@@ -92,7 +92,7 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
                     <li>
                         <Divider />
                     </li>
-                    <ListItem style={{ padding: '20px 10px' }}>
+                    <ListItem style={{ padding: '20px 10px', fontWeight: 'bold', fontFamily: 'Raleway Regular' }}>
                         <ListItemIcon>
                             <Icon color="primary">delete</Icon>
                         </ListItemIcon>
