@@ -1,6 +1,7 @@
 import { withStyles } from '@material-ui/core'
 import Icon from '@material-ui/core/Icon'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
+import { Forward, ModeEdit } from '@material-ui/icons'
 import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -147,7 +148,14 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
                                 action.Icon === 'Application' ?
                                     icons[action.Name.toLowerCase()] :
                                     icons[action.Icon.toLowerCase()]
-                            }</Icon>
+                            }
+                            {
+                                action.Name === 'MoveTo' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.3em', width: '0.5em', color: 'white' }} /> : null
+                            }
+                            {
+                                action.Name === 'Rename' ? <ModeEdit style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
+                            }
+                            </Icon>
                         </ListItemIcon>
                         {action.DisplayName}
                     </MenuItem>

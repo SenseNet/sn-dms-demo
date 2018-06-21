@@ -93,8 +93,8 @@ class BatchActionlist extends React.Component<BatchActionlistProps, { options, a
     public handleClick = (e) => {
         const { actions, currentId } = this.props
         this.props.closeActionMenu()
-        const ddActions = actions.splice(3)
-        this.props.openActionMenu(ddActions, currentId, currentId, e.currentTarget, {
+        // const ddActions = actions.splice(3)
+        this.props.openActionMenu(actions, currentId, currentId, e.currentTarget, {
             top: e.currentTarget.offsetTop + 150,
             left: e.currentTarget.offsetLeft,
         })
