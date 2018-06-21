@@ -372,7 +372,7 @@ describe('getCurrentId', () => {
 
 describe('getActionsOfAContent', () => {
     const state = {
-        Actions: ['aaa', 'bbb'],
+        actions: ['aaa', 'bbb'],
     }
     it('should return the actions', () => {
         expect(DMSReducers.getActionsOfAContent(state)).toEqual(['aaa', 'bbb'])
