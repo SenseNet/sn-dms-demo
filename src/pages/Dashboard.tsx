@@ -39,12 +39,13 @@ interface DashboardProps {
     currentContent,
     loggedinUser,
     loadContent,
+    loadUserActions,
     setCurrentId,
     currentId,
     selectionModeIsOn: boolean
 }
 
-class Dashboard extends React.Component<DashboardProps, { }> {
+class Dashboard extends React.Component<DashboardProps, {}> {
     constructor(props) {
         super(props)
         this.state = {
@@ -60,15 +61,17 @@ class Dashboard extends React.Component<DashboardProps, { }> {
                 if (this.props.loggedinUser.userName !== 'Visitor') {
                     return this.props.setCurrentId(this.props.match.params.id)
                         && this.props.loadContent(`/Root/Profiles/Public/${this.props.loggedinUser.userName}/Document_Library`)
+                        && this.props.loadUserActions(`/Root/IMS/Public/${this.props.loggedinUser.userName}`, 'DMSUserActions')
                 }
             }
         }
     }
     public componentWillReceiveProps(nextProps) {
-        const id = parseInt(nextProps.match.params.id, 10)
-        if ((nextProps.currentId !== undefined && this.props.currentId !== nextProps.currentId) || nextProps.currentId === 'login') {
+        const id = this.props.match.path === '/' ? 'login' : parseInt(nextProps.match.params.id, 10)
+        if ((nextProps.currentId !== undefined && this.props.currentId !== nextProps.currentId) || nextProps.currentId === 'login' || id === 'login') {
             if (id && !isNaN(id as any) && isFinite(id as any)) {
                 this.props.setCurrentId(id)
+                this.props.loadContent(id)
             }
             if (nextProps.currentId && this.props.currentId !== nextProps.currentId &&
                 !isNaN(id as any) &&
@@ -78,14 +81,20 @@ class Dashboard extends React.Component<DashboardProps, { }> {
                     this.props.loadContent(id)
                 }
             }
+            if (id === 'login' && this.props.currentId === null) {
+                this.props.loadContent(`/Root/Profiles/Public/${nextProps.loggedinUser.userName}/Document_Library`)
+            }
             if (nextProps.loggedinUser.userName !== this.props.loggedinUser.userName) {
-                id ?
-                    this.props.setCurrentId(Number(nextProps.match.params.id)) &&
-                    this.props.loadContent(Number(nextProps.match.params.id)) :
-                    this.props.setCurrentId(nextProps.currentContent.Id) &&
+                id === 'login' &&  nextProps.loggedinUser.userName !== 'Visitor' ?
+                    this.props.setCurrentId(id) &&
                     this.props.loadContent(`/Root/Profiles/Public/${nextProps.loggedinUser.userName}/Document_Library`)
+                    && this.props.loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUser.userName}`, 'DMSUserActions') :
+                    this.props.setCurrentId(Number(nextProps.match.params.id)) &&
+                    this.props.loadContent(Number(nextProps.match.params.id))
             } else {
-                this.props.setCurrentId(nextProps.currentContent.Id)
+                id === 'login' &&  nextProps.loggedinUser.userName !== 'Visitor' ?
+                    this.props.setCurrentId('login') :
+                    this.props.setCurrentId(nextProps.currentContent.Id)
             }
         }
     }
@@ -130,4 +139,5 @@ const mapStateToProps = (state, match) => {
 export default connect(mapStateToProps, {
     loadContent: Actions.loadContent,
     setCurrentId: DMSActions.setCurrentId,
+    loadUserActions: DMSActions.loadUserActions,
 })(Dashboard)
