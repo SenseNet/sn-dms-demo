@@ -62,6 +62,7 @@ interface ContentListProps {
     canDrop: boolean,
     onDrop,
     accepts: string[],
+    loadContent,
 }
 
 interface ContentListState {
@@ -149,6 +150,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
     public handleRowDoubleClick(e, id, type) {
         if (type === 'Folder') {
             this.props.history.push(`/${id}`)
+            this.props.loadContent(id)
             this.props.deselect(this.props.children[id])
         } else {
             console.log('open preview')
@@ -343,6 +345,7 @@ const mapStateToProps = (state, match) => {
     }
 }
 export default withRouter(connect(mapStateToProps, {
+    loadContent: Actions.loadContent,
     select: Actions.selectContent,
     deselect: Actions.deSelectContent,
     clearSelection: Actions.clearSelection,

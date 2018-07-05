@@ -67,34 +67,20 @@ class Dashboard extends React.Component<DashboardProps, {}> {
         }
     }
     public componentWillReceiveProps(nextProps) {
-        const id = this.props.match.path === '/' ? 'login' : parseInt(nextProps.match.params.id, 10)
-        if ((nextProps.currentId !== undefined && this.props.currentId !== nextProps.currentId) || nextProps.currentId === 'login' || id === 'login') {
-            if (id && !isNaN(id as any) && isFinite(id as any)) {
-                this.props.setCurrentId(id)
-                this.props.loadContent(id)
-            }
-            if (nextProps.currentId && this.props.currentId !== nextProps.currentId &&
-                !isNaN(id as any) &&
-                id === Number(nextProps.currentId)) {
-                if (nextProps.loggedinUser.userName !== 'Visitor') {
-                    this.props.setCurrentId(id)
-                    this.props.loadContent(id)
-                }
-            }
-            if (id === 'login' && this.props.currentId === null) {
-                this.props.loadContent(`/Root/Profiles/Public/${nextProps.loggedinUser.userName}/Document_Library`)
-            }
-            if (nextProps.loggedinUser.userName !== this.props.loggedinUser.userName) {
-                id === 'login' &&  nextProps.loggedinUser.userName !== 'Visitor' ?
-                    this.props.setCurrentId(id) &&
-                    this.props.loadContent(`/Root/Profiles/Public/${nextProps.loggedinUser.userName}/Document_Library`)
-                    && this.props.loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUser.userName}`, 'DMSUserActions') :
-                    this.props.setCurrentId(Number(nextProps.match.params.id)) &&
-                    this.props.loadContent(Number(nextProps.match.params.id))
-            } else {
-                id === 'login' &&  nextProps.loggedinUser.userName !== 'Visitor' ?
-                    this.props.setCurrentId('login') :
-                    this.props.setCurrentId(nextProps.currentContent.Id)
+        const { currentId, setCurrentId, loadContent, loadUserActions } = this.props
+
+        if (this.props.match.params.id !== undefined && Number(this.props.match.params.id) !== this.props.currentId) {
+            setCurrentId(Number(nextProps.match.params.id)) &&
+            loadContent(Number(nextProps.match.params.id))
+        } else {
+            if (currentId && currentId !== nextProps.currentId && nextProps.loggedinUser.userName !== 'Visitor') {
+                setCurrentId(nextProps.currentId)
+                loadContent(nextProps.currentId)
+                loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUser.userName}`, 'DMSUserActions')
+            } else if (currentId === null && currentId !== nextProps.currentId && nextProps.loggedinUser.userName !== 'Visitor') {
+                setCurrentId(nextProps.currentId)
+                loadContent(`/Root/Profiles/Public/${nextProps.loggedinUser.userName}/Document_Library`)
+                loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUser.userName}`, 'DMSUserActions')
             }
         }
     }

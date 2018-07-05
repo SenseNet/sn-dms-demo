@@ -95,6 +95,8 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
         }
         this.handleContextMenu = this.handleContextMenu.bind(this)
         this.handleIconTap = this.handleIconTap.bind(this)
+        this.handleClick = this.handleClick.bind(this)
+        this.handleDoubleClick = this.handleDoubleClick.bind(this)
     }
 
     public handleContextMenu(e, content) {
@@ -125,8 +127,14 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
     public handleIconTap(e, content) {
         this.props.handleRowSingleClick(e, content)
     }
+    public handleClick(e, content) {
+        this.props.handleRowSingleClick(e, content)
+    }
+    public handleDoubleClick(e, id, type) {
+        this.props.handleRowDoubleClick(e, id, type)
+    }
     public render() {
-        const { content, handleRowSingleClick, handleRowDoubleClick, handleTap, isCopy, classes } = this.props
+        const { content, handleTap, isCopy, classes } = this.props
         const isSelected = this.isSelected(content.Id)
         const isHovered = this.isHovered(content.Id)
         return (
@@ -149,8 +157,8 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
                     <TableCell
                         padding="none"
                         style={styles.checkboxButton}
-                        onClick={(event) => handleRowSingleClick(event, content)}
-                        onDoubleClick={(event) => handleRowDoubleClick(event, content.Id, content.Type)}>
+                        onClick={(event) => this.handleClick(event, content)}
+                        onDoubleClick={(event) => this.handleDoubleClick(event, content.Id, content.Type)}>
                         <div>
                             <Checkbox
                                 checked={isSelected}
@@ -180,8 +188,8 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
                             content={content}
                             isHovered={isHovered}
                             icon={content.Icon}
-                            handleRowSingleClick={(event) => matches ? handleRowSingleClick(event, content) : handleTap(event, content, content.Type)}
-                            handleRowDoubleClick={(event) => matches ? handleRowDoubleClick(event, content.Id, content.Type) : event.preventDefault()}
+                            handleRowSingleClick={(event) => matches ? this.handleClick(event, content) : handleTap(event, content, content.Type)}
+                            handleRowDoubleClick={(event) => matches ? this.handleDoubleClick(event, content.Id, content.Type) : event.preventDefault()}
                             isCopy={isCopy}
                             isSelected={isSelected} />
                     }}
