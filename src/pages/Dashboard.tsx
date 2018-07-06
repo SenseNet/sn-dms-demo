@@ -67,13 +67,12 @@ class Dashboard extends React.Component<DashboardProps, {}> {
         }
     }
     public componentWillReceiveProps(nextProps) {
-        const id = this.props.match.path === '/' ? 'login' : parseInt(nextProps.match.params.id, 10)
+        const id = nextProps.match.params.id === undefined ? 'login' : parseInt(nextProps.match.params.id, 10)
         if ((nextProps.currentId !== undefined && this.props.currentId !== nextProps.currentId) || nextProps.currentId === 'login' || id === 'login') {
             if (id && !isNaN(id as any) && isFinite(id as any)) {
                 this.props.setCurrentId(id)
                 this.props.loadContent(id)
-            }
-            if (nextProps.currentId && this.props.currentId !== nextProps.currentId &&
+            } else if (nextProps.currentId && this.props.currentId !== nextProps.currentId &&
                 !isNaN(id as any) &&
                 id === Number(nextProps.currentId)) {
                 if (nextProps.loggedinUser.userName !== 'Visitor') {
