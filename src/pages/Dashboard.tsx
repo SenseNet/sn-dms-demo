@@ -71,17 +71,18 @@ class Dashboard extends React.Component<DashboardProps, {}> {
 
         if (this.props.match.params.id !== undefined && Number(this.props.match.params.id) !== this.props.currentId) {
             setCurrentId(Number(nextProps.match.params.id)) &&
-            loadContent(Number(nextProps.match.params.id))
+                loadContent(Number(nextProps.match.params.id))
         } else {
             if (currentId && currentId !== nextProps.currentId && nextProps.loggedinUser.userName !== 'Visitor') {
                 setCurrentId(nextProps.currentId)
                 loadContent(nextProps.currentId)
                 loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUser.userName}`, 'DMSUserActions')
-            } else if (currentId === null && currentId !== nextProps.currentId && nextProps.loggedinUser.userName !== 'Visitor') {
+            } else if (currentId === null && nextProps.loggedinUser.userName !== 'Visitor') {
                 setCurrentId(nextProps.currentId)
                 loadContent(`/Root/Profiles/Public/${nextProps.loggedinUser.userName}/Document_Library`)
                 loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUser.userName}`, 'DMSUserActions')
             }
+        }
     }
     public render() {
         const { id } = this.props.match.params
