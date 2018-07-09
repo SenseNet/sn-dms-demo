@@ -1,5 +1,5 @@
 import { Repository } from '@sensenet/client-core'
-import { File as SnFile} from '@sensenet/default-content-types'
+import { File as SnFile } from '@sensenet/default-content-types'
 import { Annotation, getStoreConfig, Highlight, PreviewImageData, Redaction, Shape } from '@sensenet/document-viewer-react'
 import { v1 } from 'uuid'
 
@@ -12,21 +12,21 @@ const addGuidToShape: <T extends Shape>(shape: T) => T = (shape) => {
 }
 
 export const getViewerStoreConfig = (repo: Repository) => getStoreConfig({
-  saveChanges: async (documentData, pages) => {
-    const reqBody = {
-        Shapes: JSON.stringify([
-            { redactions: documentData.shapes.redactions },
-            { highlights: documentData.shapes.highlights },
-            { annotations: documentData.shapes.annotations },
-        ]),
-        PageAttributes: JSON.stringify(pages.map((p) => p.Attributes && p.Attributes.degree && { pageNum: p.Index, options: p.Attributes } || undefined).filter((p) => p !== undefined)),
-    }
-    const response = repo.patch<SnFile>({
-          idOrPath: documentData.idOrPath,
-          content: reqBody,
-      })
-  },
-  getDocumentData: async (settings) => {
+    saveChanges: async (documentData, pages) => {
+        const reqBody = {
+            Shapes: JSON.stringify([
+                { redactions: documentData.shapes.redactions },
+                { highlights: documentData.shapes.highlights },
+                { annotations: documentData.shapes.annotations },
+            ]),
+            PageAttributes: JSON.stringify(pages.map((p) => p.Attributes && p.Attributes.degree && { pageNum: p.Index, options: p.Attributes } || undefined).filter((p) => p !== undefined)),
+        }
+        await repo.patch<SnFile>({
+            idOrPath: documentData.idOrPath,
+            content: reqBody,
+        })
+    },
+    getDocumentData: async (settings) => {
         const documentData = (await repo.load<SnFile>({
             idOrPath: settings.idOrPath,
             oDataOptions: {
@@ -52,9 +52,9 @@ export const getViewerStoreConfig = (repo: Repository) => getStoreConfig({
                 },
             pageAttributes: documentData.PageAttributes && JSON.parse(documentData.PageAttributes) || [],
         }
-      },
-      isPreviewAvailable: async (documentData, version, page: number, showWatermark) => {
-        return await repo.executeAction<{ page: number}, PreviewImageData>({
+    },
+    isPreviewAvailable: async (documentData, version, page: number, showWatermark) => {
+        return await repo.executeAction<{ page: number }, PreviewImageData>({
             idOrPath: documentData.idOrPath,
             method: 'POST',
             name: `PreviewAvailable?version=${version}`,
@@ -63,9 +63,33 @@ export const getViewerStoreConfig = (repo: Repository) => getStoreConfig({
             },
         })
     },
-    canEditDocument: async (settings) => ({} as any),
-    canHideRedaction: async (settings) => ({} as any),
-    canHideWatermark: async (settings) => ({} as any),
-    getExistingPreviewImages: async (settings) => ({} as any),
+    canEditDocument: async (settings) => await repo.security.hasPermission(settings.idOrPath, ['Save'], undefined),
+    canHideRedaction: async (settings) => await repo.security.hasPermission(settings.idOrPath, ['PreviewWithoutRedaction'], undefined),
+    canHideWatermark: async (settings) => await repo.security.hasPermission(settings.idOrPath, ['PreviewWithoutWatermark'], undefined),
+    getExistingPreviewImages: async (settings, version) => {
+        const response = await repo.executeAction({
+            idOrPath: settings.idOrPath,
+            name: `GetExistingPreviewImages?version=${version}`,
+            method: 'POST',
+            body: {},
+            oDataOptions: {},
+        })
+
+        const availablePreviews = (await response as Array<PreviewImageData & { PreviewAvailable?: string }>).map((a) => {
+            if (a.PreviewAvailable) {
+                a.PreviewImageUrl = `${settings.hostName}${a.PreviewAvailable}`
+                a.ThumbnailImageUrl = `${settings.hostName}${a.PreviewAvailable.replace('preview', 'thumbnail')}`
+            }
+            return a
+        })
+
+        const allPreviews: PreviewImageData[] = []
+        for (let i = 0; i < settings.pageCount; i++) {
+            allPreviews[i] = availablePreviews[i] || { Index: i + 1 } as any
+            const pageAttributes = settings.pageAttributes.find((p) => p.pageNum === allPreviews[i].Index)
+            allPreviews[i].Attributes = pageAttributes && pageAttributes.options
+        }
+        return allPreviews
+    },
 
 })
