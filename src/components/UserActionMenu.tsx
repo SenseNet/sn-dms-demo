@@ -53,6 +53,7 @@ class UserActionMenu extends React.Component<UserActionMenu, { anchorEl, open, s
             open: false,
             selectedIndex: 1,
         }
+        this.props.loadUserActions(`/Root/IMS/Public/${this.props.loggedinUser.userName}`, 'DMSUserActions')
         this.handleClick = this.handleClick.bind(this)
         this.handleRequestClose = this.handleRequestClose.bind(this)
     }

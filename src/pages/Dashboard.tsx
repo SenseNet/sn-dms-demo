@@ -45,7 +45,7 @@ interface DashboardProps {
     selectionModeIsOn: boolean
 }
 
-class Dashboard extends React.Component<DashboardProps, {}> {
+class Dashboard extends React.Component<DashboardProps, { }> {
     constructor(props) {
         super(props)
         this.state = {
