@@ -2,6 +2,7 @@
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
+import { pollDocumentData } from '@sensenet/document-viewer-react'
 import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { DropTarget } from 'react-dnd'
@@ -15,10 +16,7 @@ import * as DMSActions from '../../Actions'
 import * as DragAndDrop from '../../DragAndDrop'
 import * as DMSReducers from '../../Reducers'
 import ActionMenu from '../ActionMenu/ActionMenu'
-// import SelectionBox from '../SelectionBox'
 import ListHead from './ListHead'
-import ParentFolderTableRow from './ParentFolderTableRow'
-import { SharedItemsTableRow } from './SharedItemsTableRow'
 import SimpleTableRow from './SimpleTableRow'
 
 const styles = {
@@ -62,6 +60,9 @@ interface ContentListProps {
     canDrop: boolean,
     onDrop,
     accepts: string[],
+    openViewer: (id: number) => void
+    hostName: string
+    pollDocumentData: (host: string, id: number) => void
 }
 
 interface ContentListState {
@@ -71,7 +72,7 @@ interface ContentListState {
     data,
     selected,
     active,
-    copy
+    copy,
 }
 
 @DropTarget((props) => props.accepts, DragAndDrop.uploadTarget, (conn, monitor) => ({
@@ -151,7 +152,10 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
             this.props.history.push(`/${id}`)
             this.props.deselect(this.props.children[id])
         } else {
-            console.log('open preview')
+            // console.log('open preview')
+            this.props.openViewer(id)
+            this.props.pollDocumentData(this.props.hostName, id)
+
         }
     }
     public handleKeyDown(e) {
@@ -352,4 +356,6 @@ export default withRouter(connect(mapStateToProps, {
     moveBatch: Actions.moveBatch,
     selectionModeOn: DMSActions.selectionModeOn,
     selectionModeOff: DMSActions.selectionModeOff,
+    openViewer: DMSActions.openViewer,
+    pollDocumentData,
 })(ContentList))

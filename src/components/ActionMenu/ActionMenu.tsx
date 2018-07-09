@@ -2,6 +2,7 @@ import { withStyles } from '@material-ui/core'
 import Icon from '@material-ui/core/Icon'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import { Forward, ModeEdit } from '@material-ui/icons'
+import { pollDocumentData } from '@sensenet/document-viewer-react'
 import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -60,6 +61,10 @@ interface ActionMenuProps {
     anchorElement,
     closeActionMenu,
     position,
+    pollDocumentData: typeof pollDocumentData,
+    hostName: string
+    contentId: number
+    openViewer: (id: number) => void
 }
 
 interface ActionMenuState {
@@ -119,6 +124,10 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
                 this.props.clearSelection()
                 this.props.deleteBatch(this.props.selected, false)
                 break
+            case 'Preview':
+                this.handleClose()
+                this.props.openViewer(this.props.contentId)
+                this.props.pollDocumentData(this.props.hostName, this.props.contentId)
             default:
                 console.log(`${action} is clicked`)
                 this.handleClose()
@@ -140,7 +149,7 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
                     return <MenuItem
                         key={action.Name}
                         selected={index === this.state.selectedIndex}
-                        onClick={(event) => this.handleMenuItemClick(event, index)}
+                        onClick={(event) => this.handleMenuItemClick(event, action.Name)}
                         style={styles.menuItem}
                         title={action.DisplayName}>
                         <ListItemIcon style={styles.actionIcon}>
@@ -149,12 +158,12 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
                                     icons[action.Name.toLowerCase()] :
                                     icons[action.Icon.toLowerCase()]
                             }
-                            {
-                                action.Name === 'MoveTo' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.3em', width: '0.5em', color: 'white' }} /> : null
-                            }
-                            {
-                                action.Name === 'Rename' ? <ModeEdit style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
-                            }
+                                {
+                                    action.Name === 'MoveTo' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.3em', width: '0.5em', color: 'white' }} /> : null
+                                }
+                                {
+                                    action.Name === 'Rename' ? <ModeEdit style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
+                                }
                             </Icon>
                         </ListItemIcon>
                         {action.DisplayName}
@@ -168,11 +177,13 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
 const mapStateToProps = (state, match) => {
     return {
         actions: DMSReducers.getActions(state.dms.actionmenu),
+        contentId: state.dms.actionmenu.id,
         currentContent: Reducers.getCurrentContent(state.sensenet),
         selected: Reducers.getSelectedContentIds(state.sensenet),
         open: DMSReducers.actionmenuIsOpen(state.dms.actionmenu),
         anchorElement: DMSReducers.getAnchorElement(state.dms.actionmenu),
         position: DMSReducers.getMenuPosition(state.dms.actionmenu),
+        hostName: state.sensenet.session.repository.hostName,
     }
 }
 
@@ -181,4 +192,6 @@ export default connect(mapStateToProps, {
     clearSelection: Actions.clearSelection,
     deleteBatch: Actions.deleteBatch,
     closeActionMenu: DMSActions.closeActionMenu,
+    pollDocumentData,
+    openViewer: DMSActions.openViewer,
 })(ActionMenu)

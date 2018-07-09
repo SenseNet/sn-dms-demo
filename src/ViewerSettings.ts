@@ -1,6 +1,6 @@
 import { Repository } from '@sensenet/client-core'
 import { File as SnFile } from '@sensenet/default-content-types'
-import { Annotation, getStoreConfig, Highlight, PreviewImageData, Redaction, Shape } from '@sensenet/document-viewer-react'
+import { Annotation, DocumentViewerSettings, Highlight, PreviewImageData, Redaction, Shape } from '@sensenet/document-viewer-react'
 import { v1 } from 'uuid'
 
 /**
@@ -11,7 +11,7 @@ const addGuidToShape: <T extends Shape>(shape: T) => T = (shape) => {
     return shape
 }
 
-export const getViewerStoreConfig = (repo: Repository) => getStoreConfig({
+export const getViewerSettings: (repo: Repository) => DocumentViewerSettings = (repo: Repository) => ({
     saveChanges: async (documentData, pages) => {
         const reqBody = {
             Shapes: JSON.stringify([
@@ -36,7 +36,7 @@ export const getViewerStoreConfig = (repo: Repository) => getStoreConfig({
 
         return {
             idOrPath: settings.idOrPath,
-            hostName: settings.hostName,
+            hostName: repo.configuration.repositoryUrl,
             fileSizekB: documentData.Size as number,
             pageCount: documentData.PageCount,
             documentName: documentData.DisplayName,
@@ -54,7 +54,7 @@ export const getViewerStoreConfig = (repo: Repository) => getStoreConfig({
         }
     },
     isPreviewAvailable: async (documentData, version, page: number, showWatermark) => {
-        return await repo.executeAction<{ page: number }, PreviewImageData>({
+        const responseBody = await repo.executeAction<{ page: number }, PreviewImageData & { PreviewAvailable: string }>({
             idOrPath: documentData.idOrPath,
             method: 'POST',
             name: `PreviewAvailable?version=${version}`,
@@ -62,17 +62,30 @@ export const getViewerStoreConfig = (repo: Repository) => getStoreConfig({
                 page,
             },
         })
+
+        if (responseBody.PreviewAvailable) {
+            responseBody.PreviewImageUrl = `${documentData.hostName}${responseBody.PreviewAvailable}`
+            responseBody.ThumbnailImageUrl = `${documentData.hostName}${responseBody.PreviewAvailable.replace('preview', 'thumbnail')}`
+            return responseBody as PreviewImageData
+        }
+        return null
     },
-    canEditDocument: async (settings) => await repo.security.hasPermission(settings.idOrPath, ['Save'], undefined),
-    canHideRedaction: async (settings) => await repo.security.hasPermission(settings.idOrPath, ['PreviewWithoutRedaction'], undefined),
-    canHideWatermark: async (settings) => await repo.security.hasPermission(settings.idOrPath, ['PreviewWithoutWatermark'], undefined),
+    canEditDocument: async (settings) => {
+        const response = await repo.security.hasPermission(settings.idOrPath, ['Save'], undefined)
+        return response
+    },
+    canHideRedaction: async (settings) => await repo.security.hasPermission(settings.idOrPath, ['PreviewWithoutRedaction']),
+    canHideWatermark: async (settings) => await repo.security.hasPermission(settings.idOrPath, ['PreviewWithoutWatermark']),
     getExistingPreviewImages: async (settings, version) => {
         const response = await repo.executeAction({
             idOrPath: settings.idOrPath,
             name: `GetExistingPreviewImages?version=${version}`,
             method: 'POST',
             body: {},
-            oDataOptions: {},
+            oDataOptions: {
+                select: 'all',
+                expand: 'all',
+            },
         })
 
         const availablePreviews = (await response as Array<PreviewImageData & { PreviewAvailable?: string }>).map((a) => {
@@ -91,5 +104,4 @@ export const getViewerStoreConfig = (repo: Repository) => getStoreConfig({
         }
         return allPreviews
     },
-
 })
