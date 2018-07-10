@@ -77,15 +77,21 @@ export const getViewerSettings: (repo: Repository) => DocumentViewerSettings = (
     canHideRedaction: async (settings) => await repo.security.hasPermission(settings.idOrPath, ['PreviewWithoutRedaction']),
     canHideWatermark: async (settings) => await repo.security.hasPermission(settings.idOrPath, ['PreviewWithoutWatermark']),
     getExistingPreviewImages: async (settings, version) => {
+
+        if (settings.pageCount < -1) {
+            throw Error('Preview generation error')
+        }
+
         const response = await repo.executeAction({
             idOrPath: settings.idOrPath,
-            name: `GetExistingPreviewImages?version=${version}`,
+            name: `GetExistingPreviewImages`,
             method: 'POST',
             body: {},
             oDataOptions: {
                 select: 'all',
                 expand: 'all',
-            },
+                version,
+            } as any,
         })
 
         const availablePreviews = (await response as Array<PreviewImageData & { PreviewAvailable?: string }>).map((a) => {
