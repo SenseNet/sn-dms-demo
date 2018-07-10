@@ -20,6 +20,12 @@ const ConnectedUploadBar = connect((state) => {
 
 const drawerWidth = 205
 
+const stylez = {
+    listItem: {
+        padding: '20px 10px',
+    },
+}
+
 const styles: StyleRulesCallback = () => ({
     drawerPaper: {
         position: 'relative',
@@ -74,7 +80,7 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
                     <li>
                         <Divider />
                     </li>
-                    <ListItem style={{ padding: '20px 10px', fontWeight: 'bold', fontFamily: 'Raleway Regular' }}>
+                    <ListItem style={stylez.listItem as any}>
                         <ListItemIcon>
                             <Icon color="primary">people</Icon>
                         </ListItemIcon>
@@ -83,7 +89,7 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
                     <li>
                         <Divider />
                     </li>
-                    <ListItem style={{ padding: '20px 10px', fontWeight: 'bold', fontFamily: 'Raleway Regular' }}>
+                    <ListItem style={stylez.listItem as any}>
                         <ListItemIcon>
                             <Icon color="primary">star</Icon>
                         </ListItemIcon>
@@ -92,7 +98,7 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
                     <li>
                         <Divider />
                     </li>
-                    <ListItem style={{ padding: '20px 10px', fontWeight: 'bold', fontFamily: 'Raleway Regular' }}>
+                    <ListItem style={stylez.listItem as any}>
                         <ListItemIcon>
                             <Icon color="primary">delete</Icon>
                         </ListItemIcon>

@@ -14,13 +14,15 @@ import * as DMSReducers from '../../../Reducers'
 
 const styles = {
     displayName: {
-        fontWeight: 'bold' as any,
+        fontSize: 16,
+        fontFamily: 'Raleway Medium',
+        fontWeight: 'normal',
     },
     hoveredDisplayName: {
-        fontWeight: 'bold' as any,
-        // color: '#03a9f4',
-        // textDecoration: 'underline' as any,
+        fontFamily: 'Raleway Semibold',
         cursor: 'pointer' as any,
+        fontSize: 16,
+        fontWeight: 'normal',
     },
     displayNameDiv: {
         width: '100%',
@@ -31,9 +33,12 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'flex-start',
         textDecoration: 'none',
+        fontWeight: 'normal',
     },
     selectedDisplayNameDiv: {
         color: '#016D9E',
+        fontFamily: 'Raleway Semibold',
+        fontWeight: 'normal',
     },
     editedTitle: {
         fontWeight: 'normal' as any,

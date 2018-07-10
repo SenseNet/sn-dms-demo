@@ -1,4 +1,3 @@
-import { withStyles } from '@material-ui/core'
 import Icon from '@material-ui/core/Icon'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import { Forward, ModeEdit } from '@material-ui/icons'
@@ -10,6 +9,8 @@ import * as DMSReducers from '../../Reducers'
 
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import createStyles from '@material-ui/core/styles/createStyles'
+import withStyles from '@material-ui/core/styles/withStyles'
 import { icons } from '../../assets/icons'
 
 const styles = {
@@ -28,9 +29,6 @@ const styles = {
     },
     arrowButton: {
         marginLeft: 0,
-    },
-    menu: {
-        padding: 0,
     },
     menuItem: {
         padding: '6px 15px',
@@ -60,6 +58,7 @@ interface ActionMenuProps {
     anchorElement,
     closeActionMenu,
     position,
+    classes,
 }
 
 interface ActionMenuState {
@@ -126,11 +125,10 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
         }
     }
     public render() {
-        const { actions, open, anchorElement, position } = this.props
+        const { actions, open, position, classes } = this.props
         return <Menu
             id="actionmenu"
             open={open}
-            style={styles.menu}
             onClose={this.handleClose}
             anchorReference="anchorPosition"
             anchorPosition={position}
@@ -139,8 +137,16 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
                 actions.map((action, index) => {
                     return <MenuItem
                         key={action.Name}
-                        selected={index === this.state.selectedIndex}
                         onClick={(event) => this.handleMenuItemClick(event, index)}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.color = '#016d9e'
+                            e.currentTarget.style.fontWeight = 'bold'
+                        }
+                        }
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.color = '#000'
+                            e.currentTarget.style.fontWeight = 'normal'
+                        }}
                         style={styles.menuItem}
                         title={action.DisplayName}>
                         <ListItemIcon style={styles.actionIcon}>
@@ -149,12 +155,12 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
                                     icons[action.Name.toLowerCase()] :
                                     icons[action.Icon.toLowerCase()]
                             }
-                            {
-                                action.Name === 'MoveTo' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.3em', width: '0.5em', color: 'white' }} /> : null
-                            }
-                            {
-                                action.Name === 'Rename' ? <ModeEdit style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
-                            }
+                                {
+                                    action.Name === 'MoveTo' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.3em', width: '0.5em', color: 'white' }} /> : null
+                                }
+                                {
+                                    action.Name === 'Rename' ? <ModeEdit style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
+                                }
                             </Icon>
                         </ListItemIcon>
                         {action.DisplayName}

@@ -10,7 +10,16 @@ import * as DragAndDrop from '../../../DragAndDrop'
 const styles = {
     selected: {
         color: '#016D9E',
-        fontWeight: 'bold' as any,
+        fontFamily: 'Raleway SemiBold',
+    },
+    tableCell: {
+        fontSize: 16,
+    },
+    hoveredCell: {
+        fontFamily: 'Raleway Semibold',
+        cursor: 'pointer' as any,
+        fontSize: 16,
+        fontWeight: 'normal',
     },
 }
 
@@ -25,7 +34,8 @@ interface DateCellProps {
     isCopy: boolean,
     selected,
     selectedContentItems,
-    isSelected
+    isSelected,
+    isHovered: boolean,
 }
 
 @DropTarget('row', DragAndDrop.rowTarget, (conn, monitor) => ({
@@ -39,16 +49,24 @@ class DateCell extends React.Component<DateCellProps, {}> {
         super(props)
     }
     public render() {
-        const { content, date, handleRowSingleClick, handleRowDoubleClick, connectDragSource, connectDropTarget, isCopy, isSelected } = this.props
+        const { content, date, handleRowSingleClick, handleRowDoubleClick, connectDragSource, connectDropTarget, isCopy, isSelected, isHovered } = this.props
         const dropEffect = isCopy ? 'copy' : 'move'
         const isVmi = true
+        let style
+        if (isHovered) {
+            style = { ...styles.hoveredCell, ...styles.tableCell }
+        } else if (isSelected) {
+            style = { ...styles.selected, ...styles.tableCell }
+        } else {
+            style = {...styles.tableCell}
+        }
         return (
             <TableCell
                 padding="none"
                 onClick={(event) => handleRowSingleClick(event, content.Id)}
                 onDoubleClick={(event) => handleRowDoubleClick(event, content.Id)}>
                 {!isVmi ? null : connectDragSource(connectDropTarget(<div
-                style={isSelected ? {...styles.selected} : null}>
+                    style={style}>
                     <Moment fromNow>
                         {date}
                     </Moment>
