@@ -5,11 +5,9 @@ import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import * as DMSActions from '../Actions'
 import { ListToolbar } from '../components/ContentList/ListToolbar'
-import DashboarDrawer from '../components/DashboardDrawer'
+import DashboardDrawer from '../components/DashboardDrawer'
 import DocumentLibrary from '../components/DocumentLibrary'
-import FloatingActionButton from '../components/FloatingActionButton'
 import Header from '../components/Header'
-import MessageBar from '../components/MessageBar'
 import * as DMSReducers from '../Reducers'
 
 const styles = {
@@ -67,7 +65,7 @@ class Dashboard extends React.Component<DashboardProps, { }> {
         }
     }
     public componentWillReceiveProps(nextProps) {
-        const { currentId, setCurrentId, loadContent, loadUserActions } = this.props
+        const { currentId, setCurrentId, loadContent, loadUserActions, match } = this.props
 
         if (this.props.match.params.id !== undefined && Number(this.props.match.params.id) !== this.props.currentId) {
             setCurrentId(Number(nextProps.match.params.id)) &&
@@ -78,7 +76,7 @@ class Dashboard extends React.Component<DashboardProps, { }> {
                 loadContent(nextProps.currentId)
                 loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUser.userName}`, 'DMSUserActions')
             } else if (currentId === null && nextProps.loggedinUser.userName !== 'Visitor') {
-                setCurrentId(nextProps.currentId)
+                setCurrentId('login')
                 loadContent(`/Root/Profiles/Public/${nextProps.loggedinUser.userName}/Document_Library`)
                 loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUser.userName}`, 'DMSUserActions')
             }
@@ -92,7 +90,7 @@ class Dashboard extends React.Component<DashboardProps, { }> {
                     if (matches) {
                         return <div style={styles.root}>
                             <Header />
-                            <DashboarDrawer />
+                            <DashboardDrawer />
                             <div style={styles.main}>
                                 <div style={{ height: 48, width: '100%' }}></div>
                                 <ListToolbar />

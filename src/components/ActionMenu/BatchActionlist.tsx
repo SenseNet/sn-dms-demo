@@ -48,15 +48,13 @@ const styles = {
 }
 
 interface BatchActionlistProps {
-    currentId: number,
+    currentId,
     actions: any[],
     getActions,
     selected: number[],
     openActionMenu,
     closeActionMenu,
 }
-
-const ITEM_HEIGHT = 48
 
 class BatchActionlist extends React.Component<BatchActionlistProps, { options, anchorEl }> {
     constructor(props) {
@@ -69,7 +67,7 @@ class BatchActionlist extends React.Component<BatchActionlistProps, { options, a
     }
     public componentWillReceiveProps(nextProps) {
         const { actions, currentId, getActions } = this.props
-        if (currentId !== nextProps.currentId && actions.length === 0) {
+        if ((currentId === 'login' || currentId !== nextProps.currentId) && actions.length === 0) {
             getActions(nextProps.currentId, 'DMSBatchActions', [{
                 Name: 'Download', DisplayName: 'Download', Icon: 'download', Index: 1,
 
@@ -93,7 +91,6 @@ class BatchActionlist extends React.Component<BatchActionlistProps, { options, a
     public handleClick = (e) => {
         const { actions, currentId } = this.props
         this.props.closeActionMenu()
-        // const ddActions = actions.splice(3)
         this.props.openActionMenu(actions, currentId, currentId, e.currentTarget, {
             top: e.currentTarget.offsetTop + 150,
             left: e.currentTarget.offsetLeft,
