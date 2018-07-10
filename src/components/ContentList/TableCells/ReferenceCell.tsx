@@ -9,7 +9,16 @@ import * as DragAndDrop from '../../../DragAndDrop'
 const styles = {
     selected: {
         color: '#016D9E',
-        fontWeight: 'bold' as any,
+        fontFamily: 'Raleway SemiBold',
+    },
+    tableCell: {
+        fontSize: 16,
+    },
+    hoveredCell: {
+        fontFamily: 'Raleway Semibold',
+        cursor: 'pointer' as any,
+        fontSize: 16,
+        fontWeight: 'normal',
     },
 }
 
@@ -22,7 +31,8 @@ interface ReferenceCellProps {
     isCopy,
     fieldName,
     optionName,
-    isSelected
+    isSelected,
+    isHovered
 }
 
 @DropTarget('row', DragAndDrop.rowTarget, (conn, monitor) => ({
@@ -36,15 +46,23 @@ class ReferenceCell extends React.Component<ReferenceCellProps, {}> {
         super(props)
     }
     public render() {
-        const { content, handleRowSingleClick, handleRowDoubleClick, connectDragSource, connectDropTarget, isCopy, fieldName, optionName, isSelected } = this.props
+        const { content, handleRowSingleClick, handleRowDoubleClick, connectDragSource, connectDropTarget, isCopy, fieldName, optionName, isSelected, isHovered } = this.props
         const dropEffect = isCopy ? 'copy' : 'move'
         const isVmi = true
+        let style
+        if (isHovered) {
+            style = { ...styles.hoveredCell, ...styles.tableCell }
+        } else if (isSelected) {
+            style = { ...styles.selected, ...styles.tableCell }
+        } else {
+            style = {...styles.tableCell}
+        }
         return (
             <TableCell
                 padding="none"
                 onClick={(event) => handleRowSingleClick(event, content.Id)}
                 onDoubleClick={(event) => handleRowDoubleClick(event, content.Id)}>
-                {!isVmi ? null : connectDragSource(connectDropTarget(<div style={isSelected ? styles.selected : null }>
+                {!isVmi ? null : connectDragSource(connectDropTarget(<div style={style}>
                     {content[fieldName][optionName]}
                 </div>,
                 ), { dropEffect })}

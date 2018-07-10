@@ -48,10 +48,20 @@ const styles = {
 
 const style = (theme) => createStyles({
     root: {
-        color: '#ccc',
+        fontSize: 16,
+        fontFamily: 'Raleway Light',
+    },
+    tablecell: {
+        fontSize: 16,
+        fontFamily: 'Raleway Light',
     },
     sizeIcon: {
-        fontSize: 20,
+        fontSize: 22,
+        fontWeight: 'normal',
+    },
+    body: {
+        fontSize: 16,
+        fontFamily: 'Raleway Light',
     },
 })
 
@@ -150,6 +160,7 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
                 selected={isSelected}
                 style={isSelected ? { ...styles.selectedRow, ...styles.row } :
                     styles.row}
+                className={classes.tablecell}
                 onContextMenu={(event) => this.handleContextMenu(event, content)}
                 id={content.Id}
             >
@@ -196,6 +207,7 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
                 </MediaQuery>
                 <MediaQuery minDeviceWidth={700}>
                     <DateCell
+                        isHovered={isHovered}
                         content={content}
                         date={content.ModificationDate}
                         handleRowDoubleClick={this.props.handleRowDoubleClick}
@@ -206,6 +218,7 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
                 <MediaQuery minDeviceWidth={700}>
                     {(matches) => {
                         return <ReferenceCell
+                            isHovered={isHovered}
                             content={content}
                             handleRowDoubleClick={this.props.handleRowDoubleClick}
                             handleRowSingleClick={this.props.handleRowSingleClick}

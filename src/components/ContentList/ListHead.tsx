@@ -19,9 +19,17 @@ const columnData = [
 const style = (theme) => createStyles({
     root: {
         color: '#ccc',
+        fontFamily: 'Raleway SemiBold',
+        fontSize: 14,
+    },
+    head: {
+        color: '#999',
+        fontFamily: 'Raleway SemiBold',
+        fontSize: 14,
+        fontWeight: 'normal',
     },
     sizeIcon: {
-        fontSize: 20,
+        fontSize: 22,
     },
 })
 
@@ -65,6 +73,9 @@ class ListHead extends React.Component<ListHeadProps, {}> {
                                 key={column.id}
                                 numeric={column.numeric}
                                 padding={column.disablePadding ? 'none' : 'dense'}
+                                classes={{
+                                    root: classes.head,
+                                }}
                             >
                                 <TableSortLabel
                                     active={orderBy === column.id}
