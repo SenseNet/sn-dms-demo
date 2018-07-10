@@ -1,4 +1,3 @@
-import { withStyles } from '@material-ui/core'
 import Icon from '@material-ui/core/Icon'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import { Forward, ModeEdit } from '@material-ui/icons'
