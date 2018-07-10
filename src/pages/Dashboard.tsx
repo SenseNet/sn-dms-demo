@@ -5,12 +5,10 @@ import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import * as DMSActions from '../Actions'
 import { ListToolbar } from '../components/ContentList/ListToolbar'
-import DashboarDrawer from '../components/DashboardDrawer'
+import DashboardDrawer from '../components/DashboardDrawer'
 import { DmsViewer } from '../components/DmsViewer'
 import DocumentLibrary from '../components/DocumentLibrary'
-import FloatingActionButton from '../components/FloatingActionButton'
 import Header from '../components/Header'
-import MessageBar from '../components/MessageBar'
 import * as DMSReducers from '../Reducers'
 
 const styles = {
@@ -40,6 +38,7 @@ interface DashboardProps {
     currentContent,
     loggedinUser,
     loadContent,
+    loadUserActions,
     setCurrentId,
     currentId,
     selectionModeIsOn: boolean
@@ -61,32 +60,26 @@ class Dashboard extends React.Component<DashboardProps, {}> {
                 if (this.props.loggedinUser.userName !== 'Visitor') {
                     return this.props.setCurrentId(this.props.match.params.id)
                         && this.props.loadContent(`/Root/Profiles/Public/${this.props.loggedinUser.userName}/Document_Library`)
+                        && this.props.loadUserActions(`/Root/IMS/Public/${this.props.loggedinUser.userName}`, 'DMSUserActions')
                 }
             }
         }
     }
     public componentWillReceiveProps(nextProps) {
-        const id = parseInt(nextProps.match.params.id, 10)
-        if ((nextProps.currentId !== undefined && this.props.currentId !== nextProps.currentId) || nextProps.currentId === 'login') {
-            if (id && !isNaN(id as any) && isFinite(id as any)) {
-                this.props.setCurrentId(id)
-            }
-            if (nextProps.currentId && this.props.currentId !== nextProps.currentId &&
-                !isNaN(id as any) &&
-                id === Number(nextProps.currentId)) {
-                if (nextProps.loggedinUser.userName !== 'Visitor') {
-                    this.props.setCurrentId(id)
-                    this.props.loadContent(id)
-                }
-            }
-            if (nextProps.loggedinUser.userName !== this.props.loggedinUser.userName) {
-                id ?
-                    this.props.setCurrentId(Number(nextProps.match.params.id)) &&
-                    this.props.loadContent(Number(nextProps.match.params.id)) :
-                    this.props.setCurrentId(nextProps.currentContent.Id) &&
-                    this.props.loadContent(`/Root/Profiles/Public/${nextProps.loggedinUser.userName}/Document_Library`)
-            } else {
-                this.props.setCurrentId(nextProps.currentContent.Id)
+        const { currentId, setCurrentId, loadContent, loadUserActions, match } = this.props
+
+        if (this.props.match.params.id !== undefined && Number(this.props.match.params.id) !== this.props.currentId) {
+            setCurrentId(Number(nextProps.match.params.id)) &&
+                loadContent(Number(nextProps.match.params.id))
+        } else {
+            if (currentId && currentId !== nextProps.currentId && nextProps.loggedinUser.userName !== 'Visitor') {
+                setCurrentId(nextProps.currentId)
+                loadContent(nextProps.currentId)
+                loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUser.userName}`, 'DMSUserActions')
+            } else if (currentId === null && nextProps.loggedinUser.userName !== 'Visitor') {
+                setCurrentId('login')
+                loadContent(`/Root/Profiles/Public/${nextProps.loggedinUser.userName}/Document_Library`)
+                loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUser.userName}`, 'DMSUserActions')
             }
         }
     }
@@ -98,7 +91,7 @@ class Dashboard extends React.Component<DashboardProps, {}> {
                     if (matches) {
                         return <div style={styles.root}>
                             <Header />
-                            <DashboarDrawer />
+                            <DashboardDrawer />
                             <div style={styles.main}>
                                 <div style={{ height: 48, width: '100%' }}></div>
                                 <ListToolbar />
@@ -132,4 +125,5 @@ const mapStateToProps = (state, match) => {
 export default connect(mapStateToProps, {
     loadContent: Actions.loadContent,
     setCurrentId: DMSActions.setCurrentId,
+    loadUserActions: DMSActions.loadUserActions,
 })(Dashboard)

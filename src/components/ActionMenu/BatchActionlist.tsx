@@ -48,15 +48,14 @@ const styles = {
 }
 
 interface BatchActionlistProps {
-    currentId: number,
+    currentId,
     actions: any[],
     getActions,
     selected: number[],
     openActionMenu,
     closeActionMenu,
+    currentContent,
 }
-
-const ITEM_HEIGHT = 48
 
 class BatchActionlist extends React.Component<BatchActionlistProps, { options, anchorEl }> {
     constructor(props) {
@@ -69,8 +68,8 @@ class BatchActionlist extends React.Component<BatchActionlistProps, { options, a
     }
     public componentWillReceiveProps(nextProps) {
         const { actions, currentId, getActions } = this.props
-        if (currentId !== nextProps.currentId && actions.length === 0) {
-            getActions(nextProps.currentId, 'DMSBatchActions', [{
+        if ((currentId === 'login' || currentId !== nextProps.currentId) && actions.length === 0) {
+            getActions(nextProps.currentContent.Id, 'DMSBatchActions', [{
                 Name: 'Download', DisplayName: 'Download', Icon: 'download', Index: 1,
 
             } as IActionModel])
@@ -91,12 +90,12 @@ class BatchActionlist extends React.Component<BatchActionlistProps, { options, a
         return this.props.selected.length > 0 ? false : true
     }
     public handleClick = (e) => {
-        const { actions, currentId } = this.props
+        const { currentId } = this.props
+        const { options } = this.state
         this.props.closeActionMenu()
-        // const ddActions = actions.splice(3)
-        this.props.openActionMenu(actions, currentId, currentId, e.currentTarget, {
-            top: e.currentTarget.offsetTop + 150,
-            left: e.currentTarget.offsetLeft,
+        this.props.openActionMenu(options, currentId, currentId, e.currentTarget, {
+            top: e.currentTarget.offsetTop + 100,
+            left: e.currentTarget.offsetLeft + 100,
         })
     }
 
@@ -138,6 +137,7 @@ const mapStateToProps = (state, match) => {
         actions: DMSReducers.getToolbarActions(state.dms.toolbar),
         currentId: DMSReducers.getCurrentId(state.dms),
         selected: Reducers.getSelectedContentIds(state.sensenet),
+        currentContent: Reducers.getCurrentContent(state.sensenet),
     }
 }
 

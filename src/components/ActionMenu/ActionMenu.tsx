@@ -1,4 +1,3 @@
-import { withStyles } from '@material-ui/core'
 import Icon from '@material-ui/core/Icon'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import { Forward, ModeEdit } from '@material-ui/icons'
@@ -11,6 +10,8 @@ import * as DMSReducers from '../../Reducers'
 
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import createStyles from '@material-ui/core/styles/createStyles'
+import withStyles from '@material-ui/core/styles/withStyles'
 import { icons } from '../../assets/icons'
 
 const styles = {
@@ -29,9 +30,6 @@ const styles = {
     },
     arrowButton: {
         marginLeft: 0,
-    },
-    menu: {
-        padding: 0,
     },
     menuItem: {
         padding: '6px 15px',
@@ -65,6 +63,7 @@ interface ActionMenuProps {
     hostName: string
     contentId: number
     openViewer: (id: number) => void
+    classes
 }
 
 interface ActionMenuState {
@@ -135,11 +134,10 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
         }
     }
     public render() {
-        const { actions, open, anchorElement, position } = this.props
+        const { actions, open, position } = this.props
         return <Menu
             id="actionmenu"
             open={open}
-            style={styles.menu}
             onClose={this.handleClose}
             anchorReference="anchorPosition"
             anchorPosition={position}
@@ -150,6 +148,15 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
                         key={action.Name}
                         selected={index === this.state.selectedIndex}
                         onClick={(event) => this.handleMenuItemClick(event, action.Name)}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.color = '#016d9e'
+                            e.currentTarget.style.fontWeight = 'bold'
+                        }
+                        }
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.color = '#000'
+                            e.currentTarget.style.fontWeight = 'normal'
+                        }}
                         style={styles.menuItem}
                         title={action.DisplayName}>
                         <ListItemIcon style={styles.actionIcon}>

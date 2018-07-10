@@ -22,6 +22,7 @@ export const icons = {
     logout: 'power_settings_new',
     settings: 'settings',
     profile: 'person',
+    userprofile: 'person',
     download: 'file_download',
     share: 'share',
     arrowDropDown: 'arrow_drop_down',

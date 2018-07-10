@@ -19,8 +19,7 @@ const logo = require('../assets/logo.png')
 
 const styles = {
   button: {
-    margin: '10px 0',
-    width: '100%',
+    margin: '30px 0',
   },
   formControl: {
     marginTop: '20px 0px',
@@ -51,7 +50,7 @@ interface RegistrationProps {
   history,
   registration,
   verify,
-  params,
+  oAuthProvider,
   registrationError,
   inProgress,
   isRegistered,
@@ -260,13 +259,13 @@ class Registration extends React.Component<RegistrationProps, RegistrationState>
                 fullWidth
                 required
                 style={styles.formControl}>
-                <InputLabel htmlFor="email">{resources.EMAIL_INPUT_LABEL}</InputLabel>
                 <TextField
                   id="email"
                   onBlur={(event) => this.handleEmailBlur(event)}
                   onChange={(event) => this.handleEmailChange(event)}
                   fullWidth
                   autoFocus
+                  label={resources.EMAIL_INPUT_LABEL}
                   placeholder={resources.EMAIL_INPUT_FORMAT_PLACEHOLDER} />
                 <FormHelperText>{this.state.emailErrorMessage}</FormHelperText>
               </FormControl>
@@ -275,13 +274,13 @@ class Registration extends React.Component<RegistrationProps, RegistrationState>
                 fullWidth
                 required
                 style={styles.formControl}>
-                <InputLabel htmlFor="password">{resources.PASSWORD_INPUT_LABEL}</InputLabel>
                 <TextField
                   type="password"
                   id="password"
                   onBlur={(event) => this.handlePasswordBlur(event)}
                   onChange={(event) => this.handlePasswordChange(event)}
                   fullWidth
+                  label={resources.PASSWORD_INPUT_LABEL}
                   placeholder={resources.PASSWORD_INPUT_PLACEHOLDER} />
                 <FormHelperText>{this.state.passwordErrorMessage}</FormHelperText>
               </FormControl>
@@ -290,13 +289,13 @@ class Registration extends React.Component<RegistrationProps, RegistrationState>
                 fullWidth
                 required
                 style={styles.formControl}>
-                <InputLabel htmlFor="password">{resources.CONFIRM_PASSWORD_INPUT_LABEL}</InputLabel>
                 <TextField
                   type="password"
                   id="confirmpassword"
                   onBlur={(event) => this.handleConfirmPasswordBlur(event)}
                   onChange={(event) => this.handleConfirmPasswordChange(event)}
                   fullWidth
+                  label={resources.CONFIRM_PASSWORD_INPUT_LABEL}
                   placeholder={resources.PASSWORD_INPUT_PLACEHOLDER} />
                 <FormHelperText>{this.state.confirmPasswordErrorMessage}</FormHelperText>
               </FormControl>
@@ -310,12 +309,13 @@ class Registration extends React.Component<RegistrationProps, RegistrationState>
               <Button
                 type="submit"
                 color="primary"
+                variant="contained"
                 style={styles.button}
                 disabled={this.state.isButtonDisabled}
               >
                 {resources.REGISTRATION_BUTTON_TEXT}</Button>
             </form>
-            <OauthRow oAuthProvider={this.props.params.oAuthProvider} />
+            <OauthRow oAuthProvider={this.props.oAuthProvider} />
           </div>
         </div>
       </div>

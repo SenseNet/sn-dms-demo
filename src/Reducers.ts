@@ -182,8 +182,8 @@ export const breadcrumb = (state = [], action) => {
                 }
                 return [...state, element]
             } else if (state.filter((e) => e.id === action.payload.d.Id).length > 0) {
-                const index = state.findIndex((e) => e.id === action.payload.d.Id)
-                return [...state.slice(0, index - 1)]
+                const index = state.findIndex((e) => e.id === action.payload.d.Id) + 1
+                return [...state.slice(0, index)]
             } else {
                 return state
             }

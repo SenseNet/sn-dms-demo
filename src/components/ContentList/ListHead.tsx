@@ -1,8 +1,6 @@
 import { withStyles } from '@material-ui/core'
 import Checkbox from '@material-ui/core/Checkbox'
 import createStyles from '@material-ui/core/styles/createStyles'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
@@ -21,9 +19,17 @@ const columnData = [
 const style = (theme) => createStyles({
     root: {
         color: '#ccc',
+        fontFamily: 'Raleway SemiBold',
+        fontSize: 14,
+    },
+    head: {
+        color: '#999',
+        fontFamily: 'Raleway SemiBold',
+        fontSize: 14,
+        fontWeight: 'normal',
     },
     sizeIcon: {
-        fontSize: 20,
+        fontSize: 22,
     },
 })
 
@@ -67,6 +73,9 @@ class ListHead extends React.Component<ListHeadProps, {}> {
                                 key={column.id}
                                 numeric={column.numeric}
                                 padding={column.disablePadding ? 'none' : 'dense'}
+                                classes={{
+                                    root: classes.head,
+                                }}
                             >
                                 <TableSortLabel
                                     active={orderBy === column.id}

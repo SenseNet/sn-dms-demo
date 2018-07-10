@@ -1,9 +1,6 @@
 import Button from '@material-ui/core/Button'
 import FormControl from '@material-ui/core/FormControl'
 import FormHelperText from '@material-ui/core/FormHelperText'
-import InputLabel from '@material-ui/core/InputLabel'
-import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import TextField from '@material-ui/core/TextField'
 import { Reducers } from '@sensenet/redux'
 import * as React from 'react'
@@ -17,20 +14,9 @@ import * as DMSReducers from '../Reducers'
 // tslint:disable-next-line:no-var-requires
 const logo = require('../assets/logo.png')
 
-import lightBlue from '@material-ui/core/colors/lightBlue'
-import pink from '@material-ui/core/colors/pink'
-
-const muiTheme = createMuiTheme({
-  palette: {
-    primary: lightBlue,
-    secondary: pink,
-  },
-})
-
 const styles = {
   button: {
-    margin: '10px 0',
-    width: '100%',
+    margin: '30px 0',
   },
   formControl: {
     marginTop: '20px 0px',
@@ -195,7 +181,6 @@ class Login extends React.Component<LoginProps, LoginState> {
         <WelcomeMessage />
 
         <div>
-          <MuiThemeProvider theme={muiTheme}>
             <form onSubmit={(e) => {
               e.preventDefault()
               this.formSubmit(e)
@@ -233,9 +218,8 @@ class Login extends React.Component<LoginProps, LoginState> {
               <FormControl>
                 <FormHelperText error>{this.props.loginError && this.props.loginError.length ? resources.WRONG_USERNAME_OR_PASSWORD : ''}</FormHelperText>
               </FormControl>
-              <Button type="submit" color="primary" style={styles.button} disabled={this.props.loginError === null && this.state.isButtonDisabled}>{resources.LOGIN_BUTTON_TEXT}</Button>
+              <Button type="submit" variant="contained" color="primary" style={styles.button} disabled={this.props.loginError === null && this.state.isButtonDisabled}>{resources.LOGIN_BUTTON_TEXT}</Button>
             </form>
-          </MuiThemeProvider>
           <OauthRow oAuthProvider={this.props.params.oAuthProvider} />
         </div>
       </div>
