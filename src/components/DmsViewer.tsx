@@ -1,6 +1,7 @@
-import { DocumentViewer, DocumentViewerSettings } from '@sensenet/document-viewer-react'
+import { DocumentTitlePager, DocumentViewer, DocumentViewerSettings, Download, exampleTheme, LayoutAppBar, Print, RotateActivePages, SearchBar, Share, ToggleThumbnailsWidget, ZoomInOutWidget } from '@sensenet/document-viewer-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { MuiThemeProvider } from '../../node_modules/@material-ui/core'
 import { closeViewer } from '../Actions'
 
 export interface DmsViewerProps {
@@ -58,10 +59,34 @@ export class DmsViewerComponent extends React.Component<DmsViewerProps, DmsViewe
                 }}
                     onClick={() => this.props.closeViewer}
                 >
-                    <DocumentViewer
+                    <MuiThemeProvider theme={exampleTheme}>                    <DocumentViewer
                         documentIdOrPath={this.props.idOrPath}
                         hostName={this.props.hostName}>
+                        <LayoutAppBar>
+                            <div style={{ flexShrink: 0 }}>
+                                <ToggleThumbnailsWidget />
+                                <Download download={(doc) => {
+                                    // tslint:disable-next-line:no-console
+                                    console.log('Download triggered', doc)
+                                }} />
+                                <Print print={(doc) => {
+                                    // tslint:disable-next-line:no-console
+                                    console.log('Print triggered', doc)
+                                }} />
+                                <Share share={(doc) => {
+                                    // tslint:disable-next-line:no-console
+                                    console.log('Share triggered', doc)
+                                }} />
+                                <ZoomInOutWidget />
+                                <RotateActivePages />
+                            </div>
+                            <DocumentTitlePager />
+                            <div style={{ flexShrink: 0 }}>
+                                <SearchBar />
+                            </div>
+                        </LayoutAppBar>
                     </DocumentViewer>
+                    </MuiThemeProvider>
                 </div>)
         }
         return null
