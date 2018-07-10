@@ -17,9 +17,11 @@ const styles = {
         flexGrow: 2,
     },
     breadCrumbItem: {
+        fontFamily: 'Raleway SemiBold',
         textTransform: 'none',
-        fontWeight: 'bold',
+        color: '#666',
         padding: 8,
+        letterSpacing: '0.05rem',
     },
     breadCrumbIcon: {
         display: 'inline-block',
@@ -28,7 +30,6 @@ const styles = {
         margin: '0 -7px',
     },
     breadCrumbItemLast: {
-        fontWeight: 'bold',
         fontFamily: 'Raleway ExtraBold',
     },
     breadCrumbIconLast: {
@@ -96,7 +97,7 @@ class BreadCrumb extends React.Component<BreadCrumbProps, {}> {
                                             (e) => this.handleActionMenuClick(e, currentContent)
                                     }
                                     key={n.id}
-                                    style={i === (breadcrumb.length - 1) ? { ...styles.breadCrumbItemLast, ...styles.breadCrumbItem } : styles.breadCrumbItem as any}>
+                                    style={i === (breadcrumb.length - 1) ? { ...styles.breadCrumbItem, ...styles.breadCrumbItemLast } : styles.breadCrumbItem as any}>
                                     {n.name}
                                     {i !== (breadcrumb.length - 1) ?
                                         '' :
