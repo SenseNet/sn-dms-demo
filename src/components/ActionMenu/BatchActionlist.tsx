@@ -54,6 +54,7 @@ interface BatchActionlistProps {
     selected: number[],
     openActionMenu,
     closeActionMenu,
+    currentContent,
 }
 
 class BatchActionlist extends React.Component<BatchActionlistProps, { options, anchorEl }> {
@@ -68,7 +69,7 @@ class BatchActionlist extends React.Component<BatchActionlistProps, { options, a
     public componentWillReceiveProps(nextProps) {
         const { actions, currentId, getActions } = this.props
         if ((currentId === 'login' || currentId !== nextProps.currentId) && actions.length === 0) {
-            getActions(nextProps.currentId, 'DMSBatchActions', [{
+            getActions(nextProps.currentContent.Id, 'DMSBatchActions', [{
                 Name: 'Download', DisplayName: 'Download', Icon: 'download', Index: 1,
 
             } as IActionModel])
@@ -89,11 +90,12 @@ class BatchActionlist extends React.Component<BatchActionlistProps, { options, a
         return this.props.selected.length > 0 ? false : true
     }
     public handleClick = (e) => {
-        const { actions, currentId } = this.props
+        const { currentId } = this.props
+        const { options } = this.state
         this.props.closeActionMenu()
-        this.props.openActionMenu(actions, currentId, currentId, e.currentTarget, {
-            top: e.currentTarget.offsetTop + 150,
-            left: e.currentTarget.offsetLeft,
+        this.props.openActionMenu(options, currentId, currentId, e.currentTarget, {
+            top: e.currentTarget.offsetTop + 100,
+            left: e.currentTarget.offsetLeft + 100,
         })
     }
 
@@ -135,6 +137,7 @@ const mapStateToProps = (state, match) => {
         actions: DMSReducers.getToolbarActions(state.dms.toolbar),
         currentId: DMSReducers.getCurrentId(state.dms),
         selected: Reducers.getSelectedContentIds(state.sensenet),
+        currentContent: Reducers.getCurrentContent(state.sensenet),
     }
 }
 
