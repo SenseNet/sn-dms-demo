@@ -363,6 +363,23 @@ export const uploads = (state: { uploads: ExtendedUploadProgressInfo[], showProg
     return state
 }
 
+export const viewer = (state: { isOpened: boolean, currentDocumentId: number } = { isOpened: false, currentDocumentId: 0 }, action: AnyAction) => {
+    switch (action.type) {
+        case 'OPEN_VIEWER':
+            return {
+                ...state,
+                isOpened: true,
+                currentDocumentId: action.id,
+            }
+        case 'CLOSE_VIEWER':
+            return {
+                ...state,
+                isOpened: false,
+            }
+    }
+    return state
+}
+
 export const dms = combineReducers({
     messagebar,
     actionmenu,
@@ -376,6 +393,7 @@ export const dms = combineReducers({
     isSelectionModeOn,
     toolbar,
     uploads,
+    viewer,
 })
 
 export const getRegistrationError = (state) => {

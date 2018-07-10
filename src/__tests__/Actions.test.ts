@@ -1,6 +1,6 @@
 import { Repository } from '@sensenet/client-core'
 import { promiseMiddleware } from '@sensenet/redux-promise-middleware'
-import * as configureStore from 'redux-mock-store'
+import configureStore from 'redux-mock-store'
 import * as DMSActions from '../Actions'
 
 const registrationMockResponse = {

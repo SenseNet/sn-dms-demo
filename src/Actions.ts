@@ -201,3 +201,12 @@ export const showUploadProgress = () => ({
 export const hideUploadProgress = () => ({
     type: 'UPLOAD_HIDE_PROGRESS',
 })
+
+export const openViewer = (id: number) => ({
+    type: 'OPEN_VIEWER',
+    id,
+})
+
+export const closeViewer = () => ({
+    type: 'CLOSE_VIEWER',
+})

@@ -6,6 +6,7 @@ import MediaQuery from 'react-responsive'
 import * as DMSActions from '../Actions'
 import { ListToolbar } from '../components/ContentList/ListToolbar'
 import DashboardDrawer from '../components/DashboardDrawer'
+import { DmsViewer } from '../components/DmsViewer'
 import DocumentLibrary from '../components/DocumentLibrary'
 import Header from '../components/Header'
 import * as DMSReducers from '../Reducers'
@@ -43,7 +44,7 @@ interface DashboardProps {
     selectionModeIsOn: boolean
 }
 
-class Dashboard extends React.Component<DashboardProps, { }> {
+class Dashboard extends React.Component<DashboardProps, {}> {
     constructor(props) {
         super(props)
         this.state = {
@@ -96,6 +97,7 @@ class Dashboard extends React.Component<DashboardProps, { }> {
                                 <ListToolbar />
                                 <DocumentLibrary parentId={id} />
                             </div>
+                            <DmsViewer />
                         </div>
                     } else {
                         return <div style={styles.root}>
