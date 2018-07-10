@@ -41,7 +41,8 @@ interface DashboardProps {
     loadUserActions,
     setCurrentId,
     currentId,
-    selectionModeIsOn: boolean
+    selectionModeIsOn: boolean,
+    isViewerOpened: boolean,
 }
 
 class Dashboard extends React.Component<DashboardProps, {}> {
@@ -85,17 +86,20 @@ class Dashboard extends React.Component<DashboardProps, {}> {
     }
     public render() {
         const { id } = this.props.match.params
+        const filter = { filter: this.props.isViewerOpened ? 'blur(3px)' : '' }
         return (
             <MediaQuery minDeviceWidth={700}>
                 {(matches) => {
                     if (matches) {
-                        return <div style={styles.root}>
-                            <Header />
-                            <DashboardDrawer />
-                            <div style={styles.main}>
-                                <div style={{ height: 48, width: '100%' }}></div>
-                                <ListToolbar />
-                                <DocumentLibrary parentId={id} />
+                        return <div>
+                            <div style={{ ...styles.root, ...filter }}>
+                                <Header />
+                                <DashboardDrawer />
+                                <div style={styles.main}>
+                                    <div style={{ height: 48, width: '100%' }}></div>
+                                    <ListToolbar />
+                                    <DocumentLibrary parentId={id} />
+                                </div>
                             </div>
                             <DmsViewer />
                         </div>
@@ -119,6 +123,7 @@ const mapStateToProps = (state, match) => {
         currentContent: Reducers.getCurrentContent(state.sensenet),
         currentId: DMSReducers.getCurrentId(state.dms),
         selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
+        isViewerOpened: state.dms.viewer.isOpened,
     }
 }
 
