@@ -146,7 +146,6 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
                 actions.map((action, index) => {
                     return <MenuItem
                         key={action.Name}
-                        selected={index === this.state.selectedIndex}
                         onClick={(event) => this.handleMenuItemClick(event, action.Name)}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.color = '#016d9e'
