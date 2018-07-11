@@ -1,4 +1,4 @@
-import { Divider, Icon, ListItemText, MenuItem, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
+import { Icon, ListItemText, MenuItem, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { resources } from '../../assets/resources'

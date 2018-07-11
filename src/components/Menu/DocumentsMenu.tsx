@@ -1,5 +1,6 @@
 import { Divider, Icon, ListItemText, MenuItem, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
 import { IContent, IUploadProgressInfo } from '@sensenet/client-core'
+import { Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { hideUploadItem, hideUploadProgress, removeUploadItem, uploadFileList } from '../../Actions'
@@ -190,6 +191,7 @@ class DocumentsMenu extends React.Component<DocumentMenuProps, {}> {
 const mapStateToProps = (state) => {
     return {
         subactive: DMSReducers.getActiveSubmenuItem(state.dms.menu),
+        currentContent: Reducers.getCurrentContent(state.sensenet),
     }
 }
 

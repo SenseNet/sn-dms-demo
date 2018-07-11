@@ -1,6 +1,4 @@
 import { Divider, Drawer, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
-import { IContent } from '@sensenet/client-core'
-import { getCurrentContent } from '@sensenet/redux/dist/Reducers'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import * as DMSActions from '../Actions'
@@ -64,7 +62,6 @@ const styles: StyleRulesCallback = (theme) => ({
 
 interface DashboarDrawerProps {
     classes,
-    currentContent: IContent
     chooseMenuItem,
     chooseSubmenuItem,
     activeItem,
@@ -110,7 +107,6 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
 
 const mapStateToProps = (state) => {
     return {
-        currentContent: getCurrentContent(state.sensenet),
         activeItem: getActiveMenuItem(state.dms.menu),
     }
 }
