@@ -34,8 +34,8 @@ export class UploadBar extends React.Component<UploadBarProps, UploadBarState> {
                     guid: '',
                     file: null as any,
                     chunkCount: (acc.chunkCount || 0) + (val.chunkCount || 1),
-                    uploadedChunks: (acc.uploadedChunks || 0) + (val.uploadedChunks || 0),
-                    completed: acc.completed && val.completed && val.content ? true : false,
+                    uploadedChunks: (acc.uploadedChunks || 0) + (val.error ? (val.chunkCount || 1) : val.uploadedChunks || 0),
+                    completed: acc.completed && (val.error || (val.completed && val.content)) ? true : false,
                     content: null as any,
                     createdContent: null as any,
                 }
