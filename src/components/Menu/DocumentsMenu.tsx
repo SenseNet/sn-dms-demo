@@ -73,6 +73,11 @@ const styles: StyleRulesCallback = () => ({
         fontSize: '21px',
         padding: 1.5,
     },
+    submenuIconActive: {
+        color: '#016d9e',
+        fontSize: '21px',
+        padding: 1.5,
+    },
     submenuItemText: {
         fontSize: '13px',
         fontFamily: 'Raleway Semibold',
@@ -96,15 +101,18 @@ interface DocumentMenuProps {
 const subMenu = [
     {
         title: 'Shared with me',
+        name: 'shared',
         icon: 'group',
     },
     {
         title: 'Saved queries',
+        name: 'savedqueries',
         icon: 'cached',
     },
     {
         title: 'Trash',
         icon: 'delete',
+        name: 'trash',
     },
 ]
 
@@ -139,8 +147,8 @@ class DocumentsMenu extends React.Component<DocumentMenuProps, {}> {
                         </Icon>
                     <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary="Documents" />
                 </MenuItem>
-                <Divider />
                 <div className={active ? classes.open : classes.closed}>
+                <Divider />
                     <UploadButton
                         style={{
                             width: '100%',
@@ -161,11 +169,12 @@ class DocumentsMenu extends React.Component<DocumentMenuProps, {}> {
                     <ConnectedUploadBar />
                     <MenuList className={classes.submenu}>
                         {subMenu.map((menuitem, index) => {
-                            return (<MenuItem className={classes.submenuItem} key={index}>
-                                <Icon className={classes.submenuIcon}>
+                            return (<MenuItem className={classes.submenuItem} key={index}
+                                onClick={(e) => this.handleSubmenuItemClick(menuitem.name)}>
+                                <Icon className={subactive === menuitem.name ? classes.submenuIconActive : classes.submenuIcon}>
                                     {menuitem.icon}
                                 </Icon>
-                                <ListItemText classes={{ primary: subactive ? classes.primarySubActive : classes.primarySub }} inset primary={menuitem.title} />
+                                <ListItemText classes={{ primary: subactive === menuitem.name ? classes.primarySubActive : classes.primarySub }} inset primary={menuitem.title} />
                             </MenuItem>)
                         })}
                     </MenuList>

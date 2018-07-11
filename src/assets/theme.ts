@@ -52,6 +52,7 @@ const theme = createMuiTheme({
             fontSize: '15px',
             textTransform: 'none',
             letterSpacing: '.1em',
+            minWidth: 50,
         },
     },
 })
