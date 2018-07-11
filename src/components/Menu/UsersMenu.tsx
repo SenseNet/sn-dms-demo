@@ -1,5 +1,6 @@
-import { Icon, ListItemText, MenuItem, StyleRulesCallback, withStyles } from '@material-ui/core'
+import { Divider, Icon, ListItemText, MenuItem, StyleRulesCallback, withStyles } from '@material-ui/core'
 import * as React from 'react'
+import { AddNewButton } from './AddNewButton'
 
 const styles: StyleRulesCallback = (theme) => ({
     primary: {
@@ -38,13 +39,23 @@ const styles: StyleRulesCallback = (theme) => ({
         paddingLeft: 0,
         paddingRight: 0,
     },
+    open: {
+        display: 'block',
+    },
+    closed: {
+        display: 'none',
+    },
 })
 
-class UsersMenu extends React.Component<{
-    active, classes,
+interface UsersMenuProps {
+    active,
+    classes,
+    item,
     chooseMenuItem,
     chooseSubmenuItem,
-}, {}> {
+}
+
+class UsersMenu extends React.Component<UsersMenuProps, {}> {
     public handleMenuItemClick = (title) => {
         this.props.chooseMenuItem(title)
     }
@@ -52,17 +63,23 @@ class UsersMenu extends React.Component<{
         this.props.chooseSubmenuItem(title)
     }
     public render() {
-        const { active, classes } = this.props
+        const { active, classes, item } = this.props
         return (
-            <MenuItem
-                selected={active}
-                classes={{ root: classes.root, selected: classes.selected }}
-                onClick={(e) => this.handleMenuItemClick('users')}>
-                <Icon className={active ? classes.iconWhiteActive : classes.iconWhite} color="primary">
-                    person
-                        </Icon>
-                <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary="Users" />
-            </MenuItem>
+            <div>
+                <MenuItem
+                    selected={active}
+                    classes={{ root: classes.root, selected: classes.selected }}
+                    onClick={(e) => this.handleMenuItemClick('users')}>
+                    <Icon className={active ? classes.iconWhiteActive : classes.iconWhite} color="primary">
+                        {item.icon}
+                    </Icon>
+                    <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={item.title} />
+                </MenuItem>
+                <div className={active ? classes.open : classes.closed}>
+                    <Divider />
+                    <AddNewButton contentType="User" />
+                </div>
+            </div>
         )
     }
 }

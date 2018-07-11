@@ -1,14 +1,28 @@
 import { Divider, Icon, ListItemText, MenuItem, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
-import { IContent, IUploadProgressInfo } from '@sensenet/client-core'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { hideUploadItem, hideUploadProgress, removeUploadItem, uploadFileList } from '../../Actions'
+import { resources } from '../../assets/resources'
 import * as DMSReducers from '../../Reducers'
-import { UploadBar } from '../Upload/UploadBar'
-import { UploadButton } from '../Upload/UploadButton'
-import { AddNewButton } from './AddNewButton'
 
-const styles: StyleRulesCallback = () => ({
+const subMenu = [
+    {
+        title: resources.COMMON,
+        name: 'commonsettings',
+        icon: 'settings',
+    },
+    {
+        title: resources.AD_SYNC,
+        name: 'adsync',
+        icon: 'settings',
+    },
+    {
+        title: resources.PREVIEW,
+        name: 'preview',
+        icon: 'settings',
+    },
+]
+
+const styles: StyleRulesCallback = (theme) => ({
     primary: {
         color: '#666',
         fontFamily: 'Raleway Semibold',
@@ -33,15 +47,15 @@ const styles: StyleRulesCallback = () => ({
         color: '#fff',
         background: '#666',
         borderRadius: '50%',
-        fontSize: '14px',
-        padding: 4,
+        fontSize: '16px',
+        padding: 3,
     },
     iconWhiteActive: {
         color: '#fff',
         background: '#016d9e',
         borderRadius: '50%',
-        fontSize: '14px',
-        padding: 4,
+        fontSize: '16px',
+        padding: 3,
     },
     root: {
         color: '#666',
@@ -85,51 +99,16 @@ const styles: StyleRulesCallback = () => ({
     },
 })
 
-interface DocumentMenuProps {
+interface SettingsMenuProps {
     active,
-    subactive,
     classes,
+    subactive,
     item,
-    uploadFileList: typeof uploadFileList,
-    currentContent: IContent,
-    uploadItems: IUploadProgressInfo[]
-    showUploads: boolean
-    hideUploadProgress: () => void,
-    removeUploadItem: typeof removeUploadItem,
     chooseMenuItem,
-    chooseSubmenuItem,
+    chooseSubmenuItem
 }
 
-const subMenu = [
-    {
-        title: 'Shared with me',
-        name: 'shared',
-        icon: 'group',
-    },
-    {
-        title: 'Saved queries',
-        name: 'savedqueries',
-        icon: 'cached',
-    },
-    {
-        title: 'Trash',
-        icon: 'delete',
-        name: 'trash',
-    },
-]
-
-// tslint:disable-next-line:variable-name
-const ConnectedUploadBar = connect((state) => {
-    return {
-        items: state.dms.uploads.uploads,
-        isOpened: state.dms.uploads.showProgress,
-    }
-}, {
-        close: hideUploadProgress,
-        removeItem: hideUploadItem,
-    })(UploadBar)
-
-class DocumentsMenu extends React.Component<DocumentMenuProps, {}> {
+class SettingsMenu extends React.Component<SettingsMenuProps, {}> {
     public handleMenuItemClick = (title) => {
         this.props.chooseMenuItem(title)
     }
@@ -137,39 +116,19 @@ class DocumentsMenu extends React.Component<DocumentMenuProps, {}> {
         this.props.chooseSubmenuItem(title)
     }
     public render() {
-        const { active, classes, subactive, item } = this.props
+        const { active, subactive, classes, item } = this.props
         return (
             <div>
                 <MenuItem
                     selected={active}
                     classes={{ root: classes.root, selected: classes.selected }}
-                    onClick={(e) => this.handleMenuItemClick('documents')}>
+                    onClick={(e) => this.handleMenuItemClick('settings')}>
                     <Icon className={active ? classes.iconWhiteActive : classes.iconWhite} color="primary">
                         {item.icon}
                     </Icon>
                     <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={item.title} />
                 </MenuItem>
                 <div className={active ? classes.open : classes.closed}>
-                    <Divider />
-                    <UploadButton
-                        style={{
-                            width: '100%',
-                            margin: '10px 0 0 0',
-                            fontFamily: 'Raleway Bold',
-                            fontSize: '14px',
-                        }}
-                        multiple={true}
-                        handleUpload={(fileList) => this.props.uploadFileList({
-                            fileList,
-                            createFolders: true,
-                            contentTypeName: 'File',
-                            binaryPropertyName: 'Binary',
-                            overwrite: false,
-                            parentPath: this.props.currentContent.Path,
-                        })}
-                    />
-                    <ConnectedUploadBar />
-                    <AddNewButton contentType="" />
                     <MenuList className={classes.submenu}>
                         {subMenu.map((menuitem, index) => {
                             return (<MenuItem className={classes.submenuItem} key={index}
@@ -193,6 +152,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default (connect(mapStateToProps, {
-    uploadFileList,
-})(withStyles(styles)(DocumentsMenu)))
+export default (connect(mapStateToProps, {})(withStyles(styles)(SettingsMenu)))

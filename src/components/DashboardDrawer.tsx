@@ -1,14 +1,56 @@
 import { Divider, Drawer, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
-import { IContent, IUploadProgressInfo } from '@sensenet/client-core'
+import { IContent } from '@sensenet/client-core'
 import { getCurrentContent } from '@sensenet/redux/dist/Reducers'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import * as DMSActions from '../Actions'
+import { resources } from '../assets/resources'
 import { getActiveMenuItem } from '../Reducers'
+import ContentTemplatesMenu from './Menu/ContentTemplatesMenu'
 import ContentTypesMenu from './Menu/ContentTypesMenu'
 import DocumentsMenu from './Menu/DocumentsMenu'
 import GroupsMenu from './Menu/GroupsMenu'
+import SettingsMenu from './Menu/SettingsMenu'
 import UsersMenu from './Menu/UsersMenu'
+
+const menu = [
+    {
+        title: resources.DOCUMENTS,
+        name: 'documents',
+        icon: 'folder',
+        component: DocumentsMenu,
+    },
+    {
+        title: resources.USERS,
+        name: 'users',
+        icon: 'person',
+        component: UsersMenu,
+    },
+    {
+        title: resources.GROUPS,
+        name: 'groups',
+        icon: 'supervised_user_circle',
+        component: GroupsMenu,
+    },
+    {
+        title: resources.CONTENT_TYPES,
+        name: 'contenttypes',
+        icon: 'edit',
+        component: ContentTypesMenu,
+    },
+    {
+        title: resources.CONTENT_TEMPLATES,
+        name: 'contenttemplates',
+        icon: 'view_quilt',
+        component: ContentTemplatesMenu,
+    },
+    {
+        title: resources.SETTINGS,
+        name: 'settings',
+        icon: 'settings',
+        component: SettingsMenu,
+    },
+]
 
 const drawerWidth = 185
 
@@ -44,14 +86,23 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
             <div style={{ height: 48 }}></div>
 
             <MenuList>
-                <DocumentsMenu active={activeItem === 'documents'} chooseMenuItem={chooseMenuItem} chooseSubmenuItem={chooseSubmenuItem}  />
-                <Divider light />
-                <UsersMenu active={activeItem === 'users'} chooseMenuItem={chooseMenuItem} chooseSubmenuItem={chooseSubmenuItem} />
-                <Divider light />
-                <GroupsMenu active={activeItem === 'groups'} chooseMenuItem={chooseMenuItem} chooseSubmenuItem={chooseSubmenuItem} />
-                <Divider light />
-                <ContentTypesMenu active={activeItem === 'contenttypes'} chooseMenuItem={chooseMenuItem} chooseSubmenuItem={chooseSubmenuItem} />
-                <Divider light />
+                {menu.map((item, index) => {
+                    return (
+                        <div key={index}>
+                            {
+                                    React.createElement(
+                                        item.component,
+                                        {
+                                            active: activeItem === item.name,
+                                            item,
+                                            chooseMenuItem,
+                                            chooseSubmenuItem,
+                                        })
+                                }
+                                    <Divider light />
+                        </div>
+                    )
+                })}
             </MenuList>
         </Drawer>
     }
