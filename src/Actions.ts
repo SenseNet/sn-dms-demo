@@ -201,3 +201,13 @@ export const showUploadProgress = () => ({
 export const hideUploadProgress = () => ({
     type: 'UPLOAD_HIDE_PROGRESS',
 })
+
+export const chooseMenuItem = (itemName: string) => ({
+    type: 'CHOOSE_MENUITEM',
+    itemName,
+})
+
+export const chooseSubmenuItem = (itemName: string) => ({
+    type: 'CHOOSE_SUBMENUITEM',
+    itemName,
+})
