@@ -224,6 +224,15 @@ export const userActions = (state = [], action) => {
     }
 }
 
+export const addNewTypes = (state = [], action) => {
+    switch (action.type) {
+        case 'LOAD_TYPES_TO_ADDNEW_LIST_SUCCESS':
+            return action.payload.d.Actions ? action.payload.d.Actions : []
+        default:
+            return state
+    }
+}
+
 export const actionmenu = combineReducers({
     actions,
     open,
@@ -232,6 +241,7 @@ export const actionmenu = combineReducers({
     id,
     title,
     userActions,
+    addNewTypes,
 })
 
 export const messagebarmode = (state = MessageMode.info, action) => {
@@ -510,11 +520,12 @@ export const getToolbarActions = (state) => {
 export const getUserActions = (state) => {
     return state.userActions
 }
-
 export const getActiveMenuItem = (state) => {
     return state.active
 }
-
 export const getActiveSubmenuItem = (state) => {
     return state.activeSubmenu
+}
+export const getAddNewTypeList = (state) => {
+    return state.addNewTypes
 }

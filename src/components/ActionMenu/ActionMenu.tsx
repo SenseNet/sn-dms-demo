@@ -34,6 +34,7 @@ const styles = {
     menuItem: {
         padding: '6px 15px',
         fontSize: '0.9rem',
+        fontFamily: 'Raleway Medium',
     },
     avatar: {
         display: 'inline-block',
