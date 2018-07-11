@@ -40,11 +40,24 @@ const styles: StyleRulesCallback = (theme) => ({
     },
 })
 
-class UsersMenu extends React.Component<{ active, classes }, {}> {
+class UsersMenu extends React.Component<{
+    active, classes,
+    chooseMenuItem,
+    chooseSubmenuItem,
+}, {}> {
+    public handleMenuItemClick = (title) => {
+        this.props.chooseMenuItem(title)
+    }
+    public handleSubmenuItemClick = (title) => {
+        this.props.chooseSubmenuItem(title)
+    }
     public render() {
         const { active, classes } = this.props
         return (
-            <MenuItem selected={active} classes={{ root: classes.root, selected: classes.selected }}>
+            <MenuItem
+                selected={active}
+                classes={{ root: classes.root, selected: classes.selected }}
+                onClick={(e) => this.handleMenuItemClick('users')}>
                 <Icon className={active ? classes.iconWhiteActive : classes.iconWhite} color="primary">
                     person
                         </Icon>

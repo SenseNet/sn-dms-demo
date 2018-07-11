@@ -79,7 +79,7 @@ const styles: StyleRulesCallback = () => ({
     },
 })
 
-interface DocumetnMenuProps {
+interface DocumentMenuProps {
     active,
     subactive,
     classes,
@@ -88,7 +88,9 @@ interface DocumetnMenuProps {
     uploadItems: IUploadProgressInfo[]
     showUploads: boolean
     hideUploadProgress: () => void,
-    removeUploadItem: typeof removeUploadItem
+    removeUploadItem: typeof removeUploadItem,
+    chooseMenuItem,
+    chooseSubmenuItem,
 }
 
 const subMenu = [
@@ -117,12 +119,21 @@ const ConnectedUploadBar = connect((state) => {
         removeItem: hideUploadItem,
     })(UploadBar)
 
-class DocumentsMenu extends React.Component<DocumetnMenuProps, {}> {
+class DocumentsMenu extends React.Component<DocumentMenuProps, {}> {
+    public handleMenuItemClick = (title) => {
+        this.props.chooseMenuItem(title)
+    }
+    public handleSubmenuItemClick = (title) => {
+        this.props.chooseSubmenuItem(title)
+    }
     public render() {
         const { active, classes, subactive } = this.props
         return (
             <div>
-                <MenuItem selected={active} classes={{ root: classes.root, selected: classes.selected }}>
+                <MenuItem
+                    selected={active}
+                    classes={{ root: classes.root, selected: classes.selected }}
+                    onClick={(e) => this.handleMenuItemClick('documents')}>
                     <Icon className={active ? classes.iconWhiteActive : classes.iconWhite} color="primary">
                         folder
                         </Icon>

@@ -24,6 +24,7 @@ interface DashboarDrawerProps {
     classes,
     currentContent: IContent
     chooseMenuItem,
+    chooseSubmenuItem,
     activeItem,
 }
 
@@ -32,7 +33,7 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
         this.props.chooseMenuItem(name)
     }
     public render() {
-        const { classes, activeItem } = this.props
+        const { classes, activeItem, chooseMenuItem, chooseSubmenuItem } = this.props
         return <Drawer
             variant="permanent"
             open={true}
@@ -43,13 +44,13 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
             <div style={{ height: 48 }}></div>
 
             <MenuList>
-                <DocumentsMenu active={activeItem === 'documents'}  />
+                <DocumentsMenu active={activeItem === 'documents'} chooseMenuItem={chooseMenuItem} chooseSubmenuItem={chooseSubmenuItem}  />
                 <Divider light />
-                <UsersMenu active={activeItem === 'users'} />
+                <UsersMenu active={activeItem === 'users'} chooseMenuItem={chooseMenuItem} chooseSubmenuItem={chooseSubmenuItem} />
                 <Divider light />
-                <GroupsMenu active={activeItem === 'groups'} />
+                <GroupsMenu active={activeItem === 'groups'} chooseMenuItem={chooseMenuItem} chooseSubmenuItem={chooseSubmenuItem} />
                 <Divider light />
-                <ContentTypesMenu active={activeItem === 'contenttypes'} />
+                <ContentTypesMenu active={activeItem === 'contenttypes'} chooseMenuItem={chooseMenuItem} chooseSubmenuItem={chooseSubmenuItem} />
                 <Divider light />
             </MenuList>
         </Drawer>
@@ -65,4 +66,5 @@ const mapStateToProps = (state) => {
 
 export default (connect(mapStateToProps, {
     chooseMenuItem: DMSActions.chooseMenuItem,
+    chooseSubmenuItem: DMSActions.chooseSubmenuItem,
 })(withStyles(styles)(DashboardDrawer)))
