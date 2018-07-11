@@ -210,4 +210,12 @@ export const chooseMenuItem = (itemName: string) => ({
 export const chooseSubmenuItem = (itemName: string) => ({
     type: 'CHOOSE_SUBMENUITEM',
     itemName,
+  
+export const openViewer = (id: number) => ({
+    type: 'OPEN_VIEWER',
+    id,
+})
+
+export const closeViewer = () => ({
+    type: 'CLOSE_VIEWER',
 })

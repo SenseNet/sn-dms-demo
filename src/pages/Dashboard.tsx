@@ -6,6 +6,7 @@ import MediaQuery from 'react-responsive'
 import * as DMSActions from '../Actions'
 import { ListToolbar } from '../components/ContentList/ListToolbar'
 import DashboardDrawer from '../components/DashboardDrawer'
+import { DmsViewer } from '../components/DmsViewer'
 import DocumentLibrary from '../components/DocumentLibrary'
 import Header from '../components/Header'
 import * as DMSReducers from '../Reducers'
@@ -40,10 +41,11 @@ interface DashboardProps {
     loadUserActions,
     setCurrentId,
     currentId,
-    selectionModeIsOn: boolean
+    selectionModeIsOn: boolean,
+    isViewerOpened: boolean,
 }
 
-class Dashboard extends React.Component<DashboardProps, { }> {
+class Dashboard extends React.Component<DashboardProps, {}> {
     constructor(props) {
         super(props)
         this.state = {
@@ -84,18 +86,22 @@ class Dashboard extends React.Component<DashboardProps, { }> {
     }
     public render() {
         const { id } = this.props.match.params
+        const filter = { filter: this.props.isViewerOpened ? 'blur(3px)' : '' }
         return (
             <MediaQuery minDeviceWidth={700}>
                 {(matches) => {
                     if (matches) {
-                        return <div style={styles.root}>
-                            <Header />
-                            <DashboardDrawer />
-                            <div style={styles.main}>
-                                <div style={{ height: 48, width: '100%' }}></div>
-                                <ListToolbar />
-                                <DocumentLibrary parentId={id} />
+                        return <div>
+                            <div style={{ ...styles.root, ...filter }}>
+                                <Header />
+                                <DashboardDrawer />
+                                <div style={styles.main}>
+                                    <div style={{ height: 48, width: '100%' }}></div>
+                                    <ListToolbar />
+                                    <DocumentLibrary parentId={id} />
+                                </div>
                             </div>
+                            <DmsViewer />
                         </div>
                     } else {
                         return <div style={styles.root}>
@@ -117,6 +123,7 @@ const mapStateToProps = (state, match) => {
         currentContent: Reducers.getCurrentContent(state.sensenet),
         currentId: DMSReducers.getCurrentId(state.dms),
         selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
+        isViewerOpened: state.dms.viewer.isOpened,
     }
 }
 

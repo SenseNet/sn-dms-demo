@@ -125,27 +125,29 @@ export class UploadButton extends React.Component<UploadButtonProps, UploadButto
                     </MenuItem>
                 </label>
             </Menu>
-            <div style={{ visibility: 'hidden', display: 'none' }}>
-                <input
-                    accept={this.props.accept}
-                    multiple={this.props.multiple}
-                    id={this.uploadFileButtonId}
-                    type="file"
-                    onChange={(ev) => this.handleUpload(ev)}
-                />
-                <input
-                    accept={this.props.accept}
-                    multiple={this.props.multiple}
-                    id={this.uploadFolderButtonId}
-                    type="file"
-                    onChange={(ev) => this.handleUpload(ev)}
-                    {...{
-                        directory: '',
-                        webkitdirectory: '',
-                    } as any
-                    }
-                />
-            </div>
+            {!Boolean(this.state.anchorElement) ?
+                <div style={{ visibility: 'hidden', display: 'none' }}>
+                    <input
+                        accept={this.props.accept}
+                        multiple={this.props.multiple}
+                        id={this.uploadFileButtonId}
+                        type="file"
+                        onChange={(ev) => this.handleUpload(ev)}
+                    />
+                    <input
+                        accept={this.props.accept}
+                        multiple={this.props.multiple}
+                        id={this.uploadFolderButtonId}
+                        type="file"
+                        onChange={(ev) => this.handleUpload(ev)}
+                        {...{
+                            directory: '',
+                            webkitdirectory: '',
+                        } as any
+                        }
+                    />
+                </div>
+                : null}
         </div >
         )
     }
