@@ -68,7 +68,7 @@ class BatchActionlist extends React.Component<BatchActionlistProps, { options, a
     }
     public componentWillReceiveProps(nextProps) {
         const { actions, currentId, getActions } = this.props
-        if ((currentId === 'login' || currentId !== nextProps.currentId) && actions.length === 0 && nextProps.currentContent && nextProps.currentContent.Id) {
+        if ((nextProps.currentContent.Id && (currentId === 'login' || currentId !== nextProps.currentId)) && actions.length === 0) {
             getActions(nextProps.currentContent.Id, 'DMSBatchActions', [{
                 Name: 'Download', DisplayName: 'Download', Icon: 'download', Index: 1,
 

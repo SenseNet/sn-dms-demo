@@ -1,54 +1,78 @@
-import { Divider, Drawer, Icon, List, ListItem, ListItemIcon, StyleRulesCallback, withStyles } from '@material-ui/core'
-import { IContent, IUploadProgressInfo } from '@sensenet/client-core'
-import { getCurrentContent } from '@sensenet/redux/dist/Reducers'
+import { Divider, Drawer, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { hideUploadItem, hideUploadProgress, removeUploadItem, uploadFileList } from '../Actions'
-import { UploadBar } from './Upload/UploadBar'
-import { UploadButton } from './Upload/UploadButton'
+import * as DMSActions from '../Actions'
+import { resources } from '../assets/resources'
+import { getActiveMenuItem } from '../Reducers'
+import ContentTemplatesMenu from './Menu/ContentTemplatesMenu'
+import ContentTypesMenu from './Menu/ContentTypesMenu'
+import DocumentsMenu from './Menu/DocumentsMenu'
+import GroupsMenu from './Menu/GroupsMenu'
+import SettingsMenu from './Menu/SettingsMenu'
+import UsersMenu from './Menu/UsersMenu'
 
-// tslint:disable-next-line:variable-name
-const ConnectedUploadBar = connect((state) => {
-    return {
-        items: state.dms.uploads.uploads,
-        isOpened: state.dms.uploads.showProgress,
-    }
-}, {
-        close: hideUploadProgress,
-        removeItem: hideUploadItem,
-    })(UploadBar)
-
-const drawerWidth = 205
-
-const stylez = {
-    listItem: {
-        padding: '20px 10px',
+const menu = [
+    {
+        title: resources.DOCUMENTS,
+        name: 'documents',
+        icon: 'folder',
+        component: DocumentsMenu,
     },
-}
+    {
+        title: resources.USERS,
+        name: 'users',
+        icon: 'person',
+        component: UsersMenu,
+    },
+    {
+        title: resources.GROUPS,
+        name: 'groups',
+        icon: 'supervised_user_circle',
+        component: GroupsMenu,
+    },
+    {
+        title: resources.CONTENT_TYPES,
+        name: 'contenttypes',
+        icon: 'edit',
+        component: ContentTypesMenu,
+    },
+    {
+        title: resources.CONTENT_TEMPLATES,
+        name: 'contenttemplates',
+        icon: 'view_quilt',
+        component: ContentTemplatesMenu,
+    },
+    {
+        title: resources.SETTINGS,
+        name: 'settings',
+        icon: 'settings',
+        component: SettingsMenu,
+    },
+]
 
-const styles: StyleRulesCallback = () => ({
+const drawerWidth = 185
+
+const styles: StyleRulesCallback = (theme) => ({
     drawerPaper: {
         position: 'relative',
         width: drawerWidth,
+        padding: '0 10px',
     },
 })
 
 interface DashboarDrawerProps {
-    classes: {
-        drawerPaper: string;
-    }
-    currentContent: IContent
-    uploadFileList: typeof uploadFileList,
-    uploadItems: IUploadProgressInfo[]
-    showUploads: boolean
-    hideUploadProgress: () => void,
-    removeUploadItem: typeof removeUploadItem
-
+    classes,
+    chooseMenuItem,
+    chooseSubmenuItem,
+    activeItem,
 }
 
 class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
+    public handleClick = (name) => {
+        this.props.chooseMenuItem(name)
+    }
     public render() {
-        const { classes } = this.props
+        const { classes, activeItem, chooseMenuItem, chooseSubmenuItem } = this.props
         return <Drawer
             variant="permanent"
             open={true}
@@ -57,68 +81,37 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
             }}
         >
             <div style={{ height: 48 }}></div>
-            <UploadButton
-                style={{
-                    width: 'calc(100% - 2em)',
-                    margin: '1em',
-                    marginBottom: 0,
-                }}
-                multiple={true}
-                handleUpload={(fileList) => this.props.uploadFileList({
-                    fileList,
-                    createFolders: true,
-                    contentTypeName: 'File',
-                    binaryPropertyName: 'Binary',
-                    overwrite: false,
-                    parentPath: this.props.currentContent.Path,
-                })}
-            />
-            <ConnectedUploadBar />
 
-            <div style={{ padding: 10, fontSize: 14, color: '#666' }}>
-                <List>
-                    <li>
-                        <Divider />
-                    </li>
-                    <ListItem style={stylez.listItem as any}>
-                        <ListItemIcon>
-                            <Icon color="primary">people</Icon>
-                        </ListItemIcon>
-                        Shared with me
-        </ListItem>
-                    <li>
-                        <Divider />
-                    </li>
-                    <ListItem style={stylez.listItem as any}>
-                        <ListItemIcon>
-                            <Icon color="primary">star</Icon>
-                        </ListItemIcon>
-                        Saved searches
-            </ListItem>
-                    <li>
-                        <Divider />
-                    </li>
-                    <ListItem style={stylez.listItem as any}>
-                        <ListItemIcon>
-                            <Icon color="primary">delete</Icon>
-                        </ListItemIcon>
-                        Trash
-            </ListItem>
-                    <li>
-                        <Divider />
-                    </li>
-                </List>
-            </div>
+            <MenuList>
+                {menu.map((item, index) => {
+                    return (
+                        <div key={index}>
+                            {
+                                    React.createElement(
+                                        item.component,
+                                        {
+                                            active: activeItem === item.name,
+                                            item,
+                                            chooseMenuItem,
+                                            chooseSubmenuItem,
+                                        })
+                                }
+                                    <Divider light />
+                        </div>
+                    )
+                })}
+            </MenuList>
         </Drawer>
     }
 }
 
 const mapStateToProps = (state) => {
     return {
-        currentContent: getCurrentContent(state.sensenet),
+        activeItem: getActiveMenuItem(state.dms.menu),
     }
 }
 
 export default (connect(mapStateToProps, {
-    uploadFileList,
+    chooseMenuItem: DMSActions.chooseMenuItem,
+    chooseSubmenuItem: DMSActions.chooseSubmenuItem,
 })(withStyles(styles)(DashboardDrawer)))

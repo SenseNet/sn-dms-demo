@@ -77,14 +77,15 @@ export class UploadButton extends React.Component<UploadButtonProps, UploadButto
                 style={{
                     color: '#fff',
                     width: '100%',
-                    fontFamily: 'Raleway Medium',
-                    fontWeight: 'bold' as any,
+                    fontFamily: 'Raleway Bold',
                     textTransform: 'none',
-                    fontSize: '0.85rem',
+                    fontSize: '14px',
+                    paddingTop: 6,
+                    paddingBottom: 6,
                     letterSpacing: 1,
                 }}
                 onClick={(ev) => this.toggleOpen(ev)}>
-                <FileUpload />
+                <FileUpload style={{ fontSize: 20, marginRight: 5 }} />
                 {resources.UPLOAD_BUTTON_TITLE}
             </Button>
             <Menu

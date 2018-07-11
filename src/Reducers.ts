@@ -363,6 +363,29 @@ export const uploads = (state: { uploads: ExtendedUploadProgressInfo[], showProg
     return state
 }
 
+export const activeMenuItem = (state = 'documents', action) => {
+    switch (action.type) {
+        case 'CHOOSE_MENUITEM':
+            return action.itemName
+        default:
+            return state
+    }
+}
+
+export const activeSubmenu = (state = null, action) => {
+    switch (action.type) {
+        case 'CHOOSE_SUBMENUITEM':
+            return action.itemName
+        default:
+            return state
+    }
+}
+
+export const menu = combineReducers({
+    active: activeMenuItem,
+    activeSubmenu,
+})
+
 export const viewer = (state: { isOpened: boolean, currentDocumentId: number } = { isOpened: false, currentDocumentId: 0 }, action: AnyAction) => {
     switch (action.type) {
         case 'OPEN_VIEWER':
@@ -393,6 +416,7 @@ export const dms = combineReducers({
     isSelectionModeOn,
     toolbar,
     uploads,
+    menu,
     viewer,
 })
 
@@ -485,4 +509,12 @@ export const getToolbarActions = (state) => {
 }
 export const getUserActions = (state) => {
     return state.userActions
+}
+
+export const getActiveMenuItem = (state) => {
+    return state.active
+}
+
+export const getActiveSubmenuItem = (state) => {
+    return state.activeSubmenu
 }

@@ -1,9 +1,9 @@
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import * as React from 'react'
-import AppBarLogo from '../components/AppBarLogo'
-import { QuickSearch } from '../components/QuickSearch'
-import UserActionMenu from '../components/UserActionMenu'
+import AppBarLogo from './AppBarLogo'
+import { QuickSearch } from './QuickSearch'
+import UserActionMenu from './UserActionMenu'
 
 const styles = {
     appBar: {
