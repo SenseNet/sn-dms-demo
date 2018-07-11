@@ -56,7 +56,7 @@ class Sensenet extends React.Component<SensenetProps, { isAuthenticated: boolean
             render={(routerProps) => {
               const status = this.props.loginState === LoginState.Unauthenticated
               return status ? <Redirect key="login" to="/login" /> :
-              <Dashboard {...routerProps} />
+                <Dashboard {...routerProps} />
             }}
           />
           <Route
@@ -73,8 +73,9 @@ class Sensenet extends React.Component<SensenetProps, { isAuthenticated: boolean
             render={() => <Registration oAuthProvider={this.props.oAuthProvider} registration={this.props.registration} history={history} verify={this.props.recaptchaCallback} />} />
           <Route path="/:id"
             render={(routerProps) => {
-              const status = this.props.loginState !== LoginState.Authenticated
-              return status ?
+              // const status = this.props.loginState !== LoginState.Authenticated
+              const shouldRedirect = this.props.loginState === LoginState.Unauthenticated
+              return shouldRedirect ?
                 <Redirect key="login" to="/login" />
                 : <Dashboard {...routerProps} />
             }} />

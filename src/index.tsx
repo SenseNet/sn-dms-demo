@@ -48,6 +48,8 @@ const options = {
 } as Store.CreateStoreOptions<any>
 const store = Store.createSensenetStore(options)
 
+export type rootStateType = ReturnType<typeof myReducer>
+
 const handler = new MessageBoxHandler(repository, store)
 
 ReactDOM.render(

@@ -137,7 +137,7 @@ export const trackUploadProgress = async <T extends GenericContent>(currentValue
 }
 
 export const uploadFileList = <T extends SnFile>(options: Pick<IUploadFromFileListOptions<T>, Exclude<keyof IUploadFromFileListOptions<T>, 'repository'>>) =>
-    async (dispatch: Dispatch<{}>, getState: () => any, api: Repository) => {
+    async (dispatch: Dispatch, getState: () => any, api: Repository) => {
 
         await usingAsync(new ObservableValue<IUploadProgressInfo>(), async (progress) => {
             progress.subscribe(async (currentValue) => trackUploadProgress(currentValue, getState, dispatch, api))
@@ -157,7 +157,7 @@ export const uploadFileList = <T extends SnFile>(options: Pick<IUploadFromFileLi
     }
 
 export const uploadDataTransfer = <T extends SnFile>(options: Pick<IUploadFromEventOptions<T>, Exclude<keyof IUploadFromEventOptions<T>, 'repository'>>) =>
-    async (dispatch: Dispatch<{}>, getState: () => any, api: Repository) => {
+    async (dispatch: Dispatch, getState: () => any, api: Repository) => {
         await usingAsync(new ObservableValue<IUploadProgressInfo>(), async (progress) => {
             progress.subscribe(async (currentValue) => trackUploadProgress(currentValue, getState, dispatch, api))
             try {

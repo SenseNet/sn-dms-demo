@@ -63,6 +63,7 @@ interface ActionMenuProps {
     hostName: string
     contentId: number
     openViewer: (id: number) => void
+    logout: () => void
     classes
 }
 
@@ -127,6 +128,9 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
                 this.handleClose()
                 this.props.openViewer(this.props.contentId)
                 this.props.pollDocumentData(this.props.hostName, this.props.contentId)
+            case 'Logout':
+                this.handleClose()
+                this.props.logout()
             default:
                 console.log(`${action} is clicked`)
                 this.handleClose()
@@ -201,4 +205,5 @@ export default connect(mapStateToProps, {
     closeActionMenu: DMSActions.closeActionMenu,
     pollDocumentData,
     openViewer: DMSActions.openViewer,
+    logout: Actions.userLogout,
 })(ActionMenu)

@@ -1,5 +1,5 @@
 
-import { Actions, Reducers } from '@sensenet/redux'
+import { Actions, Reducers, Store } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -9,6 +9,7 @@ import DashboardDrawer from '../components/DashboardDrawer'
 import { DmsViewer } from '../components/DmsViewer'
 import DocumentLibrary from '../components/DocumentLibrary'
 import Header from '../components/Header'
+import { rootStateType } from '../index'
 import * as DMSReducers from '../Reducers'
 
 const styles = {
@@ -69,7 +70,7 @@ class Dashboard extends React.Component<DashboardProps, {}> {
     public componentWillReceiveProps(nextProps) {
         const { currentId, setCurrentId, loadContent, loadUserActions, match } = this.props
 
-        if (this.props.match.params.id !== undefined && Number(this.props.match.params.id) !== this.props.currentId) {
+        if (this.props.match.params.id !== undefined && !isNaN(nextProps.match.params.id) && Number(this.props.match.params.id) !== this.props.currentId) {
             setCurrentId(Number(nextProps.match.params.id)) &&
                 loadContent(Number(nextProps.match.params.id))
         } else {
@@ -117,7 +118,7 @@ class Dashboard extends React.Component<DashboardProps, {}> {
     }
 }
 
-const mapStateToProps = (state, match) => {
+const mapStateToProps = (state: rootStateType, match) => {
     return {
         loggedinUser: DMSReducers.getAuthenticatedUser(state.sensenet),
         currentContent: Reducers.getCurrentContent(state.sensenet),
