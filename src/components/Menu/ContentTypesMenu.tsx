@@ -116,6 +116,9 @@ class ContentTypesMenu extends React.Component<ContentTypesMenuProps, {}> {
     public handleSubmenuItemClick = (title) => {
         this.props.chooseSubmenuItem(title)
     }
+    public handleButtonClick = (e) => {
+        // TODO
+    }
     public render() {
         const { active, subactive, classes, item } = this.props
         return (
@@ -131,7 +134,7 @@ class ContentTypesMenu extends React.Component<ContentTypesMenuProps, {}> {
                 </MenuItem>
                 <div className={active ? classes.open : classes.closed}>
                     <Divider />
-                    <AddNewButton contentType="ContentType" />
+                    <AddNewButton contentType="ContentType" onClick={(e) => this.handleButtonClick(e)} />
                     <MenuList className={classes.submenu}>
                         {subMenu.map((menuitem, index) => {
                             return (<MenuItem className={classes.submenuItem} key={index}

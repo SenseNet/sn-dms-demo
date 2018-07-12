@@ -62,6 +62,9 @@ class UsersMenu extends React.Component<UsersMenuProps, {}> {
     public handleSubmenuItemClick = (title) => {
         this.props.chooseSubmenuItem(title)
     }
+    public handleButtonClick = (e) => {
+        // TODO
+    }
     public render() {
         const { active, classes, item } = this.props
         return (
@@ -77,7 +80,7 @@ class UsersMenu extends React.Component<UsersMenuProps, {}> {
                 </MenuItem>
                 <div className={active ? classes.open : classes.closed}>
                     <Divider />
-                    <AddNewButton contentType="User" />
+                    <AddNewButton contentType="User" onClick={(e) => this.handleButtonClick(e)} />
                 </div>
             </div>
         )

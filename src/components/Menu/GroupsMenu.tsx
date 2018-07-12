@@ -58,6 +58,9 @@ class GroupsMenu extends React.Component<GroupsMenuProps, {}> {
     public handleSubmenuItemClick = (title) => {
         this.props.chooseSubmenuItem(title)
     }
+    public handleButtonClick = (e) => {
+        // TODO
+    }
     public render() {
         const { active, classes, item } = this.props
         return (
@@ -73,7 +76,7 @@ class GroupsMenu extends React.Component<GroupsMenuProps, {}> {
                 </MenuItem>
                 <div className={active ? classes.open : classes.closed}>
                     <Divider />
-                    <AddNewButton contentType="Group" />
+                    <AddNewButton contentType="Group" onClick={(e) => this.handleButtonClick(e)} />
                 </div>
             </div>
         )

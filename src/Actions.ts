@@ -220,3 +220,11 @@ export const openViewer = (id: number) => ({
 export const closeViewer = () => ({
     type: 'CLOSE_VIEWER',
 })
+
+export const loadTypesToAddNewList = (idOrPath: number | string) => ({
+    type: 'LOAD_TYPES_TO_ADDNEW_LIST',
+    async payload(repository: Repository): Promise<{ d: IActionModel[] }> {
+        const data: any = await repository.getActions({ idOrPath, scenario: 'New' })
+        return data
+    },
+})
