@@ -71,7 +71,6 @@ interface SimpleTableRowProps {
     opened: number,
     openActionMenu,
     closeActionMenu,
-    history,
     parentId,
     rootId,
     selected,
@@ -249,9 +248,9 @@ const mapStateToProps = (state, match) => {
         ids: Reducers.getIds(state.sensenet.children),
     }
 }
-export default withRouter(connect(mapStateToProps, {
+export default connect(mapStateToProps, {
     openActionMenu: DMSActions.openActionMenu,
     closeActionMenu: DMSActions.closeActionMenu,
     selectionModeOn: DMSActions.selectionModeOn,
     selectionModeOff: DMSActions.selectionModeOff,
-})(withStyles(style)(SimpleTableRow)))
+})(withStyles(style)(SimpleTableRow))

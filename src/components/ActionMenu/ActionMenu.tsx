@@ -10,9 +10,31 @@ import * as DMSReducers from '../../Reducers'
 
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import createStyles from '@material-ui/core/styles/createStyles'
-import withStyles from '@material-ui/core/styles/withStyles'
+import { rootStateType } from '../..'
 import { icons } from '../../assets/icons'
+
+const mapStateToProps = (state: rootStateType, match) => {
+    return {
+        actions: DMSReducers.getActions(state.dms.actionmenu),
+        contentId: state.dms.actionmenu.id,
+        currentContent: Reducers.getCurrentContent(state.sensenet),
+        selected: Reducers.getSelectedContentIds(state.sensenet),
+        open: DMSReducers.actionmenuIsOpen(state.dms.actionmenu),
+        anchorElement: DMSReducers.getAnchorElement(state.dms.actionmenu),
+        position: DMSReducers.getMenuPosition(state.dms.actionmenu),
+        hostName: state.sensenet.session.repository.hostName,
+    }
+}
+
+const mapDispatchToProps = {
+    setEdited: DMSActions.setEditedContentId,
+    clearSelection: Actions.clearSelection,
+    deleteBatch: Actions.deleteBatch,
+    closeActionMenu: DMSActions.closeActionMenu,
+    pollDocumentData,
+    openViewer: DMSActions.openViewer,
+    logout: Actions.userLogout,
+}
 
 const styles = {
     actionmenuContainer: {
@@ -45,26 +67,7 @@ const styles = {
 }
 
 interface ActionMenuProps {
-    actions,
     id,
-    open,
-    selected,
-    currentContent,
-    setEdited,
-    handleMouseDown,
-    handleMouseUp,
-    clearSelection,
-    deleteBatch,
-    uploadContent,
-    anchorElement,
-    closeActionMenu,
-    position,
-    pollDocumentData: typeof pollDocumentData,
-    hostName: string
-    contentId: number
-    openViewer: (id: number) => void
-    logout: () => void
-    classes
 }
 
 interface ActionMenuState {
@@ -73,7 +76,7 @@ interface ActionMenuState {
     anchorEl
 }
 
-class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
+class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, ActionMenuState> {
     constructor(props) {
         super(props)
         this.state = {
@@ -184,25 +187,4 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
     }
 }
 
-const mapStateToProps = (state, match) => {
-    return {
-        actions: DMSReducers.getActions(state.dms.actionmenu),
-        contentId: state.dms.actionmenu.id,
-        currentContent: Reducers.getCurrentContent(state.sensenet),
-        selected: Reducers.getSelectedContentIds(state.sensenet),
-        open: DMSReducers.actionmenuIsOpen(state.dms.actionmenu),
-        anchorElement: DMSReducers.getAnchorElement(state.dms.actionmenu),
-        position: DMSReducers.getMenuPosition(state.dms.actionmenu),
-        hostName: state.sensenet.session.repository.hostName,
-    }
-}
-
-export default connect(mapStateToProps, {
-    setEdited: DMSActions.setEditedContentId,
-    clearSelection: Actions.clearSelection,
-    deleteBatch: Actions.deleteBatch,
-    closeActionMenu: DMSActions.closeActionMenu,
-    pollDocumentData,
-    openViewer: DMSActions.openViewer,
-    logout: Actions.userLogout,
-})(ActionMenu)
+export default connect(mapStateToProps, mapDispatchToProps )(ActionMenu)

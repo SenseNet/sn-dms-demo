@@ -75,7 +75,7 @@ describe('<ContentList />', () => {
         ReactDOM.render(
             <Provider store={store}>
                 <MemoryRouter>
-                    <ContentList store={store} children={{ 123: { Id: 123 } }} />
+                    <ContentList children={{ 123: { Id: 123 } }} />
                 </MemoryRouter>
             </Provider>, div)
     })
@@ -88,7 +88,7 @@ describe('<ContentList /> methods', () => {
         const wrapper = mount(
             <Provider store={store}>
                 <MemoryRouter>
-                    <ContentList store={store} children={{ 123: { Id: 123 } }} onKeyDown={onKeyDown} />
+                    <ContentList children={{ 123: { Id: 123 } }} />
                 </MemoryRouter>
             </Provider>)
         const element = wrapper.find('tr').last()
@@ -102,7 +102,7 @@ describe('<ContentList /> methods', () => {
         const wrapper = mount(
             <Provider store={store}>
                 <MemoryRouter>
-                    <ContentList store={store} children={{ 123: { Id: 123 } }} onKeyDown={onKeyDown} />
+                    <ContentList children={{ 123: { Id: 123 } }} />
                 </MemoryRouter>
             </Provider>)
         const element = wrapper.find('tr').last()
@@ -116,7 +116,7 @@ describe('<ContentList /> methods', () => {
         const wrapper = mount(
             <Provider store={store}>
                 <MemoryRouter>
-                    <ContentList store={store} children={{ 123: { Id: 123 } }} onKeyDown={onKeyDown} />
+                    <ContentList children={{ 123: { Id: 123 } }} />
                 </MemoryRouter>
             </Provider>)
         const element = wrapper.find('tr').last()
@@ -130,7 +130,7 @@ describe('<ContentList /> methods', () => {
         const wrapper = mount(
             <Provider store={store}>
                 <MemoryRouter>
-                    <ContentList store={store} children={{ 123: { Id: 123 } }} onKeyDown={onKeyDown} />
+                    <ContentList children={{ 123: { Id: 123 } }} />
                 </MemoryRouter>
             </Provider>)
         const element = wrapper.find('tr').last()
@@ -144,7 +144,7 @@ describe('<ContentList /> methods', () => {
         const wrapper = mount(
             <Provider store={store}>
                 <MemoryRouter>
-                    <ContentList store={store} children={{ 123: { Id: 123 } }} onKeyDown={onKeyDown} />
+                    <ContentList children={{ 123: { Id: 123 } }} />
                 </MemoryRouter>
             </Provider>)
         const element = wrapper.find('tr').last()
@@ -158,7 +158,7 @@ describe('<ContentList /> methods', () => {
         const wrapper = mount(
             <Provider store={store}>
                 <MemoryRouter>
-                    <ContentList store={store} children={{ 123: { Id: 123 } }} onKeyDown={onKeyDown} />
+                    <ContentList children={{ 123: { Id: 123 } }} />
                 </MemoryRouter>
             </Provider>)
         const element = wrapper.find('tr').last()
@@ -172,7 +172,7 @@ describe('<ContentList /> methods', () => {
         const wrapper = mount(
             <Provider store={store}>
                 <MemoryRouter>
-                    <ContentList store={store} children={{ 123: { Id: 123 } }} onKeyDown={onKeyDown} />
+                    <ContentList children={{ 123: { Id: 123 } }} />
                 </MemoryRouter>
             </Provider>)
         const element = wrapper.find('tr').last()
@@ -186,7 +186,7 @@ describe('<ContentList /> methods', () => {
         const wrapper = mount(
             <Provider store={store}>
                 <MemoryRouter>
-                    <ContentList store={store} children={{ 123: { Id: 123 } }} onKeyDown={onKeyDown} />
+                    <ContentList children={{ 123: { Id: 123 } }} />
                 </MemoryRouter>
             </Provider>)
         const element = wrapper.find('tr').last()
@@ -200,7 +200,7 @@ describe('<ContentList /> methods', () => {
         const wrapper = mount(
             <Provider store={store}>
                 <MemoryRouter>
-                    <ContentList store={store} children={{ 123: { Id: 123 } }} onKeyDown={onKeyDown} />
+                    <ContentList children={{ 123: { Id: 123 } }} />
                 </MemoryRouter>
             </Provider>)
         const element = wrapper.find('tr').last()
@@ -240,7 +240,7 @@ describe('<ContentList /> methods', () => {
         const wrapper = mount(
             <Provider store={store}>
                 <MemoryRouter>
-                    <ContentList store={store} children={{ 123: { Id: 123 } }} onClick={handleSelectAllClick} />
+                    <ContentList children={{ 123: { Id: 123 } }} />
                 </MemoryRouter>
             </Provider>)
         const element = wrapper.find('input[type="checkbox"]').first()
@@ -254,7 +254,7 @@ describe('<ContentList /> methods', () => {
         const wrapper = mount(
             <Provider store={store}>
                 <MemoryRouter>
-                    <ContentList store={store} children={{ 123: { Id: 123 } }} onClick={handleRowSingleClick} />
+                    <ContentList children={{ 123: { Id: 123 } }} />
                 </MemoryRouter>
             </Provider>)
         const element = wrapper.find('tr').last()
@@ -268,7 +268,7 @@ describe('<ContentList /> methods', () => {
         const wrapper = mount(
             <Provider store={store}>
                 <MemoryRouter>
-                    <ContentList store={store} children={{ 123: { Id: 123 } }} doubleClick={handleRowDoubleClick} />
+                    <ContentList children={{ 123: { Id: 123 } }} />
                 </MemoryRouter>
             </Provider>)
         const element = wrapper.find('tr').last()

@@ -37,7 +37,7 @@ const styles = {
 interface DashboardProps {
     match,
     currentContent,
-    loggedinUser,
+    loggedinUserName,
     loadContent,
     loadUserActions,
     setCurrentId,
@@ -46,7 +46,11 @@ interface DashboardProps {
     isViewerOpened: boolean,
 }
 
-class Dashboard extends React.Component<DashboardProps, {}> {
+export interface DashboardState {
+    currentId: number
+}
+
+class Dashboard extends React.Component<DashboardProps, DashboardState> {
     constructor(props) {
         super(props)
         this.state = {
@@ -59,29 +63,29 @@ class Dashboard extends React.Component<DashboardProps, {}> {
             this.props.setCurrentId(id)
         } else {
             if (this.props.match.params.id !== undefined && this.props.match.params.id !== this.props.currentId) {
-                if (this.props.loggedinUser.userName !== 'Visitor') {
+                if (this.props.loggedinUserName !== 'Visitor') {
                     return this.props.setCurrentId(this.props.match.params.id)
-                        && this.props.loadContent(`/Root/Profiles/Public/${this.props.loggedinUser.userName}/Document_Library`)
-                        && this.props.loadUserActions(`/Root/IMS/Public/${this.props.loggedinUser.userName}`, 'DMSUserActions')
+                        && this.props.loadContent(`/Root/Profiles/Public/${this.props.loggedinUserName}/Document_Library`)
+                        && this.props.loadUserActions(`/Root/IMS/Public/${this.props.loggedinUserName}`, 'DMSUserActions')
                 }
             }
         }
     }
-    public componentWillReceiveProps(nextProps) {
+    public componentWillReceiveProps(nextProps: this['props']) {
         const { currentId, setCurrentId, loadContent, loadUserActions, match } = this.props
 
         if (this.props.match.params.id !== undefined && !isNaN(nextProps.match.params.id) && Number(this.props.match.params.id) !== this.props.currentId) {
             setCurrentId(Number(nextProps.match.params.id)) &&
                 loadContent(Number(nextProps.match.params.id))
         } else {
-            if (currentId && currentId !== nextProps.currentId && nextProps.loggedinUser.userName !== 'Visitor') {
+            if (currentId && currentId !== nextProps.currentId && nextProps.loggedinUserName !== 'Visitor') {
                 setCurrentId(nextProps.currentId)
                 loadContent(nextProps.currentId)
-                loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUser.userName}`, 'DMSUserActions')
-            } else if (currentId === null && nextProps.loggedinUser.userName !== 'Visitor') {
+                loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUserName}`, 'DMSUserActions')
+            } else if (currentId === null && nextProps.loggedinUserName !== 'Visitor') {
                 setCurrentId('login')
-                loadContent(`/Root/Profiles/Public/${nextProps.loggedinUser.userName}/Document_Library`)
-                loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUser.userName}`, 'DMSUserActions')
+                loadContent(`/Root/Profiles/Public/${nextProps.loggedinUserName}/Document_Library`)
+                loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUserName}`, 'DMSUserActions')
             }
         }
     }
@@ -99,7 +103,7 @@ class Dashboard extends React.Component<DashboardProps, {}> {
                                 <div style={styles.main}>
                                     <div style={{ height: 48, width: '100%' }}></div>
                                     <ListToolbar />
-                                    <DocumentLibrary parentId={id} />
+                                    <DocumentLibrary />
                                 </div>
                             </div>
                             <DmsViewer />
@@ -108,7 +112,7 @@ class Dashboard extends React.Component<DashboardProps, {}> {
                         return <div style={styles.root}>
                             <div style={styles.dashBoardInnerMobile}>
                                 <ListToolbar />
-                                <DocumentLibrary parentId={id} />
+                                <DocumentLibrary />
                             </div>
                         </div>
                     }
@@ -120,7 +124,7 @@ class Dashboard extends React.Component<DashboardProps, {}> {
 
 const mapStateToProps = (state: rootStateType, match) => {
     return {
-        loggedinUser: DMSReducers.getAuthenticatedUser(state.sensenet),
+        loggedinUserName: state.sensenet.session.user.name,
         currentContent: Reducers.getCurrentContent(state.sensenet),
         currentId: DMSReducers.getCurrentId(state.dms),
         selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),

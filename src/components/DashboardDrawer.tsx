@@ -11,7 +11,7 @@ import GroupsMenu from './Menu/GroupsMenu'
 import SettingsMenu from './Menu/SettingsMenu'
 import UsersMenu from './Menu/UsersMenu'
 
-const menu = [
+const menu: Array<{title: string, name: string, icon: string, component: any}> = [
     {
         title: resources.DOCUMENTS,
         name: 'documents',

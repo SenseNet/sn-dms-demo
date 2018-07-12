@@ -44,13 +44,14 @@ const styles = {
   },
 }
 
+import { IOauthProvider } from '@sensenet/authentication-jwt'
 import { resources } from '../assets/resources'
 
 interface RegistrationProps {
   history,
   registration,
   verify,
-  oAuthProvider,
+  oAuthProvider: IOauthProvider,
   registrationError,
   inProgress,
   isRegistered,
@@ -332,5 +333,5 @@ const mapStateToProps = (state, match) => {
   }
 }
 
-export default withRouter(connect(mapStateToProps, {
-})(Registration))
+export default connect(mapStateToProps, {
+})(Registration)

@@ -36,6 +36,6 @@ it('renders without crashing', () => {
   const store = Store.createSensenetStore(options)
   ReactDOM.render(
     <MemoryRouter>
-      <ParentFolderTableRow store={store} />
+      <ParentFolderTableRow />
     </MemoryRouter>, div)
 })

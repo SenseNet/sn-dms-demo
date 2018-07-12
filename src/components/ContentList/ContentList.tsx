@@ -8,10 +8,12 @@ import * as React from 'react'
 import { DropTarget } from 'react-dnd'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
+import { RouteComponentProps } from 'react-router'
 import {
     withRouter,
 } from 'react-router-dom'
 import { Key } from 'ts-keycode-enum'
+import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import * as DragAndDrop from '../../DragAndDrop'
 import * as DMSReducers from '../../Reducers'
@@ -33,37 +35,37 @@ const styles = {
     },
 }
 
-interface ContentListProps {
-    ids: number[],
-    children,
-    currentId: number,
-    selected: number[],
-    selectedContentItems,
-    history,
-    parentId: number,
-    edited: number,
-    rootId: number,
-    isFetching: boolean,
-    isLoading: boolean,
-    select,
-    deselect,
-    clearSelection,
-    deleteContent,
-    deleteBatch,
-    copyBatch,
-    moveBatch,
-    selectionModeOn,
-    selectionModeOff,
-    selectionModeIsOn: boolean,
+const mapStateToProps = (state: rootStateType, match) => {
+    return {
+        ids: Reducers.getIds(state.sensenet.children),
+        rootId: DMSReducers.getRootId(state.dms),
+        selected: Reducers.getSelectedContentIds(state.sensenet),
+        selectedContentItems: Reducers.getSelectedContentItems(state.sensenet),
+        isFetching: Reducers.getFetching(state.sensenet.children),
+        isLoading: DMSReducers.getLoading(state.dms),
+        edited: DMSReducers.getEditedItemId(state.dms),
+        selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
+    }
+}
+
+const mapDispatchToProps = {
+    loadContent: Actions.loadContent,
+    select: Actions.selectContent,
+    deselect: Actions.deSelectContent,
+    clearSelection: Actions.clearSelection,
+    delete: Actions.deleteContent,
+    deleteBatch: Actions.deleteBatch,
+    copyBatch: Actions.copyBatch,
+    moveBatch: Actions.moveBatch,
+    selectionModeOn: DMSActions.selectionModeOn,
+    selectionModeOff: DMSActions.selectionModeOff,
+    openViewer: DMSActions.openViewer,
+    pollDocumentData,
+}
+
+interface ContentListProps extends RouteComponentProps<any> {
     connectDropTarget,
-    isOver: boolean,
-    canDrop: boolean,
-    onDrop,
-    accepts: string[],
-    openViewer: (id: number) => void
     hostName: string
-    pollDocumentData: (host: string, id: number) => void
-    loadContent,
 }
 
 interface ContentListState {
@@ -81,7 +83,7 @@ interface ContentListState {
     isOver: monitor.isOver(),
     canDrop: monitor.canDrop(),
 }))
-class ContentList extends React.Component<ContentListProps, ContentListState> {
+class ContentList extends React.Component<ContentListProps & RouteComponentProps<any> & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, ContentListState> {
     constructor(props) {
         super(props)
         this.state = {
@@ -150,7 +152,7 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
     }
     public handleRowDoubleClick(e, id, type) {
         if (type === 'Folder') {
-            this.props.history.push(`/${id}`)
+            this.props.history.push(this.props.location.pathname + '/' + id)
             this.props.loadContent(id)
             this.props.deselect(this.props.children[id])
         } else {
@@ -318,12 +320,12 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                                 const content = this.props.children[n]
                                 return typeof content !== 'undefined' ? (
                                     <SimpleTableRow
-                                        content={content}
-                                        key={content.Id}
-                                        handleRowDoubleClick={this.handleRowDoubleClick}
-                                        handleRowSingleClick={this.handleRowSingleClick}
-                                        handleTap={(e) => this.handleTap(e, content.Id, content.Type)}
-                                        isCopy={this.state.copy} />
+                                    content={content}
+                                    key={content.Id}
+                                    handleRowDoubleClick={this.handleRowDoubleClick}
+                                    handleRowSingleClick={this.handleRowSingleClick}
+                                    handleTap={(e) => this.handleTap(e, content.Id, content.Type)}
+                                    isCopy={this.state.copy}/>
                                 ) : null
                             })
                         }
@@ -336,29 +338,4 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
     }
 }
 
-const mapStateToProps = (state, match) => {
-    return {
-        ids: Reducers.getIds(state.sensenet.children),
-        rootId: DMSReducers.getRootId(state.dms),
-        selected: Reducers.getSelectedContentIds(state.sensenet),
-        selectedContentItems: Reducers.getSelectedContentItems(state.sensenet),
-        isFetching: Reducers.getFetching(state.sensenet.children),
-        isLoading: DMSReducers.getLoading(state.dms),
-        edited: DMSReducers.getEditedItemId(state.dms),
-        selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
-    }
-}
-export default withRouter(connect(mapStateToProps, {
-    loadContent: Actions.loadContent,
-    select: Actions.selectContent,
-    deselect: Actions.deSelectContent,
-    clearSelection: Actions.clearSelection,
-    delete: Actions.deleteContent,
-    deleteBatch: Actions.deleteBatch,
-    copyBatch: Actions.copyBatch,
-    moveBatch: Actions.moveBatch,
-    selectionModeOn: DMSActions.selectionModeOn,
-    selectionModeOff: DMSActions.selectionModeOff,
-    openViewer: DMSActions.openViewer,
-    pollDocumentData,
-})(ContentList))
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ContentList))

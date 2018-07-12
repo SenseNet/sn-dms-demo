@@ -34,6 +34,6 @@ it('renders without crashing', () => {
   const store = Store.createSensenetStore(options)
   ReactDOM.render(
     <MemoryRouter>
-      <BreadCrumb store={store} />
+      <BreadCrumb />
     </MemoryRouter>, div)
 })

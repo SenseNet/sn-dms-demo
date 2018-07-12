@@ -19,7 +19,7 @@ class Header extends React.Component<{}, {}> {
         return (
             <AppBar position="absolute" style={styles.appBar}>
                 <Toolbar style={{ minHeight: 48, padding: '0px 10px' }}>
-                    <AppBarLogo history />
+                    <AppBarLogo />
                     <QuickSearch />
                     <UserActionMenu />
                 </Toolbar>

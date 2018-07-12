@@ -3,6 +3,7 @@ import { IContent, IUploadProgressInfo } from '@sensenet/client-core'
 import { Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { rootStateType } from '../..'
 import { hideUploadItem, hideUploadProgress, removeUploadItem, uploadFileList } from '../../Actions'
 import * as DMSReducers from '../../Reducers'
 import { UploadBar } from '../Upload/UploadBar'
@@ -120,12 +121,11 @@ const subMenu = [
 ]
 
 // tslint:disable-next-line:variable-name
-const ConnectedUploadBar = connect((state) => {
-    return {
+const ConnectedUploadBar = connect((state: rootStateType) => ({
         items: state.dms.uploads.uploads,
         isOpened: state.dms.uploads.showProgress,
-    }
-}, {
+    }),
+    {
         close: hideUploadProgress,
         removeItem: hideUploadItem,
     })(UploadBar)

@@ -48,9 +48,7 @@ it('renders without crashing', () => {
   ReactDOM.render(
     <MemoryRouter>
       <Provider store={store}>
-        <SimpleTableRow
-          store={store}
-          content={content} />
+        <SimpleTableRow />
       </Provider>
     </MemoryRouter>, div)
 })

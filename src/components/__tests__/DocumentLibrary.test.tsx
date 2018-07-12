@@ -36,7 +36,7 @@ it('renders without crashing', () => {
   ReactDOM.render(
     <Provider store={store}>
       <MemoryRouter>
-        <DocumentLibrary store={store} />
+        <DocumentLibrary />
       </MemoryRouter>
     </Provider>, div)
 })
