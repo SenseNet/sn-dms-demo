@@ -34,31 +34,37 @@ const styles = {
     },
 }
 
+const mapStateToProps = (state: rootStateType) => {
+    return {
+        loggedinUserName: state.sensenet.session.user.name,
+        currentContent: Reducers.getCurrentContent(state.sensenet),
+        currentId: DMSReducers.getCurrentId(state.dms),
+        selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
+        isViewerOpened: state.dms.viewer.isOpened,
+    }
+}
+
+const mapDispatchToProps = {
+    loadContent: Actions.loadContent,
+    setCurrentId: DMSActions.setCurrentId,
+    loadUserActions: DMSActions.loadUserActions,
+}
+
 interface DashboardProps {
-    match,
-    currentContent,
-    loggedinUserName,
-    loadContent,
-    loadUserActions,
-    setCurrentId,
-    currentId,
-    selectionModeIsOn: boolean,
-    isViewerOpened: boolean,
+    match: { params: { id: number } }
+    currentId: number,
 }
 
 export interface DashboardState {
     currentId: number
 }
 
-class Dashboard extends React.Component<DashboardProps, DashboardState> {
-    constructor(props) {
+class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DashboardState> {
+    constructor(props: Dashboard['props']) {
         super(props)
-        this.state = {
-            currentId: this.props.match.params.id ? this.props.match.params.id : '',
-        }
     }
     public componentDidMount() {
-        const id = parseInt(this.props.match.params.id, 10)
+        const id = parseInt(this.props.match.params.id.toString(), 10)
         if (id && !isNaN(id) && isFinite(id)) {
             this.props.setCurrentId(id)
         } else {
@@ -72,7 +78,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
         }
     }
     public componentWillReceiveProps(nextProps: this['props']) {
-        const { currentId, setCurrentId, loadContent, loadUserActions, match } = this.props
+        const { currentId, setCurrentId, loadContent, loadUserActions } = this.props
 
         if (this.props.match.params.id !== undefined && !isNaN(nextProps.match.params.id) && Number(this.props.match.params.id) !== this.props.currentId) {
             setCurrentId(Number(nextProps.match.params.id)) &&
@@ -122,18 +128,4 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     }
 }
 
-const mapStateToProps = (state: rootStateType, match) => {
-    return {
-        loggedinUserName: state.sensenet.session.user.name,
-        currentContent: Reducers.getCurrentContent(state.sensenet),
-        currentId: DMSReducers.getCurrentId(state.dms),
-        selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
-        isViewerOpened: state.dms.viewer.isOpened,
-    }
-}
-
-export default connect(mapStateToProps, {
-    loadContent: Actions.loadContent,
-    setCurrentId: DMSActions.setCurrentId,
-    loadUserActions: DMSActions.loadUserActions,
-})(Dashboard)
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
