@@ -52,7 +52,7 @@ it('renders without crashing', () => {
   ReactDOM.render(
     <MemoryRouter>
       <Provider store={store}>
-        <Dashboard store={store} match={{ params: { id: 111 } }} />
+        <Dashboard match={{ params: { id: 111 } } as any} history={{} as any} location={{} as any} />
       </Provider>
     </MemoryRouter>, div)
 })

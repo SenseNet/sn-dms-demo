@@ -2,18 +2,17 @@ import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import FormControl from '@material-ui/core/FormControl'
 import FormHelperText from '@material-ui/core/FormHelperText'
-import InputLabel from '@material-ui/core/InputLabel'
 import TextField from '@material-ui/core/TextField'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
-import { withRouter } from 'react-router-dom'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { userRegistration } from '../Actions'
 import GoogleReCaptcha from '../components/GoogleReCaptcha'
 import LoginTabs from '../components/LoginTabs'
 import { OauthRow } from '../components/OAuthRow'
 import { WelcomeMessage } from '../components/WelcomeMessage'
-import * as DMSReducers from '../Reducers'
-
+import { captchaIsVerified, getRegistrationError, registrationInProgress, registrationIsDone } from '../Reducers'
 // tslint:disable-next-line:no-var-requires
 const logo = require('../assets/logo.png')
 
@@ -45,38 +44,47 @@ const styles = {
 }
 
 import { IOauthProvider } from '@sensenet/authentication-jwt'
+import { rootStateType } from '..'
 import { resources } from '../assets/resources'
 
-interface RegistrationProps {
-  history,
-  registration,
-  verify,
+const mapStateToProps = (state: rootStateType) => {
+  return {
+    registrationError: getRegistrationError(state.dms.register),
+    inProgress: registrationInProgress(state.dms.register),
+    isRegistered: registrationIsDone(state.dms.register),
+    isNotARobot: captchaIsVerified(state.dms.register),
+  }
+}
+
+const mapDispatchToProps = {
+  registration: userRegistration,
+
+}
+
+interface RegistrationProps extends RouteComponentProps<any> {
+  verify: any,
   oAuthProvider: IOauthProvider,
-  registrationError,
-  inProgress,
-  isRegistered,
-  isNotARobot
 }
 
 interface RegistrationState {
-  email,
-  password,
-  confirmpassword,
-  emailError,
-  passwordError,
-  confirmPasswordError,
-  emailErrorMessage,
-  passwordErrorMessage,
-  confirmPasswordErrorMessage,
-  formIsValid,
-  isButtonDisabled,
-  captchaError,
-  captchaErrorMessage
+  email: string,
+  password: string,
+  confirmpassword: string,
+  emailError: boolean,
+  passwordError: boolean,
+  confirmPasswordError: boolean,
+  emailErrorMessage: string,
+  passwordErrorMessage: string,
+  confirmPasswordErrorMessage: string,
+  formIsValid: boolean,
+  isButtonDisabled: boolean,
+  captchaError: boolean,
+  captchaErrorMessage: string
 }
 
-class Registration extends React.Component<RegistrationProps, RegistrationState> {
+class Registration extends React.Component<RegistrationProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, RegistrationState> {
 
-  constructor(props) {
+  constructor(props: Registration['props']) {
     super(props)
     this.state = {
       email: '',
@@ -101,7 +109,7 @@ class Registration extends React.Component<RegistrationProps, RegistrationState>
     this.handleConfirmPasswordBlur = this.handleConfirmPasswordBlur.bind(this)
     this.handleConfirmPasswordChange = this.handleConfirmPasswordChange.bind(this)
   }
-  public handleEmailBlur(e) {
+  public handleEmailBlur(e: React.FocusEvent<HTMLInputElement>) {
     if (this.validateEmail(e.target.value)) {
       this.setState({
         email: e.target.value,
@@ -116,17 +124,17 @@ class Registration extends React.Component<RegistrationProps, RegistrationState>
       })
     }
   }
-  public handleEmailChange(e) {
+  public handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       email: e.target.value,
       isButtonDisabled: false,
     })
   }
-  public validateEmail(text) {
+  public validateEmail(text: string) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     return re.test(text)
   }
-  public handlePasswordBlur(e) {
+  public handlePasswordBlur(e: React.FocusEvent<HTMLInputElement>) {
     if (this.validatePassword(e.target.value)) {
       this.setState({
         password: e.target.value,
@@ -141,18 +149,18 @@ class Registration extends React.Component<RegistrationProps, RegistrationState>
       })
     }
   }
-  public handlePasswordChange(e) {
+  public handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       password: e.target.value,
       isButtonDisabled: false,
     })
   }
-  public validatePassword(text) {
+  public validatePassword(text: string) {
 
     const re = /^([a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]*[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]){3}[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]*$/
     return re.test(text)
   }
-  public handleConfirmPasswordBlur(e) {
+  public handleConfirmPasswordBlur(e: React.FocusEvent<HTMLInputElement>) {
     if (e.target.value.length !== 0 && this.confirmPasswords(e.target.value, this.state.password)) {
       this.setState({
         confirmpassword: e.target.value,
@@ -172,7 +180,7 @@ class Registration extends React.Component<RegistrationProps, RegistrationState>
       })
     }
   }
-  public handleConfirmPasswordChange(e) {
+  public handleConfirmPasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (this.validatePassword(e.target.value) && this.confirmPasswords(e.target.value, this.state.password)) {
       this.setState({
         confirmpassword: e.target.value,
@@ -180,10 +188,10 @@ class Registration extends React.Component<RegistrationProps, RegistrationState>
       })
     }
   }
-  public confirmPasswords(p1, p2) {
+  public confirmPasswords(p1: string, p2: string) {
     return p1 === p2
   }
-  public formSubmit(e) {
+  public formSubmit(e: React.FormEvent<HTMLFormElement>) {
     if (this.valid(e)) {
       this.props.registration(this.state.email, this.state.password)
       this.setState({
@@ -191,7 +199,7 @@ class Registration extends React.Component<RegistrationProps, RegistrationState>
       })
     }
   }
-  public valid(e) {
+  public valid(e: React.SyntheticEvent) {
     let valid = true
     if (this.state.email === '' || !this.validateEmail(this.state.email)) {
       valid = false
@@ -256,7 +264,7 @@ class Registration extends React.Component<RegistrationProps, RegistrationState>
               this.formSubmit(e)
             }}>
               <FormControl
-                error={this.state.emailError || (this.props.registrationError && this.props.registrationError.length) > 0 ? true : false}
+                error={this.state.emailError || (this.props.registrationError !== null && this.props.registrationError.length) > 0 ? true : false}
                 fullWidth
                 required
                 style={styles.formControl}>
@@ -324,14 +332,4 @@ class Registration extends React.Component<RegistrationProps, RegistrationState>
   }
 }
 
-const mapStateToProps = (state, match) => {
-  return {
-    registrationError: DMSReducers.getRegistrationError(state.dms.register),
-    inProgress: DMSReducers.registrationInProgress(state.dms.register),
-    isRegistered: DMSReducers.registrationIsDone(state.dms.register),
-    isNotARobot: DMSReducers.captchaIsVerified(state.dms.register),
-  }
-}
-
-export default connect(mapStateToProps, {
-})(Registration)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Registration))

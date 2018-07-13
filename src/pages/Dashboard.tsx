@@ -3,6 +3,7 @@ import { Actions, Reducers, Store } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
+import { RouteComponentProps } from 'react-router'
 import * as DMSActions from '../Actions'
 import { ListToolbar } from '../components/ContentList/ListToolbar'
 import DashboardDrawer from '../components/DashboardDrawer'
@@ -36,7 +37,7 @@ const styles = {
 
 const mapStateToProps = (state: rootStateType) => {
     return {
-        loggedinUserName: state.sensenet.session.user.name,
+        loggedinUserName: state.sensenet.session.user.userName,
         currentContent: Reducers.getCurrentContent(state.sensenet),
         currentId: DMSReducers.getCurrentId(state.dms),
         selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
@@ -50,53 +51,60 @@ const mapDispatchToProps = {
     loadUserActions: DMSActions.loadUserActions,
 }
 
-interface DashboardProps {
-    match: { params: { id: number } }
+interface DashboardProps extends RouteComponentProps<any> {
     currentId: number,
 }
 
 export interface DashboardState {
-    currentId: number
+    currentFolderId?: number
+    currentSelection: number[]
+    currentViewName: string
+    currentUserName: string
 }
 
 class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DashboardState> {
+
+    public state = {
+        currentFolderId: undefined,
+        currentSelection: [],
+        currentViewName: 'list',
+        currentUserName: 'Visitor',
+    }
+
     constructor(props: Dashboard['props']) {
         super(props)
     }
-    public componentDidMount() {
-        const id = parseInt(this.props.match.params.id.toString(), 10)
-        if (id && !isNaN(id) && isFinite(id)) {
-            this.props.setCurrentId(id)
-        } else {
-            if (this.props.match.params.id !== undefined && this.props.match.params.id !== this.props.currentId) {
-                if (this.props.loggedinUserName !== 'Visitor') {
-                    return this.props.setCurrentId(this.props.match.params.id)
-                        && this.props.loadContent(`/Root/Profiles/Public/${this.props.loggedinUserName}/Document_Library`)
-                        && this.props.loadUserActions(`/Root/IMS/Public/${this.props.loggedinUserName}`, 'DMSUserActions')
-                }
-            }
-        }
-    }
-    public componentWillReceiveProps(nextProps: this['props']) {
-        const { currentId, setCurrentId, loadContent, loadUserActions } = this.props
 
-        if (this.props.match.params.id !== undefined && !isNaN(nextProps.match.params.id) && Number(this.props.match.params.id) !== this.props.currentId) {
-            setCurrentId(Number(nextProps.match.params.id)) &&
-                loadContent(Number(nextProps.match.params.id))
-        } else {
-            if (currentId && currentId !== nextProps.currentId && nextProps.loggedinUserName !== 'Visitor') {
-                setCurrentId(nextProps.currentId)
-                loadContent(nextProps.currentId)
-                loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUserName}`, 'DMSUserActions')
-            } else if (currentId === null && nextProps.loggedinUserName !== 'Visitor') {
-                setCurrentId('login')
-                loadContent(`/Root/Profiles/Public/${nextProps.loggedinUserName}/Document_Library`)
-                loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUserName}`, 'DMSUserActions')
+    public static getDerivedStateFromProps(newProps: Dashboard['props'], lastState: Dashboard['state']) {
+        let currentFolderId = newProps.match.params.folderId && parseInt(newProps.match.params.folderId.toString(), 10) || undefined
+        const currentSelection = newProps.match.params.selection && decodeURIComponent(newProps.match.params.selection) || []
+        const currentViewName = newProps.match.params.action
+
+        if (lastState.currentFolderId !== currentFolderId && currentFolderId) {
+            newProps.setCurrentId(currentFolderId)
+            newProps.loadContent(currentFolderId)
+        }
+
+        if (newProps.loggedinUserName !== lastState.currentUserName) {
+            newProps.loadUserActions(`/Root/IMS/Public/${newProps.loggedinUserName}`, 'DMSUserActions')
+
+            if (lastState.currentFolderId === currentFolderId && currentFolderId === undefined) {
+                newProps.loadContent(`/Root/Profiles/Public/${newProps.loggedinUserName}/Document_Library`)
+                currentFolderId = 0
+
             }
         }
+
+        return {
+            ...lastState,
+            currentFolderId,
+            currentSelection,
+            currentViewName,
+            currentUserName: newProps.loggedinUserName,
+        }
     }
+
     public render() {
-        const { id } = this.props.match.params
         const filter = { filter: this.props.isViewerOpened ? 'blur(3px)' : '' }
         return (
             <MediaQuery minDeviceWidth={700}>
@@ -109,7 +117,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                 <div style={styles.main}>
                                     <div style={{ height: 48, width: '100%' }}></div>
                                     <ListToolbar />
-                                    <DocumentLibrary />
+                                    <DocumentLibrary currentFolderId={this.state.currentFolderId} />
                                 </div>
                             </div>
                             <DmsViewer />
@@ -118,7 +126,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                         return <div style={styles.root}>
                             <div style={styles.dashBoardInnerMobile}>
                                 <ListToolbar />
-                                <DocumentLibrary />
+                                <DocumentLibrary currentFolderId={this.state.currentFolderId} />
                             </div>
                         </div>
                     }
