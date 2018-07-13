@@ -21,6 +21,8 @@ import ActionMenu from '../ActionMenu/ActionMenu'
 import ListHead from './ListHead'
 import SimpleTableRow from './SimpleTableRow'
 
+import { compile } from 'path-to-regexp'
+
 const styles = {
     paper: {
         width: '100%',
@@ -152,7 +154,8 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
     }
     public handleRowDoubleClick(e, id, type) {
         if (type === 'Folder') {
-            this.props.history.push(this.props.location.pathname + '/' + id)
+            const newPath = compile(this.props.match.path)({ folderId: id })
+            this.props.history.replace(newPath)
             this.props.loadContent(id)
             this.props.deselect(this.props.children[id])
         } else {
@@ -320,19 +323,19 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
                                 const content = this.props.children[n]
                                 return typeof content !== 'undefined' ? (
                                     <SimpleTableRow
-                                    content={content}
-                                    key={content.Id}
-                                    handleRowDoubleClick={this.handleRowDoubleClick}
-                                    handleRowSingleClick={this.handleRowSingleClick}
-                                    handleTap={(e) => this.handleTap(e, content.Id, content.Type)}
-                                    isCopy={this.state.copy}/>
+                                        content={content}
+                                        key={content.Id}
+                                        handleRowDoubleClick={this.handleRowDoubleClick}
+                                        handleRowSingleClick={this.handleRowSingleClick}
+                                        handleTap={(e) => this.handleTap(e, content.Id, content.Type)}
+                                        isCopy={this.state.copy} />
                                 ) : null
                             })
                         }
 
                     </TableBody>
                 </Table>
-                <ActionMenu />
+                <ActionMenu id={this.props.selected.Id} />
                 {/* <SelectionBox /> */}
             </div>)
     }
