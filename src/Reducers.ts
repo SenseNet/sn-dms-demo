@@ -68,7 +68,7 @@ export const register = combineReducers({
     captcha,
 })
 
-export const actions: Reducer<string[], Action & { payload?: { d: { Actions: string[] } }, actions?: string[] }> = (state = [], action) => {
+export const actions: Reducer<IActionModel[], Action & { payload?: { d: { Actions: IActionModel[] } }, actions?: IActionModel[] }> = (state = [], action) => {
     switch (action.type) {
         case 'LOAD_CONTENT_ACTIONS_SUCCESS':
             return action.payload && action.payload.d.Actions ? action.payload.d.Actions : []
@@ -487,7 +487,7 @@ export const getCurrentId = (state: { currentId: rootStateType['dms']['currentId
 export const getActionsOfAContent = (state: { actions: string[] }) => {
     return state.actions
 }
-export const getActions = (state: { actions: string[] }) => {
+export const getActions = (state: { actions: IActionModel[] }) => {
     return state.actions
 }
 export const getEditedItemId = (state: { editedItemId: ReturnType<typeof dms>['editedItemId'] }) => {

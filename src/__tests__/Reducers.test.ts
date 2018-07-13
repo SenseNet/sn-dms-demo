@@ -78,7 +78,7 @@ describe('actions reducer', () => {
                 Actions: [
                     'Move',
                     'Copy',
-                ],
+                ] as any[],
             },
         }
         expect(DMSReducers.actions(undefined, {
@@ -89,7 +89,7 @@ describe('actions reducer', () => {
         const actions = [
             'Move',
             'Copy',
-        ]
+        ] as any[]
 
         expect(DMSReducers.actions(undefined, { type: 'OPEN_ACTIONMENU', actions })).toEqual(['Move', 'Copy'])
     })
@@ -383,7 +383,7 @@ describe('getActionsOfAContent', () => {
 
 describe('getActions', () => {
     const state = {
-        actions: ['aaa', 'bbb'],
+        actions: ['aaa', 'bbb'] as any[],
     }
     it('should return the actions', () => {
         expect(DMSReducers.getActions(state)).toEqual(['aaa', 'bbb'])
