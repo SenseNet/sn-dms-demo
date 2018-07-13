@@ -17,7 +17,7 @@ export const mapDispatchToProps = {
 
 // tslint:disable-next-line:no-empty-interface
 export interface DmsViewerProps {
-/**/
+    /**/
 }
 
 export interface DmsViewerState {
@@ -25,6 +25,8 @@ export interface DmsViewerState {
 }
 
 export class DmsViewerComponent extends React.Component<DmsViewerProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DmsViewerState> {
+
+    public state = { isOpened: false }
 
     public static getDerivedStateFromProps(newProps: DmsViewerComponent['props'], lastState: DmsViewerComponent['state']) {
         return {
