@@ -41,7 +41,7 @@ export class DmsViewerComponent extends React.Component<DmsViewerProps & ReturnT
         }
     }
 
-    constructor(props) {
+    constructor(props: DmsViewerComponent['props']) {
         super(props)
         this.keyboardHandler = this.keyboardHandler.bind(this)
 
