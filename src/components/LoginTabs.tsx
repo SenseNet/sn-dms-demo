@@ -30,7 +30,7 @@ const style = () => createStyles({
 
 import { resources } from '../assets/resources'
 
-class LoginTabs extends React.Component<RouteComponentProps<any> & {classes: any}, { value }> {
+class LoginTabs extends React.Component<RouteComponentProps<any> & { classes: any }, { value }> {
     constructor(props) {
         super(props)
         this.state = {
@@ -74,4 +74,4 @@ class LoginTabs extends React.Component<RouteComponentProps<any> & {classes: any
     }
 }
 
-export default withStyles(style, { withTheme: true })(withRouter(LoginTabs))
+export default withRouter<any>(withStyles(style, { withTheme: true })(LoginTabs))

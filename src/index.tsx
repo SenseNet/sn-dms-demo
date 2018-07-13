@@ -51,7 +51,7 @@ const handler = new MessageBoxHandler(repository, store)
 
 ReactDOM.render(
   <Provider store={store}>
-      <Sensenet repository={repository} history={history} oAuthProvider={googleOauthProvider} />
+    <Sensenet oAuthProvider={googleOauthProvider} />
   </Provider>,
   document.getElementById('root') as HTMLElement,
 )

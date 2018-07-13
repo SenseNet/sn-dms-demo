@@ -36,7 +36,7 @@ const mapDispatchToProps = {
   clearRegistration: clearReg,
 }
 
-export interface SensenetProps extends RouteComponentProps<any> {
+export interface SensenetProps {
   oAuthProvider: IOauthProvider
 }
 
@@ -57,10 +57,10 @@ class Sensenet extends React.Component<SensenetProps & ReturnType<typeof mapStat
                 <Login oauthProvider={this.props.oAuthProvider} clear={this.props.clearRegistration} />
               </AuthorizedRoute>
               <AuthorizedRoute exact path="/registration" authorize={() => this.props.loginState !== LoginState.Authenticated} redirectOnUnauthorized="/">
-                <Registration oAuthProvider={this.props.oAuthProvider} registration={this.props.registration} history={history} verify={this.props.recaptchaCallback} />
+                <Registration oAuthProvider={this.props.oAuthProvider} verify={this.props.recaptchaCallback} />
               </AuthorizedRoute>
 
-              <AuthorizedRoute path="/(dashboard|dashboard/:id)" authorize={() => this.props.loginState !== LoginState.Unauthenticated} redirectOnUnauthorized="/" render={(routerProps) => {
+              <AuthorizedRoute path="/dashboard/:folderId?/:selection?/:action?" authorize={() => this.props.loginState !== LoginState.Unauthenticated} redirectOnUnauthorized="/" render={(routerProps) => {
                 return <Dashboard {...routerProps} />
               }}>
               </AuthorizedRoute>

@@ -39,7 +39,7 @@ it('renders without crashing', () => {
   const store = Store.createSensenetStore(options)
   ReactDOM.render(
     <MemoryRouter>
-      <Login store={store} clear={() => {
+      <Login oauthProvider={{} as any} clear={() => {
         //
       }} />
     </MemoryRouter>, div)
