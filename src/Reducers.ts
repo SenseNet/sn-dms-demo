@@ -1,12 +1,13 @@
 import { IContent, IODataCollectionResponse, IODataResponse } from '@sensenet/client-core'
 import { GenericContent, IActionModel } from '@sensenet/default-content-types'
 import { Action, AnyAction, combineReducers, Reducer } from 'redux'
+import { rootStateType } from '.'
 import { ExtendedUploadProgressInfo } from './Actions'
 import { resources } from './assets/resources'
 
 enum MessageMode { error, warning, info }
 
-export const email: Reducer<string, Action & {email?: string}> = (state = '', action) => {
+export const email: Reducer<string, Action & { email: string }> = (state = '', action) => {
     switch (action.type) {
         case 'USER_REGISTRATION_REQUEST':
             return action.email
@@ -17,7 +18,7 @@ export const email: Reducer<string, Action & {email?: string}> = (state = '', ac
             return state
     }
 }
-export const registrationError: Reducer<string, Action> = (state = null, action) => {
+export const registrationError: Reducer<string | null, Action> = (state = null, action) => {
     switch (action.type) {
         case 'USER_REGISTRATION_FAILURE':
             return resources.USER_IS_ALREADY_REGISTERED
@@ -67,10 +68,10 @@ export const register = combineReducers({
     captcha,
 })
 
-export const actions: Reducer<string[], Action & {payload?: {d: {Actions: string[]}}, actions?: string[]}> = (state = [], action) => {
+export const actions: Reducer<string[], Action & { payload?: { d: { Actions: string[] } }, actions?: string[] }> = (state = [], action) => {
     switch (action.type) {
         case 'LOAD_CONTENT_ACTIONS_SUCCESS':
-            return action.payload.d.Actions ? action.payload.d.Actions : []
+            return action.payload && action.payload.d.Actions ? action.payload.d.Actions : []
         case 'OPEN_ACTIONMENU':
             return action.actions || []
         case 'CLOSE_ACTIONMENU':
@@ -91,34 +92,34 @@ export const open: Reducer<boolean> = (state = false, action) => {
     }
 }
 
-export const id: Reducer<number, Action & {id?: number}> = (state = null, action) => {
+export const id: Reducer<number | null, Action & { id?: number }> = (state = null, action) => {
     switch (action.type) {
         case 'OPEN_ACTIONMENU':
-            return action.id
+            return action.id || null
         default:
             return state
     }
 }
 
-export const title: Reducer<string, Action & {title?: string}> = (state = '', action) => {
+export const title: Reducer<string, Action & { title?: string }> = (state = '', action) => {
     switch (action.type) {
         case 'OPEN_ACTIONMENU':
-            return action.title
+            return action.title || state
         default:
             return state
     }
 }
 
-export const anchorElement: Reducer<HTMLElement, Action & {element?: HTMLElement}> = (state = null, action) => {
+export const anchorElement: Reducer<HTMLElement | null, Action & { element?: HTMLElement }> = (state = null, action) => {
     switch (action.type) {
         case 'OPEN_ACTIONMENU':
-            return action.element
+            return action.element || state
         default:
             return state
     }
 }
 
-export const position: Reducer<any, Action & {position?: any}> = (state = null, action) => {
+export const position: Reducer<any, Action & { position?: any }> = (state = null, action) => {
     switch (action.type) {
         case 'OPEN_ACTIONMENU':
             return action.position || null
@@ -127,10 +128,10 @@ export const position: Reducer<any, Action & {position?: any}> = (state = null, 
     }
 }
 
-export const rootId: Reducer<number, Action & {payload?: IODataResponse<IContent>}> = (state = null, action) => {
+export const rootId: Reducer<number | null, Action & { payload?: IODataResponse<IContent> }> = (state = null, action) => {
     switch (action.type) {
         case 'LOAD_CONTENT_SUCCESS':
-            if (!state && action.payload.d.Path.indexOf('Default_Site') === -1) {
+            if (!state && action.payload && action.payload.d.Path.indexOf('Default_Site') === -1) {
                 return action.payload.d.Id
             } else {
                 return state
@@ -140,19 +141,19 @@ export const rootId: Reducer<number, Action & {payload?: IODataResponse<IContent
     }
 }
 
-export const currentId: Reducer<number, Action & {id?: number}> = (state = null, action) => {
+export const currentId: Reducer<number | null, Action & { id?: number }> = (state = null, action) => {
     switch (action.type) {
         case 'SET_CURRENT_ID':
-            return action.id
+            return action.id || state
         default:
             return state
     }
 }
 
-export const editedItemId: Reducer<number | null, Action & {id?: number}> = (state = null, action) => {
+export const editedItemId: Reducer<number | null, Action & { id?: number }> = (state = null, action) => {
     switch (action.type) {
         case 'SET_EDITED_ID':
-            return action.id
+            return action.id || null
         case 'UPDATE_CONTENT_SUCCESS':
             return null
         default:
@@ -160,12 +161,12 @@ export const editedItemId: Reducer<number | null, Action & {id?: number}> = (sta
     }
 }
 
-export const editedFirst: Reducer<boolean, Action & {id?: number, edited?: boolean}> = (state = false, action) => {
+export const editedFirst: Reducer<boolean, Action & { id?: number, edited?: boolean }> = (state = false, action) => {
     switch (action.type) {
         case 'SET_EDITED_ID':
             return action.id ? true : false
         case 'SET_EDITED_FIRST':
-            return action.edited
+            return action.edited || state
         case 'UPDATE_CONTENT_SUCCESS':
             return false
         default:
@@ -173,19 +174,23 @@ export const editedFirst: Reducer<boolean, Action & {id?: number, edited?: boole
     }
 }
 
-export const breadcrumb: Reducer<Array<{name: string, id: number, path: string}>, Action & {payload?: IODataResponse<GenericContent>}> = (state = [], action) => {
+export interface BreadcrumbItemType { name: string, id: number, path: string }
+export const breadcrumb: Reducer<BreadcrumbItemType[], Action & { payload?: IODataResponse<GenericContent> }> = (state = [], action) => {
     switch (action.type) {
         case 'LOAD_CONTENT_SUCCESS':
-            if (action.payload.d.Path.indexOf('Default_Site') === -1 && state.filter((e) => e.id === action.payload.d.Id).length === 0) {
-                const element = {
-                    name: action.payload.d.DisplayName,
-                    id: action.payload.d.Id,
-                    path: action.payload.d.Path,
+            if (action.payload) {
+                const payload = action.payload
+                if (payload.d.Path.indexOf('Default_Site') === -1 && state.filter((e) => e.id === payload.d.Id).length === 0) {
+                    const element = {
+                        name: action.payload.d.DisplayName,
+                        id: action.payload.d.Id,
+                        path: action.payload.d.Path,
+                    } as BreadcrumbItemType
+                    return [...state, element]
+                } else if (state.filter((e) => e.id === payload.d.Id).length > 0) {
+                    const index = state.findIndex((e) => e.id === payload.d.Id) + 1
+                    return [...state.slice(0, index)]
                 }
-                return [...state, element]
-            } else if (state.filter((e) => e.id === action.payload.d.Id).length > 0) {
-                const index = state.findIndex((e) => e.id === action.payload.d.Id) + 1
-                return [...state.slice(0, index)]
             } else {
                 return state
             }
@@ -217,7 +222,7 @@ export const isSelectionModeOn: Reducer<boolean> = (state = false, action) => {
     }
 }
 
-export const userActions: Reducer<IActionModel[], Action & {payload: {d: {Actions: IActionModel[]}}}> = (state = [], action) => {
+export const userActions: Reducer<IActionModel[], Action & { payload: { d: { Actions: IActionModel[] } } }> = (state = [], action) => {
     switch (action.type) {
         case 'LOAD_USER_ACTIONS_SUCCESS':
             return action.payload.d.Actions ? action.payload.d.Actions : []
@@ -236,10 +241,10 @@ export const actionmenu = combineReducers({
     userActions,
 })
 
-export const messagebarmode: Reducer<MessageMode, Action & {mode?: MessageMode}> = (state = MessageMode.info, action) => {
+export const messagebarmode: Reducer<MessageMode, Action & { mode?: MessageMode }> = (state = MessageMode.info, action) => {
     switch (action.type) {
         case 'OPEN_MESSAGE_BAR':
-            return action.mode
+            return action.mode || state
         case 'CLOSE_MESSAGE_BAR':
             return MessageMode.info
         default:
@@ -247,7 +252,7 @@ export const messagebarmode: Reducer<MessageMode, Action & {mode?: MessageMode}>
     }
 }
 
-export const messagebarcontent: Reducer<{}, Action & {content: {}}> = (state = {}, action) => {
+export const messagebarcontent: Reducer<{}, Action & { content: {} }> = (state = {}, action) => {
     switch (action.type) {
         case 'OPEN_MESSAGE_BAR':
             return action.content
@@ -269,8 +274,8 @@ export const messagebaropen: Reducer<boolean> = (state = false, action) => {
     }
 }
 
-type verticalValues = 'top'|'bottom'
-export const vertical: Reducer<verticalValues, Action & {vertical: verticalValues}> = (state = 'bottom', action) => {
+export type verticalValues = 'top' | 'bottom'
+export const vertical: Reducer<verticalValues, Action & { vertical: verticalValues }> = (state = 'bottom', action) => {
     switch (action.type) {
         case 'OPEN_MESSAGE_BAR':
             return action.vertical
@@ -279,8 +284,8 @@ export const vertical: Reducer<verticalValues, Action & {vertical: verticalValue
     }
 }
 
-type horizontalValues = 'left' | 'right'
-export const horizontal: Reducer<horizontalValues, Action & {horizontal: horizontalValues}> = (state = 'left', action) => {
+export type horizontalValues = 'left' | 'right'
+export const horizontal: Reducer<horizontalValues, Action & { horizontal: horizontalValues }> = (state = 'left', action) => {
     switch (action.type) {
         case 'OPEN_MESSAGE_BAR':
             return action.horizontal
@@ -297,7 +302,7 @@ export const messagebar = combineReducers({
     horizontal,
 })
 
-export const toolbarActions: Reducer<IActionModel[], Action & {payload: {d: {Actions: IActionModel[]}}}> = (state = [], action) => {
+export const toolbarActions: Reducer<IActionModel[], Action & { payload: { d: { Actions: IActionModel[] } } }> = (state = [], action) => {
     switch (action.type) {
         case 'LOAD_LIST_ACTIONS_SUCCESS':
             return action.payload.d.Actions
@@ -311,76 +316,76 @@ export const toolbar = combineReducers({
 })
 
 export const uploads: Reducer<{ uploads: ExtendedUploadProgressInfo[], showProgress: boolean }>
- = (state = { uploads: [], showProgress: false }, action: AnyAction) => {
-    switch (action.type) {
-        case 'UPLOAD_ADD_ITEM':
-            return {
-                ...state,
-                showProgress: true,
-                uploads: [
-                    ...state.uploads,
-                    action.uploadItem,
-                ],
-            }
-        case 'UPLOAD_UPDATE_ITEM':
-            return {
-                ...state,
-                uploads: state.uploads.map((uploadItem) => {
-                    if (uploadItem.guid === action.uploadItem.guid) {
-                        return {
-                            ...uploadItem,
-                            ...action.uploadItem,
+    = (state = { uploads: [], showProgress: false }, action: AnyAction) => {
+        switch (action.type) {
+            case 'UPLOAD_ADD_ITEM':
+                return {
+                    ...state,
+                    showProgress: true,
+                    uploads: [
+                        ...state.uploads,
+                        action.uploadItem,
+                    ],
+                }
+            case 'UPLOAD_UPDATE_ITEM':
+                return {
+                    ...state,
+                    uploads: state.uploads.map((uploadItem) => {
+                        if (uploadItem.guid === action.uploadItem.guid) {
+                            return {
+                                ...uploadItem,
+                                ...action.uploadItem,
+                            }
                         }
-                    }
-                    return uploadItem
-                }),
-            }
-        case 'UPLOAD_HIDE_ITEM':
-            return {
-                ...state,
-                uploads: state.uploads.map((uploadItem) => {
-                    if (uploadItem.guid === action.uploadItem.guid) {
-                        return {
-                            ...uploadItem,
-                            ...action.uploadItem,
-                            visible: false,
+                        return uploadItem
+                    }),
+                }
+            case 'UPLOAD_HIDE_ITEM':
+                return {
+                    ...state,
+                    uploads: state.uploads.map((uploadItem) => {
+                        if (uploadItem.guid === action.uploadItem.guid) {
+                            return {
+                                ...uploadItem,
+                                ...action.uploadItem,
+                                visible: false,
+                            }
                         }
-                    }
-                    return uploadItem
-                }),
-            }
-        case 'UPLOAD_REMOVE_ITEM':
-            return {
-                ...state,
-                uploads: state.uploads.filter((u) => u.guid !== action.uploadItem.guid),
-            }
-        case 'UPLOAD_HIDE_PROGRESS':
-            return {
-                ...state,
-                showProgress: false,
-            }
-        case 'UPLOAD_SHOW_PROGRESS':
-            return {
-                ...state,
-                showProgress: false,
-            }
+                        return uploadItem
+                    }),
+                }
+            case 'UPLOAD_REMOVE_ITEM':
+                return {
+                    ...state,
+                    uploads: state.uploads.filter((u) => u.guid !== action.uploadItem.guid),
+                }
+            case 'UPLOAD_HIDE_PROGRESS':
+                return {
+                    ...state,
+                    showProgress: false,
+                }
+            case 'UPLOAD_SHOW_PROGRESS':
+                return {
+                    ...state,
+                    showProgress: false,
+                }
+        }
+        return state
     }
-    return state
-}
 
-export const activeMenuItem: Reducer<string, Action & {itemName?: string}> = (state = 'documents', action) => {
+export const activeMenuItem: Reducer<string, Action & { itemName?: string }> = (state = 'documents', action) => {
     switch (action.type) {
         case 'CHOOSE_MENUITEM':
-            return action.itemName
+            return action.itemName || state
         default:
             return state
     }
 }
 
-export const activeSubmenu: Reducer<string, Action & {itemName?: string}> = (state = null, action) => {
+export const activeSubmenu: Reducer<string | null, Action & { itemName?: string }> = (state = null, action) => {
     switch (action.type) {
         case 'CHOOSE_SUBMENUITEM':
-            return action.itemName
+            return action.itemName || state
         default:
             return state
     }
@@ -391,7 +396,7 @@ export const menu = combineReducers({
     activeSubmenu,
 })
 
-export const viewer: Reducer<{ isOpened: boolean, currentDocumentId: number }, Action & {id?: number}> = (state = { isOpened: false, currentDocumentId: 0 }, action: AnyAction) => {
+export const viewer: Reducer<{ isOpened: boolean, currentDocumentId: number }, Action & { id?: number }> = (state = { isOpened: false, currentDocumentId: 0 }, action: AnyAction) => {
     switch (action.type) {
         case 'OPEN_VIEWER':
             return {
@@ -425,101 +430,101 @@ export const dms = combineReducers({
     viewer,
 })
 
-export const getRegistrationError = (state) => {
+export const getRegistrationError = (state: ReturnType<typeof register>) => {
     return state.registrationError
 }
-export const registrationInProgress = (state) => {
+export const registrationInProgress = (state: ReturnType<typeof register>) => {
     return state.isRegistering
 }
 
-export const registrationIsDone = (state) => {
+export const registrationIsDone = (state: ReturnType<typeof register>) => {
     return state.registrationDone
 }
 
-export const getRegisteredEmail = (state) => {
+export const getRegisteredEmail = (state: ReturnType<typeof register>) => {
     return state.email
 }
 
-export const captchaIsVerified = (state) => {
+export const captchaIsVerified = (state: ReturnType<typeof register>) => {
     return state.captcha
 }
-export const getAuthenticatedUser = (state) => {
+export const getAuthenticatedUser = (state: rootStateType['sensenet']) => {
     return state.session.user
 }
 
-export const getChildrenItems = (state) => {
+export const getChildrenItems = (state: rootStateType['sensenet']) => {
     return state.children.entities
 }
 
-export const getCurrentContentPath = (state) => {
+export const getCurrentContentPath = (state: { Path: string }) => {
     return state.Path
 }
 
-export const actionmenuIsOpen = (state) => {
+export const actionmenuIsOpen = (state: ReturnType<typeof actionmenu>) => {
     return state.open
 }
 
-export const getAnchorElement = (state) => {
+export const getAnchorElement = (state: ReturnType<typeof actionmenu>) => {
     return state.anchorElement
 }
 
-export const getMenuPosition = (state) => {
+export const getMenuPosition = (state: ReturnType<typeof actionmenu>) => {
     return state.position
 }
 
-export const getParentId = (state) => {
+export const getParentId = (state: rootStateType['sensenet']) => {
     return state.currentcontent.content.ParentId
 }
-export const getRootId = (state) => {
+export const getRootId = (state: rootStateType['dms']) => {
     return state.rootId
 }
-export const getBreadCrumbArray = (state) => {
+export const getBreadCrumbArray = (state: rootStateType['dms']) => {
     return state.breadcrumb
 }
-export const getCurrentId = (state) => {
+export const getCurrentId = (state: rootStateType['dms']) => {
     return state.currentId
 }
-export const getActionsOfAContent = (state) => {
+export const getActionsOfAContent = (state: { actions: string[] }) => {
     return state.actions
 }
-export const getActions = (state) => {
+export const getActions = (state: { actions: string[] }) => {
     return state.actions
 }
-export const getEditedItemId = (state) => {
+export const getEditedItemId = (state: ReturnType<typeof dms>) => {
     return state.editedItemId
 }
-export const getItemOnActionMenuIsOpen = (state) => {
+export const getItemOnActionMenuIsOpen = (state: ReturnType<typeof actionmenu>) => {
     return state.id
 }
-export const getLoading = (state) => {
+export const getLoading = (state: ReturnType<typeof dms>) => {
     return state.isLoading
 }
-export const getItemTitleOnActionMenuIsOpen = (state) => {
+export const getItemTitleOnActionMenuIsOpen = (state: ReturnType<typeof actionmenu>) => {
     return state.title
 }
-export const getIsSelectionModeOn = (state) => {
+export const getIsSelectionModeOn = (state: ReturnType<typeof dms>) => {
     return state.isSelectionModeOn
 }
-export const getAddNewActions = (state) => {
+export const getAddNewActions = (state: { addnew: any }) => {
     return state.addnew
 }
-export const isEditedFirst = (state) => {
+export const isEditedFirst = (state: ReturnType<typeof dms>) => {
     return state.editedFirst
 }
-export const getMessageBarProps = (state) => {
+export const getMessageBarProps = (state: ReturnType<typeof dms>) => {
     return state.messagebar
 }
-export const getToolbarActions = (state) => {
+export const getToolbarActions = (state: ReturnType<typeof actionmenu>) => {
     return state && state.actions ? state.actions : []
 }
-export const getUserActions = (state) => {
+export const getUserActions = (state: ReturnType<typeof actionmenu>) => {
     return state.userActions
 }
 
-export const getActiveMenuItem = (state) => {
+export const getActiveMenuItem = (state: ReturnType<typeof menu>) => {
     return state.active
 }
 
-export const getActiveSubmenuItem = (state) => {
+export const getActiveSubmenuItem = (state: ReturnType<typeof menu>) => {
     return state.activeSubmenu
 }
