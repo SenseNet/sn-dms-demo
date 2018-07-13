@@ -2,7 +2,7 @@ import Button from '@material-ui/core/Button'
 import FormControl from '@material-ui/core/FormControl'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import TextField from '@material-ui/core/TextField'
-import { Reducers } from '@sensenet/redux'
+import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -35,33 +35,45 @@ const styles = {
 }
 
 import { CircularProgress } from '@material-ui/core'
+import { IOauthProvider } from '@sensenet/authentication-jwt'
 import { LoginState } from '@sensenet/client-core'
 import { rootStateType } from '..'
 import { resources } from '../assets/resources'
 
+const mapStateToProps = (state: rootStateType) => {
+  return {
+    loginState: state.sensenet.session.loginState,
+    loginError: Reducers.getAuthenticationError(state.sensenet),
+    isRegistered: DMSReducers.registrationIsDone,
+  }
+}
+
+const mapDispatchToProps = {
+  login: Actions.userLogin,
+}
+
 interface LoginProps {
-  login,
-  params,
-  loginError,
-  clear,
-  isRegistered,
+  loginError: boolean,
+  clear: () => any,
+  isRegistered: boolean,
   loginState: LoginState,
+  oauthProvider: IOauthProvider
 }
 
 interface LoginComponentState {
-  email,
-  password,
-  emailError,
-  passwordError,
-  emailErrorMessage,
-  passwordErrorMessage,
-  formIsValid,
-  isButtonDisabled
+  email: string,
+  password: string,
+  emailError: boolean,
+  passwordError: boolean,
+  emailErrorMessage: string,
+  passwordErrorMessage: string,
+  formIsValid: boolean,
+  isButtonDisabled: boolean
 }
 
-class Login extends React.Component<LoginProps, LoginComponentState> {
+class Login extends React.Component<LoginProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, LoginComponentState> {
 
-  constructor(props) {
+  constructor(props: Login['props']) {
     super(props)
     this.state = {
       email: '',
@@ -82,7 +94,7 @@ class Login extends React.Component<LoginProps, LoginComponentState> {
     this.buttonIsDisabled = this.buttonIsDisabled.bind(this)
   }
 
-  public handleEmailBlur(e) {
+  public handleEmailBlur(e: React.FocusEvent<HTMLInputElement>) {
     if (this.validateEmail(e.target.value)) {
       this.setState({
         email: e.target.value,
@@ -97,7 +109,7 @@ class Login extends React.Component<LoginProps, LoginComponentState> {
     }
   }
 
-  public handlePasswordBlur(e) {
+  public handlePasswordBlur(e: React.FocusEvent<HTMLInputElement>) {
     if (e.target.value.length > 0) {
       this.setState({
         password: e.target.value,
@@ -112,24 +124,24 @@ class Login extends React.Component<LoginProps, LoginComponentState> {
     }
   }
 
-  public handleEmailChange(e) {
+  public handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       email: e.target.value,
     })
   }
 
-  public handlePasswordChange(e) {
+  public handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       password: e.target.value,
     })
   }
 
-  public validateEmail(text) {
+  public validateEmail(text: string) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     return re.test(text)
   }
 
-  public valid(e) {
+  public valid(e: React.SyntheticEvent) {
     let valid = true
     if (this.state.email === '' || !this.validateEmail(this.state.email)) {
       valid = false
@@ -148,7 +160,7 @@ class Login extends React.Component<LoginProps, LoginComponentState> {
     return valid
   }
 
-  public formSubmit(e) {
+  public formSubmit(e: React.FormEvent<HTMLFormElement>) {
     if (this.valid(e)) {
       this.props.login(this.state.email, this.state.password)
       this.setState({
@@ -234,19 +246,11 @@ class Login extends React.Component<LoginProps, LoginComponentState> {
             </FormControl>
             <Button type="submit" variant="contained" color="primary" style={styles.button} disabled={this.props.loginError === null && this.state.isButtonDisabled}>{resources.LOGIN_BUTTON_TEXT}</Button>
           </form>
-          <OauthRow oAuthProvider={this.props.params.oAuthProvider} />
+          <OauthRow oAuthProvider={this.props.oauthProvider} />
         </div>
       </div>
     )
   }
 }
 
-const mapStateToProps = (state: rootStateType, match) => {
-  return {
-    loginState: state.sensenet.session.loginState,
-    loginError: Reducers.getAuthenticationError(state.sensenet),
-    isRegistered: DMSReducers.registrationIsDone,
-  }
-}
-
-export default connect(mapStateToProps, {})(Login)
+export default connect(mapStateToProps, mapDispatchToProps)(Login)
