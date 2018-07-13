@@ -2,7 +2,7 @@ import { LoginState } from '@sensenet/client-core'
 import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { HashRouter, Redirect, Route, Switch } from 'react-router-dom'
+import { HashRouter, Redirect, Route, RouteComponentProps, Switch } from 'react-router-dom'
 import 'typeface-roboto'
 import * as DMSActions from './Actions'
 import Dashboard from './pages/Dashboard'
@@ -16,33 +16,36 @@ import { rootStateType } from '.'
 import theme from './assets/theme'
 import { AuthorizedRoute } from './components/AuthorizedRoute'
 
-interface SensenetProps {
-  repository,
-  history,
-  loginState,
-  loggedinUser,
-  loginError: string,
-  registrationError: string,
-  login,
-  registration,
-  recaptchaCallback,
-  clearRegistration,
+const mapStateToProps = (state: rootStateType) => {
+  return {
+    loginState: state.sensenet.session.loginState,
+    loginError: state.sensenet.session.error,
+    registrationError: '',
+  }
+}
+
+const userLogin = Actions.userLogin
+const userRegistration = DMSActions.userRegistration
+const verifyCaptcha = DMSActions.verifyCaptchaSuccess
+const clearReg = DMSActions.clearRegistration
+
+const mapDispatchToProps = {
+  login: userLogin,
+  registration: userRegistration,
+  recaptchaCallback: verifyCaptcha,
+  clearRegistration: clearReg,
+}
+
+export interface SensenetProps extends RouteComponentProps<any> {
   oAuthProvider: IOauthProvider
 }
 
-class Sensenet extends React.Component<SensenetProps, { isAuthenticated: boolean, params, loginError, registrationError }> {
+class Sensenet extends React.Component<SensenetProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps> {
   public name: string = ''
   public password: string = ''
 
-  constructor(props, context) {
-    super(props, context)
-
-    this.state = {
-      params: this.props,
-      isAuthenticated: false,
-      loginError: this.props.loginError || '',
-      registrationError: this.props.loginError || '',
-    }
+  constructor(props: Sensenet['props']) {
+    super(props)
   }
   public render() {
     return (
@@ -51,7 +54,7 @@ class Sensenet extends React.Component<SensenetProps, { isAuthenticated: boolean
           <HashRouter>
             <Switch>
               <AuthorizedRoute exact path="/login" authorize={() => this.props.loginState !== LoginState.Authenticated} redirectOnUnauthorized="/">
-                <Login login={this.props.login} params={{ error: this.props.loginError, oAuthProvider: this.props.oAuthProvider }} clear={this.props.clearRegistration} />
+                <Login oauthProvider={this.props.oAuthProvider} clear={this.props.clearRegistration} />
               </AuthorizedRoute>
               <AuthorizedRoute exact path="/registration" authorize={() => this.props.loginState !== LoginState.Authenticated} redirectOnUnauthorized="/">
                 <Registration oAuthProvider={this.props.oAuthProvider} registration={this.props.registration} history={history} verify={this.props.recaptchaCallback} />
@@ -106,24 +109,4 @@ class Sensenet extends React.Component<SensenetProps, { isAuthenticated: boolean
   }
 }
 
-const mapStateToProps = (state: rootStateType, match) => {
-  return {
-    loginState: state.sensenet.session.loginState,
-    loginError: state.sensenet.session.error,
-    registrationError: '',
-  }
-}
-
-const userLogin = Actions.userLogin
-const userRegistration = DMSActions.userRegistration
-const verifyCaptcha = DMSActions.verifyCaptchaSuccess
-const clearReg = DMSActions.clearRegistration
-
-export default connect(
-  mapStateToProps,
-  {
-    login: userLogin,
-    registration: userRegistration,
-    recaptchaCallback: verifyCaptcha,
-    clearRegistration: clearReg,
-  })(Sensenet)
+export default connect(mapStateToProps, mapDispatchToProps)(Sensenet)
