@@ -36,11 +36,6 @@
     "@sensenet/document-viewer-react": "^1.0.0-development.5",
     "@sensenet/redux": "^4.1.2",
     "@sensenet/repository-events": "^1.0.0",
-    "@types/jest": "^23.1.4",
-    "@types/lodash": "^4.14.110",
-    "@types/node": "^10.5.2",
-    "@types/react": "^16.4.6",
-    "@types/uuid": "^3.4.3",
     "autoprefixer": "^8.6.5",
     "case-sensitive-paths-webpack-plugin": "2.1.2",
     "chalk": "2.4.1",
@@ -90,10 +85,17 @@
   },
   "devDependencies": {
     "@types/enzyme": "^3.1.11",
+    "@types/jest": "^23.1.4",
+    "@types/lodash": "^4.14.110",
+    "@types/node": "^10.5.2",
+    "@types/react": "^16.4.6",
+    "@types/react-dom": "^16.0.6",
     "@types/react-fontawesome": "^1.6.3",
     "@types/react-redux": "^6.0.4",
+    "@types/react-responsive": "^3.0.1",
     "@types/react-router-dom": "^4.2.7",
     "@types/redux-mock-store": "^1.0.0",
+    "@types/uuid": "^3.4.3",
     "codecov": "^3.0.4",
     "enzyme": "^3.1.0",
     "enzyme-adapter-react-16": "^1.0.1",
@@ -137,7 +139,8 @@
       "json"
     ],
     "testMatch": [
-      "<rootDir>/src/__tests__/**/*.ts?(x)"
+      "<rootDir>/src/__tests__/**/*.ts?(x)",
+      "<rootDir>/src/**/*.test.ts?(x)"
     ],
     "testEnvironment": "node",
     "testURL": "http://localhost",
