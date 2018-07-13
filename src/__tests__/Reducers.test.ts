@@ -19,7 +19,7 @@ describe('email reducer', () => {
 
 describe('registrationError reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.registrationError(undefined, {type: ''})).toEqual(null)
+        expect(DMSReducers.registrationError(undefined, { type: '' })).toEqual(null)
     })
     it('should return an error message', () => {
         expect(DMSReducers.registrationError(undefined, { type: 'USER_REGISTRATION_FAILURE' })).toEqual(resources.USER_IS_ALREADY_REGISTERED)
@@ -28,7 +28,7 @@ describe('registrationError reducer', () => {
 
 describe('isRegistering reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.isRegistering(undefined, {type: ''})).toEqual(false)
+        expect(DMSReducers.isRegistering(undefined, { type: '' })).toEqual(false)
     })
     it('should return true after a registration request', () => {
         expect(DMSReducers.isRegistering(undefined, { type: 'USER_REGISTRATION_REQUEST', email: 'alba@sensenet.com' })).toEqual(true)
@@ -43,7 +43,7 @@ describe('isRegistering reducer', () => {
 
 describe('registrationDone reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.registrationDone(undefined, {type: ''})).toEqual(false)
+        expect(DMSReducers.registrationDone(undefined, { type: '' })).toEqual(false)
     })
     it('should return true after registration success', () => {
         expect(DMSReducers.registrationDone(undefined, { type: 'USER_REGISTRATION_SUCCESS' })).toEqual(true)
@@ -61,7 +61,7 @@ describe('registrationDone reducer', () => {
 
 describe('captcha reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.captcha(undefined, {type: ''})).toEqual(false)
+        expect(DMSReducers.captcha(undefined, { type: '' })).toEqual(false)
     })
     it('should return true after verifying captcha', () => {
         expect(DMSReducers.captcha(undefined, { type: 'VERIFY_CAPTCHA_SUCCESS' })).toEqual(true)
@@ -354,11 +354,12 @@ describe('getRootId', () => {
 })
 
 describe('getBreadCrumbArray', () => {
+    const breadcrumbs: DMSReducers.BreadcrumbItemType[] = [{ id: 1, name: 'aaa', path: '' }, { id: 2, name: 'bbb', path: '' }]
     const state = {
-        breadcrumb: ['aaa', 'bbb'],
+        breadcrumb: [...breadcrumbs],
     }
     it('should return the breadcrumb items', () => {
-        expect(DMSReducers.getBreadCrumbArray(state)).toEqual(['aaa', 'bbb'])
+        expect(DMSReducers.getBreadCrumbArray(state)).toEqual(breadcrumbs)
     })
 })
 

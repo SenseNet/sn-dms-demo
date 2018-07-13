@@ -30,7 +30,7 @@ export const verifyCaptchaSuccess = () => ({
 export const clearRegistration = () => ({
     type: 'CLEAR_USER_REGISTRATION',
 })
-export const setCurrentId = (id: number) => ({
+export const setCurrentId = (id: number | string) => ({
     type: 'SET_CURRENT_ID',
     id,
 })
@@ -59,7 +59,7 @@ export const setEditedFirst = (edited: boolean) => ({
     type: 'SET_EDITED_FIRST',
     edited,
 })
-export const openMessageBar = (mode: MessageMode, content: IContent, vertical?: verticalValues, horizontal?: horizontalValues) => ({
+export const openMessageBar = (mode: MessageMode, content: any, vertical?: verticalValues, horizontal?: horizontalValues) => ({
     type: 'OPEN_MESSAGE_BAR',
     mode,
     content,

@@ -7,10 +7,10 @@ import { resources } from './assets/resources'
 
 enum MessageMode { error, warning, info }
 
-export const email: Reducer<string, Action & { email: string }> = (state = '', action) => {
+export const email: Reducer<string, Action & { email?: string }> = (state = '', action) => {
     switch (action.type) {
         case 'USER_REGISTRATION_REQUEST':
-            return action.email
+            return action.email || state
         case 'USER_REGISTRATION_SUCCESS':
         case 'USER_REGISTRATION_FAILURE':
             return state
@@ -110,7 +110,7 @@ export const title: Reducer<string, Action & { title?: string }> = (state = '', 
     }
 }
 
-export const anchorElement: Reducer<HTMLElement | null, Action & { element?: HTMLElement }> = (state = null, action) => {
+export const anchorElement: Reducer<HTMLElement | null, Action & { element?: HTMLElement | null }> = (state = null, action) => {
     switch (action.type) {
         case 'OPEN_ACTIONMENU':
             return action.element || state
@@ -430,29 +430,29 @@ export const dms = combineReducers({
     viewer,
 })
 
-export const getRegistrationError = (state: ReturnType<typeof register>) => {
+export const getRegistrationError = (state: { registrationError: ReturnType<typeof register>['registrationError'] }) => {
     return state.registrationError
 }
-export const registrationInProgress = (state: ReturnType<typeof register>) => {
+export const registrationInProgress = (state: { isRegistering: ReturnType<typeof register>['isRegistering'] }) => {
     return state.isRegistering
 }
 
-export const registrationIsDone = (state: ReturnType<typeof register>) => {
+export const registrationIsDone = (state: { registrationDone: ReturnType<typeof register>['registrationDone'] }) => {
     return state.registrationDone
 }
 
-export const getRegisteredEmail = (state: ReturnType<typeof register>) => {
+export const getRegisteredEmail = (state: { email: ReturnType<typeof register>['email'] }) => {
     return state.email
 }
 
-export const captchaIsVerified = (state: ReturnType<typeof register>) => {
+export const captchaIsVerified = (state: { captcha: ReturnType<typeof register>['captcha'] }) => {
     return state.captcha
 }
-export const getAuthenticatedUser = (state: rootStateType['sensenet']) => {
+export const getAuthenticatedUser = (state: { session: { user: rootStateType['sensenet']['session']['user'] } }) => {
     return state.session.user
 }
 
-export const getChildrenItems = (state: rootStateType['sensenet']) => {
+export const getChildrenItems = (state: { children: { entities: rootStateType['sensenet']['children']['entities'] } }) => {
     return state.children.entities
 }
 
@@ -460,28 +460,28 @@ export const getCurrentContentPath = (state: { Path: string }) => {
     return state.Path
 }
 
-export const actionmenuIsOpen = (state: ReturnType<typeof actionmenu>) => {
+export const actionmenuIsOpen = (state: { open: ReturnType<typeof actionmenu>['open'] }) => {
     return state.open
 }
 
-export const getAnchorElement = (state: ReturnType<typeof actionmenu>) => {
+export const getAnchorElement = (state: { anchorElement: ReturnType<typeof actionmenu>['anchorElement'] }) => {
     return state.anchorElement
 }
 
-export const getMenuPosition = (state: ReturnType<typeof actionmenu>) => {
+export const getMenuPosition = (state: { position: ReturnType<typeof actionmenu>['position'] }) => {
     return state.position
 }
 
-export const getParentId = (state: rootStateType['sensenet']) => {
+export const getParentId = (state: { currentcontent: { content: { ParentId: rootStateType['sensenet']['currentcontent']['content']['ParentId'] } } }) => {
     return state.currentcontent.content.ParentId
 }
-export const getRootId = (state: rootStateType['dms']) => {
+export const getRootId = (state: { rootId: rootStateType['dms']['rootId'] }) => {
     return state.rootId
 }
-export const getBreadCrumbArray = (state: rootStateType['dms']) => {
+export const getBreadCrumbArray = (state: { breadcrumb: rootStateType['dms']['breadcrumb'] }) => {
     return state.breadcrumb
 }
-export const getCurrentId = (state: rootStateType['dms']) => {
+export const getCurrentId = (state: { currentId: rootStateType['dms']['currentId'] }) => {
     return state.currentId
 }
 export const getActionsOfAContent = (state: { actions: string[] }) => {
@@ -490,19 +490,19 @@ export const getActionsOfAContent = (state: { actions: string[] }) => {
 export const getActions = (state: { actions: string[] }) => {
     return state.actions
 }
-export const getEditedItemId = (state: ReturnType<typeof dms>) => {
+export const getEditedItemId = (state: { editedItemId: ReturnType<typeof dms>['editedItemId'] }) => {
     return state.editedItemId
 }
-export const getItemOnActionMenuIsOpen = (state: ReturnType<typeof actionmenu>) => {
+export const getItemOnActionMenuIsOpen = (state: { id: ReturnType<typeof actionmenu>['id'] }) => {
     return state.id
 }
-export const getLoading = (state: ReturnType<typeof dms>) => {
+export const getLoading = (state: { isLoading: ReturnType<typeof dms>['isLoading'] }) => {
     return state.isLoading
 }
-export const getItemTitleOnActionMenuIsOpen = (state: ReturnType<typeof actionmenu>) => {
+export const getItemTitleOnActionMenuIsOpen = (state: { title: ReturnType<typeof actionmenu>['title'] }) => {
     return state.title
 }
-export const getIsSelectionModeOn = (state: ReturnType<typeof dms>) => {
+export const getIsSelectionModeOn = (state: { isSelectionModeOn: ReturnType<typeof dms>['isSelectionModeOn'] }) => {
     return state.isSelectionModeOn
 }
 export const getAddNewActions = (state: { addnew: any }) => {
