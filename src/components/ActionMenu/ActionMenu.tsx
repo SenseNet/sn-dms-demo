@@ -13,7 +13,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import { rootStateType } from '../..'
 import { icons } from '../../assets/icons'
 
-const mapStateToProps = (state: rootStateType, match) => {
+const mapStateToProps = (state: rootStateType) => {
     return {
         actions: DMSReducers.getActions(state.dms.actionmenu),
         contentId: state.dms.actionmenu.id,
@@ -67,17 +67,17 @@ const styles = {
 }
 
 interface ActionMenuProps {
-    id,
+    id: number,
 }
 
 interface ActionMenuState {
-    hovered,
-    selectedIndex,
-    anchorEl
+    hovered: string,
+    selectedIndex: number,
+    anchorEl: HTMLElement | null
 }
 
 class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, ActionMenuState> {
-    constructor(props) {
+    constructor(props: ActionMenu['props']) {
         super(props)
         this.state = {
             hovered: '',
@@ -88,17 +88,17 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
         this.handleMouseLeave = this.handleMouseLeave.bind(this)
         this.handleMenuItemClick = this.handleMenuItemClick.bind(this)
     }
-    public componentWillReceiveProps(nextProps) {
+    public componentWillReceiveProps(nextProps: this['props']) {
         if (nextProps.open === false) {
             this.setState({
                 anchorEl: null,
             })
         }
     }
-    public isHovered(id) {
+    public isHovered(id: string) {
         return this.state.hovered === id
     }
-    public handleMouseEnter(e, name) {
+    public handleMouseEnter(e: React.MouseEvent, name: string) {
         this.setState({
             hovered: name,
         })
@@ -112,7 +112,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
         this.props.closeActionMenu()
         this.setState({ anchorEl: null })
     }
-    public handleMenuItemClick(e, action) {
+    public handleMenuItemClick(e: React.MouseEvent, action: string) {
         switch (action) {
             case 'Rename':
                 this.handleClose()
@@ -129,8 +129,10 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                 break
             case 'Preview':
                 this.handleClose()
-                this.props.openViewer(this.props.contentId)
-                this.props.pollDocumentData(this.props.hostName, this.props.contentId)
+                if (this.props.contentId) {
+                    this.props.openViewer(this.props.contentId)
+                    this.props.pollDocumentData(this.props.hostName, this.props.contentId)
+                }
             case 'Logout':
                 this.handleClose()
                 this.props.logout()
@@ -168,8 +170,8 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                         <ListItemIcon style={styles.actionIcon}>
                             <Icon color="primary">{
                                 action.Icon === 'Application' ?
-                                    icons[action.Name.toLowerCase()] :
-                                    icons[action.Icon.toLowerCase()]
+                                    icons[action.Name.toLowerCase() as keyof typeof icons] :
+                                    icons[action.Icon.toLowerCase() as keyof typeof icons]
                             }
                                 {
                                     action.Name === 'MoveTo' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.3em', width: '0.5em', color: 'white' }} /> : null
@@ -187,4 +189,4 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps )(ActionMenu)
+export default connect(mapStateToProps, mapDispatchToProps)(ActionMenu)
