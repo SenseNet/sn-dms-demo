@@ -1,3 +1,4 @@
+import { Table, TableBody } from '@material-ui/core'
 import { Repository } from '@sensenet/client-core'
 import { Reducers, Store } from '@sensenet/redux'
 import * as React from 'react'
@@ -38,7 +39,11 @@ it('renders without crashing', () => {
   ReactDOM.render(
     <MemoryRouter>
       <Provider store={store}>
-        <ParentFolderTableRow />
+        <Table>
+          <TableBody>
+            <ParentFolderTableRow />
+          </TableBody>
+        </Table>
       </Provider>
     </MemoryRouter>, div)
 })

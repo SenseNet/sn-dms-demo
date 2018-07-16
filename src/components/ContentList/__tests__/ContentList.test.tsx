@@ -1,5 +1,5 @@
 import { Repository } from '@sensenet/client-core'
-import { Task} from '@sensenet/default-content-types'
+import { Task } from '@sensenet/default-content-types'
 import { Actions, Reducers, Store } from '@sensenet/redux'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
@@ -16,17 +16,18 @@ import * as sinon from 'sinon'
 
 import * as Enzyme from 'enzyme'
 import * as Adapter from 'enzyme-adapter-react-16'
+import { rootStateType } from '../../..'
 
 Enzyme.configure({ adapter: new Adapter() })
 
 const sensenet = Reducers.sensenet
 const actionmenu = DMSReducers.actions
-const myReducer = combineReducers({ sensenet, actionmenu })
+const myReducer = combineReducers({ sensenet, actionmenu }) as any
 
 const repository = new Repository({
     repositoryUrl: process.env.REACT_APP_SERVICE_URL || 'https://dmsservice.demo.sensenet.com',
     requiredSelect: ['Id', 'Path', 'Name', 'Type', 'ParentId'] as any,
-  })
+})
 
 const options = {
     repository,
@@ -36,8 +37,8 @@ const options = {
             session: {
                 repository: {
                     RepositoryUrl
-                    :
-                    'https://dmsservice.demo.sensenet.com',
+                        :
+                        'https://dmsservice.demo.sensenet.com',
                 },
             },
             children: {
@@ -58,11 +59,14 @@ const options = {
                 ids: [4466, 4467, 123],
             },
         },
-        actionmenu: {
-            actions: [],
+        dms: {
+            actionmenu: {
+                actions: [],
+            },
+            rootId: 123,
         },
     },
-  } as Store.CreateStoreOptions<any>
+} as Store.CreateStoreOptions<rootStateType>
 const store = Store.createSensenetStore(options)
 
 const content = { DisplayName: 'My content', Id: 123, Path: '/workspaces' } as Task
