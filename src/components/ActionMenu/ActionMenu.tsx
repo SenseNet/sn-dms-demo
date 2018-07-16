@@ -111,31 +111,35 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
         this.setState({ anchorEl: null })
     }
     public handleMenuItemClick(e, action) {
-        switch (action) {
-            case 'Rename':
-                this.handleClose()
-                this.props.setEdited(this.props.id)
-                break
-            case 'ClearSelection':
-                this.handleClose()
-                this.props.clearSelection()
-                break
-            case 'DeleteBatch':
-                this.handleClose()
-                this.props.clearSelection()
-                this.props.deleteBatch(this.props.selected, false)
-                break
-            case 'Preview':
-                this.handleClose()
-                this.props.openViewer(this.props.contentId)
-                this.props.pollDocumentData(this.props.hostName, this.props.contentId)
-            case 'Logout':
-                this.handleClose()
-                this.props.logout()
-            default:
-                console.log(`${action} is clicked`)
-                this.handleClose()
-                break
+        if (action.Action) {
+            action.Action()
+        } else {
+            switch (action.Name) {
+                case 'Rename':
+                    this.handleClose()
+                    this.props.setEdited(this.props.id)
+                    break
+                case 'ClearSelection':
+                    this.handleClose()
+                    this.props.clearSelection()
+                    break
+                case 'DeleteBatch':
+                    this.handleClose()
+                    this.props.clearSelection()
+                    this.props.deleteBatch(this.props.selected, false)
+                    break
+                case 'Preview':
+                    this.handleClose()
+                    this.props.openViewer(this.props.contentId)
+                    this.props.pollDocumentData(this.props.hostName, this.props.contentId)
+                case 'Logout':
+                    this.handleClose()
+                    this.props.logout()
+                default:
+                    console.log(`${action} is clicked`)
+                    this.handleClose()
+                    break
+            }
         }
     }
     public render() {
@@ -150,8 +154,8 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
             {
                 actions.map((action, index) => {
                     return <MenuItem
-                        key={action.Name}
-                        onClick={(event) => this.handleMenuItemClick(event, action.Name)}
+                        key={index}
+                        onClick={(event) => this.handleMenuItemClick(event, action)}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.color = '#016d9e'
                             e.currentTarget.style.fontWeight = 'bold'

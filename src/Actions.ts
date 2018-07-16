@@ -111,7 +111,7 @@ function methodToDebounce(parentId: number, getState, dispatch) {
 }
 const debounceReloadOnProgress = debounce(methodToDebounce, 2000)
 
-export const trackUploadProgress = async <T extends GenericContent>(currentValue: ExtendedUploadProgressInfo, getState, dispatch, api: Repository) => {
+export const trackUploadProgress = async <T extends GenericContent> (currentValue: ExtendedUploadProgressInfo, getState, dispatch, api: Repository) => {
 
     let currentUpload: ExtendedUploadProgressInfo = getState().dms.uploads.uploads.find((u) => u.guid === currentValue.guid)
     if (currentUpload) {
@@ -227,4 +227,15 @@ export const loadTypesToAddNewList = (idOrPath: number | string) => ({
         const data: any = await repository.getActions({ idOrPath, scenario: 'New' })
         return data
     },
+})
+
+export const openDialog = (content: any = '', title?: string, onClose?: () => void) => ({
+    type: 'OPEN_DIALOG',
+    title: title || '',
+    content,
+    onClose: onClose || null,
+})
+
+export const closeDialog = () => ({
+    type: 'CLOSE_DIALOG',
 })

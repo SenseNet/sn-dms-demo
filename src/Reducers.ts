@@ -1,3 +1,4 @@
+import { ReactElement } from 'react'
 import { AnyAction, combineReducers } from 'redux'
 import { ExtendedUploadProgressInfo } from './Actions'
 import { resources } from './assets/resources'
@@ -413,6 +414,53 @@ export const viewer = (state: { isOpened: boolean, currentDocumentId: number } =
     return state
 }
 
+export const isOpened = (state: boolean = false, action: AnyAction) => {
+    switch (action.type) {
+        case 'OPEN_DIALOG':
+            return true
+        case 'CLOSE_DIALOG':
+            return false
+    }
+    return state
+}
+
+export const onClose = (state: () => void = null, action: AnyAction) => {
+    switch (action.type) {
+        case 'OPEN_DIALOG':
+            return action.onClose
+        case 'CLOSE_DIALOG':
+            return null
+    }
+    return state
+}
+
+export const dialogContent = (state: any = '', action: AnyAction) => {
+    switch (action.type) {
+        case 'OPEN_DIALOG':
+            return action.content
+        case 'CLOSE_DIALOG':
+            return {}
+    }
+    return state
+}
+
+export const dialogTitle = (state: string = '', action: AnyAction) => {
+    switch (action.type) {
+        case 'OPEN_DIALOG':
+            return action.title
+        case 'CLOSE_DIALOG':
+            return {}
+    }
+    return state
+}
+
+export const dialog = combineReducers({
+    isOpened,
+    onClose,
+    content: dialogContent,
+    title: dialogTitle,
+})
+
 export const dms = combineReducers({
     messagebar,
     actionmenu,
@@ -428,6 +476,7 @@ export const dms = combineReducers({
     uploads,
     menu,
     viewer,
+    dialog,
 })
 
 export const getRegistrationError = (state) => {

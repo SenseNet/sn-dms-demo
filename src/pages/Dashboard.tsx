@@ -1,4 +1,5 @@
 
+import { Dialog, DialogContent, DialogTitle } from '@material-ui/core'
 import { Actions, Reducers, Store } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -44,6 +45,9 @@ interface DashboardProps {
     currentId,
     selectionModeIsOn: boolean,
     isViewerOpened: boolean,
+    isDialogOpen: boolean,
+    dialogOnClose: () => void,
+    dialogContent
 }
 
 class Dashboard extends React.Component<DashboardProps, {}> {
@@ -87,6 +91,7 @@ class Dashboard extends React.Component<DashboardProps, {}> {
     }
     public render() {
         const { id } = this.props.match.params
+        const { isDialogOpen, dialogContent, dialogOnClose } = this.props
         const filter = { filter: this.props.isViewerOpened ? 'blur(3px)' : '' }
         return (
             <MediaQuery minDeviceWidth={700}>
@@ -103,6 +108,9 @@ class Dashboard extends React.Component<DashboardProps, {}> {
                                 </div>
                             </div>
                             <DmsViewer />
+                            <Dialog open={isDialogOpen} onClose={dialogOnClose}>
+                                <DialogContent children={dialogContent}  />
+                            </Dialog>
                         </div>
                     } else {
                         return <div style={styles.root}>
@@ -112,6 +120,7 @@ class Dashboard extends React.Component<DashboardProps, {}> {
                             </div>
                         </div>
                     }
+
                 }}
             </MediaQuery>
         )
@@ -125,6 +134,10 @@ const mapStateToProps = (state: rootStateType, match) => {
         currentId: DMSReducers.getCurrentId(state.dms),
         selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
         isViewerOpened: state.dms.viewer.isOpened,
+        isDialogOpen: state.dms.dialog.isOpened,
+        dialogOnClose: state.dms.dialog.onClose,
+        dialogContent: state.dms.dialog.content,
+        dialogTitle: state.dms.dialog.title,
     }
 }
 
