@@ -4,7 +4,6 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { combineReducers } from 'redux'
-import 'rxjs'
 import UserActionMenu from '../UserActionMenu'
 
 it('renders without crashing', () => {

@@ -6,7 +6,6 @@ import {
   MemoryRouter,
 } from 'react-router-dom'
 import { combineReducers } from 'redux'
-import 'rxjs'
 import Login from '../Login'
 
 it('renders without crashing', () => {

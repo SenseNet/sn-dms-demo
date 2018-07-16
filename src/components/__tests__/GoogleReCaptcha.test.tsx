@@ -3,7 +3,6 @@ import { Reducers, Store } from '@sensenet/redux'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { combineReducers } from 'redux'
-import 'rxjs'
 import * as DMSReducers from '../../Reducers'
 import GoogleReCaptcha from '../GoogleReCaptcha'
 

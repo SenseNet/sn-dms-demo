@@ -7,7 +7,6 @@ import {
   MemoryRouter,
 } from 'react-router-dom'
 import { combineReducers } from 'redux'
-import 'rxjs'
 import * as DMSReducers from '../../Reducers'
 import Dashboard from '../Dashboard'
 
