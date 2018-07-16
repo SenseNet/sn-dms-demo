@@ -2,6 +2,7 @@ import { Repository } from '@sensenet/client-core'
 import { Reducers, Store } from '@sensenet/redux'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
 import {
   MemoryRouter,
 } from 'react-router-dom'
@@ -26,8 +27,8 @@ it('renders without crashing', () => {
         session: {
           repository: {
             RepositoryUrl
-            :
-            'https://dmsservice.demo.sensenet.com',
+              :
+              'https://dmsservice.demo.sensenet.com',
           },
         },
       },
@@ -36,6 +37,8 @@ it('renders without crashing', () => {
   const store = Store.createSensenetStore(options)
   ReactDOM.render(
     <MemoryRouter>
-      <ParentFolderTableRow />
+      <Provider store={store}>
+        <ParentFolderTableRow />
+      </Provider>
     </MemoryRouter>, div)
 })
