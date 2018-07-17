@@ -1,5 +1,3 @@
-import Checkbox from '@material-ui/core/Checkbox'
-import TableHead from '@material-ui/core/TableHead'
 import { shallow } from 'enzyme'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
@@ -12,12 +10,12 @@ Enzyme.configure({ adapter: new Adapter() })
 
 describe('<ListHead />', () => {
   it('renders without crashing', () => {
-    const div = document.createElement('div')
+    const table = document.createElement('table')
     ReactDOM.render(<ListHead numSelected={1} onRequestSort={() => {
       //
     }} onSelectAllClick={() => {
       //
-    }} order="asc" orderBy="" count={1} />, div)
+    }} order="asc" orderBy="" count={1} />, table)
   })
 
   it('renders a <TableHead /> component', () => {
@@ -26,15 +24,15 @@ describe('<ListHead />', () => {
     }} onSelectAllClick={() => {
       //
     }} order="asc" orderBy="" count={1} />)
-    expect(wrapper.find(TableHead)).toHaveLength(1)
+    expect(wrapper.find('TableHead')).toBeTruthy()
   })
 
   it('renders a <Checkbox /> component', () => {
-    const wrapper = shallow(<ListHead numSelected={1} onRequestSort={() => {
+    const wrapper2 = shallow(<ListHead numSelected={1} onRequestSort={() => {
       //
     }} onSelectAllClick={() => {
       //
     }} order="asc" orderBy="" count={1} />)
-    expect(wrapper.find(Checkbox)).toHaveLength(1)
+    expect(wrapper2.find('Checkbox')).toBeTruthy()
   })
 })
