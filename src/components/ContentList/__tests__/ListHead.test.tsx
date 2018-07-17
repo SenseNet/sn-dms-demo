@@ -17,7 +17,7 @@ describe('<ListHead />', () => {
       //
     }} onSelectAllClick={() => {
       //
-    }} order="" orderBy="" count={1} />, div)
+    }} order="asc" orderBy="" count={1} />, div)
   })
 
   it('renders a <TableHead /> component', () => {
@@ -25,7 +25,7 @@ describe('<ListHead />', () => {
       //
     }} onSelectAllClick={() => {
       //
-    }} order="" orderBy="" count={1} />)
+    }} order="asc" orderBy="" count={1} />)
     expect(wrapper.find(TableHead)).toHaveLength(1)
   })
 
@@ -34,7 +34,7 @@ describe('<ListHead />', () => {
       //
     }} onSelectAllClick={() => {
       //
-    }} order="" orderBy="" count={1} />)
+    }} order="asc" orderBy="" count={1} />)
     expect(wrapper.find(Checkbox)).toHaveLength(1)
   })
 })

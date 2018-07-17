@@ -17,7 +17,6 @@ export class AuthorizedRouteComponent extends React.Component<AuthorizedRoutePro
 
     private checkIsAuthorized(props = this.props) {
         if (!props.authorize()) {
-            console.log('Redirect to', props.redirectOnUnauthorized)
             props.history.push(props.redirectOnUnauthorized)
         }
     }
