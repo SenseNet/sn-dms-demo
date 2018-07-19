@@ -3,11 +3,12 @@ import { ObservableValue, usingAsync } from '@sensenet/client-utils'
 import { File as SnFile, GenericContent } from '@sensenet/default-content-types'
 import { IActionModel } from '@sensenet/default-content-types/dist/IActionModel'
 import { Actions } from '@sensenet/redux'
-import { Dispatch } from 'redux'
+import { Action, Dispatch } from 'redux'
 import { horizontalValues, verticalValues } from './Reducers'
 
 import { debounce } from 'lodash'
 import { rootStateType } from '.'
+import { InjectableAction } from '../node_modules/redux-di-middleware'
 
 enum MessageMode { error = 'error', warning = 'warning', info = 'info' }
 
@@ -137,44 +138,52 @@ export const trackUploadProgress = async <T extends GenericContent>(currentValue
     }
 }
 
-export const uploadFileList = <T extends SnFile>(options: Pick<IUploadFromFileListOptions<T>, Exclude<keyof IUploadFromFileListOptions<T>, 'repository'>>) =>
-    async (dispatch: Dispatch, getState: () => rootStateType, api: Repository) => {
+export const uploadFileList: <T extends SnFile>(uploadOptions: Pick<IUploadFromFileListOptions<T>, Exclude<keyof IUploadFromFileListOptions<T>, 'repository'>>) => InjectableAction<rootStateType, Action> =
+    <T extends SnFile>(uploadOptions: Pick<IUploadFromFileListOptions<T>, Exclude<keyof IUploadFromFileListOptions<T>, 'repository'>>) => ({
+        type: 'DMS_UPLOAD_FILE_LIST_INJECTABLE_ACTION',
+        inject: async (options) => {
+            const api = options.getInjectable(Repository)
+            await usingAsync(new ObservableValue<IUploadProgressInfo>(), async (progress) => {
+                progress.subscribe(async (currentValue) => trackUploadProgress(currentValue, options.getState, options.dispatch, api))
+                try {
+                    await Upload.fromFileList({
+                        ...uploadOptions,
+                        repository: api,
+                        progressObservable: progress,
+                    })
+                } catch (error) {
+                    progress.setValue({
+                        ...progress.getValue(),
+                        error,
+                    })
+                }
+            })
+        },
+    })
 
-        await usingAsync(new ObservableValue<IUploadProgressInfo>(), async (progress) => {
-            progress.subscribe(async (currentValue) => trackUploadProgress(currentValue, getState, dispatch, api))
-            try {
-                await Upload.fromFileList({
-                    ...options,
-                    repository: api,
-                    progressObservable: progress,
-                })
-            } catch (error) {
-                progress.setValue({
-                    ...progress.getValue(),
-                    error,
-                })
-            }
-        })
-    }
+export const uploadDataTransfer: <T extends SnFile>(options: Pick<IUploadFromEventOptions<T>, Exclude<keyof IUploadFromEventOptions<T>, 'repository'>>) => InjectableAction<rootStateType, Action>
+    = <T extends SnFile>(uploadOptions: Pick<IUploadFromEventOptions<T>, Exclude<keyof IUploadFromEventOptions<T>, 'repository'>>) => ({
+        type: 'DMS_UPLOAD_DATA_TRANSFER_INJECTABLE_ACTION',
+        inject: async (options) => {
+            const api = options.getInjectable(Repository)
+            await usingAsync(new ObservableValue<IUploadProgressInfo>(), async (progress) => {
+                progress.subscribe(async (currentValue) => trackUploadProgress(currentValue, options.getState, options.dispatch, api))
+                try {
+                    await Upload.fromDropEvent({
+                        ...uploadOptions,
+                        repository: api,
+                        progressObservable: progress,
+                    })
+                } catch (error) {
+                    progress.setValue({
+                        ...progress.getValue(),
+                        error,
+                    })
+                }
+            })
+        },
+    })
 
-export const uploadDataTransfer = <T extends SnFile>(options: Pick<IUploadFromEventOptions<T>, Exclude<keyof IUploadFromEventOptions<T>, 'repository'>>) =>
-    async (dispatch: Dispatch, getState: () => any, api: Repository) => {
-        await usingAsync(new ObservableValue<IUploadProgressInfo>(), async (progress) => {
-            progress.subscribe(async (currentValue) => trackUploadProgress(currentValue, getState, dispatch, api))
-            try {
-                await Upload.fromDropEvent({
-                    ...options,
-                    repository: api,
-                    progressObservable: progress,
-                })
-            } catch (error) {
-                progress.setValue({
-                    ...progress.getValue(),
-                    error,
-                })
-            }
-        })
-    }
 export const addUploadItem = <T extends IContent>(uploadItem: ExtendedUploadProgressInfo) => ({
     type: 'UPLOAD_ADD_ITEM',
     uploadItem,
