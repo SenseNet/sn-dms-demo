@@ -439,7 +439,7 @@ export const dialogContent = (state: any = '', action: AnyAction) => {
         case 'OPEN_DIALOG':
             return action.content
         case 'CLOSE_DIALOG':
-            return {}
+            return state
     }
     return state
 }

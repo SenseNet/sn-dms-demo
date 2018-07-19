@@ -1,5 +1,6 @@
 
-import { Dialog, DialogContent, DialogTitle } from '@material-ui/core'
+import { Dialog, DialogContent, DialogTitle, IconButton } from '@material-ui/core'
+import CloseIcon from '@material-ui/icons/Close'
 import { Actions, Reducers, Store } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -32,6 +33,10 @@ const styles = {
         backgroundColor: '#eee',
         padding: '0 10px 10px',
         minWidth: 0,
+    },
+    dialogClose: {
+        position: 'absolute',
+        right: 0,
     },
 }
 
@@ -109,7 +114,10 @@ class Dashboard extends React.Component<DashboardProps, {}> {
                             </div>
                             <DmsViewer />
                             <Dialog open={isDialogOpen} onClose={dialogOnClose}>
-                                <DialogContent children={dialogContent}  />
+                                <DialogContent children={dialogContent} />
+                                <IconButton onClick={dialogOnClose} style={styles.dialogClose as any}>
+                                    <CloseIcon />
+                                </IconButton>
                             </Dialog>
                         </div>
                     } else {

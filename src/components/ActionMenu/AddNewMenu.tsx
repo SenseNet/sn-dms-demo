@@ -5,7 +5,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import * as DMSActions from '../../Actions'
 import * as DMSReducers from '../../Reducers'
-import { AddNewDialog } from '../Dialogs/AddNewDialog'
+import AddNewDialog from '../Dialogs/AddNewDialog'
 import { AddNewButton } from '../Menu/AddNewButton'
 
 interface AddNemMenuProps {
@@ -16,6 +16,7 @@ interface AddNemMenuProps {
     closeActionMenu: () => void,
     openActionMenu,
     openDialog,
+    closeDialog: () => void,
     schema,
     repository,
 }
@@ -27,14 +28,19 @@ class AddNewMenu extends React.Component<AddNemMenuProps, { options }> {
         this.state = {
             options: [],
         }
+        this.handleClose = this.handleClose.bind(this)
     }
     public getContentType = (urlString) => {
         const urlTemp = urlString.split('ContentTypeName=')[1]
         return urlTemp.indexOf('&') > -1 ? urlTemp.split('&')[0] : urlTemp
     }
 
+    public handleClose = () => {
+        this.props.closeDialog()
+    }
+
     public componentWillReceiveProps(nextProps) {
-        const { actions, currentId, getActions, openDialog, closeActionMenu } = this.props
+        const { actions, currentId, getActions, openDialog, closeDialog, closeActionMenu } = this.props
         if ((nextProps.currentContent.Id && (currentId === 'login' || currentId !== nextProps.currentId)) && actions.length === 0) {
             getActions(nextProps.currentContent.Id)
         }
@@ -50,7 +56,7 @@ class AddNewMenu extends React.Component<AddNemMenuProps, { options }> {
                     openDialog(
                         <AddNewDialog parentPath={nextProps.currentContent.Path}
                         contentTypeName={contentType} />,
-                        newDisplayName, DMSActions.closeDialog)
+                        newDisplayName, this.handleClose)
                 }
                 if (action.DisplayName.indexOf('Folder') > -1) {
                     folderList.push(action)
@@ -96,4 +102,5 @@ export default connect(mapStateToProps, {
     closeActionMenu: DMSActions.closeActionMenu,
     openActionMenu: DMSActions.openActionMenu,
     openDialog: DMSActions.openDialog,
-})(AddNewMenu)
+    closeDialog: DMSActions.closeDialog,
+})(AddNewMenu as any)
