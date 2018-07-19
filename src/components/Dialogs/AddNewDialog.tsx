@@ -7,10 +7,18 @@ import { repository } from '../../index'
 interface AddNewDialogProps {
     parentPath: string,
     contentTypeName: string,
-    closeDialog: () => void,
 }
 
-class AddNewDialog extends React.Component<AddNewDialogProps, { schema }> {
+const mapStateToProps = (state) => {
+    return {
+    }
+}
+
+const mapDispatchToProps = {
+    closeDialog: DMSActions.closeDialog,
+}
+
+class AddNewDialog extends React.Component<AddNewDialogProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, {}> {
     public handleClose = () => {
         this.props.closeDialog()
     }
@@ -22,11 +30,4 @@ class AddNewDialog extends React.Component<AddNewDialogProps, { schema }> {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-    }
-}
-
-export default connect(mapStateToProps, {
-    closeDialog: DMSActions.closeDialog,
-})(AddNewDialog as any)
+export default connect(mapStateToProps, mapDispatchToProps)(AddNewDialog)

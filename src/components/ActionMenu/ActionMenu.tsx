@@ -113,7 +113,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
         this.props.closeActionMenu()
         this.setState({ anchorEl: null })
     }
-    public handleMenuItemClick(e: React.MouseEvent, action: string) {
+    public handleMenuItemClick(e: React.MouseEvent, action: any) {
         if (action.Action) {
             action.Action()
         } else {

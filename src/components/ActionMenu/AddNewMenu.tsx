@@ -40,7 +40,7 @@ class AddNewMenu extends React.Component<AddNemMenuProps, { options }> {
     }
 
     public componentWillReceiveProps(nextProps) {
-        const { actions, currentId, getActions, openDialog, closeDialog, closeActionMenu } = this.props
+        const { actions, currentId, getActions, openDialog, closeActionMenu } = this.props
         if ((nextProps.currentContent.Id && (currentId === 'login' || currentId !== nextProps.currentId)) && actions.length === 0) {
             getActions(nextProps.currentContent.Id)
         }
@@ -54,8 +54,9 @@ class AddNewMenu extends React.Component<AddNemMenuProps, { options }> {
                 action.Action = () => {
                     closeActionMenu()
                     openDialog(
-                        <AddNewDialog parentPath={nextProps.currentContent.Path}
-                        contentTypeName={contentType} />,
+                        <AddNewDialog
+                            parentPath={nextProps.currentContent.Path}
+                            contentTypeName={contentType} />,
                         newDisplayName, this.handleClose)
                 }
                 if (action.DisplayName.indexOf('Folder') > -1) {
