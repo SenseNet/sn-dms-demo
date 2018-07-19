@@ -41,7 +41,7 @@ class AddNewMenu extends React.Component<AddNemMenuProps, { options }> {
 
     public componentWillReceiveProps(nextProps) {
         const { actions, currentId, getActions, openDialog, closeActionMenu } = this.props
-        if ((nextProps.currentContent.Id && (currentId === 'login' || currentId !== nextProps.currentId)) && actions.length === 0) {
+        if ((nextProps.currentContent.Id && (currentId === null || currentId !== nextProps.currentId)) && actions.length === 0) {
             getActions(nextProps.currentContent.Id)
         }
         if (this.props.actions.length !== nextProps.actions.length) {
