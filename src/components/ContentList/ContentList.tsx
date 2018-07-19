@@ -8,16 +8,20 @@ import * as React from 'react'
 import { DropTarget } from 'react-dnd'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
+import { RouteComponentProps } from 'react-router'
 import {
     withRouter,
 } from 'react-router-dom'
 import { Key } from 'ts-keycode-enum'
+import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import * as DragAndDrop from '../../DragAndDrop'
 import * as DMSReducers from '../../Reducers'
 import ActionMenu from '../ActionMenu/ActionMenu'
 import ListHead from './ListHead'
 import SimpleTableRow from './SimpleTableRow'
+
+import { compile } from 'path-to-regexp'
 
 const styles = {
     paper: {
@@ -33,37 +37,37 @@ const styles = {
     },
 }
 
-interface ContentListProps {
-    ids: number[],
-    children,
-    currentId: number,
-    selected: number[],
-    selectedContentItems,
-    history,
-    parentId: number,
-    edited: number,
-    rootId: number,
-    isFetching: boolean,
-    isLoading: boolean,
-    select,
-    deselect,
-    clearSelection,
-    deleteContent,
-    deleteBatch,
-    copyBatch,
-    moveBatch,
-    selectionModeOn,
-    selectionModeOff,
-    selectionModeIsOn: boolean,
+const mapStateToProps = (state: rootStateType) => {
+    return {
+        ids: Reducers.getIds(state.sensenet.children),
+        rootId: state.dms.rootId,
+        selected: Reducers.getSelectedContentIds(state.sensenet),
+        selectedContentItems: Reducers.getSelectedContentItems(state.sensenet),
+        isFetching: Reducers.getFetching(state.sensenet.children),
+        isLoading: DMSReducers.getLoading(state.dms),
+        edited: DMSReducers.getEditedItemId(state.dms),
+        selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
+    }
+}
+
+const mapDispatchToProps = {
+    loadContent: Actions.loadContent,
+    select: Actions.selectContent,
+    deselect: Actions.deSelectContent,
+    clearSelection: Actions.clearSelection,
+    delete: Actions.deleteContent,
+    deleteBatch: Actions.deleteBatch,
+    copyBatch: Actions.copyBatch,
+    moveBatch: Actions.moveBatch,
+    selectionModeOn: DMSActions.selectionModeOn,
+    selectionModeOff: DMSActions.selectionModeOff,
+    openViewer: DMSActions.openViewer,
+    pollDocumentData,
+}
+
+interface ContentListProps extends RouteComponentProps<any> {
     connectDropTarget,
-    isOver: boolean,
-    canDrop: boolean,
-    onDrop,
-    accepts: string[],
-    openViewer: (id: number) => void
     hostName: string
-    pollDocumentData: (host: string, id: number) => void
-    loadContent,
 }
 
 interface ContentListState {
@@ -81,7 +85,7 @@ interface ContentListState {
     isOver: monitor.isOver(),
     canDrop: monitor.canDrop(),
 }))
-class ContentList extends React.Component<ContentListProps, ContentListState> {
+class ContentList extends React.Component<ContentListProps & RouteComponentProps<any> & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, ContentListState> {
     constructor(props) {
         super(props)
         this.state = {
@@ -150,7 +154,8 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
     }
     public handleRowDoubleClick(e, id, type) {
         if (type === 'Folder') {
-            this.props.history.push(`/${id}`)
+            const newPath = compile(this.props.match.path)({ scope: 'documents', contentId: id })
+            this.props.history.push(newPath)
             this.props.loadContent(id)
             this.props.deselect(this.props.children[id])
         } else {
@@ -330,35 +335,10 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
 
                     </TableBody>
                 </Table>
-                <ActionMenu />
+                <ActionMenu id={this.props.selected.Id} />
                 {/* <SelectionBox /> */}
             </div>)
     }
 }
 
-const mapStateToProps = (state, match) => {
-    return {
-        ids: Reducers.getIds(state.sensenet.children),
-        rootId: DMSReducers.getRootId(state.dms),
-        selected: Reducers.getSelectedContentIds(state.sensenet),
-        selectedContentItems: Reducers.getSelectedContentItems(state.sensenet),
-        isFetching: Reducers.getFetching(state.sensenet.children),
-        isLoading: DMSReducers.getLoading(state.dms),
-        edited: DMSReducers.getEditedItemId(state.dms),
-        selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
-    }
-}
-export default withRouter(connect(mapStateToProps, {
-    loadContent: Actions.loadContent,
-    select: Actions.selectContent,
-    deselect: Actions.deSelectContent,
-    clearSelection: Actions.clearSelection,
-    delete: Actions.deleteContent,
-    deleteBatch: Actions.deleteBatch,
-    copyBatch: Actions.copyBatch,
-    moveBatch: Actions.moveBatch,
-    selectionModeOn: DMSActions.selectionModeOn,
-    selectionModeOff: DMSActions.selectionModeOff,
-    openViewer: DMSActions.openViewer,
-    pollDocumentData,
-})(ContentList))
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ContentList))

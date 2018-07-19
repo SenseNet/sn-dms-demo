@@ -10,9 +10,31 @@ import * as DMSReducers from '../../Reducers'
 
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import createStyles from '@material-ui/core/styles/createStyles'
-import withStyles from '@material-ui/core/styles/withStyles'
+import { rootStateType } from '../..'
 import { icons } from '../../assets/icons'
+
+const mapStateToProps = (state: rootStateType) => {
+    return {
+        actions: DMSReducers.getActions(state.dms.actionmenu),
+        contentId: state.dms.actionmenu.id,
+        currentContent: Reducers.getCurrentContent(state.sensenet),
+        selected: Reducers.getSelectedContentIds(state.sensenet),
+        open: DMSReducers.actionmenuIsOpen(state.dms.actionmenu),
+        anchorElement: DMSReducers.getAnchorElement(state.dms.actionmenu),
+        position: DMSReducers.getMenuPosition(state.dms.actionmenu),
+        hostName: state.sensenet.session.repository.hostName,
+    }
+}
+
+const mapDispatchToProps = {
+    setEdited: DMSActions.setEditedContentId,
+    clearSelection: Actions.clearSelection,
+    deleteBatch: Actions.deleteBatch,
+    closeActionMenu: DMSActions.closeActionMenu,
+    pollDocumentData,
+    openViewer: DMSActions.openViewer,
+    logout: Actions.userLogout,
+}
 
 const styles = {
     actionmenuContainer: {
@@ -45,36 +67,17 @@ const styles = {
 }
 
 interface ActionMenuProps {
-    actions,
-    id,
-    open,
-    selected,
-    currentContent,
-    setEdited,
-    handleMouseDown,
-    handleMouseUp,
-    clearSelection,
-    deleteBatch,
-    uploadContent,
-    anchorElement,
-    closeActionMenu,
-    position,
-    pollDocumentData: typeof pollDocumentData,
-    hostName: string
-    contentId: number
-    openViewer: (id: number) => void
-    logout: () => void
-    classes
+    id: number,
 }
 
 interface ActionMenuState {
-    hovered,
-    selectedIndex,
-    anchorEl
+    hovered: string,
+    selectedIndex: number,
+    anchorEl: HTMLElement | null
 }
 
-class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
-    constructor(props) {
+class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, ActionMenuState> {
+    constructor(props: ActionMenu['props']) {
         super(props)
         this.state = {
             hovered: '',
@@ -85,17 +88,17 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
         this.handleMouseLeave = this.handleMouseLeave.bind(this)
         this.handleMenuItemClick = this.handleMenuItemClick.bind(this)
     }
-    public componentWillReceiveProps(nextProps) {
+    public componentWillReceiveProps(nextProps: this['props']) {
         if (nextProps.open === false) {
             this.setState({
                 anchorEl: null,
             })
         }
     }
-    public isHovered(id) {
+    public isHovered(id: string) {
         return this.state.hovered === id
     }
-    public handleMouseEnter(e, name) {
+    public handleMouseEnter(e: React.MouseEvent, name: string) {
         this.setState({
             hovered: name,
         })
@@ -109,7 +112,7 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
         this.props.closeActionMenu()
         this.setState({ anchorEl: null })
     }
-    public handleMenuItemClick(e, action) {
+    public handleMenuItemClick(e: React.MouseEvent, action: string) {
         switch (action) {
             case 'Rename':
                 this.handleClose()
@@ -126,8 +129,10 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
                 break
             case 'Preview':
                 this.handleClose()
-                this.props.openViewer(this.props.contentId)
-                this.props.pollDocumentData(this.props.hostName, this.props.contentId)
+                if (this.props.contentId) {
+                    this.props.openViewer(this.props.contentId)
+                    this.props.pollDocumentData(this.props.hostName, this.props.contentId)
+                }
             case 'Logout':
                 this.handleClose()
                 this.props.logout()
@@ -165,8 +170,8 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
                         <ListItemIcon style={styles.actionIcon}>
                             <Icon color="primary">{
                                 action.Icon === 'Application' ?
-                                    icons[action.Name.toLowerCase()] :
-                                    icons[action.Icon.toLowerCase()]
+                                    icons[action.Name.toLowerCase() as keyof typeof icons] :
+                                    icons[action.Icon.toLowerCase() as keyof typeof icons]
                             }
                                 {
                                     action.Name === 'MoveTo' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.3em', width: '0.5em', color: 'white' }} /> : null
@@ -184,25 +189,4 @@ class ActionMenu extends React.Component<ActionMenuProps, ActionMenuState> {
     }
 }
 
-const mapStateToProps = (state, match) => {
-    return {
-        actions: DMSReducers.getActions(state.dms.actionmenu),
-        contentId: state.dms.actionmenu.id,
-        currentContent: Reducers.getCurrentContent(state.sensenet),
-        selected: Reducers.getSelectedContentIds(state.sensenet),
-        open: DMSReducers.actionmenuIsOpen(state.dms.actionmenu),
-        anchorElement: DMSReducers.getAnchorElement(state.dms.actionmenu),
-        position: DMSReducers.getMenuPosition(state.dms.actionmenu),
-        hostName: state.sensenet.session.repository.hostName,
-    }
-}
-
-export default connect(mapStateToProps, {
-    setEdited: DMSActions.setEditedContentId,
-    clearSelection: Actions.clearSelection,
-    deleteBatch: Actions.deleteBatch,
-    closeActionMenu: DMSActions.closeActionMenu,
-    pollDocumentData,
-    openViewer: DMSActions.openViewer,
-    logout: Actions.userLogout,
-})(ActionMenu)
+export default connect(mapStateToProps, mapDispatchToProps)(ActionMenu)

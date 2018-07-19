@@ -1,22 +1,32 @@
+import { MuiThemeProvider } from '@material-ui/core'
 import { DocumentTitlePager, DocumentViewer, DocumentViewerSettings, Download, exampleTheme, LayoutAppBar, Print, RotateActivePages, SearchBar, Share, ToggleThumbnailsWidget, ZoomInOutWidget } from '@sensenet/document-viewer-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { MuiThemeProvider } from '../../node_modules/@material-ui/core'
+import { rootStateType } from '..'
 import { closeViewer } from '../Actions'
 
+const mapStateToProps = (state: rootStateType) => ({
+    isOpened: state.dms.viewer.isOpened,
+    hostName: state.sensenet.session.repository.repositoryUrl,
+    idOrPath: state.dms.viewer.currentDocumentId,
+})
+
+export const mapDispatchToProps = {
+    closeViewer,
+}
+
+// tslint:disable-next-line:no-empty-interface
 export interface DmsViewerProps {
-    idOrPath: string | number
-    isOpened: boolean
-    settings: DocumentViewerSettings
-    closeViewer: () => void
-    hostName: string
+    /**/
 }
 
 export interface DmsViewerState {
     isOpened: boolean
 }
 
-export class DmsViewerComponent extends React.Component<DmsViewerProps, DmsViewerState> {
+export class DmsViewerComponent extends React.Component<DmsViewerProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DmsViewerState> {
+
+    public state = { isOpened: false }
 
     public static getDerivedStateFromProps(newProps: DmsViewerComponent['props'], lastState: DmsViewerComponent['state']) {
         return {
@@ -31,7 +41,7 @@ export class DmsViewerComponent extends React.Component<DmsViewerProps, DmsViewe
         }
     }
 
-    constructor(props) {
+    constructor(props: DmsViewerComponent['props']) {
         super(props)
         this.keyboardHandler = this.keyboardHandler.bind(this)
 
@@ -94,15 +104,6 @@ export class DmsViewerComponent extends React.Component<DmsViewerProps, DmsViewe
         }
         return null
     }
-}
-
-const mapStateToProps = (state) => ({
-    isOpened: state.dms.viewer.isOpened,
-    hostName: state.sensenet.session.repository.repositoryUrl,
-})
-
-export const mapDispatchToProps = {
-    closeViewer,
 }
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(DmsViewerComponent)

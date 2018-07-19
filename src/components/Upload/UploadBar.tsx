@@ -2,6 +2,7 @@ import { IconButton, LinearProgress, List, ListSubheader, Paper, Snackbar } from
 import { Close } from '@material-ui/icons'
 import { IUploadProgressInfo } from '@sensenet/client-core'
 import * as React from 'react'
+import { Shared } from 'react-redux'
 import { ExtendedUploadProgressInfo } from '../../Actions'
 import { resources } from '../../assets/resources'
 import theme from '../../assets/theme'
@@ -10,8 +11,8 @@ import { UploadBarItem } from './UploadBarItem'
 export interface UploadBarProps {
     items: ExtendedUploadProgressInfo[]
     isOpened: boolean
-    close: () => void
-    removeItem: (item: IUploadProgressInfo) => void
+    close: () => any
+    removeItem: (item: IUploadProgressInfo) => any
     handleSelectItem?: (item: IUploadProgressInfo) => void
 }
 

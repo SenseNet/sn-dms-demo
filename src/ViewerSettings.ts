@@ -38,9 +38,9 @@ export const getViewerSettings: (repo: Repository) => DocumentViewerSettings = (
             idOrPath: settings.idOrPath,
             hostName: repo.configuration.repositoryUrl,
             fileSizekB: documentData.Size as number,
-            pageCount: documentData.PageCount,
-            documentName: documentData.DisplayName,
-            documentType: documentData.Type,
+            pageCount: documentData.PageCount || -1,
+            documentName: documentData.DisplayName || '',
+            documentType: documentData.Type || 'File',
             shapes: documentData.Shapes && {
                 redactions: (JSON.parse(documentData.Shapes)[0].redactions as Redaction[]).map((a) => addGuidToShape(a)) || [],
                 annotations: (JSON.parse(documentData.Shapes)[2].annotations as Annotation[]).map((a) => addGuidToShape(a)) || [],
@@ -68,7 +68,6 @@ export const getViewerSettings: (repo: Repository) => DocumentViewerSettings = (
             responseBody.ThumbnailImageUrl = `${documentData.hostName}${responseBody.PreviewAvailable.replace('preview', 'thumbnail')}`
             return responseBody as PreviewImageData
         }
-        return null
     },
     canEditDocument: async (settings) => {
         const response = await repo.security.hasPermission(settings.idOrPath, ['Save'], undefined)

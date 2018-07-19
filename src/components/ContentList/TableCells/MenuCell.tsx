@@ -5,6 +5,7 @@ import { Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
+import { rootStateType } from '../../..'
 import * as DMSActions from '../../../Actions'
 import * as DMSReducers from '../../../Reducers'
 
@@ -85,7 +86,7 @@ class MenuCell extends React.Component<MenuCellProps, MenuCellState> {
     }
 }
 
-const mapStateToProps = (state, match) => {
+const mapStateToProps = (state: rootStateType, match) => {
     return {
         selected: Reducers.getSelectedContentIds(state.sensenet),
         opened: Reducers.getOpenedContent(state.sensenet.children),

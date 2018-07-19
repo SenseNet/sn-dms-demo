@@ -1,9 +1,10 @@
+import { GenericContent } from '@sensenet/default-content-types'
 import { resources } from '../assets/resources'
 import * as DMSReducers from '../Reducers'
 
 describe('email reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.email(undefined, {})).toEqual('')
+        expect(DMSReducers.email(undefined, { type: '' })).toEqual('')
     })
     it('should return the registered email', () => {
         expect(DMSReducers.email(undefined, { type: 'USER_REGISTRATION_REQUEST', email: 'alba@sensenet.com' })).toEqual('alba@sensenet.com')
@@ -18,7 +19,7 @@ describe('email reducer', () => {
 
 describe('registrationError reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.registrationError(undefined, {})).toEqual(null)
+        expect(DMSReducers.registrationError(undefined, { type: '' })).toEqual(null)
     })
     it('should return an error message', () => {
         expect(DMSReducers.registrationError(undefined, { type: 'USER_REGISTRATION_FAILURE' })).toEqual(resources.USER_IS_ALREADY_REGISTERED)
@@ -27,7 +28,7 @@ describe('registrationError reducer', () => {
 
 describe('isRegistering reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.isRegistering(undefined, {})).toEqual(false)
+        expect(DMSReducers.isRegistering(undefined, { type: '' })).toEqual(false)
     })
     it('should return true after a registration request', () => {
         expect(DMSReducers.isRegistering(undefined, { type: 'USER_REGISTRATION_REQUEST', email: 'alba@sensenet.com' })).toEqual(true)
@@ -42,7 +43,7 @@ describe('isRegistering reducer', () => {
 
 describe('registrationDone reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.registrationDone(undefined, {})).toEqual(false)
+        expect(DMSReducers.registrationDone(undefined, { type: '' })).toEqual(false)
     })
     it('should return true after registration success', () => {
         expect(DMSReducers.registrationDone(undefined, { type: 'USER_REGISTRATION_SUCCESS' })).toEqual(true)
@@ -60,7 +61,7 @@ describe('registrationDone reducer', () => {
 
 describe('captcha reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.captcha(undefined, {})).toEqual(false)
+        expect(DMSReducers.captcha(undefined, { type: '' })).toEqual(false)
     })
     it('should return true after verifying captcha', () => {
         expect(DMSReducers.captcha(undefined, { type: 'VERIFY_CAPTCHA_SUCCESS' })).toEqual(true)
@@ -69,7 +70,7 @@ describe('captcha reducer', () => {
 
 describe('actions reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.actions(undefined, {})).toEqual([])
+        expect(DMSReducers.actions(undefined, { type: '' })).toEqual([])
     })
     it('should return the actionlist from the response', () => {
         const payload = {
@@ -77,7 +78,7 @@ describe('actions reducer', () => {
                 Actions: [
                     'Move',
                     'Copy',
-                ],
+                ] as any[],
             },
         }
         expect(DMSReducers.actions(undefined, {
@@ -88,7 +89,7 @@ describe('actions reducer', () => {
         const actions = [
             'Move',
             'Copy',
-        ]
+        ] as any[]
 
         expect(DMSReducers.actions(undefined, { type: 'OPEN_ACTIONMENU', actions })).toEqual(['Move', 'Copy'])
     })
@@ -96,7 +97,7 @@ describe('actions reducer', () => {
 
 describe('open reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.open(undefined, {})).toEqual(false)
+        expect(DMSReducers.open(undefined, { type: '' })).toEqual(false)
     })
     it('should return true', () => {
         expect(DMSReducers.open(undefined, { type: 'OPEN_ACTIONMENU' })).toEqual(true)
@@ -108,7 +109,7 @@ describe('open reducer', () => {
 
 describe('id reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.id(undefined, {})).toEqual(null)
+        expect(DMSReducers.id(undefined, { type: '' })).toEqual(null)
     })
     it('should return the opened content items id', () => {
         expect(DMSReducers.id(undefined, { type: 'OPEN_ACTIONMENU', id: 1 })).toEqual(1)
@@ -117,7 +118,7 @@ describe('id reducer', () => {
 
 describe('title reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.title(undefined, {})).toEqual('')
+        expect(DMSReducers.title(undefined, { type: '' })).toEqual('')
     })
     it('should return the opened content items id', () => {
         expect(DMSReducers.title(undefined, { type: 'OPEN_ACTIONMENU', title: 'sample' })).toEqual('sample')
@@ -126,31 +127,31 @@ describe('title reducer', () => {
 
 describe('position reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.anchorElement(undefined, {})).toEqual(null)
+        expect(DMSReducers.anchorElement(undefined, { type: '' })).toEqual(null)
     })
     it('should return the opened content items position', () => {
-        expect(DMSReducers.anchorElement(undefined, { type: 'OPEN_ACTIONMENU', actions: [], id: 1, element: null })).toEqual(null)
+        expect(DMSReducers.anchorElement(undefined, { type: 'OPEN_ACTIONMENU', element: null })).toEqual(null)
     })
 })
 
 describe('rootId reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.rootId(undefined, {})).toEqual(null)
+        expect(DMSReducers.rootId(undefined, { type: '' })).toEqual(null)
     })
     it('should return the root id', () => {
         expect(DMSReducers.rootId(undefined, {
             type: 'LOAD_CONTENT_SUCCESS',
-            payload: { d: { Id: 1, Path: '/login' } },
+            payload: { d: { Id: 1, Path: '/login', Name: '', Type: '' } },
         })).toEqual(1)
     })
     it('should return null', () => {
-        expect(DMSReducers.rootId(undefined, { type: 'LOAD_CONTENT_SUCCESS', payload: { d: { Id: 1, Path: '/Default_Site' } } })).toEqual(null)
+        expect(DMSReducers.rootId(undefined, { type: 'LOAD_CONTENT_SUCCESS', payload: { d: { Id: 1, Path: '/Default_Site', Name: '', Type: '' } } })).toEqual(null)
     })
 })
 
 describe('currentId reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.currentId(undefined, {})).toEqual(null)
+        expect(DMSReducers.currentId(undefined, { type: '' })).toEqual(null)
     })
     it('should return the current id', () => {
         expect(DMSReducers.currentId(undefined, { type: 'SET_CURRENT_ID', id: 1 })).toEqual(1)
@@ -159,7 +160,7 @@ describe('currentId reducer', () => {
 
 describe('editedItemId reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.editedItemId(undefined, {})).toEqual(null)
+        expect(DMSReducers.editedItemId(undefined, { type: '' })).toEqual(null)
     })
     it('should return the currently edited content items id', () => {
         expect(DMSReducers.editedItemId(undefined, { type: 'SET_EDITED_ID', id: 1 })).toEqual(1)
@@ -171,7 +172,7 @@ describe('editedItemId reducer', () => {
 
 describe('isLoading reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.isLoading(undefined, {})).toEqual(false)
+        expect(DMSReducers.isLoading(undefined, { type: '' })).toEqual(false)
     })
     it('should return the current state of loading', () => {
         expect(DMSReducers.isLoading(undefined, { type: 'LOAD_CONTENT_REQUEST' })).toEqual(true)
@@ -180,7 +181,7 @@ describe('isLoading reducer', () => {
 
 describe('isSelectionModeOn reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.isSelectionModeOn(undefined, {})).toEqual(false)
+        expect(DMSReducers.isSelectionModeOn(undefined, { type: '' })).toEqual(false)
     })
     it('should return the current state of selection mode', () => {
         expect(DMSReducers.isSelectionModeOn(undefined, { type: 'SELECTION_MODE_ON' })).toEqual(true)
@@ -189,17 +190,17 @@ describe('isSelectionModeOn reducer', () => {
 
 describe('breadcrumb reducer', () => {
     it('should return the initial state', () => {
-        expect(DMSReducers.breadcrumb(undefined, {})).toEqual([])
+        expect(DMSReducers.breadcrumb(undefined, { type: '' })).toEqual([])
     })
     it('should return null when default_site is a part of the response path', () => {
-        expect(DMSReducers.breadcrumb(undefined, { type: 'LOAD_CONTENT_SUCCESS', payload: { d: { Path: '/Default_Site' } } })).toEqual([])
+        expect(DMSReducers.breadcrumb(undefined, { type: 'LOAD_CONTENT_SUCCESS', payload: { d: { Path: '/Default_Site' } as GenericContent } })).toEqual([])
     })
     it('should return [aaa]', () => {
-        expect(DMSReducers.breadcrumb(undefined, { type: 'LOAD_CONTENT_SUCCESS', payload: { d: { DisplayName: 'aaa', Id: 1, Path: '/aaa' } } })).toEqual([{ name: 'aaa', id: 1, path: '/aaa' }])
+        expect(DMSReducers.breadcrumb(undefined, { type: 'LOAD_CONTENT_SUCCESS', payload: { d: { DisplayName: 'aaa', Id: 1, Path: '/aaa' } as GenericContent } })).toEqual([{ name: 'aaa', id: 1, path: '/aaa' }])
     })
     it('should return [aaa, bbb]', () => {
         expect(DMSReducers.breadcrumb(
-            [{ name: 'aaa', id: 1, path: '/aaa' }, { name: 'bbb', id: 2, path: '/bbb' }], { type: 'LOAD_CONTENT_SUCCESS', payload: { d: { DisplayName: 'aaa', Id: 1, Path: '/aaa' } } })).toEqual([{ name: 'aaa', id: 1, path: '/aaa' }])
+            [{ name: 'aaa', id: 1, path: '/aaa' }, { name: 'bbb', id: 2, path: '/bbb' }], { type: 'LOAD_CONTENT_SUCCESS', payload: { d: { DisplayName: 'aaa', Id: 1, Path: '/aaa' } as GenericContent } })).toEqual([{ name: 'aaa', id: 1, path: '/aaa' }])
     })
 })
 
@@ -353,11 +354,12 @@ describe('getRootId', () => {
 })
 
 describe('getBreadCrumbArray', () => {
+    const breadcrumbs: DMSReducers.BreadcrumbItemType[] = [{ id: 1, name: 'aaa', path: '' }, { id: 2, name: 'bbb', path: '' }]
     const state = {
-        breadcrumb: ['aaa', 'bbb'],
+        breadcrumb: [...breadcrumbs],
     }
     it('should return the breadcrumb items', () => {
-        expect(DMSReducers.getBreadCrumbArray(state)).toEqual(['aaa', 'bbb'])
+        expect(DMSReducers.getBreadCrumbArray(state)).toEqual(breadcrumbs)
     })
 })
 
@@ -381,7 +383,7 @@ describe('getActionsOfAContent', () => {
 
 describe('getActions', () => {
     const state = {
-        actions: ['aaa', 'bbb'],
+        actions: ['aaa', 'bbb'] as any[],
     }
     it('should return the actions', () => {
         expect(DMSReducers.getActions(state)).toEqual(['aaa', 'bbb'])

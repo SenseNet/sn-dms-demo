@@ -5,7 +5,7 @@ import Tab from '@material-ui/core/Tab'
 import Tabs from '@material-ui/core/Tabs'
 import * as React from 'react'
 import {
-    withRouter,
+    RouteComponentProps, withRouter,
 } from 'react-router-dom'
 
 const styles = {
@@ -30,7 +30,7 @@ const style = () => createStyles({
 
 import { resources } from '../assets/resources'
 
-class LoginTabs extends React.Component<{ history, classes }, { value }> {
+class LoginTabs extends React.Component<RouteComponentProps<any> & { classes: any }, { value }> {
     constructor(props) {
         super(props)
         this.state = {
@@ -74,4 +74,4 @@ class LoginTabs extends React.Component<{ history, classes }, { value }> {
     }
 }
 
-export default withRouter(withStyles(style, { withTheme: true })(LoginTabs as any))
+export default withRouter<any>(withStyles(style, { withTheme: true })(LoginTabs))

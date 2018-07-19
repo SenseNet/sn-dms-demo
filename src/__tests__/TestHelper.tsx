@@ -1,23 +1,25 @@
 import { Repository } from '@sensenet/client-core'
-import { Reducers, Store } from '@sensenet/redux'
+import { sensenetDocumentViewerReducer } from '@sensenet/document-viewer-react'
+import { Store } from '@sensenet/redux'
+import { sensenet } from '@sensenet/redux/dist/Reducers'
+import { CreateStoreOptions } from '@sensenet/redux/dist/Store'
 import * as React from 'react'
-import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { combineReducers } from 'redux'
-import { dms } from '../../Reducers'
-import UserActionMenu from '../UserActionMenu'
+import { rootStateType } from '..'
+import { dms } from '../Reducers'
 
-it('renders without crashing', () => {
-    const div = document.createElement('div')
-    const sensenet = Reducers.sensenet
-    const myReducer = combineReducers({ sensenet, dms })
+it('Should help tests', () => {
+    /** */
+})
 
+export const withStore = (component: JSX.Element, options?: CreateStoreOptions<rootStateType>) => {
+    const myReducer = combineReducers({ sensenet, dms, sensenetDocumentViewer: sensenetDocumentViewerReducer })
     const repository = new Repository({
         repositoryUrl: process.env.REACT_APP_SERVICE_URL || 'https://dmsservice.demo.sensenet.com',
         requiredSelect: ['Id', 'Path', 'Name', 'Type', 'ParentId'] as any,
     })
-
-    const options = {
+    const defaultOptions = {
         repository,
         rootReducer: myReducer,
         persistedState: {
@@ -32,9 +34,9 @@ it('renders without crashing', () => {
             },
         },
     } as Store.CreateStoreOptions<any>
-    const store = Store.createSensenetStore(options)
-    ReactDOM.render(
-        <Provider store={store}>
-            <UserActionMenu />
-        </Provider>, div)
-})
+    const store = Store.createSensenetStore({ ...defaultOptions, ...options })
+
+    return (<Provider store={store} >
+        {component}
+    </Provider>)
+}
