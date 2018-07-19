@@ -154,8 +154,8 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
     }
     public handleRowDoubleClick(e, id, type) {
         if (type === 'Folder') {
-            const newPath = compile(this.props.match.path)({ folderId: id })
-            this.props.history.replace(newPath)
+            const newPath = compile(this.props.match.path)({ scope: 'documents', contentId: id })
+            this.props.history.push(newPath)
             this.props.loadContent(id)
             this.props.deselect(this.props.children[id])
         } else {

@@ -60,14 +60,14 @@ class Sensenet extends React.Component<SensenetProps & ReturnType<typeof mapStat
                 <Registration oAuthProvider={this.props.oAuthProvider} verify={this.props.recaptchaCallback} />
               </AuthorizedRoute>
 
-              <AuthorizedRoute path="/dashboard/:folderId?/:selection?/:action?" authorize={() => this.props.loginState !== LoginState.Unauthenticated} redirectOnUnauthorized="/" render={(routerProps) => {
+              {/* Empty path, default routes per login state */}
+              {this.props.loginState === LoginState.Unauthenticated ? <Redirect path="*" to="/login" /> : null}
+              {/* {this.props.loginState === LoginState.Authenticated ? <Redirect path="*" to="/" /> : null} */}
+
+              <AuthorizedRoute path="/" authorize={() => this.props.loginState !== LoginState.Unauthenticated} redirectOnUnauthorized="/" render={(routerProps) => {
                 return <Dashboard {...routerProps} />
               }}>
               </AuthorizedRoute>
-
-              {/* Empty path, default routes per login state */}
-              {this.props.loginState === LoginState.Unauthenticated ? <Redirect path="*" to="/login" /> : null}
-              {this.props.loginState === LoginState.Authenticated ? <Redirect path="*" to="/dashboard" /> : null}
 
               {/* Not found */}
               <Route path="*" exact={true} >

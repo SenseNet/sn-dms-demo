@@ -3,7 +3,7 @@ import { Actions, Reducers, Store } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
-import { RouteComponentProps } from 'react-router'
+import { Redirect, Route, RouteComponentProps, Switch } from 'react-router'
 import * as DMSActions from '../Actions'
 import { ListToolbar } from '../components/ContentList/ListToolbar'
 import DashboardDrawer from '../components/DashboardDrawer'
@@ -58,6 +58,7 @@ interface DashboardProps extends RouteComponentProps<any> {
 export interface DashboardState {
     currentFolderId?: number
     currentSelection: number[]
+    currentScope: string
     currentViewName: string
     currentUserName: string
 }
@@ -69,6 +70,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
         currentSelection: [],
         currentViewName: 'list',
         currentUserName: 'Visitor',
+        currentScope: 'documents',
     }
 
     constructor(props: Dashboard['props']) {
@@ -100,6 +102,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
             currentFolderId,
             currentSelection,
             currentViewName,
+            currentScope: newProps.match.params.scope || 'documents',
             currentUserName: newProps.loggedinUserName,
         }
     }
@@ -116,8 +119,31 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                 <DashboardDrawer />
                                 <div style={styles.main}>
                                     <div style={{ height: 48, width: '100%' }}></div>
-                                    <ListToolbar />
-                                    <DocumentLibrary currentFolderId={this.state.currentFolderId} />
+                                    <Switch>
+                                        <Route path="/documents/:viewName?/:contentId?" >
+                                            <div>
+                                                <ListToolbar />
+                                                <DocumentLibrary currentFolderId={this.state.currentFolderId} />
+                                            </div>
+                                        </Route>
+                                        <Route path="/users" >
+                                            <div>Placeholder for users</div>
+                                        </Route>
+                                        <Route path="/groups" >
+                                            <div>Placeholder for groups</div>
+                                        </Route>
+                                        <Route path="/contenttypes" >
+                                            <div>Placeholder for content types</div>
+                                        </Route>
+                                        <Route path="/contenttemplates" >
+                                            <div>Placeholder for content templates</div>
+                                        </Route>
+                                        <Route path="/settings" >
+                                            <div>Placeholder for content settings</div>
+                                        </Route>
+
+                                        <Redirect to="/documents" />
+                                    </Switch>
                                 </div>
                             </div>
                             <DmsViewer />
