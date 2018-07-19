@@ -11,7 +11,7 @@ const addGuidToShape: <T extends Shape>(shape: T) => T = (shape) => {
     return shape
 }
 
-export const getViewerSettings: (repo: Repository) => DocumentViewerSettings = (repo: Repository) => ({
+export const getViewerSettings: (repo: Repository) => DocumentViewerSettings = (repo: Repository) => new DocumentViewerSettings({
     saveChanges: async (documentData, pages) => {
         const reqBody = {
             Shapes: JSON.stringify([

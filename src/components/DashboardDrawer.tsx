@@ -93,18 +93,18 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
                 {menu.map((item, index) => {
                     return (
                         <div key={index}>
-                            <Link to={item.routeName} style={{ textDecoration: 'none' }}>
-                                {
-                                    React.createElement(
-                                        item.component,
-                                        {
-                                            active: activeItem === item.name,
-                                            item,
-                                            chooseMenuItem,
-                                            chooseSubmenuItem,
-                                        })
-                                }
-                            </Link>
+                            {/* <Link to={item.routeName} style={{ textDecoration: 'none' }}> */}
+                            {
+                                React.createElement(
+                                    item.component,
+                                    {
+                                        active: activeItem === item.name,
+                                        item,
+                                        chooseMenuItem,
+                                        chooseSubmenuItem,
+                                    })
+                            }
+                            {/* </Link> */}
 
                             <Divider light />
                         </div>

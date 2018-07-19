@@ -6,7 +6,7 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { combineReducers } from 'redux'
-import thunk from 'redux-thunk'
+import { ReduxDiMiddleware } from 'redux-di-middleware'
 import * as DMSReducers from './Reducers'
 import registerServiceWorker from './registerServiceWorker'
 import Sensenet from './Sensenet'
@@ -40,10 +40,14 @@ const myReducer = combineReducers({
   sensenetDocumentViewer,
 })
 
+const di = new ReduxDiMiddleware()
+di.setInjectable(repository)
+di.setInjectable(viewerSettings)
+
 const options = {
   repository,
   rootReducer: myReducer,
-  middlewares: [thunk.withExtraArgument(Object.assign(repository, viewerSettings))],
+  middlewares: [di.getMiddleware()],
   logger: false,
 } as Store.CreateStoreOptions<any>
 const store = Store.createSensenetStore(options)
