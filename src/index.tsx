@@ -48,7 +48,7 @@ const options = {
   repository,
   rootReducer: myReducer,
   middlewares: [di.getMiddleware()],
-  logger: false,
+  logger: true,
 } as Store.CreateStoreOptions<any>
 const store = Store.createSensenetStore(options)
 
