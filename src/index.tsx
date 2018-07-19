@@ -5,9 +5,6 @@ import createHistory from 'history/createBrowserHistory'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import {
-  HashRouter as Router,
-} from 'react-router-dom'
 import { combineReducers } from 'redux'
 import thunk from 'redux-thunk'
 import * as DMSReducers from './Reducers'
@@ -47,7 +44,7 @@ const options = {
   repository,
   rootReducer: myReducer,
   middlewares: [thunk.withExtraArgument(Object.assign(repository, viewerSettings))],
-  logger: true,
+  logger: false,
 } as Store.CreateStoreOptions<any>
 const store = Store.createSensenetStore(options)
 
@@ -57,9 +54,7 @@ const handler = new MessageBoxHandler(repository, store)
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router basename="/">
-      <Sensenet repository={repository} history={history} oAuthProvider={googleOauthProvider} />
-    </Router>
+    <Sensenet oAuthProvider={googleOauthProvider} />
   </Provider>,
   document.getElementById('root') as HTMLElement,
 )

@@ -31,7 +31,7 @@ export interface UploadButtonProps {
 }
 
 export interface UploadButtonState {
-    anchorElement: HTMLElement | null
+    anchorElement: HTMLElement | undefined
 }
 
 const UPLOAD_FILE_BUTTON_ID: string = 'sn-dms-upload-button'
@@ -44,32 +44,32 @@ export class UploadButton extends React.Component<UploadButtonProps, UploadButto
     private readonly uploadMenuId = `${UPLOAD_MENU_ID}-${v1()}`
 
     public state: UploadButtonState = {
-        anchorElement: null,
+        anchorElement: undefined,
     }
 
     private async handleUpload(ev: React.ChangeEvent<HTMLInputElement>) {
         ev.persist()
-        await this.props.handleUpload(ev.target.files)
+        ev.target.files && await this.props.handleUpload(ev.target.files)
     }
 
     private toggleOpen(ev: React.MouseEvent<HTMLElement>) {
         this.setState({
             ...this.state,
-            anchorElement: this.state.anchorElement ? null : ev.currentTarget,
+            anchorElement: this.state.anchorElement ? undefined : ev.currentTarget,
         })
     }
 
     private closeMenu() {
         this.setState({
             ...this.state,
-            anchorElement: null,
+            anchorElement: undefined,
         })
     }
 
     public render() {
         return (<div style={this.props.style}>
             <Button
-                aria-owns={this.state.anchorElement ? this.uploadMenuId : null}
+                aria-owns={this.state.anchorElement ? this.uploadMenuId : undefined}
                 aria-haspopup={true}
                 variant="contained"
                 component="span"

@@ -3,7 +3,7 @@ import { GenericContent } from '@sensenet/default-content-types'
 import { Actions } from '@sensenet/redux'
 import { EventHub } from '@sensenet/repository-events'
 import { Store } from 'redux'
-import * as DMSActions from '../Actions'
+import { openMessageBar } from '../Actions'
 
 enum MessageMode { error = 'error', warning = 'warning', info = 'info' }
 
@@ -21,13 +21,13 @@ export class MessageBoxHandler {
 
         this.eventHub.onContentDeleteFailed.subscribe((response) => {
             store.dispatch(
-                DMSActions.openMessageBar(MessageMode.error, { message: response.error.message }),
+                openMessageBar(MessageMode.error, { message: response.error.message }),
             )
         })
 
         this.eventHub.onContentDeleted.subscribe(() => {
             store.dispatch(
-                DMSActions.openMessageBar(MessageMode.info, { message: 'Delete was successful' }),
+                openMessageBar(MessageMode.info, { message: 'Delete was successful' }),
             )
         })
     }

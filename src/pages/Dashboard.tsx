@@ -5,6 +5,7 @@ import { Actions, Reducers, Store } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
+import { Redirect, Route, RouteComponentProps, Switch } from 'react-router'
 import * as DMSActions from '../Actions'
 import { ListToolbar } from '../components/ContentList/ListToolbar'
 import DashboardDrawer from '../components/DashboardDrawer'
@@ -40,62 +41,83 @@ const styles = {
     },
 }
 
-interface DashboardProps {
-    match,
-    currentContent,
-    loggedinUser,
-    loadContent,
-    loadUserActions,
-    setCurrentId,
-    currentId,
-    selectionModeIsOn: boolean,
-    isViewerOpened: boolean,
-    isDialogOpen: boolean,
-    dialogOnClose: () => void,
-    dialogContent
+const mapStateToProps = (state: rootStateType) => {
+    return {
+        loggedinUserName: state.sensenet.session.user.userName,
+        currentContent: Reducers.getCurrentContent(state.sensenet),
+        currentId: DMSReducers.getCurrentId(state.dms),
+        selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
+        isViewerOpened: state.dms.viewer.isOpened,
+        isDialogOpen: state.dms.dialog.isOpened,
+        dialogOnClose: state.dms.dialog.onClose,
+        dialogContent: state.dms.dialog.content,
+        dialogTitle: state.dms.dialog.title,
+    }
 }
 
-class Dashboard extends React.Component<DashboardProps, {}> {
-    constructor(props) {
-        super(props)
-        this.state = {
-            currentId: this.props.match.params.id ? this.props.match.params.id : '',
-        }
-    }
-    public componentDidMount() {
-        const id = parseInt(this.props.match.params.id, 10)
-        if (id && !isNaN(id) && isFinite(id)) {
-            this.props.setCurrentId(id)
-        } else {
-            if (this.props.match.params.id !== undefined && this.props.match.params.id !== this.props.currentId) {
-                if (this.props.loggedinUser.userName !== 'Visitor') {
-                    return this.props.setCurrentId(this.props.match.params.id)
-                        && this.props.loadContent(`/Root/Profiles/Public/${this.props.loggedinUser.userName}/Document_Library`)
-                        && this.props.loadUserActions(`/Root/IMS/Public/${this.props.loggedinUser.userName}`, 'DMSUserActions')
-                }
-            }
-        }
-    }
-    public componentWillReceiveProps(nextProps) {
-        const { currentId, setCurrentId, loadContent, loadUserActions, match } = this.props
+const mapDispatchToProps = {
+    loadContent: Actions.loadContent,
+    setCurrentId: DMSActions.setCurrentId,
+    loadUserActions: DMSActions.loadUserActions,
+}
 
-        if (this.props.match.params.id !== undefined && !isNaN(nextProps.match.params.id) && Number(this.props.match.params.id) !== this.props.currentId) {
-            setCurrentId(Number(nextProps.match.params.id)) &&
-                loadContent(Number(nextProps.match.params.id))
-        } else {
-            if (currentId && currentId !== nextProps.currentId && nextProps.loggedinUser.userName !== 'Visitor') {
-                setCurrentId(nextProps.currentId)
-                loadContent(nextProps.currentId)
-                loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUser.userName}`, 'DMSUserActions')
-            } else if (currentId === null && nextProps.loggedinUser.userName !== 'Visitor') {
-                setCurrentId('login')
-                loadContent(`/Root/Profiles/Public/${nextProps.loggedinUser.userName}/Document_Library`)
-                loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUser.userName}`, 'DMSUserActions')
+interface DashboardProps extends RouteComponentProps<any> {
+    currentId: number,
+}
+
+export interface DashboardState {
+    currentFolderId?: number
+    currentSelection: number[]
+    currentScope: string
+    currentViewName: string
+    currentUserName: string
+}
+
+class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DashboardState> {
+
+    public state = {
+        currentFolderId: undefined,
+        currentSelection: [],
+        currentViewName: 'list',
+        currentUserName: 'Visitor',
+        currentScope: 'documents',
+    }
+
+    constructor(props: Dashboard['props']) {
+        super(props)
+    }
+
+    public static getDerivedStateFromProps(newProps: Dashboard['props'], lastState: Dashboard['state']) {
+        let currentFolderId = newProps.match.params.folderId && parseInt(newProps.match.params.folderId.toString(), 10) || undefined
+        const currentSelection = newProps.match.params.selection && decodeURIComponent(newProps.match.params.selection) || []
+        const currentViewName = newProps.match.params.action
+
+        if (lastState.currentFolderId !== currentFolderId && currentFolderId) {
+            newProps.setCurrentId(currentFolderId)
+            newProps.loadContent(currentFolderId)
+        }
+
+        if (newProps.loggedinUserName !== lastState.currentUserName) {
+            newProps.loadUserActions(`/Root/IMS/Public/${newProps.loggedinUserName}`, 'DMSUserActions')
+
+            if (lastState.currentFolderId === currentFolderId && currentFolderId === undefined) {
+                newProps.loadContent(`/Root/Profiles/Public/${newProps.loggedinUserName}/Document_Library`)
+                currentFolderId = 0
+
             }
         }
+
+        return {
+            ...lastState,
+            currentFolderId,
+            currentSelection,
+            currentViewName,
+            currentScope: newProps.match.params.scope || 'documents',
+            currentUserName: newProps.loggedinUserName,
+        }
     }
+
     public render() {
-        const { id } = this.props.match.params
         const { isDialogOpen, dialogContent, dialogOnClose } = this.props
         const filter = { filter: this.props.isViewerOpened ? 'blur(3px)' : '' }
         return (
@@ -108,8 +130,31 @@ class Dashboard extends React.Component<DashboardProps, {}> {
                                 <DashboardDrawer />
                                 <div style={styles.main}>
                                     <div style={{ height: 48, width: '100%' }}></div>
-                                    <ListToolbar />
-                                    <DocumentLibrary parentId={id} />
+                                    <Switch>
+                                        <Route path="/documents/:viewName?/:contentId?" >
+                                            <div>
+                                                <ListToolbar />
+                                                <DocumentLibrary currentFolderId={this.state.currentFolderId} />
+                                            </div>
+                                        </Route>
+                                        <Route path="/users" >
+                                            <div>Placeholder for users</div>
+                                        </Route>
+                                        <Route path="/groups" >
+                                            <div>Placeholder for groups</div>
+                                        </Route>
+                                        <Route path="/contenttypes" >
+                                            <div>Placeholder for content types</div>
+                                        </Route>
+                                        <Route path="/contenttemplates" >
+                                            <div>Placeholder for content templates</div>
+                                        </Route>
+                                        <Route path="/settings" >
+                                            <div>Placeholder for content settings</div>
+                                        </Route>
+
+                                        <Redirect to="/documents" />
+                                    </Switch>
                                 </div>
                             </div>
                             <DmsViewer />
@@ -124,7 +169,7 @@ class Dashboard extends React.Component<DashboardProps, {}> {
                         return <div style={styles.root}>
                             <div style={styles.dashBoardInnerMobile}>
                                 <ListToolbar />
-                                <DocumentLibrary parentId={id} />
+                                <DocumentLibrary currentFolderId={this.state.currentFolderId} />
                             </div>
                         </div>
                     }
@@ -135,22 +180,4 @@ class Dashboard extends React.Component<DashboardProps, {}> {
     }
 }
 
-const mapStateToProps = (state: rootStateType, match) => {
-    return {
-        loggedinUser: DMSReducers.getAuthenticatedUser(state.sensenet),
-        currentContent: Reducers.getCurrentContent(state.sensenet),
-        currentId: DMSReducers.getCurrentId(state.dms),
-        selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
-        isViewerOpened: state.dms.viewer.isOpened,
-        isDialogOpen: state.dms.dialog.isOpened,
-        dialogOnClose: state.dms.dialog.onClose,
-        dialogContent: state.dms.dialog.content,
-        dialogTitle: state.dms.dialog.title,
-    }
-}
-
-export default connect(mapStateToProps, {
-    loadContent: Actions.loadContent,
-    setCurrentId: DMSActions.setCurrentId,
-    loadUserActions: DMSActions.loadUserActions,
-})(Dashboard)
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)

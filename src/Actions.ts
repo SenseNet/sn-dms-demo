@@ -4,8 +4,10 @@ import { File as SnFile, GenericContent } from '@sensenet/default-content-types'
 import { IActionModel } from '@sensenet/default-content-types/dist/IActionModel'
 import { Actions } from '@sensenet/redux'
 import { Dispatch } from 'redux'
+import { horizontalValues, verticalValues } from './Reducers'
 
 import { debounce } from 'lodash'
+import { rootStateType } from '.'
 
 enum MessageMode { error = 'error', warning = 'warning', info = 'info' }
 
@@ -28,15 +30,15 @@ export const verifyCaptchaSuccess = () => ({
 export const clearRegistration = () => ({
     type: 'CLEAR_USER_REGISTRATION',
 })
-export const setCurrentId = (id) => ({
+export const setCurrentId = (id: number | string) => ({
     type: 'SET_CURRENT_ID',
     id,
 })
-export const setEditedContentId = (id) => ({
+export const setEditedContentId = (id: number) => ({
     type: 'SET_EDITED_ID',
     id,
 })
-export const openActionMenu = (actions, id, title, element, position?, customItems?) => ({
+export const openActionMenu = (actions: any[], id: number, title: string, element: HTMLElement, position?: any, customItems?: any) => ({
     type: 'OPEN_ACTIONMENU',
     actions: customItems && customItems.length > 0 ? customItems : actions,
     id,
@@ -53,11 +55,11 @@ export const selectionModeOn = () => ({
 export const selectionModeOff = () => ({
     type: 'SELECTION_MODE_OFF',
 })
-export const setEditedFirst = (edited) => ({
+export const setEditedFirst = (edited: boolean) => ({
     type: 'SET_EDITED_FIRST',
     edited,
 })
-export const openMessageBar = (mode: MessageMode, content, vertical?, horizontal?) => ({
+export const openMessageBar = (mode: MessageMode, content: any, vertical?: verticalValues, horizontal?: horizontalValues) => ({
     type: 'OPEN_MESSAGE_BAR',
     mode,
     content,
@@ -69,9 +71,8 @@ export const closeMessageBar = () => ({
 })
 export const loadListActions = (idOrPath: number | string, scenario?: string, customActions?: IActionModel[]) => ({
     type: 'LOAD_LIST_ACTIONS',
-    // tslint:disable:completed-docs
     async payload(repository: Repository): Promise<{ d: IActionModel[] }> {
-        const data: any = await repository.getActions({ idOrPath, scenario })
+        const data: { d: { Actions: IActionModel[] } } = await repository.getActions({ idOrPath, scenario }) as any
         const actions = customActions ? [...data.d.Actions, ...customActions] : data.d.Actions
         return {
             d: {
@@ -87,11 +88,11 @@ export const loadListActions = (idOrPath: number | string, scenario?: string, cu
 export const loadUserActions = (idOrPath: number | string, scenario?: string, customActions?: IActionModel[]) => ({
     type: 'LOAD_USER_ACTIONS',
     async payload(repository: Repository): Promise<{ d: IActionModel[] }> {
-        const data: any = await repository.getActions({ idOrPath, scenario })
+        const data: { d: { Actions: IActionModel[] } } = await repository.getActions({ idOrPath, scenario }) as any
         const actions = customActions ? [...data.d.Actions, ...customActions] : data.d.Actions
         return {
             d: {
-                Actions: actions.sort((a, b) => {
+                Actions: actions.sort((a: IActionModel, b: IActionModel) => {
                     const x = a.Index
                     const y = b.Index
                     return ((x < y) ? -1 : ((x > y) ? 1 : 0))
@@ -103,7 +104,7 @@ export const loadUserActions = (idOrPath: number | string, scenario?: string, cu
 
 export type ExtendedUploadProgressInfo = IUploadProgressInfo & { content?: GenericContent, visible?: boolean }
 
-function methodToDebounce(parentId: number, getState, dispatch) {
+function methodToDebounce(parentId: number, getState: () => rootStateType, dispatch: Dispatch) {
     const currentId = getState().sensenet.currentcontent.content.Id
     if (currentId === parentId) {
         dispatch(Actions.requestContent(getState().sensenet.currentcontent.content.Path))
@@ -111,9 +112,10 @@ function methodToDebounce(parentId: number, getState, dispatch) {
 }
 const debounceReloadOnProgress = debounce(methodToDebounce, 2000)
 
-export const trackUploadProgress = async <T extends GenericContent> (currentValue: ExtendedUploadProgressInfo, getState, dispatch, api: Repository) => {
 
-    let currentUpload: ExtendedUploadProgressInfo = getState().dms.uploads.uploads.find((u) => u.guid === currentValue.guid)
+export const trackUploadProgress = async <T extends GenericContent>(currentValue: ExtendedUploadProgressInfo, getState: () => rootStateType, dispatch: Dispatch, api: Repository) => {
+
+    let currentUpload: ExtendedUploadProgressInfo | undefined = getState().dms.uploads.uploads.find((u) => u.guid === currentValue.guid)
     if (currentUpload) {
         dispatch(updateUploadItem(currentValue))
     } else {
@@ -124,7 +126,7 @@ export const trackUploadProgress = async <T extends GenericContent> (currentValu
     }
 
     currentUpload = getState().dms.uploads.uploads.find((u) => u.guid === currentValue.guid)
-    if (currentValue.createdContent && !currentUpload.content) {
+    if (currentUpload && currentValue.createdContent && !currentUpload.content) {
         const content = await api.load<T>({
             idOrPath: currentValue.createdContent.Id,
             oDataOptions: {
@@ -132,12 +134,12 @@ export const trackUploadProgress = async <T extends GenericContent> (currentValu
             },
         })
         dispatch(updateUploadItem({ ...currentValue, content: content.d }))
-        debounceReloadOnProgress(content.d.ParentId, getState, dispatch)
+        debounceReloadOnProgress(content.d.ParentId || 0, getState, dispatch)
     }
 }
 
 export const uploadFileList = <T extends SnFile>(options: Pick<IUploadFromFileListOptions<T>, Exclude<keyof IUploadFromFileListOptions<T>, 'repository'>>) =>
-    async (dispatch: Dispatch, getState: () => any, api: Repository) => {
+    async (dispatch: Dispatch, getState: () => rootStateType, api: Repository) => {
 
         await usingAsync(new ObservableValue<IUploadProgressInfo>(), async (progress) => {
             progress.subscribe(async (currentValue) => trackUploadProgress(currentValue, getState, dispatch, api))

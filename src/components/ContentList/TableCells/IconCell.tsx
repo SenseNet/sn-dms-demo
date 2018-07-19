@@ -1,8 +1,8 @@
 import Icon from '@material-ui/core/Icon'
+import Table from '@material-ui/core/Table'
 import TableCell from '@material-ui/core/TableCell'
 import * as React from 'react'
 import MediaQuery from 'react-responsive'
-
 import { icons } from '../../../assets/icons'
 
 const styles = {
@@ -27,13 +27,15 @@ export class IconCell extends React.Component<IconCellProps, {}> {
             <MediaQuery minDeviceWidth={700}>
                 {(matches) => {
                     const padding = matches ? 'none' : 'dense'
-                    return <TableCell
-                        style={styles.typeIcon}
-                        padding={padding}
-                        onClick={(event) => this.props.handleRowSingleClick(event, id)}
-                        onDoubleClick={(event) => this.props.handleRowDoubleClick(event, id)}>
-                        <Icon color="primary">{matches || !selected ? icons[icon.toLowerCase()] : icons.tick}</Icon>
-                    </TableCell>
+                    return <Table>
+                        <TableCell
+                            style={styles.typeIcon}
+                            padding={padding}
+                            onClick={(event) => this.props.handleRowSingleClick(event, id)}
+                            onDoubleClick={(event) => this.props.handleRowDoubleClick(event, id)}>
+                            <Icon color="primary">{matches || !selected ? icons[icon.toLowerCase()] : icons.tick}</Icon>
+                        </TableCell>
+                    </Table>
                 }}
             </MediaQuery>
         )
