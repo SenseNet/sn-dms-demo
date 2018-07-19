@@ -1,7 +1,6 @@
 import { IContent } from '@sensenet/client-core'
-import { NewView } from '@sensenet/controls-react'
 import { IActionModel } from '@sensenet/default-content-types'
-import { Reducers } from '@sensenet/redux'
+import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import * as DMSActions from '../../Actions'
@@ -35,7 +34,7 @@ class AddNewMenu extends React.Component<AddNemMenuProps, { options }> {
     }
 
     public componentWillReceiveProps(nextProps) {
-        const { actions, currentId, getActions, openDialog, schema, repository } = this.props
+        const { actions, currentId, getActions, openDialog, closeActionMenu } = this.props
         if ((nextProps.currentContent.Id && (currentId === 'login' || currentId !== nextProps.currentId)) && actions.length === 0) {
             getActions(nextProps.currentContent.Id)
         }
@@ -45,9 +44,12 @@ class AddNewMenu extends React.Component<AddNemMenuProps, { options }> {
             nextProps.actions.map((action, index) => {
                 const newDisplayName = `New ${action.DisplayName}`
                 action.DisplayName = newDisplayName
+                const contentType = this.getContentType(action.Url)
                 action.Action = () => {
+                    closeActionMenu()
                     openDialog(
-                        <NewView path={nextProps.currentContent.Path} repository={this.props.repository} schema={this.props.schema} />,
+                        <AddNewDialog parentPath={nextProps.currentContent.Path}
+                        contentTypeName={contentType} />,
                         newDisplayName, DMSActions.closeDialog)
                 }
                 if (action.DisplayName.indexOf('Folder') > -1) {

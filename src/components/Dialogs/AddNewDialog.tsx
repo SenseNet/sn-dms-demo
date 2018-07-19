@@ -1,20 +1,17 @@
-import { DialogContent, DialogTitle } from '@material-ui/core'
 import { NewView } from '@sensenet/controls-react'
 import * as React from 'react'
-
-import { resources } from '../../assets/resources'
+import { repository } from '../../index'
 
 interface AddNewDialogProps {
     parentPath: string,
-    repository,
-    schema,
+    contentTypeName: string,
 }
 
-export class AddNewDialog extends React.Component<AddNewDialogProps, {}> {
+export class AddNewDialog extends React.Component<AddNewDialogProps, { schema }> {
     public render() {
-        const { parentPath } = this.props
+        const { parentPath, contentTypeName } = this.props
         return (
-            <NewView path={parentPath} repository={this.props.repository} schema={this.props.schema} />
+            <NewView path={parentPath} repository={repository} contentTypeName={contentTypeName}/>
         )
     }
 }
