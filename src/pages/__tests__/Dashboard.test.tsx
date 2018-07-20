@@ -1,4 +1,5 @@
 import { Repository } from '@sensenet/client-core'
+import { sensenetDocumentViewerReducer } from '@sensenet/document-viewer-react'
 import { Reducers, Store } from '@sensenet/redux'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
@@ -8,7 +9,6 @@ import {
 } from 'react-router-dom'
 import { combineReducers } from 'redux'
 import { rootStateType } from '../..'
-import { sensenetDocumentViewerReducer } from '../../../node_modules/@sensenet/document-viewer-react'
 import * as DMSReducers from '../../Reducers'
 import Dashboard from '../Dashboard'
 

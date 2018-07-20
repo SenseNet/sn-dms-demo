@@ -1,16 +1,16 @@
 
-import { Actions, Reducers, Store } from '@sensenet/redux'
+import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { Redirect, Route, RouteComponentProps, Switch } from 'react-router'
+import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
 import { ListToolbar } from '../components/ContentList/ListToolbar'
 import DashboardDrawer from '../components/DashboardDrawer'
 import { DmsViewer } from '../components/DmsViewer'
 import DocumentLibrary from '../components/DocumentLibrary'
 import Header from '../components/Header'
-import { rootStateType } from '../index'
 import * as DMSReducers from '../Reducers'
 
 const styles = {
@@ -38,6 +38,7 @@ const styles = {
 const mapStateToProps = (state: rootStateType) => {
     return {
         loggedinUserName: state.sensenet.session.user.userName,
+        loginState: state.sensenet.session.loginState,
         currentContent: Reducers.getCurrentContent(state.sensenet),
         currentId: DMSReducers.getCurrentId(state.dms),
         selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
