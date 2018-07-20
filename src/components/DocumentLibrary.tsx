@@ -1,11 +1,11 @@
 import { IODataParams } from '@sensenet/client-core'
 import { GenericContent } from '@sensenet/default-content-types'
 import { Actions, Reducers } from '@sensenet/redux'
+import { loadContent } from '@sensenet/redux/dist/Actions'
 import * as React from 'react'
 import { DragDropContext } from 'react-dnd'
 import HTML5Backend, { NativeTypes } from 'react-dnd-html5-backend-filedrop'
 import { connect } from 'react-redux'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
 import * as DMSReducers from '../Reducers'
@@ -17,7 +17,7 @@ const uploadContentAction = Actions.uploadRequest
 
 const mapStateToProps = (state: rootStateType) => {
     return {
-        loggedinUser: DMSReducers.getAuthenticatedUser(state.sensenet),
+        loggedinUser: state.sensenet.session.user,
         children: DMSReducers.getChildrenItems(state.sensenet),
         ids: Reducers.getIds(state.sensenet.children),
         errorMessage: Reducers.getError(state.sensenet.children),
@@ -29,6 +29,7 @@ const mapStateToProps = (state: rootStateType) => {
 const mapDispatchToProps = {
     fetchContent: fetchContentAction,
     setCurrentId: DMSActions.setCurrentId,
+    loadContent,
     uploadContent: uploadContentAction,
     uploadDataTransfer: DMSActions.uploadDataTransfer,
 }
@@ -40,6 +41,7 @@ interface DocumentLibraryProps {
 interface DocumentLibraryState {
     odataOptions: IODataParams<GenericContent> & { scenario: string }
     id, droppedFiles, children
+    lastFolderId: number
 }
 
 @DragDropContext(HTML5Backend, {
@@ -56,24 +58,33 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                 filter: 'ContentType ne \'SystemFolder\'',
                 scenario: 'DMSListItem',
             },
-            id: this.props.currentContent.Id,
+            id: 0,
             droppedFiles: [],
             children: this.props.children,
+            lastFolderId: this.props.currentFolderId,
         }
         this.handleFileDrop = this.handleFileDrop.bind(this)
     }
 
     public static getDerivedStateFromProps(newProps: DocumentLibrary['props'], lastState: DocumentLibrary['state']) {
+        const lastLoadedContentId = lastState.id
         if (newProps.loggedinUser.userName !== 'Visitor') {
-            if (newProps.currentContent && newProps.currentContent.Id && newProps.currentContent.Path) {
-                if (newProps.currentContent.Id !== lastState.id) {
-                    newProps.fetchContent(newProps.currentContent.Path, lastState.odataOptions)
-                }
+            if (!newProps.currentFolderId && newProps.currentContent.Path !== `/Root/Profiles/Public/${newProps.loggedinUser.userName}/Document_Library`) {
+                newProps.loadContent(`/Root/Profiles/Public/${newProps.loggedinUser.userName}/Document_Library`, lastState.odataOptions)
+            } else if (newProps.currentFolderId && newProps.currentFolderId !== newProps.currentContent.Id) {
+                newProps.loadContent(newProps.currentFolderId, lastState.odataOptions)
             }
+
+            // if (newProps.currentContent && newProps.currentContent.Id && newProps.currentContent.Path) {
+            //     if (newProps.currentContent.Id !== lastState.id) {
+            //         newProps.fetchContent(newProps.currentContent.Path, lastState.odataOptions)
+            //         lastLoadedContentId = newProps.currentContent.Id
+            //     }
+            // }
         }
         return {
             ...lastState,
-            id: newProps.currentContent.Id,
+            id: lastLoadedContentId,
         } as DocumentLibrary['state']
     }
 

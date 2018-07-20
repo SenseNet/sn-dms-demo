@@ -3,9 +3,11 @@ import { IContent, IUploadProgressInfo } from '@sensenet/client-core'
 import { Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { rootStateType } from '../..'
 import { hideUploadItem, hideUploadProgress, removeUploadItem, uploadFileList } from '../../Actions'
 import * as DMSReducers from '../../Reducers'
+import { DashboardMenuItem } from '../DashboardDrawer'
 import { UploadBar } from '../Upload/UploadBar'
 import { UploadButton } from '../Upload/UploadButton'
 import { AddNewButton } from './AddNewButton'
@@ -91,7 +93,7 @@ interface DocumentMenuProps {
     active,
     subactive,
     classes,
-    item,
+    item: DashboardMenuItem,
     uploadFileList: typeof uploadFileList,
     currentContent: IContent,
     uploadItems: IUploadProgressInfo[]
@@ -122,9 +124,9 @@ const subMenu = [
 
 // tslint:disable-next-line:variable-name
 const ConnectedUploadBar = connect((state: rootStateType) => ({
-        items: state.dms.uploads.uploads,
-        isOpened: state.dms.uploads.showProgress,
-    }),
+    items: state.dms.uploads.uploads,
+    isOpened: state.dms.uploads.showProgress,
+}),
     {
         close: hideUploadProgress,
         removeItem: hideUploadItem,
@@ -141,15 +143,17 @@ class DocumentsMenu extends React.Component<DocumentMenuProps, {}> {
         const { active, classes, subactive, item } = this.props
         return (
             <div>
-                <MenuItem
-                    selected={active}
-                    classes={{ root: classes.root, selected: classes.selected }}
-                    onClick={(e) => this.handleMenuItemClick('documents')}>
-                    <Icon className={active ? classes.iconWhiteActive : classes.iconWhite} color="primary">
-                        {item.icon}
-                    </Icon>
-                    <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={item.title} />
-                </MenuItem>
+                <Link to="/">
+                    <MenuItem
+                        selected={active}
+                        classes={{ root: classes.root, selected: classes.selected }}
+                        onClick={(e) => this.handleMenuItemClick('documents')}>
+                        <Icon className={active ? classes.iconWhiteActive : classes.iconWhite} color="primary">
+                            {item.icon}
+                        </Icon>
+                        <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={item.title} />
+                    </MenuItem>
+                </Link>
                 <div className={active ? classes.open : classes.closed}>
                     <Divider />
                     <UploadButton
@@ -173,13 +177,16 @@ class DocumentsMenu extends React.Component<DocumentMenuProps, {}> {
                     <AddNewButton contentType="" />
                     <MenuList className={classes.submenu}>
                         {subMenu.map((menuitem, index) => {
-                            return (<MenuItem className={classes.submenuItem} key={index}
-                                onClick={(e) => this.handleSubmenuItemClick(menuitem.name)}>
-                                <Icon className={subactive === menuitem.name ? classes.submenuIconActive : classes.submenuIcon}>
-                                    {menuitem.icon}
-                                </Icon>
-                                <ListItemText classes={{ primary: subactive === menuitem.name ? classes.primarySubActive : classes.primarySub }} inset primary={menuitem.title} />
-                            </MenuItem>)
+                            return (
+                                <Link key={index} to={`${this.props.item.routeName}/${menuitem.name}`} style={{ textDecoration: 'inherit' }}>
+                                    <MenuItem className={classes.submenuItem}
+                                        onClick={(e) => this.handleSubmenuItemClick(menuitem.name)}>
+                                        <Icon className={subactive === menuitem.name ? classes.submenuIconActive : classes.submenuIcon}>
+                                            {menuitem.icon}
+                                        </Icon>
+                                        <ListItemText classes={{ primary: subactive === menuitem.name ? classes.primarySubActive : classes.primarySub }} inset primary={menuitem.title} />
+                                    </MenuItem>
+                                </Link>)
                         })}
                     </MenuList>
                 </div>
