@@ -1,6 +1,7 @@
 import IconButton from '@material-ui/core/IconButton'
 import TableCell from '@material-ui/core/TableCell'
 import MoreVert from '@material-ui/icons/MoreVert'
+import { GenericContent } from '@sensenet/default-content-types'
 import { Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -27,8 +28,7 @@ const styles = {
 }
 
 interface MenuCellProps {
-    content,
-    actions,
+    content: GenericContent,
     isHovered: boolean,
     isSelected: boolean,
     openActionMenu,
@@ -51,8 +51,6 @@ class MenuCell extends React.Component<MenuCellProps, MenuCellState> {
         this.handleActionMenuClick = this.handleActionMenuClick.bind(this)
     }
     public handleActionMenuClick(e, content) {
-        const top = e.pageY - e.target.offsetTop
-        const left = e.pageX - e.target.offsetLeft
         this.props.closeActionMenu()
         this.setState({ anchorTop: e.clientY, anchorLeft: e.clientX })
         this.props.openActionMenu(content.Actions, content.Id, content.DisplayName, e.currentTarget,
@@ -90,7 +88,6 @@ const mapStateToProps = (state: rootStateType, match) => {
     return {
         selected: Reducers.getSelectedContentIds(state.sensenet),
         opened: Reducers.getOpenedContent(state.sensenet.children),
-        actions: DMSReducers.getActionsOfAContent(state.sensenet.children.entities[match.content.Id]),
         selectionModeOn: DMSReducers.getIsSelectionModeOn(state.dms),
     }
 }

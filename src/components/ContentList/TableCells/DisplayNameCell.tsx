@@ -1,16 +1,19 @@
 import Icon from '@material-ui/core/Icon'
 import TableCell from '@material-ui/core/TableCell'
 import TextField from '@material-ui/core/TextField'
+import { GenericContent } from '@sensenet/default-content-types'
 import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
-import { DropTarget } from 'react-dnd'
-import { DragSource } from 'react-dnd'
+import { ConnectDragSource, ConnectDropTarget, DragSource, DropTarget } from 'react-dnd'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import * as DMSActions from '../../../Actions'
 import { icons } from '../../../assets/icons'
 import * as DragAndDrop from '../../../DragAndDrop'
 import * as DMSReducers from '../../../Reducers'
+
+const renameContent = Actions.updateContent
+const setEdited = DMSActions.setEditedContentId
 
 const styles = {
     displayName: {
@@ -53,37 +56,43 @@ const styles = {
         fontSize: 30,
     },
     title: {
-            flex: '1 1 auto',
-            padding: '0 16px',
-            minWidth: 0,
-        },
+        flex: '1 1 auto',
+        padding: '0 16px',
+        minWidth: 0,
+    },
 }
 
 interface DisplayNameCellProps {
-    content,
+    content: GenericContent,
     isHovered: boolean,
-    handleRowDoubleClick,
-    handleRowSingleClick,
-    rename,
-    setEdited,
-    currentContent,
-    edited,
-    connectDragSource,
-    connectDropTarget,
+    handleRowDoubleClick: (event: React.MouseEvent, item: GenericContent) => any,
+    handleRowSingleClick: (event: React.MouseEvent, item: GenericContent) => any,
+    connectDragSource: ConnectDragSource,
+    connectDropTarget: ConnectDropTarget,
     isDragging: boolean,
     isOver: boolean,
     canDrop: boolean,
     onDrop,
-    moveCard,
     isCopy: boolean,
-    selected,
-    selectedContentItems,
-    copyBatch,
-    moveBatch,
-    editedFirst: boolean,
-    setEditedFirst,
     icon,
     isSelected
+}
+
+const mapStateToProps = (state, match) => {
+    return {
+        edited: DMSReducers.getEditedItemId(state.dms),
+        selected: Reducers.getSelectedContentIds(state.sensenet),
+        selectedContentItems: Reducers.getSelectedContentItems(state.sensenet),
+        editedFirst: DMSReducers.isEditedFirst(state.dms),
+    }
+}
+
+const mapDispatchToProps = {
+    rename: renameContent,
+    setEdited,
+    copyBatch: Actions.copyBatch,
+    moveBatch: Actions.moveBatch,
+    setEditedFirst: DMSActions.setEditedFirst,
 }
 
 interface DisplayNameCellState {
@@ -99,7 +108,7 @@ interface DisplayNameCellState {
     canDrop: monitor.canDrop(),
 }))
 @DragSource('row', DragAndDrop.rowSource, DragAndDrop.collect)
-class DisplayNameCell extends React.Component<DisplayNameCellProps, DisplayNameCellState> {
+class DisplayNameCell extends React.Component<DisplayNameCellProps & typeof mapDispatchToProps & ReturnType<typeof mapStateToProps>, DisplayNameCellState> {
     private input: HTMLInputElement
     constructor(props) {
         super(props)
@@ -114,9 +123,12 @@ class DisplayNameCell extends React.Component<DisplayNameCellProps, DisplayNameC
         this.handleTitleClick = this.handleTitleClick.bind(this)
         this.handleTitleInputBlur = this.handleTitleInputBlur.bind(this)
         this.handleTitleChange = this.handleTitleChange.bind(this)
+
+        this.handleDoubleClick = this.handleDoubleClick.bind(this)
+        this.handleClick = this.handleClick.bind(this)
     }
-    public handleTitleClick(e, id) {
-        if (e.target.id !== 'renameInput') {
+    public handleTitleClick(e: React.MouseEvent) {
+        if (e.currentTarget.id !== 'renameInput') {
             e.preventDefault()
         }
     }
@@ -159,7 +171,7 @@ class DisplayNameCell extends React.Component<DisplayNameCellProps, DisplayNameC
         }
     }
     public updateDisplayName() {
-        const c = this.props.currentContent
+        const c = this.props.content
         const updateableContent = c
         updateableContent.DisplayName = this.state.newText
         this.props.rename(updateableContent.Id, updateableContent)
@@ -170,12 +182,19 @@ class DisplayNameCell extends React.Component<DisplayNameCellProps, DisplayNameC
         })
         this.props.setEdited(null)
     }
+
+    public handleDoubleClick(ev: React.MouseEvent) {
+        this.props.handleRowDoubleClick(ev, this.props.content)
+    }
+
+    public handleClick(ev: React.MouseEvent) {
+        this.props.handleRowSingleClick(ev, this.props.content)
+    }
+
     public isEdited(id) { return this.props.edited === id }
     public render() {
-        const content = this.props.currentContent
         const isEdited = this.isEdited(this.props.content.Id)
-        const selected = this.props.selected
-        const { handleRowSingleClick, handleRowDoubleClick, connectDragSource, connectDropTarget, isCopy, icon, isSelected } = this.props
+        const { connectDragSource, connectDropTarget, isCopy, icon, isSelected } = this.props
         const dropEffect = isCopy ? 'copy' : 'move'
         const iconColor = icon.toLowerCase() !== 'folder' || isSelected ? 'primary' : 'disabled'
         return (
@@ -184,30 +203,31 @@ class DisplayNameCell extends React.Component<DisplayNameCellProps, DisplayNameC
                     return <TableCell
                         padding="none"
                         style={this.props.isHovered && !isEdited ? styles.hoveredDisplayName : styles.displayName as any}
-                        onClick={(event) => handleRowSingleClick(event, content.id)}
-                        onDoubleClick={(event) => handleRowDoubleClick(event, this.props.content.Id)}>
-                        {isEdited ?
-                            <div>
-                                <Icon color="primary" style={styles.icon}>{icons[icon.toLowerCase()]}</Icon>
-                                <TextField
-                                    id="renameInput"
-                                    autoFocus={isEdited}
-                                    defaultValue={this.props.content.DisplayName}
-                                    margin="dense"
-                                    style={styles.editedTitle as any}
-                                    onChange={(event) => this.handleTitleChange(event)}
-                                    onKeyPress={(event) => this.handleKeyPress(event)}
-                                    onBlur={(event) => this.handleTitleInputBlur(this.props.content.Id, !matches)}
-                                    inputRef={(ref) => this.input = ref}
-                                />
-                            </div> :
-                            connectDragSource(connectDropTarget(<div
-                                onClick={(event) => matches ? this.handleTitleClick(event, this.props.content.Id) : event.preventDefault()}
-                                style={isSelected ? {...styles.selectedDisplayNameDiv, ...styles.displayNameDiv} : styles.displayNameDiv as any}>
-                                <Icon color={iconColor} style={styles.icon}>{icons[icon.toLowerCase()]}</Icon>
-                                <div style={styles.title}>{this.state.displayName}</div>
-                            </div>), { dropEffect })
-                        }
+                        onDoubleClick={this.handleDoubleClick}>
+                        <div onClick={this.handleClick}>
+                            {isEdited ?
+                                <div>
+                                    <Icon color="primary" style={styles.icon}>{icons[icon.toLowerCase()]}</Icon>
+                                    <TextField
+                                        id="renameInput"
+                                        autoFocus={isEdited}
+                                        defaultValue={this.props.content.DisplayName}
+                                        margin="dense"
+                                        style={styles.editedTitle as any}
+                                        onChange={(event) => this.handleTitleChange(event)}
+                                        onKeyPress={(event) => this.handleKeyPress(event)}
+                                        onBlur={(event) => this.handleTitleInputBlur(this.props.content.Id, !matches)}
+                                        inputRef={(ref) => this.input = ref}
+                                    />
+                                </div> :
+                                connectDragSource(connectDropTarget(<div
+                                    onClick={(event) => matches ? this.handleTitleClick(event) : event.preventDefault()}
+                                    style={isSelected ? { ...styles.selectedDisplayNameDiv, ...styles.displayNameDiv } : styles.displayNameDiv as any}>
+                                    <Icon color={iconColor} style={styles.icon}>{icons[icon.toLowerCase()]}</Icon>
+                                    <div style={styles.title}>{this.state.displayName}</div>
+                                </div>), { dropEffect })
+                            }
+                        </div>
                     </TableCell>
                 }}
             </MediaQuery>
@@ -215,23 +235,4 @@ class DisplayNameCell extends React.Component<DisplayNameCellProps, DisplayNameC
     }
 }
 
-const renameContent = Actions.updateContent
-const setEdited = DMSActions.setEditedContentId
-
-const mapStateToProps = (state, match) => {
-    return {
-        currentContent: Reducers.getContent(state.sensenet.children.entities, match.content.Id),
-        edited: DMSReducers.getEditedItemId(state.dms),
-        selected: Reducers.getSelectedContentIds(state.sensenet),
-        selectedContentItems: Reducers.getSelectedContentItems(state.sensenet),
-        editedFirst: DMSReducers.isEditedFirst(state.dms),
-    }
-}
-
-export default connect(mapStateToProps, {
-    rename: renameContent,
-    setEdited,
-    copyBatch: Actions.copyBatch,
-    moveBatch: Actions.moveBatch,
-    setEditedFirst: DMSActions.setEditedFirst,
-})(DisplayNameCell)
+export default connect(mapStateToProps, mapDispatchToProps)(DisplayNameCell)
