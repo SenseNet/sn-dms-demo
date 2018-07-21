@@ -4,6 +4,7 @@ import { Action, AnyAction, combineReducers, Reducer } from 'redux'
 import { rootStateType } from '.'
 import { ExtendedUploadProgressInfo } from './Actions'
 import { resources } from './assets/resources'
+import { pagesReducer } from './store/pages'
 
 enum MessageMode { error, warning, info }
 
@@ -427,6 +428,7 @@ export const dms = combineReducers({
     toolbar,
     uploads,
     menu,
+    pages: pagesReducer,
     viewer,
 })
 

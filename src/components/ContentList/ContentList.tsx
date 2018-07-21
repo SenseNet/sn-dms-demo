@@ -21,6 +21,8 @@ import ActionMenu from '../ActionMenu/ActionMenu'
 import ListHead from './ListHead'
 import SimpleTableRow from './SimpleTableRow'
 
+import { IContent } from '@sensenet/client-core'
+import { File as SnFile, Folder, GenericContent } from '@sensenet/default-content-types'
 import { compile } from 'path-to-regexp'
 
 const styles = {
@@ -39,14 +41,11 @@ const styles = {
 
 const mapStateToProps = (state: rootStateType) => {
     return {
-        ids: Reducers.getIds(state.sensenet.children),
         rootId: state.dms.rootId,
         selected: Reducers.getSelectedContentIds(state.sensenet),
-        selectedContentItems: Reducers.getSelectedContentItems(state.sensenet),
         isFetching: Reducers.getFetching(state.sensenet.children),
         isLoading: DMSReducers.getLoading(state.dms),
         edited: DMSReducers.getEditedItemId(state.dms),
-        selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
     }
 }
 
@@ -55,10 +54,7 @@ const mapDispatchToProps = {
     select: Actions.selectContent,
     deselect: Actions.deSelectContent,
     clearSelection: Actions.clearSelection,
-    delete: Actions.deleteContent,
     deleteBatch: Actions.deleteBatch,
-    copyBatch: Actions.copyBatch,
-    moveBatch: Actions.moveBatch,
     selectionModeOn: DMSActions.selectionModeOn,
     selectionModeOff: DMSActions.selectionModeOff,
     openViewer: DMSActions.openViewer,
@@ -66,15 +62,14 @@ const mapDispatchToProps = {
 }
 
 interface ContentListProps extends RouteComponentProps<any> {
+    contentList: Array<SnFile | Folder>
     connectDropTarget,
     hostName: string
 }
 
 interface ContentListState {
-    ids,
     order,
     orderBy,
-    data,
     selected,
     active,
     copy,
@@ -85,14 +80,12 @@ interface ContentListState {
     isOver: monitor.isOver(),
     canDrop: monitor.canDrop(),
 }))
-class ContentList extends React.Component<ContentListProps & RouteComponentProps<any> & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, ContentListState> {
+class ContentList extends React.Component<ContentListProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, ContentListState> {
     constructor(props) {
         super(props)
         this.state = {
             order: 'desc',
             orderBy: 'IsFolder',
-            data: this.props.children,
-            ids: this.props.ids,
             selected: [],
             active: null,
             copy: false,
@@ -105,70 +98,57 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
     }
 
     public componentDidUpdate(prevOps) {
-        if (this.props.edited !== prevOps.edited) {
-            this.setState({
-                data: this.props.children,
-            })
-        }
-
         if (this.props.selected.length > 0 && !prevOps.selectionModeIsOn) {
             this.props.selectionModeOn()
         } else if (this.props.selected.length === 0 && prevOps.selectionModeIsOn) {
             this.props.selectionModeOff()
         }
     }
-    public componentWillReceiveProps(nextProps) {
-        if (this.props.ids.length !== nextProps.ids.length) {
 
-            this.setState({
-                data: nextProps.children,
-            })
-        }
-    }
-    public handleRowSingleClick(e, content, m) {
-        const { ids, selected } = this.props
+    public handleRowSingleClick(e: React.MouseEvent, content: GenericContent) {
+        const { contentList, selected } = this.props
         if (e.shiftKey) {
             e.preventDefault()
-            const from = ids.indexOf(selected[selected.length - 1])
-            const till = ids.indexOf(Number(e.target.closest('tr').id))
+            const from = contentList.findIndex((c) => c.Id === selected[selected.length - 1])
+            const till = contentList.findIndex((c) => c.Id === Number(e.currentTarget.closest('tr').id))
             if (from < till) {
-                ids.map((elId, i) => {
+                contentList.map((c, i) => {
                     if (i > from && i < till + 1) {
-                        this.handleSimpleSelection(this.props.children[elId])
+                        this.handleSimpleSelection(c)
                     }
                 })
             } else {
-                for (let i = ids.length - 1; i > -1; i--) {
+                for (let i = contentList.length - 1; i > -1; i--) {
                     if (i < from && i > till - 1) {
-                        this.handleSimpleSelection(this.props.children[ids[i]])
+                        this.handleSimpleSelection(this.props.contentList[i])
                     }
                 }
             }
         } else if (e.ctrlKey) {
             this.handleSimpleSelection(content)
         } else {
-            e.target.getAttribute('type') !== 'checkbox' && window.innerWidth >= 700 ?
+            e.currentTarget.getAttribute('type') !== 'checkbox' && window.innerWidth >= 700 ?
                 this.handleSingleSelection(content) :
                 this.handleSimpleSelection(content)
         }
     }
-    public handleRowDoubleClick(e, id, type) {
-        if (type === 'Folder') {
-            const newPath = compile(this.props.match.path)({ scope: 'documents', contentId: id })
+    public handleRowDoubleClick(e: React.MouseEvent, c: GenericContent) {
+        if (c.Type === 'Folder') {
+            const newPath = compile(this.props.match.path)({ folderId: c.Id })
             this.props.history.push(newPath)
-            this.props.loadContent(id)
-            this.props.deselect(this.props.children[id])
+            this.props.loadContent(c.Id)
+            this.props.deselect(c)
         } else {
             // console.log('open preview')
-            this.props.openViewer(id)
-            this.props.pollDocumentData(this.props.hostName, id)
+            this.props.openViewer(c.Id)
+            this.props.pollDocumentData(this.props.hostName, c.Id)
 
         }
     }
     public handleKeyDown(e) {
         const ctrl = e.ctrlKey ? true : false
         const shift = e.shiftKey ? true : false
-        const { children, ids } = this.props
+        const { contentList } = this.props
 
         if (ctrl) {
             this.setState({
@@ -181,33 +161,33 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
         } else {
             const id = Number(e.target.closest('tr').id)
             if (id !== 0) {
-                const type = children[id].Type
+                const content = contentList.find((i) => i.Id === id)
                 this.setState({
                     active: id,
                 })
                 switch (e.which) {
                     case Key.Space:
                         e.preventDefault()
-                        this.handleSimpleSelection(children[id])
+                        this.handleSimpleSelection(contentList.find((i) => i.Id === id))
                         break
                     case Key.Enter:
                         e.preventDefault()
-                        this.handleRowDoubleClick(e, id, type)
+                        this.handleRowDoubleClick(e, content)
                         break
                     case Key.UpArrow:
                         if (shift) {
-                            const upperItemIndex = ids.indexOf(Number(this.state.active)) - 1
+                            const upperItemIndex = contentList.findIndex((c) => c.Id === Number(this.state.active)) - 1
                             upperItemIndex > -1 ?
-                                this.handleSimpleSelection(children[ids[upperItemIndex]]) :
+                                this.handleSimpleSelection(contentList[upperItemIndex]) :
                                 // tslint:disable-next-line:no-unused-expression
                                 null
                         }
                         break
                     case Key.DownArrow:
                         if (shift) {
-                            const upperItemIndex = ids.indexOf(Number(this.state.active)) + 1
-                            upperItemIndex < ids.length ?
-                                this.handleSimpleSelection(children[ids[upperItemIndex]]) :
+                            const upperItemIndex = contentList.findIndex((c) => c.Id === Number(this.state.active)) + 1
+                            upperItemIndex < contentList.length ?
+                                this.handleSimpleSelection(contentList[upperItemIndex]) :
                                 // tslint:disable-next-line:no-unused-expression
                                 null
                         }
@@ -239,7 +219,7 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
             })
         }
     }
-    public handleSimpleSelection(content) {
+    public handleSimpleSelection(content: IContent) {
         this.props.selected.indexOf(content.Id) > -1 ?
             this.props.deselect(content) :
             this.props.select(content)
@@ -272,16 +252,16 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
     }
     public handleSelectAllClick = (event, checked) => {
         if (checked) {
-            this.setState({ selected: this.props.ids })
-            this.props.ids.map((id) => this.props.selected.indexOf(id) > -1 ? null : this.props.select(this.props.children[id]))
+            this.setState({ selected: this.props.contentList.map((a) => a.Id) })
+            this.props.contentList.map((c) => this.props.selected.indexOf(c.Id) > -1 ? null : this.props.select(c))
             return
         }
         this.setState({ selected: [] })
-        this.props.ids.map((id) => { this.props.deselect(this.props.children[id]) })
+        this.props.contentList.map((c) => { this.props.deselect(c) })
     }
-    public handleTap(e, id, type) {
-        if (type === 'Folder') {
-            this.props.history.push(`/${id}`)
+    public handleTap(e: React.SyntheticEvent, c: GenericContent) {
+        if (c.Type === 'Folder') {
+            this.props.history.push(`/${c.Id}`)
         } else {
             console.log('open preview')
         }
@@ -305,31 +285,26 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
                             orderBy={this.state.orderBy}
                             onSelectAllClick={this.handleSelectAllClick}
                             onRequestSort={this.handleRequestSort}
-                            count={this.props.ids.length}
+                            count={this.props.contentList.length}
                         />
                     </MediaQuery>
                     <TableBody style={styles.tableBody}>
-                        {/* {this.props.parentId && this.isChildrenFolder() ?
-                                <ParentFolderTableRow parentId={this.props.parentId} history={this.props.history} /> :
-                                <SharedItemsTableRow currentId={this.props.currentId} />
-                            } */}
                         {this.props.isFetching || this.props.isLoading ?
                             <tr>
                                 <td colSpan={5} style={styles.loader}>
                                     <CircularProgress color="secondary" size={50} />
                                 </td>
                             </tr>
-                            : this.props.ids.map((n) => {
-                                const content = this.props.children[n]
-                                return typeof content !== 'undefined' ? (
+                            : this.props.contentList.map((content) => {
+                                return (
                                     <SimpleTableRow
                                         content={content}
                                         key={content.Id}
                                         handleRowDoubleClick={this.handleRowDoubleClick}
                                         handleRowSingleClick={this.handleRowSingleClick}
-                                        handleTap={(e) => this.handleTap(e, content.Id, content.Type)}
+                                        handleTap={this.handleTap}
                                         isCopy={this.state.copy} />
-                                ) : null
+                                )
                             })
                         }
 

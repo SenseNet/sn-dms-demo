@@ -1,5 +1,5 @@
 
-import { Actions, Reducers } from '@sensenet/redux'
+import { Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -47,8 +47,6 @@ const mapStateToProps = (state: rootStateType) => {
 }
 
 const mapDispatchToProps = {
-    loadContent: Actions.loadContent,
-    setCurrentId: DMSActions.setCurrentId,
     loadUserActions: DMSActions.loadUserActions,
 }
 
@@ -57,11 +55,8 @@ interface DashboardProps extends RouteComponentProps<any> {
 }
 
 export interface DashboardState {
-    currentFolderId?: number
-    currentSelection: number[]
-    currentScope: string
-    currentViewName: string
     currentUserName: string
+    currentSelection: number[]
 }
 
 class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DashboardState> {
@@ -79,31 +74,13 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
     }
 
     public static getDerivedStateFromProps(newProps: Dashboard['props'], lastState: Dashboard['state']) {
-        let currentFolderId = newProps.match.params.folderId && parseInt(newProps.match.params.folderId.toString(), 10) || undefined
-        const currentSelection = newProps.match.params.selection && decodeURIComponent(newProps.match.params.selection) || []
-        const currentViewName = newProps.match.params.action
-
-        if (lastState.currentFolderId !== currentFolderId && currentFolderId) {
-            newProps.setCurrentId(currentFolderId)
-            newProps.loadContent(currentFolderId)
-        }
-
         if (newProps.loggedinUserName !== lastState.currentUserName) {
             newProps.loadUserActions(`/Root/IMS/Public/${newProps.loggedinUserName}`, 'DMSUserActions')
 
-            if (lastState.currentFolderId === currentFolderId && currentFolderId === undefined) {
-                newProps.loadContent(`/Root/Profiles/Public/${newProps.loggedinUserName}/Document_Library`)
-                currentFolderId = 0
-
-            }
         }
 
         return {
             ...lastState,
-            currentFolderId,
-            currentSelection,
-            currentViewName,
-            currentScope: newProps.match.params.scope || 'documents',
             currentUserName: newProps.loggedinUserName,
         }
     }
@@ -121,11 +98,27 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                 <div style={styles.main}>
                                     <div style={{ height: 48, width: '100%' }}></div>
                                     <Switch>
-                                        <Route path="/documents/:viewName?/:contentId?" >
-                                            <div>
-                                                <ListToolbar />
-                                                <DocumentLibrary currentFolderId={this.state.currentFolderId} />
-                                            </div>
+                                        <Route path="/documents" component={(props: RouteComponentProps<any>) => (
+                                            <Switch>
+                                                <Route path={props.match.url + '/shared'}>
+                                                    <div>Shared</div>
+                                                </Route>
+
+                                                <Route path={props.match.url + '/savedqueries'}>
+                                                    <div>SavedQueries</div>
+                                                </Route>
+                                                <Route path={props.match.url + '/trash'}>
+                                                    <div>Trash</div>
+                                                </Route>
+                                                <Route path={props.match.url + '/:folderId?'} component={(idProps) => (
+                                                    <div>
+                                                        <ListToolbar />
+                                                        <DocumentLibrary currentFolderId={idProps.match.params.folderId} />
+                                                    </div>
+                                                )}>
+                                                </Route>
+                                            </Switch>
+                                        )} >
                                         </Route>
                                         <Route path="/users" >
                                             <div>Placeholder for users</div>

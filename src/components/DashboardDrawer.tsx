@@ -1,7 +1,6 @@
 import { Divider, Drawer, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 import * as DMSActions from '../Actions'
 import { resources } from '../assets/resources'
 import { getActiveMenuItem } from '../Reducers'
@@ -12,7 +11,9 @@ import GroupsMenu from './Menu/GroupsMenu'
 import SettingsMenu from './Menu/SettingsMenu'
 import UsersMenu from './Menu/UsersMenu'
 
-const menu: Array<{ title: string, name: string, icon: string, component: any, routeName: string }> = [
+export interface DashboardMenuItem { title: string, name: string, icon: string, component: any, routeName: string }
+
+const menu: DashboardMenuItem[] = [
     {
         title: resources.DOCUMENTS,
         name: 'documents',
