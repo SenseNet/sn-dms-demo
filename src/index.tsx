@@ -18,7 +18,7 @@ import { getViewerSettings } from './ViewerSettings'
 
 export const repository = new Repository({
   repositoryUrl: process.env.REACT_APP_SERVICE_URL || 'https://dmsservice.demo.sensenet.com',
-  requiredSelect: ['Id', 'Path', 'Name', 'Type', 'ParentId', 'Actions', 'Avatar', 'Owner'] as any,
+  requiredSelect: ['Id', 'Path', 'Name', 'Type', 'ParentId', 'Actions', 'Avatar', 'Owner', 'DisplayName'] as any,
   defaultExpand: ['Actions', 'Owner'] as any,
   schemas: customSchema,
 })
