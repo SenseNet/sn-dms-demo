@@ -1,5 +1,5 @@
 import { MuiThemeProvider } from '@material-ui/core'
-import { DocumentTitlePager, DocumentViewer, DocumentViewerSettings, Download, exampleTheme, LayoutAppBar, Print, RotateActivePages, SearchBar, Share, ToggleThumbnailsWidget, ZoomInOutWidget } from '@sensenet/document-viewer-react'
+import { DocumentTitlePager, DocumentViewer, Download, exampleTheme, LayoutAppBar, Print, RotateActivePages, SearchBar, Share, ToggleThumbnailsWidget, ZoomInOutWidget } from '@sensenet/document-viewer-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '..'
