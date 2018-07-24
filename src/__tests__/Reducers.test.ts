@@ -262,22 +262,26 @@ describe('getAuthenticatedUser', () => {
     const state = {
         session: {
             user: {
-                name: 'alba',
-                id: 1,
+                fullName: 'alba',
+                userName: 'alba',
+                userLanguage: 'en-US',
+                userAvatarPath: '/Root/Sites/Default_Site/demoavatars/alba.jpg',
             },
         },
     }
     it('should return the authenticated user', () => {
         expect(DMSReducers.getAuthenticatedUser(state)).toEqual({
-            name: 'alba',
-            id: 1,
+            fullName: 'alba',
+            userName: 'alba',
+            userLanguage: 'en-US',
+            userAvatarPath: '/Root/Sites/Default_Site/demoavatars/alba.jpg',
         })
     })
 })
 
 describe('getChildrenItems', () => {
     const state = {
-        children: {
+        currentitems: {
             entities: {
                 2103: {
                     name: 'aaa',
@@ -336,7 +340,21 @@ describe('getParentId', () => {
         currentcontent: {
             content: {
                 ParentId: 123,
+                Id: 1,
+                Name: 'aaa',
+                Path: '/',
+                Type: 'Task',
             },
+            contentState: {
+                isDirty: false,
+                isOperationInProgress: false,
+                isSaved: true,
+                isValid: true,
+            },
+            error: null,
+            actions: [],
+            fields: null,
+            schema: null,
         },
     }
     it('should return the id of the parent of the current content', () => {
