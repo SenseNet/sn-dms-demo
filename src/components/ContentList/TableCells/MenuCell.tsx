@@ -75,8 +75,7 @@ class MenuCell extends React.Component<MenuCellProps, MenuCellState> {
                             onClick={(event) => !selectionModeOn ? this.handleActionMenuClick(event, content) : null}
                         >
                             <MoreVert style={
-                                isHovered && !selectionModeOn ? styles.hoveredIcon : styles.icon &&
-                                    isSelected && !selectionModeOn ? styles.selectedIcon : styles.icon
+                                isHovered ? styles.hoveredIcon : styles.icon
                             } />
                         </IconButton>
                     </TableCell>
