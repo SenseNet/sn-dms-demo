@@ -1,4 +1,5 @@
 import { NewView } from '@sensenet/controls-react'
+import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import * as DMSActions from '../../Actions'
@@ -16,16 +17,23 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
     closeDialog: DMSActions.closeDialog,
+    createContent: Actions.createContent,
 }
 
 class AddNewDialog extends React.Component<AddNewDialogProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, {}> {
-    public handleClose = () => {
+    public handleCancel = () => {
         this.props.closeDialog()
     }
     public render() {
-        const { parentPath, contentTypeName } = this.props
+        const { parentPath, contentTypeName, closeDialog, createContent } = this.props
         return (
-            <NewView path={parentPath} repository={repository} contentTypeName={contentTypeName} handleCancel={() => this.handleClose()} />
+            <NewView
+                path={parentPath}
+                repository={repository}
+                contentTypeName={contentTypeName}
+                handleCancel={() => this.handleCancel()}
+                onSubmit={createContent}
+                submitCallback={closeDialog} />
         )
     }
 }
