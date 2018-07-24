@@ -68,17 +68,18 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
         this.props.setOdataOptions(defaultOptions)
         this.handleFileDrop = this.handleFileDrop.bind(this)
     }
-
     public static getDerivedStateFromProps(newProps: DocumentLibrary['props'], lastState: DocumentLibrary['state']) {
         if (newProps.loggedinUser.userName !== 'Visitor') {
             if (newProps.currentContent && newProps.currentContent.Id && newProps.currentContent.Path) {
                 if (newProps.options !== lastState.odataOptions) {
-                    newProps.fetchContent(newProps.currentContent.Path, newProps.options)
-                 }
+                    newProps.options ? newProps.fetchContent(newProps.currentContent.Path, newProps.options) :
+                    newProps.fetchContent(newProps.currentContent.Path, lastState.odataOptions)
+                }
             }
         }
         return {
             ...lastState,
+            odataOptions: newProps.options,
             id: newProps.currentContent.Id,
         } as DocumentLibrary['state']
     }

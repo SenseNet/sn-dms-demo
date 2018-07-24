@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import * as DMSActions from '../../Actions'
 import * as DMSReducers from '../../Reducers'
 
+import Fade from '@material-ui/core/Fade'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import { rootStateType } from '../..'
@@ -153,6 +154,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
             onClose={this.handleClose}
             anchorReference="anchorPosition"
             anchorPosition={position}
+            TransitionComponent={Fade}
         >
             {
                 actions.map((action, index) => {

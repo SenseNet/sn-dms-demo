@@ -113,7 +113,6 @@ function methodToDebounce(parentId: number, getState: () => rootStateType, dispa
 }
 const debounceReloadOnProgress = debounce(methodToDebounce, 2000)
 
-
 export const trackUploadProgress = async <T extends GenericContent>(currentValue: ExtendedUploadProgressInfo, getState: () => rootStateType, dispatch: Dispatch, api: Repository) => {
 
     let currentUpload: ExtendedUploadProgressInfo | undefined = getState().dms.uploads.uploads.find((u) => u.guid === currentValue.guid)

@@ -68,25 +68,23 @@ export const register = combineReducers({
     captcha,
 })
 
-export const actions: Reducer<IActionModel[], Action & { payload?: { d: { Actions: IActionModel[] } }, actions?: IActionModel[] }> = (state = [], action) => {
-    switch (action.type) {
-        case 'LOAD_CONTENT_ACTIONS_SUCCESS':
-            return action.payload && action.payload.d.Actions ? action.payload.d.Actions : []
-        case 'OPEN_ACTIONMENU':
-            return action.actions || []
-        case 'CLOSE_ACTIONMENU':
-            return []
-        default:
-            return state
-    }
-}
-
 export const open: Reducer<boolean> = (state = false, action) => {
     switch (action.type) {
         case 'OPEN_ACTIONMENU':
             return true
         case 'CLOSE_ACTIONMENU':
             return false
+        default:
+            return state
+    }
+}
+
+export const actions: Reducer<IActionModel[], Action & { payload?: { d: { Actions: IActionModel[] } }, actions?: IActionModel[] }> = (state = [], action) => {
+    switch (action.type) {
+        case 'LOAD_CONTENT_ACTIONS_SUCCESS':
+            return action.payload && action.payload.d.Actions ? action.payload.d.Actions : []
+        case 'OPEN_ACTIONMENU':
+            return action.actions || []
         default:
             return state
     }
