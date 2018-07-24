@@ -73,34 +73,6 @@ class Sensenet extends React.Component<SensenetProps & ReturnType<typeof mapStat
               <Route path="*" exact={true} >
                 <Redirect to="/" />
               </Route>
-              {/* <Route
-              path="/"
-              render={(routerProps) => {
-                const status = this.props.loginState === LoginState.Unauthenticated
-                return status ? <Redirect to="/login" /> :
-                  <Dashboard {...routerProps} />
-              }}
-            />
-            <Route
-              path="/login"
-              render={(routerProps) => {
-                const status = this.props.loginState === LoginState.Authenticated
-                return status ?
-                  <Redirect key="dashboard" to="/" /> :
-                  <Login login={this.props.login} params={{ error: this.props.loginError, oAuthProvider: this.props.oAuthProvider }} clear={this.props.clearRegistration} />
-              }}
-            />
-            <Route
-              path="/registration"
-              render={() => <Registration oAuthProvider={this.props.oAuthProvider} registration={this.props.registration} history={history} verify={this.props.recaptchaCallback} />} />
-            <Route path="/:id"
-              render={(routerProps) => {
-                // const status = this.props.loginState !== LoginState.Authenticated
-                const shouldRedirect = this.props.loginState === LoginState.Unauthenticated
-                return shouldRedirect ?
-                  <Redirect to="/login" />
-                  : <Dashboard {...routerProps} />
-              }} /> */}
             </Switch>
           </HashRouter>
         </div>

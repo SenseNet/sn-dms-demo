@@ -66,7 +66,6 @@ export class DmsViewerComponent extends React.Component<DmsViewerProps & ReturnT
                     overflow: 'hidden',
                     zIndex: 9999,
                 }}
-                    onClick={() => this.props.closeViewer}
                 >
                     <div className="overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(238,238,238,.8)', filter: 'blur(5px)', backdropFilter: 'blur(5px)' }} />
                     <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }}>

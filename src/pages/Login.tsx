@@ -34,11 +34,11 @@ const styles = {
   },
 }
 
-import { CircularProgress } from '@material-ui/core'
 import { IOauthProvider } from '@sensenet/authentication-jwt'
 import { LoginState } from '@sensenet/client-core'
 import { rootStateType } from '..'
 import { resources } from '../assets/resources'
+import { FullScreenLoader } from '../components/FullScreenLoader'
 
 const mapStateToProps = (state: rootStateType) => {
   return {
@@ -190,7 +190,7 @@ class Login extends React.Component<LoginProps & ReturnType<typeof mapStateToPro
     }
 
     if (this.props.loginState === LoginState.Pending) {
-      return <CircularProgress size={50} />
+      return <FullScreenLoader />
     }
 
     return (

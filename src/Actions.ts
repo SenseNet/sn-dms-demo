@@ -7,8 +7,8 @@ import { Action, Dispatch } from 'redux'
 import { horizontalValues, verticalValues } from './Reducers'
 
 import { debounce } from 'lodash'
+import { InjectableAction } from 'redux-di-middleware'
 import { rootStateType } from '.'
-import { InjectableAction } from '../node_modules/redux-di-middleware'
 
 enum MessageMode { error = 'error', warning = 'warning', info = 'info' }
 
