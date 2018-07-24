@@ -43,7 +43,7 @@ import { FullScreenLoader } from '../components/FullScreenLoader'
 const mapStateToProps = (state: rootStateType) => {
   return {
     loginState: state.sensenet.session.loginState,
-    loginError: Reducers.getAuthenticationError(state.sensenet),
+    loginErrorObj: Reducers.getAuthenticationError(state.sensenet),
     isRegistered: DMSReducers.registrationIsDone,
   }
 }
@@ -53,9 +53,7 @@ const mapDispatchToProps = {
 }
 
 interface LoginProps {
-  loginError: boolean,
   clear: () => any,
-  isRegistered: boolean,
   loginState: LoginState,
   oauthProvider: IOauthProvider
 }
@@ -170,7 +168,7 @@ class Login extends React.Component<LoginProps & ReturnType<typeof mapStateToPro
   }
 
   public buttonIsDisabled() {
-    if (this.props.loginError && this.props.loginError.length) {
+    if (this.props.loginErrorObj && this.props.loginErrorObj.message.length) {
       this.setState({
         isButtonDisabled: false,
       })
@@ -212,7 +210,7 @@ class Login extends React.Component<LoginProps & ReturnType<typeof mapStateToPro
             this.formSubmit(e)
           }}>
             <FormControl
-              error={this.state.emailError || (this.props.loginError && this.props.loginError.length) > 0 ? true : false}
+              error={this.state.emailError || (this.props.loginErrorObj && this.props.loginErrorObj.message.length) > 0 ? true : false}
               fullWidth
               required
               style={styles.formControl}>
@@ -227,7 +225,7 @@ class Login extends React.Component<LoginProps & ReturnType<typeof mapStateToPro
               <FormHelperText>{this.state.emailErrorMessage}</FormHelperText>
             </FormControl>
             <FormControl
-              error={this.state.passwordError || (this.props.loginError && this.props.loginError.length) ? true : false}
+              error={this.state.passwordError || (this.props.loginErrorObj && this.props.loginErrorObj.message.length) ? true : false}
               fullWidth
               required
               style={styles.formControl}>
@@ -242,9 +240,9 @@ class Login extends React.Component<LoginProps & ReturnType<typeof mapStateToPro
               <FormHelperText>{this.state.passwordErrorMessage}</FormHelperText>
             </FormControl>
             <FormControl>
-              <FormHelperText error>{this.props.loginError && this.props.loginError.length ? resources.WRONG_USERNAME_OR_PASSWORD : ''}</FormHelperText>
+              <FormHelperText error>{this.props.loginErrorObj && this.props.loginErrorObj.message.length ? resources.WRONG_USERNAME_OR_PASSWORD : ''}</FormHelperText>
             </FormControl>
-            <Button type="submit" variant="contained" color="primary" style={styles.button} disabled={this.props.loginError === null && this.state.isButtonDisabled}>{resources.LOGIN_BUTTON_TEXT}</Button>
+            <Button type="submit" variant="contained" color="primary" style={styles.button} disabled={this.props.loginErrorObj === null && this.state.isButtonDisabled}>{resources.LOGIN_BUTTON_TEXT}</Button>
           </form>
           <OauthRow oAuthProvider={this.props.oauthProvider} />
         </div>
