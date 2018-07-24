@@ -1,6 +1,6 @@
 import { IContent } from '@sensenet/client-core'
 import { IActionModel } from '@sensenet/default-content-types'
-import { Actions, Reducers } from '@sensenet/redux'
+import { Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import * as DMSActions from '../../Actions'
@@ -40,8 +40,8 @@ class AddNewMenu extends React.Component<AddNemMenuProps, { options }> {
     }
 
     public componentWillReceiveProps(nextProps) {
-        const { actions, currentId, getActions, openDialog, closeActionMenu } = this.props
-        if ((nextProps.currentContent.Id && (currentId === null || currentId !== nextProps.currentId)) && actions.length === 0) {
+        const { actions, currentId, getActions, openDialog, closeActionMenu, currentContent } = this.props
+        if ((nextProps.currentContent.Id && (currentContent.Id !== nextProps.currentContent.Id)) && actions.length === 0) {
             getActions(nextProps.currentContent.Id)
         }
         if (this.props.actions.length !== nextProps.actions.length) {
