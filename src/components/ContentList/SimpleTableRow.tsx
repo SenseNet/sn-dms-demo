@@ -244,8 +244,8 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
 const mapStateToProps = (state, match) => {
     return {
         selected: Reducers.getSelectedContentIds(state.sensenet),
-        opened: Reducers.getOpenedContent(state.sensenet.children),
-        ids: Reducers.getIds(state.sensenet.children),
+        opened: Reducers.getOpenedContent(state.sensenet.currentitems),
+        ids: Reducers.getIds(state.sensenet.currentitems),
     }
 }
 export default connect(mapStateToProps, {
