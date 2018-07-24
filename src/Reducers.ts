@@ -1,4 +1,4 @@
-import { IContent, IODataCollectionResponse, IODataResponse } from '@sensenet/client-core'
+import { IContent, IODataResponse } from '@sensenet/client-core'
 import { GenericContent, IActionModel } from '@sensenet/default-content-types'
 import { Action, AnyAction, combineReducers, Reducer } from 'redux'
 import { rootStateType } from '.'
@@ -510,8 +510,8 @@ export const getAuthenticatedUser = (state: { session: { user: rootStateType['se
     return state.session.user
 }
 
-export const getChildrenItems = (state: { children: { entities: rootStateType['sensenet']['children']['entities'] } }) => {
-    return state.children.entities
+export const getChildrenItems = (state: { currentitems: { entities: rootStateType['sensenet']['currentitems']['entities'] } }) => {
+    return state.currentitems.entities
 }
 
 export const getCurrentContentPath = (state: { Path: string }) => {
@@ -530,7 +530,7 @@ export const getMenuPosition = (state: { position: ReturnType<typeof actionmenu>
     return state.position
 }
 
-export const getParentId = (state: { currentcontent: { content: { ParentId: rootStateType['sensenet']['currentcontent']['content']['ParentId'] } } }) => {
+export const getParentId = (state: { currentcontent } ) => {
     return state.currentcontent.content.ParentId
 }
 export const getRootId = (state: { rootId: rootStateType['dms']['rootId'] }) => {
