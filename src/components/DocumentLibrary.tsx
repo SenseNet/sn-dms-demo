@@ -5,7 +5,6 @@ import * as React from 'react'
 import { DragDropContext } from 'react-dnd'
 import HTML5Backend, { NativeTypes } from 'react-dnd-html5-backend-filedrop'
 import { connect } from 'react-redux'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
 import * as DMSReducers from '../Reducers'
@@ -14,20 +13,23 @@ import { FetchError } from './FetchError'
 
 const fetchContentAction = Actions.requestContent
 const uploadContentAction = Actions.uploadRequest
+const setOdataOptionsAction = Actions.setDefaultOdataOptions
 
 const mapStateToProps = (state: rootStateType) => {
     return {
         loggedinUser: DMSReducers.getAuthenticatedUser(state.sensenet),
         children: DMSReducers.getChildrenItems(state.sensenet),
-        ids: Reducers.getIds(state.sensenet.children),
-        errorMessage: Reducers.getError(state.sensenet.children),
+        ids: Reducers.getIds(state.sensenet.currentitems),
+        errorMessage: Reducers.getError(state.sensenet.currentitems),
         currentContent: Reducers.getCurrentContent(state.sensenet),
         currentId: DMSReducers.getCurrentId(state.dms),
+        options: state.sensenet.currentitems.options,
     }
 }
 
 const mapDispatchToProps = {
     fetchContent: fetchContentAction,
+    setOdataOptions: setOdataOptionsAction,
     setCurrentId: DMSActions.setCurrentId,
     uploadContent: uploadContentAction,
     uploadDataTransfer: DMSActions.uploadDataTransfer,
@@ -38,8 +40,8 @@ interface DocumentLibraryProps {
 }
 
 interface DocumentLibraryState {
+    id, droppedFiles, children,
     odataOptions: IODataParams<GenericContent> & { scenario: string }
-    id, droppedFiles, children
 }
 
 @DragDropContext(HTML5Backend, {
@@ -48,18 +50,22 @@ interface DocumentLibraryState {
 class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DocumentLibraryState> {
     constructor(props) {
         super(props)
+        const defaultOptions = {
+            select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner'],
+            expand: ['Actions', 'Owner'],
+            orderby: [['IsFolder', 'desc'], ['DisplayName', 'asc']],
+            filter: 'ContentType ne \'SystemFolder\'',
+            scenario: 'DMSListItem',
+        } as IODataParams<GenericContent> & { scenario: string }
+
         this.state = {
-            odataOptions: {
-                select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner'],
-                expand: ['Actions', 'Owner'],
-                orderby: [['IsFolder', 'desc'], ['DisplayName', 'asc']],
-                filter: 'ContentType ne \'SystemFolder\'',
-                scenario: 'DMSListItem',
-            },
+            odataOptions: defaultOptions,
             id: this.props.currentContent.Id,
             droppedFiles: [],
             children: this.props.children,
         }
+
+        this.props.setOdataOptions(defaultOptions)
         this.handleFileDrop = this.handleFileDrop.bind(this)
     }
 
@@ -67,7 +73,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
         if (newProps.loggedinUser.userName !== 'Visitor') {
             if (newProps.currentContent && newProps.currentContent.Id && newProps.currentContent.Path) {
                 if (newProps.currentContent.Id !== lastState.id) {
-                    newProps.fetchContent(newProps.currentContent.Path, lastState.odataOptions)
+                    newProps.fetchContent(newProps.currentContent.Path, newProps.options)
                 }
             }
         }

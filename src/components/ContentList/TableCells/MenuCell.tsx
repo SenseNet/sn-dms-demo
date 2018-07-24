@@ -89,8 +89,8 @@ class MenuCell extends React.Component<MenuCellProps, MenuCellState> {
 const mapStateToProps = (state: rootStateType, match) => {
     return {
         selected: Reducers.getSelectedContentIds(state.sensenet),
-        opened: Reducers.getOpenedContent(state.sensenet.children),
-        actions: DMSReducers.getActionsOfAContent(state.sensenet.children.entities[match.content.Id]),
+        opened: Reducers.getOpenedContent(state.sensenet.currentitems),
+        actions: DMSReducers.getActionsOfAContent(state.sensenet.currentitems.entities[match.content.Id]),
         selectionModeOn: DMSReducers.getIsSelectionModeOn(state.dms),
     }
 }

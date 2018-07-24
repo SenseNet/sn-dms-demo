@@ -39,11 +39,11 @@ const styles = {
 
 const mapStateToProps = (state: rootStateType) => {
     return {
-        ids: Reducers.getIds(state.sensenet.children),
+        ids: Reducers.getIds(state.sensenet.currentitems),
         rootId: state.dms.rootId,
         selected: Reducers.getSelectedContentIds(state.sensenet),
         selectedContentItems: Reducers.getSelectedContentItems(state.sensenet),
-        isFetching: Reducers.getFetching(state.sensenet.children),
+        isFetching: Reducers.getFetching(state.sensenet.currentitems),
         isLoading: DMSReducers.getLoading(state.dms),
         edited: DMSReducers.getEditedItemId(state.dms),
         selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
