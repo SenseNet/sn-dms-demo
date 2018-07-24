@@ -1,6 +1,7 @@
-import { Repository } from '@sensenet/client-core'
+import { LoginState, Repository } from '@sensenet/client-core'
 import { Task } from '@sensenet/default-content-types'
-import {  Reducers, Store } from '@sensenet/redux'
+import { sensenetDocumentViewerReducer } from '@sensenet/document-viewer-react'
+import { Reducers, Store } from '@sensenet/redux'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
@@ -24,6 +25,7 @@ configure({ adapter: new Adapter() })
 const sensenet = Reducers.sensenet
 const actionmenu = DMSReducers.actions
 const myReducer = combineReducers({ sensenet, actionmenu, dms }) as any
+const sensenetDocumentViewer = sensenetDocumentViewerReducer
 
 const repository = new Repository({
     repositoryUrl: process.env.REACT_APP_SERVICE_URL || 'https://dmsservice.demo.sensenet.com',
@@ -35,14 +37,20 @@ const options = {
     rootReducer: myReducer,
     persistedState: {
         sensenet: {
+            currentcontent: null,
+            selected: null,
+            batchResponses: null,
             session: {
-                repository: {
-                    RepositoryUrl
-                        :
-                        'https://dmsservice.demo.sensenet.com',
-                },
+                country: '',
+                language: '',
+                loginState: LoginState.Pending,
+                user: null,
+                error: null,
+                repository: null,
             },
-            children: {
+            currentworkspace: null,
+            currentitems: {
+                isFetching: false,
                 entities: {
                     4466: {
                         Id: 4466,
@@ -58,14 +66,32 @@ const options = {
                     },
                 },
                 ids: [4466, 4467, 123],
+                actions: null,
+                fields: null,
+                schema: null,
+                error: null,
+                isOpened: false,
+                options: null,
             },
         },
         dms: {
-            actionmenu: {
-                actions: [],
-            },
+            actionmenu: null,
             rootId: 123,
+            messagebar: null,
+            breadcrumb: null,
+            editedItemId: 1,
+            editedFirst: null,
+            currentId: 1,
+            register: null,
+            dialog: null,
+            isLoading: false,
+            isSelectionModeOn: false,
+            menu: null,
+            toolbar: null,
+            uploads: null,
+            viewer: null,
         },
+        sensenetDocumentViewer: null,
     },
 } as Store.CreateStoreOptions<rootStateType>
 const store = Store.createSensenetStore(options)
