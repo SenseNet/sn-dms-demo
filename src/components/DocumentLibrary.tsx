@@ -41,7 +41,7 @@ interface DocumentLibraryProps {
 
 interface DocumentLibraryState {
     id, droppedFiles, children,
-    odataOptions: IODataParams<GenericContent> & { scenario: string }
+    odataOptions: IODataParams<GenericContent>
 }
 
 @DragDropContext(HTML5Backend, {
@@ -56,7 +56,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
             orderby: [['IsFolder', 'desc'], ['DisplayName', 'asc']],
             filter: 'ContentType ne \'SystemFolder\'',
             scenario: 'DMSListItem',
-        } as IODataParams<GenericContent> & { scenario: string }
+        } as IODataParams<GenericContent>
 
         this.state = {
             odataOptions: defaultOptions,
@@ -72,9 +72,9 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
     public static getDerivedStateFromProps(newProps: DocumentLibrary['props'], lastState: DocumentLibrary['state']) {
         if (newProps.loggedinUser.userName !== 'Visitor') {
             if (newProps.currentContent && newProps.currentContent.Id && newProps.currentContent.Path) {
-                if (newProps.currentContent.Id !== lastState.id) {
+                if (newProps.options !== lastState.odataOptions) {
                     newProps.fetchContent(newProps.currentContent.Path, newProps.options)
-                }
+                 }
             }
         }
         return {
