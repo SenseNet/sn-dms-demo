@@ -22,7 +22,7 @@ const mapStateToProps = (state: rootStateType) => {
         open: DMSReducers.actionmenuIsOpen(state.dms.actionmenu),
         anchorElement: DMSReducers.getAnchorElement(state.dms.actionmenu),
         position: DMSReducers.getMenuPosition(state.dms.actionmenu),
-        hostName: state.sensenet.session.repository.hostName,
+        hostName: state.sensenet.session.repository.repositoryUrl,
     }
 }
 
