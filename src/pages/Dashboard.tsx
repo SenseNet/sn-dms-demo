@@ -1,5 +1,5 @@
 
-import { Dialog, DialogContent, DialogTitle, IconButton } from '@material-ui/core'
+import { Dialog, DialogContent, IconButton, LinearProgress } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { Actions, Reducers, Store } from '@sensenet/redux'
 import * as React from 'react'
@@ -38,6 +38,10 @@ const styles = {
     dialogClose: {
         position: 'absolute',
         right: 0,
+    },
+    progress: {
+        width: '100%',
+        textAlign: 'center',
     },
 }
 
@@ -127,35 +131,42 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                         return <div>
                             <div style={{ ...styles.root, ...filter }}>
                                 <Header />
-                                <DashboardDrawer />
-                                <div style={styles.main}>
-                                    <div style={{ height: 48, width: '100%' }}></div>
-                                    <Switch>
-                                        <Route path="/documents/:viewName?/:contentId?" >
-                                            <div>
-                                                <ListToolbar />
-                                                <DocumentLibrary currentFolderId={this.state.currentFolderId} />
-                                            </div>
-                                        </Route>
-                                        <Route path="/users" >
-                                            <div>Placeholder for users</div>
-                                        </Route>
-                                        <Route path="/groups" >
-                                            <div>Placeholder for groups</div>
-                                        </Route>
-                                        <Route path="/contenttypes" >
-                                            <div>Placeholder for content types</div>
-                                        </Route>
-                                        <Route path="/contenttemplates" >
-                                            <div>Placeholder for content templates</div>
-                                        </Route>
-                                        <Route path="/settings" >
-                                            <div>Placeholder for content settings</div>
-                                        </Route>
+                                {this.props.currentContent ?
+                                    <div style={{ width: '100%', display: 'flex' }}>
+                                        <DashboardDrawer />
+                                        <div style={styles.main}>
+                                            <div style={{ height: 48, width: '100%' }}></div>
+                                            <Switch>
+                                                <Route path="/documents/:viewName?/:contentId?" >
+                                                    <div>
+                                                        <ListToolbar />
+                                                        <DocumentLibrary currentFolderId={this.state.currentFolderId} />
+                                                    </div>
+                                                </Route>
+                                                <Route path="/users" >
+                                                    <div>Placeholder for users</div>
+                                                </Route>
+                                                <Route path="/groups" >
+                                                    <div>Placeholder for groups</div>
+                                                </Route>
+                                                <Route path="/contenttypes" >
+                                                    <div>Placeholder for content types</div>
+                                                </Route>
+                                                <Route path="/contenttemplates" >
+                                                    <div>Placeholder for content templates</div>
+                                                </Route>
+                                                <Route path="/settings" >
+                                                    <div>Placeholder for content settings</div>
+                                                </Route>
 
-                                        <Redirect to="/documents" />
-                                    </Switch>
-                                </div>
+                                                <Redirect to="/documents" />
+                                            </Switch>
+                                        </div>
+                                    </div> :
+                                    <div style={styles.progress as any} >
+                                        <LinearProgress />
+                                    </div>
+                                }
                             </div>
                             <DmsViewer />
                             <Dialog open={isDialogOpen} onClose={dialogOnClose}>
