@@ -275,7 +275,7 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
     public handleSelectAllClick = (event, checked) => {
         if (checked) {
             this.setState({ selected: this.props.ids })
-            this.props.ids.map((id) => this.props.selected.indexOf(id) > -1 ? null : this.props.select(this.props.children[id]))
+            this.props.ids.map((id) => this.props.selected.indexOf(id) > -1 ? null : this.props.select(this.props.currentItems.find((c) => c.Id === id)))
             return
         }
         this.setState({ selected: [] })
