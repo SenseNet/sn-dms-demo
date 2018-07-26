@@ -238,12 +238,21 @@ export const addNewTypes = (state = [], action) => {
     }
 }
 
+export const actionmenuId: Reducer<number | null> = (state = null, action) => {
+    switch (action.type) {
+        case 'SET_ACTIONMENU_ID':
+            return action.id
+        default:
+            return state
+    }
+}
+
 export const actionmenu = combineReducers({
     actions,
     open,
     anchorElement,
     position,
-    id,
+    id: actionmenuId,
     title,
     userActions,
     addNewTypes,
@@ -528,7 +537,7 @@ export const getMenuPosition = (state: { position: ReturnType<typeof actionmenu>
     return state.position
 }
 
-export const getParentId = (state: { currentcontent } ) => {
+export const getParentId = (state: { currentcontent }) => {
     return state.currentcontent.content.ParentId
 }
 export const getRootId = (state: { rootId: rootStateType['dms']['rootId'] }) => {
@@ -586,4 +595,7 @@ export const getActiveSubmenuItem = (state: ReturnType<typeof menu>) => {
 }
 export const getAddNewTypeList = (state) => {
     return state.addNewTypes
+}
+export const getMenuAnchorId = (state) => {
+    return state.actionmenu.id
 }
