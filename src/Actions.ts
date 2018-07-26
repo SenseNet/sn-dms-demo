@@ -249,3 +249,7 @@ export const openDialog = (content: any = '', title?: string, onClose?: () => vo
 export const closeDialog = () => ({
     type: 'CLOSE_DIALOG',
 })
+export const setActionMenuId = (id: number | null) => ({
+    type: 'SET_ACTIONMENU_ID',
+    id,
+})
