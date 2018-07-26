@@ -19,7 +19,6 @@ const mapStateToProps = (state: rootStateType) => {
     return {
         loggedinUser: DMSReducers.getAuthenticatedUser(state.sensenet),
         children: DMSReducers.getChildrenItems(state.sensenet),
-        ids: Reducers.getIds(state.sensenet.currentitems),
         errorMessage: Reducers.getError(state.sensenet.currentitems),
         currentContent: Reducers.getCurrentContent(state.sensenet),
         currentId: DMSReducers.getCurrentId(state.dms),

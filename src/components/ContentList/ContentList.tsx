@@ -47,6 +47,8 @@ const mapStateToProps = (state: rootStateType) => {
         isLoading: DMSReducers.getLoading(state.dms),
         edited: DMSReducers.getEditedItemId(state.dms),
         selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
+        menuId: DMSReducers.getMenuAnchorId(state.dms),
+        currentItems: state.sensenet.currentitems.entities,
     }
 }
 
@@ -313,14 +315,13 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
                                 <ParentFolderTableRow parentId={this.props.parentId} history={this.props.history} /> :
                                 <SharedItemsTableRow currentId={this.props.currentId} />
                             } */}
-                        {this.props.isFetching || this.props.isLoading ?
+                        {this.props.isFetching || this.props.isLoading || this.props.currentItems.entities === null ?
                             <tr>
                                 <td colSpan={5} style={styles.loader}>
                                     <CircularProgress color="secondary" size={50} />
                                 </td>
                             </tr>
-                            : this.props.ids.map((n) => {
-                                const content = this.props.children[n]
+                            : this.props.currentItems.map((content) => {
                                 return typeof content !== 'undefined' ? (
                                     <SimpleTableRow
                                         content={content}
@@ -335,7 +336,7 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
 
                     </TableBody>
                 </Table>
-                <ActionMenu id={this.props.selected.Id} />
+                <ActionMenu id={this.props.menuId} />
                 {/* <SelectionBox /> */}
             </div>)
     }

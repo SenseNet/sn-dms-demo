@@ -3,61 +3,72 @@ import { IActionModel } from '@sensenet/default-content-types'
 import { Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
+import { getContentTypeFromUrl } from '../../assets/helpers'
 import * as DMSReducers from '../../Reducers'
 import AddNewDialog from '../Dialogs/AddNewDialog'
 import { AddNewButton } from '../Menu/AddNewButton'
 
+const mapStateToProps = (state: rootStateType) => {
+    return {
+        currentContent: Reducers.getCurrentContent(state.sensenet),
+        currentId: DMSReducers.getCurrentId(state.dms),
+        actions: DMSReducers.getAddNewTypeList(state.dms.actionmenu),
+        schema: Reducers.getSchema(state.sensenet),
+        repository: state.sensenet.session.repository,
+    }
+}
+
+const mapDispatchToProps = {
+    getActions: DMSActions.loadTypesToAddNewList,
+    closeActionMenu: DMSActions.closeActionMenu,
+    openActionMenu: DMSActions.openActionMenu,
+    openDialog: DMSActions.openDialog,
+    closeDialog: DMSActions.closeDialog,
+}
+
 interface AddNemMenuProps {
     currentContent: IContent,
     currentId,
-    getActions,
     actions: IActionModel[],
-    closeActionMenu: () => void,
-    openActionMenu,
-    openDialog,
-    closeDialog: () => void,
     schema,
     repository,
 }
 
-class AddNewMenu extends React.Component<AddNemMenuProps, { options }> {
-    constructor(props) {
+interface DashboardState {
+    options: IActionModel[],
+    currentContent: IContent,
+}
+
+class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DashboardState> {
+    public state = {
+        options: [],
+        currentContent: null,
+    }
+    constructor(props: AddNewMenu['props']) {
         super(props)
+
         this.handleButtonClick = this.handleButtonClick.bind(this)
-        this.state = {
-            options: [],
+    }
+    public static getDerivedStateFromProps(newProps: AddNewMenu['props'], lastState: AddNewMenu['state']) {
+        if ((newProps.currentContent.Id && (lastState.currentContent !== newProps.currentContent)) && lastState.options.length === 0) {
+            newProps.getActions(newProps.currentContent.Id)
         }
-        this.handleClose = this.handleClose.bind(this)
-    }
-    public getContentType = (urlString) => {
-        const urlTemp = urlString.split('ContentTypeName=')[1]
-        return urlTemp.indexOf('&') > -1 ? urlTemp.split('&')[0] : urlTemp
-    }
-
-    public handleClose = () => {
-        this.props.closeDialog()
-    }
-
-    public componentWillReceiveProps(nextProps) {
-        const { actions, currentId, getActions, openDialog, closeActionMenu, currentContent } = this.props
-        if ((nextProps.currentContent.Id && (currentContent.Id !== nextProps.currentContent.Id)) && actions.length === 0) {
-            getActions(nextProps.currentContent.Id)
-        }
-        if (this.props.actions.length !== nextProps.actions.length) {
-            const optionList = []
-            const folderList = []
-            nextProps.actions.map((action, index) => {
+        const optionList = []
+        const folderList = []
+        if (lastState.options.length !== newProps.actions.length) {
+            newProps.actions.map((action) => {
                 const newDisplayName = `New ${action.DisplayName}`
                 action.DisplayName = newDisplayName
-                const contentType = this.getContentType(action.Url)
+                const contentType = getContentTypeFromUrl(action.Url)
                 action.Action = () => {
-                    closeActionMenu()
-                    openDialog(
+                    newProps.closeActionMenu()
+                    newProps.openDialog(
                         <AddNewDialog
-                            parentPath={nextProps.currentContent.Path}
+                            parentPath={newProps.currentContent.Path}
                             contentTypeName={contentType} />,
-                        newDisplayName, this.handleClose)
+                        newDisplayName, newProps.closeDialog)
                 }
                 if (action.DisplayName.indexOf('Folder') > -1) {
                     folderList.push(action)
@@ -65,9 +76,11 @@ class AddNewMenu extends React.Component<AddNemMenuProps, { options }> {
                     optionList.push(action)
                 }
             })
-            this.setState({
-                options: [...optionList, ...folderList],
-            })
+        }
+        return {
+            ...lastState,
+            currentContent: newProps.currentContent,
+            options: [...optionList, ...folderList],
         }
     }
     public handleButtonClick = (e) => {
@@ -88,20 +101,4 @@ class AddNewMenu extends React.Component<AddNemMenuProps, { options }> {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        currentContent: Reducers.getCurrentContent(state.sensenet),
-        currentId: DMSReducers.getCurrentId(state.dms),
-        actions: DMSReducers.getAddNewTypeList(state.dms.actionmenu),
-        schema: Reducers.getSchema(state.sensenet),
-        repository: state.sensenet.session.repository,
-    }
-}
-
-export default connect(mapStateToProps, {
-    getActions: DMSActions.loadTypesToAddNewList,
-    closeActionMenu: DMSActions.closeActionMenu,
-    openActionMenu: DMSActions.openActionMenu,
-    openDialog: DMSActions.openDialog,
-    closeDialog: DMSActions.closeDialog,
-})(AddNewMenu as any)
+export default connect(mapStateToProps, mapDispatchToProps)(AddNewMenu as any)

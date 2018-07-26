@@ -1,5 +1,5 @@
 import { NewView } from '@sensenet/controls-react'
-import { Actions } from '@sensenet/redux'
+import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import * as DMSActions from '../../Actions'
@@ -12,6 +12,7 @@ interface AddNewDialogProps {
 
 const mapStateToProps = (state) => {
     return {
+        schema: Reducers.getSchema(state.sensenet),
     }
 }
 
@@ -25,9 +26,10 @@ class AddNewDialog extends React.Component<AddNewDialogProps & ReturnType<typeof
         this.props.closeDialog()
     }
     public render() {
-        const { parentPath, contentTypeName, closeDialog, createContent } = this.props
+        const { parentPath, contentTypeName, closeDialog, createContent, schema } = this.props
         return (
             <NewView
+                schema={schema}
                 path={parentPath}
                 repository={repository}
                 contentTypeName={contentTypeName}
