@@ -4,7 +4,6 @@ import { File as SnFile, GenericContent } from '@sensenet/default-content-types'
 import { IActionModel } from '@sensenet/default-content-types/dist/IActionModel'
 import { Actions } from '@sensenet/redux'
 import { Action, Dispatch } from 'redux'
-import { horizontalValues, verticalValues } from './Reducers'
 
 import { debounce } from 'lodash'
 import { InjectableAction } from 'redux-di-middleware'
@@ -60,15 +59,19 @@ export const setEditedFirst = (edited: boolean) => ({
     type: 'SET_EDITED_FIRST',
     edited,
 })
-export const openMessageBar = (mode: MessageMode, content: any, vertical?: verticalValues, horizontal?: horizontalValues) => ({
-    type: 'OPEN_MESSAGE_BAR',
-    mode,
-    content,
-    vertical: vertical || 'bottom',
-    horizontal: horizontal || 'left',
+export const openMessageBar = () => ({
+    type: 'OPEN_MESSAGEBAR',
 })
 export const closeMessageBar = () => ({
-    type: 'CLOSE_MESSAGE_BAR',
+    type: 'CLOSE_MESSAGEBAR',
+})
+export const setMessageBar = (mode: MessageMode, content: any, close?: () => void, exited?: () => void, hideDuration?: number) => ({
+    type: 'SET_MESSAGEBAR',
+    mode,
+    content,
+    close,
+    exited,
+    hideDuration,
 })
 export const loadListActions = (idOrPath: number | string, scenario?: string, customActions?: IActionModel[]) => ({
     type: 'LOAD_LIST_ACTIONS',
