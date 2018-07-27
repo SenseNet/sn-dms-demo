@@ -2,7 +2,7 @@ import { IContent, IODataResponse } from '@sensenet/client-core'
 import { GenericContent, IActionModel } from '@sensenet/default-content-types'
 import { Action, AnyAction, combineReducers, Reducer } from 'redux'
 import { rootStateType } from '.'
-import { ExtendedUploadProgressInfo } from './Actions'
+import { closeMessageBar, ExtendedUploadProgressInfo } from './Actions'
 import { resources } from './assets/resources'
 
 enum MessageMode { error, warning, info }
@@ -260,21 +260,89 @@ export const actionmenu = combineReducers({
 
 export const messagebarmode: Reducer<MessageMode, Action & { mode?: MessageMode }> = (state = MessageMode.info, action) => {
     switch (action.type) {
-        case 'OPEN_MESSAGE_BAR':
+        case 'SET_MESSAGEBAR':
             return action.mode || state
-        case 'CLOSE_MESSAGE_BAR':
+        case 'CREATE_CONTENT_FAILURE':
+        case 'DELETE_CONTENT_FAILURE':
+        case 'LOAD_CONTENT_FAILURE':
+        case 'FETCH_CONTENT_FAILURE':
+        case 'UPDATE_CONTENT_FAILURE':
+        case 'DELETE_BATCH_FAILURE':
+        case 'COPY_CONTENT_FAILURE':
+        case 'COPY_BATCH_FAILURE':
+        case 'MOVE_CONTENT_FAILURE':
+        case 'MOVE_BATCH_FAILURE':
+        case 'CHECKOUT_CONTENT_FAILURE':
+        case 'CHECKIN_CONTENT_FAILURE':
+        case 'PUBLISH_CONTENT_FAILURE':
+        case 'APPROVE_CONTENT_FAILURE':
+        case 'REJECT_CONTENT_FAILURE':
+        case 'UNDOCHECKOUT_CONTENT_FAILURE':
+        case 'FORCE_UNDOCHECKOUT_CONTENT_FAILURE':
+        case 'RESTOREVERSION_CONTENT_FAILURE':
+        case 'MOVE_CONTENT_FAILURE':
+        case 'MOVE_BATCH_FAILURE':
+            return MessageMode.error
+        case 'CREATE_CONTENT_SUCCESS':
+        case 'DELETE_CONTENT_SUCCESS':
+        case 'LOAD_CONTENT_SUCCESS':
+        case 'FETCH_CONTENT_SUCCESS':
+        case 'UPDATE_CONTENT_SUCCESS':
+        case 'DELETE_BATCH_SUCCESS':
+        case 'COPY_CONTENT_SUCCESS':
+        case 'COPY_BATCH_SUCCESS':
+        case 'MOVE_CONTENT_SUCCESS':
+        case 'MOVE_BATCH_SUCCESS':
+        case 'CHECKOUT_CONTENT_SUCCESS':
+        case 'CHECKIN_CONTENT_SUCCESS':
+        case 'PUBLISH_CONTENT_SUCCESS':
+        case 'APPROVE_CONTENT_SUCCESS':
+        case 'REJECT_CONTENT_SUCCESS':
+        case 'UNDOCHECKOUT_CONTENT_SUCCESS':
+        case 'FORCE_UNDOCHECKOUT_CONTENT_SUCCESS':
+        case 'RESTOREVERSION_CONTENT_SUCCESS':
+        case 'MOVE_CONTENT_SUCCESS':
+        case 'MOVE_BATCH_SUCCESS':
             return MessageMode.info
         default:
             return state
     }
 }
 
-export const messagebarcontent: Reducer<{}, Action & { content: {} }> = (state = {}, action) => {
+export const messagebarcontent: Reducer<any[]> = (state = [], action) => {
     switch (action.type) {
-        case 'OPEN_MESSAGE_BAR':
+        case 'SET_MESSAGEBAR':
             return action.content
-        case 'CLOSE_MESSAGE_BAR':
-            return {}
+        case 'CREATE_CONTENT_SUCCESS':
+            return [`${action.payload.d.DisplayName} is successfully created`]
+        case 'DELETE_CONTENT_SUCCESS':
+            return [`${action.payload.d.Name} is successfully deleted`]
+        case 'DELETE_BATCH_SUCCESS':
+            return [
+                ...action.payload.d.errors.map((result) => `Cannot delete ${result.content.Name}, because '${result.error.message}'`),
+                ...action.payload.d.results.map((result) => `${result.Name} is successfully deleted`)]
+        case 'CREATE_CONTENT_FAILURE':
+        case 'DELETE_CONTENT_FAILURE':
+        case 'LOAD_CONTENT_FAILURE':
+        case 'FETCH_CONTENT_FAILURE':
+        case 'UPDATE_CONTENT_FAILURE':
+        case 'DELETE_BATCH_FAILURE':
+            return `${action.payload.message}`
+        case 'COPY_CONTENT_FAILURE':
+        case 'COPY_BATCH_FAILURE':
+        case 'MOVE_CONTENT_FAILURE':
+        case 'MOVE_BATCH_FAILURE':
+        case 'CHECKOUT_CONTENT_FAILURE':
+        case 'CHECKIN_CONTENT_FAILURE':
+        case 'PUBLISH_CONTENT_FAILURE':
+        case 'APPROVE_CONTENT_FAILURE':
+        case 'REJECT_CONTENT_FAILURE':
+        case 'UNDOCHECKOUT_CONTENT_FAILURE':
+        case 'FORCE_UNDOCHECKOUT_CONTENT_FAILURE':
+        case 'RESTOREVERSION_CONTENT_FAILURE':
+        case 'MOVE_CONTENT_FAILURE':
+        case 'MOVE_BATCH_FAILURE':
+            return `${action.payload.message}`
         default:
             return state
     }
@@ -282,30 +350,118 @@ export const messagebarcontent: Reducer<{}, Action & { content: {} }> = (state =
 
 export const messagebaropen: Reducer<boolean> = (state = false, action) => {
     switch (action.type) {
-        case 'OPEN_MESSAGE_BAR':
+        case 'OPEN_MESSAGEBAR':
             return true
-        case 'CLOSE_MESSAGE_BAR':
+        case 'CLOSE_MESSAGEBAR':
             return false
+        case 'CREATE_CONTENT_FAILURE':
+        case 'DELETE_CONTENT_FAILURE':
+        case 'LOAD_CONTENT_FAILURE':
+        case 'FETCH_CONTENT_FAILURE':
+        case 'UPDATE_CONTENT_FAILURE':
+        case 'DELETE_BATCH_FAILURE':
+        case 'COPY_CONTENT_FAILURE':
+        case 'COPY_BATCH_FAILURE':
+        case 'MOVE_CONTENT_FAILURE':
+        case 'MOVE_BATCH_FAILURE':
+        case 'CHECKOUT_CONTENT_FAILURE':
+        case 'CHECKIN_CONTENT_FAILURE':
+        case 'PUBLISH_CONTENT_FAILURE':
+        case 'APPROVE_CONTENT_FAILURE':
+        case 'REJECT_CONTENT_FAILURE':
+        case 'UNDOCHECKOUT_CONTENT_FAILURE':
+        case 'FORCE_UNDOCHECKOUT_CONTENT_FAILURE':
+        case 'RESTOREVERSION_CONTENT_FAILURE':
+        case 'MOVE_CONTENT_FAILURE':
+        case 'MOVE_BATCH_FAILURE':
+        case 'CREATE_CONTENT_SUCCESS':
+        case 'DELETE_CONTENT_SUCCESS':
+        case 'UPDATE_CONTENT_SUCCESS':
+        case 'DELETE_BATCH_SUCCESS':
+        case 'COPY_CONTENT_SUCCESS':
+        case 'COPY_BATCH_SUCCESS':
+        case 'MOVE_CONTENT_SUCCESS':
+        case 'MOVE_BATCH_SUCCESS':
+        case 'CHECKOUT_CONTENT_SUCCESS':
+        case 'CHECKIN_CONTENT_SUCCESS':
+        case 'PUBLISH_CONTENT_SUCCESS':
+        case 'APPROVE_CONTENT_SUCCESS':
+        case 'REJECT_CONTENT_SUCCESS':
+        case 'UNDOCHECKOUT_CONTENT_SUCCESS':
+        case 'FORCE_UNDOCHECKOUT_CONTENT_SUCCESS':
+        case 'RESTOREVERSION_CONTENT_SUCCESS':
+        case 'MOVE_CONTENT_SUCCESS':
+        case 'MOVE_BATCH_SUCCESS':
+            return true
         default:
             return state
     }
 }
 
-export type verticalValues = 'top' | 'bottom'
-export const vertical: Reducer<verticalValues, Action & { vertical: verticalValues }> = (state = 'bottom', action) => {
+export const messagebarclose: Reducer<() => void | null> = (state = closeMessageBar, action) => {
     switch (action.type) {
-        case 'OPEN_MESSAGE_BAR':
-            return action.vertical
+        case 'SET_MESSAGEBAR':
+            return action.close
         default:
             return state
     }
 }
 
-export type horizontalValues = 'left' | 'right'
-export const horizontal: Reducer<horizontalValues, Action & { horizontal: horizontalValues }> = (state = 'left', action) => {
+export const messagebarexited: Reducer<() => void | null> = (state = null, action) => {
     switch (action.type) {
-        case 'OPEN_MESSAGE_BAR':
-            return action.horizontal
+        case 'SET_MESSAGEBAR':
+            return action.exited
+        default:
+            return state
+    }
+}
+
+export const hideDuration: Reducer<number> = (state = null, action) => {
+    switch (action.type) {
+        case 'SET_MESSAGEBAR':
+            return action.hideDuration
+        case 'CREATE_CONTENT_SUCCESS':
+        case 'DELETE_CONTENT_SUCCESS':
+        case 'LOAD_CONTENT_SUCCESS':
+        case 'FETCH_CONTENT_SUCCESS':
+        case 'UPDATE_CONTENT_SUCCESS':
+        case 'DELETE_BATCH_SUCCESS':
+        case 'COPY_CONTENT_SUCCESS':
+        case 'COPY_BATCH_SUCCESS':
+        case 'MOVE_CONTENT_SUCCESS':
+        case 'MOVE_BATCH_SUCCESS':
+        case 'CHECKOUT_CONTENT_SUCCESS':
+        case 'CHECKIN_CONTENT_SUCCESS':
+        case 'PUBLISH_CONTENT_SUCCESS':
+        case 'APPROVE_CONTENT_SUCCESS':
+        case 'REJECT_CONTENT_SUCCESS':
+        case 'UNDOCHECKOUT_CONTENT_SUCCESS':
+        case 'FORCE_UNDOCHECKOUT_CONTENT_SUCCESS':
+        case 'RESTOREVERSION_CONTENT_SUCCESS':
+        case 'MOVE_CONTENT_SUCCESS':
+        case 'MOVE_BATCH_SUCCESS':
+            return null
+        case 'CREATE_CONTENT_FAILURE':
+        case 'DELETE_CONTENT_FAILURE':
+        case 'LOAD_CONTENT_FAILURE':
+        case 'FETCH_CONTENT_FAILURE':
+        case 'UPDATE_CONTENT_FAILURE':
+        case 'DELETE_BATCH_FAILURE':
+        case 'COPY_CONTENT_FAILURE':
+        case 'COPY_BATCH_FAILURE':
+        case 'MOVE_CONTENT_FAILURE':
+        case 'MOVE_BATCH_FAILURE':
+        case 'CHECKOUT_CONTENT_FAILURE':
+        case 'CHECKIN_CONTENT_FAILURE':
+        case 'PUBLISH_CONTENT_FAILURE':
+        case 'APPROVE_CONTENT_FAILURE':
+        case 'REJECT_CONTENT_FAILURE':
+        case 'UNDOCHECKOUT_CONTENT_FAILURE':
+        case 'FORCE_UNDOCHECKOUT_CONTENT_FAILURE':
+        case 'RESTOREVERSION_CONTENT_FAILURE':
+        case 'MOVE_CONTENT_FAILURE':
+        case 'MOVE_BATCH_FAILURE':
+            return null
         default:
             return state
     }
@@ -315,8 +471,9 @@ export const messagebar = combineReducers({
     open: messagebaropen,
     mode: messagebarmode,
     content: messagebarcontent,
-    vertical,
-    horizontal,
+    close: messagebarclose,
+    exited: messagebarexited,
+    hideDuration,
 })
 
 export const toolbarActions: Reducer<IActionModel[], Action & { payload: { d: { Actions: IActionModel[] } } }> = (state = [], action) => {
