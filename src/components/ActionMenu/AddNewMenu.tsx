@@ -36,12 +36,12 @@ interface AddNemMenuProps {
     repository,
 }
 
-interface DashboardState {
+interface AddNemMenuState {
     options: IActionModel[],
     currentContent: IContent,
 }
 
-class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DashboardState> {
+class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, AddNemMenuState> {
     public state = {
         options: [],
         currentContent: null,
@@ -101,4 +101,4 @@ class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof map
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddNewMenu as any)
+export default connect(mapStateToProps, mapDispatchToProps)(AddNewMenu)
