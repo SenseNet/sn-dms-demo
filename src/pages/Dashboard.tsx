@@ -13,6 +13,7 @@ import DashboardDrawer from '../components/DashboardDrawer'
 import { DmsViewer } from '../components/DmsViewer'
 import DocumentLibrary from '../components/DocumentLibrary'
 import Header from '../components/Header'
+import MessageBar from '../components/MessageBar'
 import * as DMSReducers from '../Reducers'
 
 const styles = {
@@ -121,7 +122,6 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
             currentUserName: newProps.loggedinUserName,
         }
     }
-
     public render() {
         const { isDialogOpen, dialogContent, dialogOnClose } = this.props
         const filter = { filter: this.props.isViewerOpened ? 'blur(3px)' : '' }
@@ -162,6 +162,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
 
                                                 <Redirect to="/documents" />
                                             </Switch>
+                                            <MessageBar />
                                         </div>
                                     </div> :
                                     <div style={styles.progress as any} >
