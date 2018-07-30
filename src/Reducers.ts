@@ -1,8 +1,9 @@
 import { IContent, IODataResponse } from '@sensenet/client-core'
-import { GenericContent, IActionModel } from '@sensenet/default-content-types'
+import { IActionModel, Workspace } from '@sensenet/default-content-types'
+import { createContent, deleteBatch, deleteContent, loadContent, loadContentActions, moveBatch, PromiseReturns } from '@sensenet/redux/dist/Actions'
 import { Action, AnyAction, combineReducers, Reducer } from 'redux'
 import { rootStateType } from '.'
-import { closeMessageBar, ExtendedUploadProgressInfo } from './Actions'
+import { closeMessageBar, ExtendedUploadProgressInfo, loadListActions, loadTypesToAddNewList, loadUserActions } from './Actions'
 import { resources } from './assets/resources'
 
 enum MessageMode { error, warning, info }
@@ -79,10 +80,11 @@ export const open: Reducer<boolean> = (state = false, action) => {
     }
 }
 
-export const actions: Reducer<IActionModel[], Action & { payload?: { d: { Actions: IActionModel[] } }, actions?: IActionModel[] }> = (state = [], action) => {
+export const actions: Reducer<IActionModel[]> = (state = [], action) => {
     switch (action.type) {
         case 'LOAD_CONTENT_ACTIONS_SUCCESS':
-            return action.payload && action.payload.d.Actions ? action.payload.d.Actions : []
+            const result: { d: { Actions: IActionModel[] } } = (action.result as PromiseReturns<typeof loadContentActions>) as any
+            return result && result.d.Actions ? result.d.Actions : []
         case 'OPEN_ACTIONMENU':
             return action.actions || []
         default:
@@ -126,11 +128,12 @@ export const position: Reducer<any, Action & { position?: any }> = (state = null
     }
 }
 
-export const rootId: Reducer<number | null, Action & { payload?: IODataResponse<IContent> }> = (state = null, action) => {
+export const rootId: Reducer<number | null> = (state = null, action) => {
     switch (action.type) {
         case 'LOAD_CONTENT_SUCCESS':
-            if (!state && action.payload && action.payload.d.Path.indexOf('Default_Site') === -1) {
-                return action.payload.d.Id
+            const result = action.result as PromiseReturns<typeof loadContent>
+            if (!state && result && result.d.Path.indexOf('Default_Site') === -1) {
+                return result.d.Id
             } else {
                 return state
             }
@@ -173,20 +176,21 @@ export const editedFirst: Reducer<boolean, Action & { id?: number, edited?: bool
 }
 
 export interface BreadcrumbItemType { name: string, id: number, path: string }
-export const breadcrumb: Reducer<BreadcrumbItemType[], Action & { payload?: IODataResponse<GenericContent> }> = (state = [], action) => {
+
+export const breadcrumb: Reducer<BreadcrumbItemType[]> = (state = [], action) => {
     switch (action.type) {
         case 'LOAD_CONTENT_SUCCESS':
-            if (action.payload) {
-                const payload = action.payload
-                if (payload.d.Path.indexOf('Default_Site') === -1 && state.filter((e) => e.id === payload.d.Id).length === 0) {
+            const result = action.result as PromiseReturns<typeof loadContent>
+            if (result) {
+                if (result.d.Path.indexOf('Default_Site') === -1 && state.filter((e) => e.id === result.d.Id).length === 0) {
                     const element = {
-                        name: action.payload.d.DisplayName,
-                        id: action.payload.d.Id,
-                        path: action.payload.d.Path,
+                        name: result.d.DisplayName,
+                        id: result.d.Id,
+                        path: result.d.Path,
                     } as BreadcrumbItemType
                     return [...state, element]
-                } else if (state.filter((e) => e.id === payload.d.Id).length > 0) {
-                    const index = state.findIndex((e) => e.id === payload.d.Id) + 1
+                } else if (state.filter((e) => e.id === result.d.Id).length > 0) {
+                    const index = state.findIndex((e) => e.id === result.d.Id) + 1
                     return [...state.slice(0, index)]
                 }
             } else {
@@ -220,10 +224,11 @@ export const isSelectionModeOn: Reducer<boolean> = (state = false, action) => {
     }
 }
 
-export const userActions: Reducer<IActionModel[], Action & { payload: { d: { Actions: IActionModel[] } } }> = (state = [], action) => {
+export const userActions: Reducer<IActionModel[]> = (state = [], action) => {
     switch (action.type) {
         case 'LOAD_USER_ACTIONS_SUCCESS':
-            return action.payload.d.Actions ? action.payload.d.Actions : []
+            const result = action.result as PromiseReturns<typeof loadUserActions>
+            return result ? result.d.Actions : []
         default:
             return state
     }
@@ -232,7 +237,8 @@ export const userActions: Reducer<IActionModel[], Action & { payload: { d: { Act
 export const addNewTypes = (state = [], action) => {
     switch (action.type) {
         case 'LOAD_TYPES_TO_ADDNEW_LIST_SUCCESS':
-            return action.payload.d.Actions ? action.payload.d.Actions : []
+            const result = action.result as PromiseReturns<typeof loadTypesToAddNewList>
+            return result ? result.d.Actions : []
         default:
             return state
     }
@@ -314,20 +320,22 @@ export const messagebarcontent: Reducer<any[]> = (state = [], action) => {
         case 'SET_MESSAGEBAR':
             return action.content
         case 'CREATE_CONTENT_SUCCESS':
-            return [`${action.payload.d.DisplayName} is successfully created`]
+            // tslint:disable-next-line:no-string-literal
+            return [`${(action.result as PromiseReturns<typeof createContent>).d['DisplayName']} is successfully created`]
         case 'DELETE_CONTENT_SUCCESS':
-            return [`${action.payload.d.Name} is successfully deleted`]
+            return [`${(action.result as PromiseReturns<typeof deleteContent>).d.results[0].Name} is successfully deleted`]
         case 'DELETE_BATCH_SUCCESS':
+            const result = action.result as PromiseReturns<typeof deleteBatch>
             return [
-                ...action.payload.d.errors.map((result) => `Cannot delete ${result.content.Name}, because '${result.error.message}'`),
-                ...action.payload.d.results.map((result) => `${result.Name} is successfully deleted`)]
+                ...result.d.errors.map((r) => `Cannot delete ${r.content.Name}, because '${r.error.message}'`),
+                ...result.d.results.map((r) => `${r.Name} is successfully deleted`)]
         case 'CREATE_CONTENT_FAILURE':
         case 'DELETE_CONTENT_FAILURE':
         case 'LOAD_CONTENT_FAILURE':
         case 'FETCH_CONTENT_FAILURE':
         case 'UPDATE_CONTENT_FAILURE':
         case 'DELETE_BATCH_FAILURE':
-            return `${action.payload.message}`
+            return `${(action.result as PromiseReturns<typeof deleteBatch>).d.errors[0].error}`
         case 'COPY_CONTENT_FAILURE':
         case 'COPY_BATCH_FAILURE':
         case 'MOVE_CONTENT_FAILURE':
@@ -342,7 +350,7 @@ export const messagebarcontent: Reducer<any[]> = (state = [], action) => {
         case 'RESTOREVERSION_CONTENT_FAILURE':
         case 'MOVE_CONTENT_FAILURE':
         case 'MOVE_BATCH_FAILURE':
-            return `${action.payload.message}`
+            return `${(action.result as PromiseReturns<typeof moveBatch>).d.errors[0].error}`
         default:
             return state
     }
@@ -476,10 +484,10 @@ export const messagebar = combineReducers({
     hideDuration,
 })
 
-export const toolbarActions: Reducer<IActionModel[], Action & { payload: { d: { Actions: IActionModel[] } } }> = (state = [], action) => {
+export const toolbarActions: Reducer<IActionModel[]> = (state = [], action) => {
     switch (action.type) {
         case 'LOAD_LIST_ACTIONS_SUCCESS':
-            return action.payload.d.Actions
+            return (action.result as PromiseReturns<typeof loadListActions>).d.Actions
         default:
             return state
     }
@@ -634,6 +642,29 @@ export const dialog = combineReducers({
     title: dialogTitle,
 })
 
+export const allWorkspaces: Reducer<Workspace[]> = (state: Workspace[], action: AnyAction) => {
+    switch (action.type) {
+        case 'GET_WORKSPACES_SUCCESS':
+            return action.d.results
+        default:
+            return state || []
+    }
+}
+
+export const favorites: Reducer<number[]> = (state: number[], action: AnyAction) => {
+    switch (action.type) {
+        case 'LOAD_FAVORITE_WORKSPACES':
+            return action.d
+        default:
+            return state || []
+    }
+}
+
+export const workspaces = combineReducers({
+    favorites,
+    all: allWorkspaces,
+})
+
 export const dms = combineReducers({
     messagebar,
     actionmenu,
@@ -650,6 +681,7 @@ export const dms = combineReducers({
     menu,
     viewer,
     dialog,
+    workspaces,
 })
 
 export const getRegistrationError = (state: { registrationError: ReturnType<typeof register>['registrationError'] }) => {

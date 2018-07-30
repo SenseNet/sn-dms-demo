@@ -1,6 +1,6 @@
 import { IContent, IUploadFromEventOptions, IUploadFromFileListOptions, IUploadProgressInfo, Repository, Upload } from '@sensenet/client-core'
 import { ObservableValue, usingAsync } from '@sensenet/client-utils'
-import { File as SnFile, GenericContent } from '@sensenet/default-content-types'
+import { File as SnFile, GenericContent, User, Workspace } from '@sensenet/default-content-types'
 import { IActionModel } from '@sensenet/default-content-types/dist/IActionModel'
 import { Actions } from '@sensenet/redux'
 import { Action, Dispatch } from 'redux'
@@ -75,7 +75,7 @@ export const setMessageBar = (mode: MessageMode, content: any, close?: () => voi
 })
 export const loadListActions = (idOrPath: number | string, scenario?: string, customActions?: IActionModel[]) => ({
     type: 'LOAD_LIST_ACTIONS',
-    async payload(repository: Repository): Promise<{ d: IActionModel[] }> {
+    async payload(repository: Repository) {
         const data: { d: { Actions: IActionModel[] } } = await repository.getActions({ idOrPath, scenario }) as any
         const actions = customActions ? [...data.d.Actions, ...customActions] : data.d.Actions
         return {
@@ -85,13 +85,13 @@ export const loadListActions = (idOrPath: number | string, scenario?: string, cu
                     const y = b.Index
                     return ((x < y) ? -1 : ((x > y) ? 1 : 0))
                 }),
-            } as any,
+            },
         }
     },
 })
 export const loadUserActions = (idOrPath: number | string, scenario?: string, customActions?: IActionModel[]) => ({
     type: 'LOAD_USER_ACTIONS',
-    async payload(repository: Repository): Promise<{ d: IActionModel[] }> {
+    async payload(repository: Repository) {
         const data: { d: { Actions: IActionModel[] } } = await repository.getActions({ idOrPath, scenario }) as any
         const actions = customActions ? [...data.d.Actions, ...customActions] : data.d.Actions
         return {
@@ -101,7 +101,7 @@ export const loadUserActions = (idOrPath: number | string, scenario?: string, cu
                     const y = b.Index
                     return ((x < y) ? -1 : ((x > y) ? 1 : 0))
                 }),
-            } as any,
+            },
         }
     },
 })
@@ -236,8 +236,8 @@ export const closeViewer = () => ({
 
 export const loadTypesToAddNewList = (idOrPath: number | string) => ({
     type: 'LOAD_TYPES_TO_ADDNEW_LIST',
-    async payload(repository: Repository): Promise<{ d: IActionModel[] }> {
-        const data: any = await repository.getActions({ idOrPath, scenario: 'New' })
+    async payload(repository: Repository) {
+        const data: { d: { Actions: IActionModel[] } } = await repository.getActions({ idOrPath, scenario: 'New' }) as any
         return data
     },
 })
@@ -255,4 +255,26 @@ export const closeDialog = () => ({
 export const setActionMenuId = (id: number | null) => ({
     type: 'SET_ACTIONMENU_ID',
     id,
+})
+
+export const getWorkspaces = () => ({
+    type: 'GET_WORKSPACES',
+    payload: (repository: Repository) => repository.loadCollection<Workspace>({
+        path: '/',
+        oDataOptions: {
+            query: 'TypeIs:Workspace',
+            select: ['DisplayName', 'Id', 'Path'],
+        },
+    }),
+})
+
+export const loadFavoriteWorkspaces = (user: User) => ({
+    type: 'LOAD_FAVORITE_WORKSPACES',
+    payload: (repository: Repository) => repository.load<User>({
+        idOrPath: user.Id,
+        oDataOptions: {
+            select: 'FollowedWorkspaces',
+            expand: 'FollowedWorkspaces',
+        },
+    }),
 })

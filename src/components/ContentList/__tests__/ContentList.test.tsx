@@ -90,6 +90,7 @@ const options = {
             toolbar: null,
             uploads: null,
             viewer: null,
+            workspaces: null,
         },
         sensenetDocumentViewer: null,
     },
