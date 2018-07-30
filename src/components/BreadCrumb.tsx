@@ -22,6 +22,7 @@ const styles = {
         color: '#666',
         padding: 8,
         letterSpacing: '0.05rem',
+        fontSize: 16,
     },
     breadCrumbIcon: {
         display: 'inline-block',
@@ -31,6 +32,7 @@ const styles = {
     },
     breadCrumbItemLast: {
         fontFamily: 'Raleway ExtraBold',
+        fontSize: 16,
     },
     breadCrumbIconLast: {
         margin: 0,
