@@ -268,10 +268,10 @@ export const getWorkspaces = () => ({
     }),
 })
 
-export const loadFavoriteWorkspaces = (user: User) => ({
+export const loadFavoriteWorkspaces = (userName) => ({
     type: 'LOAD_FAVORITE_WORKSPACES',
     payload: (repository: Repository) => repository.load<User>({
-        idOrPath: user.Id,
+        idOrPath: `/Root/IMS/Public/${userName}`,
         oDataOptions: {
             select: 'FollowedWorkspaces',
             expand: 'FollowedWorkspaces',

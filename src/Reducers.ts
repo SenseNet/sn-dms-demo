@@ -3,7 +3,7 @@ import { IActionModel, Workspace } from '@sensenet/default-content-types'
 import { createContent, deleteBatch, deleteContent, loadContent, loadContentActions, moveBatch, PromiseReturns } from '@sensenet/redux/dist/Actions'
 import { Action, AnyAction, combineReducers, Reducer } from 'redux'
 import { rootStateType } from '.'
-import { closeMessageBar, ExtendedUploadProgressInfo, loadListActions, loadTypesToAddNewList, loadUserActions } from './Actions'
+import { closeMessageBar, ExtendedUploadProgressInfo, getWorkspaces, loadFavoriteWorkspaces, loadListActions, loadTypesToAddNewList, loadUserActions } from './Actions'
 import { resources } from './assets/resources'
 
 enum MessageMode { error, warning, info }
@@ -645,7 +645,7 @@ export const dialog = combineReducers({
 export const allWorkspaces: Reducer<Workspace[]> = (state: Workspace[], action: AnyAction) => {
     switch (action.type) {
         case 'GET_WORKSPACES_SUCCESS':
-            return action.d.results
+            return (action.result as PromiseReturns<typeof getWorkspaces>).d.results
         default:
             return state || []
     }
@@ -653,8 +653,9 @@ export const allWorkspaces: Reducer<Workspace[]> = (state: Workspace[], action: 
 
 export const favorites: Reducer<number[]> = (state: number[], action: AnyAction) => {
     switch (action.type) {
-        case 'LOAD_FAVORITE_WORKSPACES':
-            return action.d
+        case 'LOAD_FAVORITE_WORKSPACES_SUCCESS':
+            const items = (action.result as PromiseReturns<typeof loadFavoriteWorkspaces>).d.FollowedWorkspaces as any[]
+            return items.map((item) => item.Id)
         default:
             return state || []
     }
