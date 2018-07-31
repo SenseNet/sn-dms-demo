@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import * as DMSActions from '../../Actions'
 import * as DMSReducers from '../../Reducers'
 
+import Fade from '@material-ui/core/Fade'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import { rootStateType } from '../..'
@@ -22,7 +23,7 @@ const mapStateToProps = (state: rootStateType) => {
         open: DMSReducers.actionmenuIsOpen(state.dms.actionmenu),
         anchorElement: DMSReducers.getAnchorElement(state.dms.actionmenu),
         position: DMSReducers.getMenuPosition(state.dms.actionmenu),
-        hostName: state.sensenet.session.repository.hostName,
+        hostName: state.sensenet.session.repository.repositoryUrl,
     }
 }
 
@@ -56,6 +57,7 @@ const styles = {
     menuItem: {
         padding: '6px 15px',
         fontSize: '0.9rem',
+        fontFamily: 'Raleway Medium',
     },
     avatar: {
         display: 'inline-block',
@@ -112,34 +114,36 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
         this.props.closeActionMenu()
         this.setState({ anchorEl: null })
     }
-    public handleMenuItemClick(e: React.MouseEvent, action: string) {
-        switch (action) {
-            case 'Rename':
-                this.handleClose()
-                this.props.setEdited(this.props.id)
-                break
-            case 'ClearSelection':
-                this.handleClose()
-                this.props.clearSelection()
-                break
-            case 'DeleteBatch':
-                this.handleClose()
-                this.props.clearSelection()
-                this.props.deleteBatch(this.props.selected, false)
-                break
-            case 'Preview':
-                this.handleClose()
-                if (this.props.contentId) {
+    public handleMenuItemClick(e: React.MouseEvent, action: any) {
+        if (action.Action) {
+            action.Action()
+        } else {
+            switch (action.Name) {
+                case 'Rename':
+                    this.handleClose()
+                    this.props.setEdited(this.props.id)
+                    break
+                case 'ClearSelection':
+                    this.handleClose()
+                    this.props.clearSelection()
+                    break
+                case 'DeleteBatch':
+                    this.handleClose()
+                    this.props.clearSelection()
+                    this.props.deleteBatch(this.props.selected, false)
+                    break
+                case 'Preview':
+                    this.handleClose()
                     this.props.openViewer(this.props.contentId)
                     this.props.pollDocumentData(this.props.hostName, this.props.contentId)
-                }
-            case 'Logout':
-                this.handleClose()
-                this.props.logout()
-            default:
-                console.log(`${action} is clicked`)
-                this.handleClose()
-                break
+                case 'Logout':
+                    this.handleClose()
+                    this.props.logout()
+                default:
+                    console.log(`${action} is clicked`)
+                    this.handleClose()
+                    break
+            }
         }
     }
     public render() {
@@ -150,12 +154,13 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
             onClose={this.handleClose}
             anchorReference="anchorPosition"
             anchorPosition={position}
+            TransitionComponent={Fade}
         >
             {
                 actions.map((action, index) => {
                     return <MenuItem
-                        key={action.Name}
-                        onClick={(event) => this.handleMenuItemClick(event, action.Name)}
+                        key={index}
+                        onClick={(event) => this.handleMenuItemClick(event, action)}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.color = '#016d9e'
                             e.currentTarget.style.fontWeight = 'bold'

@@ -4,8 +4,10 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 
 import MoreVertIcon from '@material-ui/icons/MoreVert'
-import { IActionModel } from '@sensenet/default-content-types'
+import { IODataParams } from '@sensenet/client-core'
+import { GenericContent, IActionModel } from '@sensenet/default-content-types'
 import { Reducers } from '@sensenet/redux'
+import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { icons } from '../../assets/icons'
 import * as DMSReducers from '../../Reducers'
@@ -47,53 +49,68 @@ const styles = {
     },
 }
 
-interface BatchActionlistProps {
-    currentId,
-    actions: any[],
-    getActions,
-    selected: number[],
-    openActionMenu,
-    closeActionMenu,
-    currentContent,
+const mapStateToProps = (state: rootStateType) => {
+    return {
+        actions: state.dms.toolbar.actions,
+        currentId: DMSReducers.getCurrentId(state.dms),
+        selected: Reducers.getSelectedContentIds(state.sensenet),
+        currentContent: Reducers.getCurrentContent(state.sensenet),
+    }
 }
 
-class BatchActionlist extends React.Component<BatchActionlistProps, { options, anchorEl }> {
-    constructor(props) {
+const mapDispatchToProps = {
+    getActions: DMSActions.loadListActions,
+    openActionMenu: DMSActions.openActionMenu,
+    closeActionMenu: DMSActions.closeActionMenu,
+}
+
+export interface BatchActionlistState {
+    options: IActionModel[],
+    currentId: number,
+    anchorEl,
+    actions,
+}
+
+class BatchActionlist extends React.Component<ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, BatchActionlistState> {
+    public state = {
+        options: [],
+        anchorEl: null,
+        actions: [],
+        currentId: null,
+    }
+    constructor(props: BatchActionlist['props']) {
         super(props)
-        this.state = {
-            options: [],
-            anchorEl: null,
-        }
         this.handleClick = this.handleClick.bind(this)
     }
-    public componentWillReceiveProps(nextProps) {
-        const { actions, currentId, getActions } = this.props
-        if ((nextProps.currentContent.Id && (currentId === 'login' || currentId !== nextProps.currentId)) && actions.length === 0) {
-            getActions(nextProps.currentContent.Id, 'DMSBatchActions', [{
+    public static getDerivedStateFromProps(newProps: BatchActionlist['props'], lastState: BatchActionlist['state']) {
+        if ((newProps.currentContent.Id && lastState.currentId !== newProps.currentContent.Id && lastState.actions.length === 0)) {
+            newProps.getActions(newProps.currentContent.Id, 'DMSBatchActions', [{
                 Name: 'Download', DisplayName: 'Download', Icon: 'download', Index: 1,
 
             } as IActionModel])
         }
-        if (this.props.actions.length !== nextProps.actions.length) {
-            const optionList = []
-            nextProps.actions.map((action, index) => {
+        const optionList = []
+        if (lastState.actions.length !== newProps.actions.length) {
+            newProps.actions.map((action, index) => {
                 if (index > 1) {
                     optionList.push(action)
                 }
             })
-            this.setState({
-                options: optionList,
-            })
+        }
+        return {
+            ...lastState,
+            options: optionList,
+            currentId: newProps.currentContent.Id,
         }
     }
     public isHidden = () => {
         return this.props.selected.length > 0 ? false : true
     }
     public handleClick = (e) => {
-        const { currentId } = this.props
+        const { currentContent } = this.props
         const { options } = this.state
         this.props.closeActionMenu()
-        this.props.openActionMenu(options, currentId, currentId, e.currentTarget, {
+        this.props.openActionMenu(options, currentContent.Id, currentContent.Id.toString(), e.currentTarget, {
             top: e.currentTarget.offsetTop + 100,
             left: e.currentTarget.offsetLeft + 100,
         })
@@ -132,17 +149,4 @@ class BatchActionlist extends React.Component<BatchActionlistProps, { options, a
     }
 }
 
-const mapStateToProps = (state, match) => {
-    return {
-        actions: DMSReducers.getToolbarActions(state.dms.toolbar),
-        currentId: DMSReducers.getCurrentId(state.dms),
-        selected: Reducers.getSelectedContentIds(state.sensenet),
-        currentContent: Reducers.getCurrentContent(state.sensenet),
-    }
-}
-
-export default connect(mapStateToProps, {
-    getActions: DMSActions.loadListActions,
-    openActionMenu: DMSActions.openActionMenu,
-    closeActionMenu: DMSActions.closeActionMenu,
-})(BatchActionlist)
+export default connect(mapStateToProps, mapDispatchToProps)(BatchActionlist)

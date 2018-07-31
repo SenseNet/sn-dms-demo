@@ -13,7 +13,7 @@ it('renders without crashing', () => {
         persistedState: {
             sensenet: {
                 currentcontent: {
-                    1: { Id: 1 },
+                    content: { Id: 1 },
                 },
             },
         },

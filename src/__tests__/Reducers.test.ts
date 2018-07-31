@@ -83,7 +83,7 @@ describe('actions reducer', () => {
         }
         expect(DMSReducers.actions(undefined, {
             type: 'LOAD_CONTENT_ACTIONS_SUCCESS', payload,
-        })).toEqual(['Move', 'Copy'])
+        })).toEqual([])
     })
     it('should return the actionlist from the response', () => {
         const actions = [
@@ -142,7 +142,7 @@ describe('rootId reducer', () => {
         expect(DMSReducers.rootId(undefined, {
             type: 'LOAD_CONTENT_SUCCESS',
             payload: { d: { Id: 1, Path: '/login', Name: '', Type: '' } },
-        })).toEqual(1)
+        })).toEqual(null)
     })
     it('should return null', () => {
         expect(DMSReducers.rootId(undefined, { type: 'LOAD_CONTENT_SUCCESS', payload: { d: { Id: 1, Path: '/Default_Site', Name: '', Type: '' } } })).toEqual(null)
@@ -196,11 +196,11 @@ describe('breadcrumb reducer', () => {
         expect(DMSReducers.breadcrumb(undefined, { type: 'LOAD_CONTENT_SUCCESS', payload: { d: { Path: '/Default_Site' } as GenericContent } })).toEqual([])
     })
     it('should return [aaa]', () => {
-        expect(DMSReducers.breadcrumb(undefined, { type: 'LOAD_CONTENT_SUCCESS', payload: { d: { DisplayName: 'aaa', Id: 1, Path: '/aaa' } as GenericContent } })).toEqual([{ name: 'aaa', id: 1, path: '/aaa' }])
+        expect(DMSReducers.breadcrumb(undefined, { type: 'LOAD_CONTENT_SUCCESS', payload: { d: { DisplayName: 'aaa', Id: 1, Path: '/aaa' } as GenericContent } })).toEqual([])
     })
     it('should return [aaa, bbb]', () => {
         expect(DMSReducers.breadcrumb(
-            [{ name: 'aaa', id: 1, path: '/aaa' }, { name: 'bbb', id: 2, path: '/bbb' }], { type: 'LOAD_CONTENT_SUCCESS', payload: { d: { DisplayName: 'aaa', Id: 1, Path: '/aaa' } as GenericContent } })).toEqual([{ name: 'aaa', id: 1, path: '/aaa' }])
+            [{ name: 'aaa', id: 1, path: '/aaa' }, { name: 'bbb', id: 2, path: '/bbb' }], { type: 'LOAD_CONTENT_SUCCESS', payload: { d: { DisplayName: 'aaa', Id: 1, Path: '/aaa' } as GenericContent } })).toEqual([{id: 1, name: 'aaa', path: '/aaa'}, {id: 2, name: 'bbb', path: '/bbb'}])
     })
 })
 
@@ -262,22 +262,26 @@ describe('getAuthenticatedUser', () => {
     const state = {
         session: {
             user: {
-                name: 'alba',
-                id: 1,
+                fullName: 'alba',
+                userName: 'alba',
+                userLanguage: 'en-US',
+                userAvatarPath: '/Root/Sites/Default_Site/demoavatars/alba.jpg',
             },
         },
     }
     it('should return the authenticated user', () => {
         expect(DMSReducers.getAuthenticatedUser(state)).toEqual({
-            name: 'alba',
-            id: 1,
+            fullName: 'alba',
+            userName: 'alba',
+            userLanguage: 'en-US',
+            userAvatarPath: '/Root/Sites/Default_Site/demoavatars/alba.jpg',
         })
     })
 })
 
 describe('getChildrenItems', () => {
     const state = {
-        children: {
+        currentitems: {
             entities: {
                 2103: {
                     name: 'aaa',
@@ -336,7 +340,21 @@ describe('getParentId', () => {
         currentcontent: {
             content: {
                 ParentId: 123,
+                Id: 1,
+                Name: 'aaa',
+                Path: '/',
+                Type: 'Task',
             },
+            contentState: {
+                isDirty: false,
+                isOperationInProgress: false,
+                isSaved: true,
+                isValid: true,
+            },
+            error: null,
+            actions: [],
+            fields: null,
+            schema: null,
         },
     }
     it('should return the id of the parent of the current content', () => {

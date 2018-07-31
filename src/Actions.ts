@@ -1,10 +1,9 @@
 import { IContent, IUploadFromEventOptions, IUploadFromFileListOptions, IUploadProgressInfo, Repository, Upload } from '@sensenet/client-core'
 import { ObservableValue, usingAsync } from '@sensenet/client-utils'
-import { File as SnFile, GenericContent } from '@sensenet/default-content-types'
+import { File as SnFile, GenericContent, User, Workspace } from '@sensenet/default-content-types'
 import { IActionModel } from '@sensenet/default-content-types/dist/IActionModel'
 import { Actions } from '@sensenet/redux'
 import { Action, Dispatch } from 'redux'
-import { horizontalValues, verticalValues } from './Reducers'
 
 import { debounce } from 'lodash'
 import { InjectableAction } from 'redux-di-middleware'
@@ -60,19 +59,23 @@ export const setEditedFirst = (edited: boolean) => ({
     type: 'SET_EDITED_FIRST',
     edited,
 })
-export const openMessageBar = (mode: MessageMode, content: any, vertical?: verticalValues, horizontal?: horizontalValues) => ({
-    type: 'OPEN_MESSAGE_BAR',
-    mode,
-    content,
-    vertical: vertical || 'bottom',
-    horizontal: horizontal || 'left',
+export const openMessageBar = () => ({
+    type: 'OPEN_MESSAGEBAR',
 })
 export const closeMessageBar = () => ({
-    type: 'CLOSE_MESSAGE_BAR',
+    type: 'CLOSE_MESSAGEBAR',
+})
+export const setMessageBar = (mode: MessageMode, content: any, close?: () => void, exited?: () => void, hideDuration?: number) => ({
+    type: 'SET_MESSAGEBAR',
+    mode,
+    content,
+    close,
+    exited,
+    hideDuration,
 })
 export const loadListActions = (idOrPath: number | string, scenario?: string, customActions?: IActionModel[]) => ({
     type: 'LOAD_LIST_ACTIONS',
-    async payload(repository: Repository): Promise<{ d: IActionModel[] }> {
+    async payload(repository: Repository) {
         const data: { d: { Actions: IActionModel[] } } = await repository.getActions({ idOrPath, scenario }) as any
         const actions = customActions ? [...data.d.Actions, ...customActions] : data.d.Actions
         return {
@@ -82,13 +85,13 @@ export const loadListActions = (idOrPath: number | string, scenario?: string, cu
                     const y = b.Index
                     return ((x < y) ? -1 : ((x > y) ? 1 : 0))
                 }),
-            } as any,
+            },
         }
     },
 })
 export const loadUserActions = (idOrPath: number | string, scenario?: string, customActions?: IActionModel[]) => ({
     type: 'LOAD_USER_ACTIONS',
-    async payload(repository: Repository): Promise<{ d: IActionModel[] }> {
+    async payload(repository: Repository) {
         const data: { d: { Actions: IActionModel[] } } = await repository.getActions({ idOrPath, scenario }) as any
         const actions = customActions ? [...data.d.Actions, ...customActions] : data.d.Actions
         return {
@@ -98,7 +101,7 @@ export const loadUserActions = (idOrPath: number | string, scenario?: string, cu
                     const y = b.Index
                     return ((x < y) ? -1 : ((x > y) ? 1 : 0))
                 }),
-            } as any,
+            },
         }
     },
 })
@@ -229,4 +232,49 @@ export const openViewer = (id: number) => ({
 
 export const closeViewer = () => ({
     type: 'CLOSE_VIEWER',
+})
+
+export const loadTypesToAddNewList = (idOrPath: number | string) => ({
+    type: 'LOAD_TYPES_TO_ADDNEW_LIST',
+    async payload(repository: Repository) {
+        const data: { d: { Actions: IActionModel[] } } = await repository.getActions({ idOrPath, scenario: 'New' }) as any
+        return data
+    },
+})
+
+export const openDialog = (content: any = '', title?: string, onClose?: () => void) => ({
+    type: 'OPEN_DIALOG',
+    title: title || '',
+    content,
+    onClose: onClose || null,
+})
+
+export const closeDialog = () => ({
+    type: 'CLOSE_DIALOG',
+})
+export const setActionMenuId = (id: number | null) => ({
+    type: 'SET_ACTIONMENU_ID',
+    id,
+})
+
+export const getWorkspaces = () => ({
+    type: 'GET_WORKSPACES',
+    payload: (repository: Repository) => repository.loadCollection<Workspace>({
+        path: '/',
+        oDataOptions: {
+            query: 'TypeIs:Workspace',
+            select: ['DisplayName', 'Id', 'Path'],
+        },
+    }),
+})
+
+export const loadFavoriteWorkspaces = (userName) => ({
+    type: 'LOAD_FAVORITE_WORKSPACES',
+    payload: (repository: Repository) => repository.load<User>({
+        idOrPath: `/Root/IMS/Public/${userName}`,
+        oDataOptions: {
+            select: 'FollowedWorkspaces',
+            expand: 'FollowedWorkspaces',
+        },
+    }),
 })

@@ -22,6 +22,7 @@ const styles = {
         color: '#666',
         padding: 8,
         letterSpacing: '0.05rem',
+        fontSize: 16,
     },
     breadCrumbIcon: {
         display: 'inline-block',
@@ -31,6 +32,7 @@ const styles = {
     },
     breadCrumbItemLast: {
         fontFamily: 'Raleway ExtraBold',
+        fontSize: 16,
     },
     breadCrumbIconLast: {
         margin: 0,
@@ -111,6 +113,7 @@ class BreadCrumb extends React.Component<BreadCrumbProps, {}> {
                                 <Button onClick={(event) => this.handleClick(event, n.id)}
                                     key={n.id}
                                     style={styles.breadCrumbItem as any}>
+                                    {n.name}
                                 </Button>
                                 {breadcrumb.length > 1 ?
                                     <Icon style={styles.breadCrumbIconLeft as any}>{icons.arrowLeft}</Icon> :

@@ -19,7 +19,7 @@ const styles = {
     text: {
         padding: 0,
         fontSize: '0.9rem',
-        fontWeight: 'bold' as any,
+        fontFamily: 'Raleway Medium',
     },
 }
 

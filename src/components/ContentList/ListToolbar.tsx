@@ -3,7 +3,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import * as React from 'react'
 import BatchActionlist from '../ActionMenu/BatchActionlist'
 import BreadCrumb from '../BreadCrumb'
-import { WorkspaceChooser } from '../WorkspaceChooser'
+import { WorkspaceSelector } from '../WorkspaceChooser/WorkspaceSelector'
 
 export class ListToolbar extends React.Component<{}, {}> {
     public render() {
@@ -12,7 +12,7 @@ export class ListToolbar extends React.Component<{}, {}> {
             }>
                 <Toolbar style={{ display: 'flex', flexDirection: 'row', padding: '0 12px' }}>
                     <div style={{ flex: 1, display: 'flex' }}>
-                        <WorkspaceChooser />
+                        <WorkspaceSelector />
                         <BreadCrumb />
                     </div>
                     <BatchActionlist />

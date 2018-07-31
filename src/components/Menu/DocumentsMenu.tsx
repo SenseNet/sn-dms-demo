@@ -6,9 +6,9 @@ import { connect } from 'react-redux'
 import { rootStateType } from '../..'
 import { hideUploadItem, hideUploadProgress, removeUploadItem, uploadFileList } from '../../Actions'
 import * as DMSReducers from '../../Reducers'
+import AddNewMenu from '../ActionMenu/AddNewMenu'
 import { UploadBar } from '../Upload/UploadBar'
 import { UploadButton } from '../Upload/UploadButton'
-import { AddNewButton } from './AddNewButton'
 
 const styles: StyleRulesCallback = () => ({
     primary: {
@@ -170,7 +170,7 @@ class DocumentsMenu extends React.Component<DocumentMenuProps, {}> {
                         })}
                     />
                     <ConnectedUploadBar />
-                    <AddNewButton contentType="" />
+                    <AddNewMenu />
                     <MenuList className={classes.submenu}>
                         {subMenu.map((menuitem, index) => {
                             return (<MenuItem className={classes.submenuItem} key={index}

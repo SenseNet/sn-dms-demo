@@ -1,3 +1,4 @@
+import { LoginState } from '@sensenet/client-core'
 import { Store } from '@sensenet/redux'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
@@ -14,11 +15,36 @@ it('renders without crashing', () => {
   const options = {
     persistedState: {
       sensenet: {
+        currentcontent: {
+          contentState: {
+            isSaved: false,
+          },
+        },
+        batchResponses: {
+          response: null,
+        },
         session: {
-          repository: {
-            RepositoryUrl
-              :
-              'https://dmsservice.demo.sensenet.com',
+          country: '',
+          language: '',
+          loginState: LoginState.Pending,
+          user: {
+            userName: 'aaa',
+          },
+          error: null,
+          repository: null,
+        },
+        selected: {
+          ids: [123],
+          entities: {
+            123: { Id: 123 },
+          },
+        },
+        currentitems: {
+          ids: [123],
+          entities: {
+            123: {
+              Id: 123,
+            },
           },
         },
       },

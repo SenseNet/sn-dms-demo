@@ -53,9 +53,7 @@ const mapDispatchToProps = {
 }
 
 interface LoginProps {
-  loginError: boolean,
   clear: () => any,
-  isRegistered: boolean,
   loginState: LoginState,
   oauthProvider: IOauthProvider
 }

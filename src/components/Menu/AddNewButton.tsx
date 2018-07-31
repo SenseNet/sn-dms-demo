@@ -3,9 +3,15 @@ import { Add } from '@material-ui/icons'
 import * as React from 'react'
 import { resources } from '../../assets/resources'
 
-export class AddNewButton extends React.Component<{ contentType }, {}> {
+export class AddNewButton extends React.Component<{ contentType, onClick }, {}> {
+    constructor(props) {
+        super(props)
+        this.handleButtonClick = this.handleButtonClick.bind(this)
+    }
     public handleButtonClick(e) {
-        // TODO
+        if (this.props.onClick) {
+            this.props.onClick(e)
+        }
     }
     public render() {
         return (
@@ -22,6 +28,7 @@ export class AddNewButton extends React.Component<{ contentType }, {}> {
                     padding: '6px 10px',
                     letterSpacing: 1,
                     margin: '10px 0',
+                    boxShadow: '0px 1px 3px 0px rgba(0, 0, 0, 0.2),0px 1px 1px 0px rgba(0, 0, 0, 0.14),0px 2px 1px -1px rgba(0, 0, 0, 0.12)',
                 }}
                 onClick={(ev) => this.handleButtonClick(ev)}>
                 <Add style={{ fontSize: 20, marginRight: 5 }} />

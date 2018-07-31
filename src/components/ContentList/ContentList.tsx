@@ -39,14 +39,16 @@ const styles = {
 
 const mapStateToProps = (state: rootStateType) => {
     return {
-        ids: Reducers.getIds(state.sensenet.children),
+        ids: Reducers.getIds(state.sensenet.currentitems),
         rootId: state.dms.rootId,
         selected: Reducers.getSelectedContentIds(state.sensenet),
         selectedContentItems: Reducers.getSelectedContentItems(state.sensenet),
-        isFetching: Reducers.getFetching(state.sensenet.children),
+        isFetching: Reducers.getFetching(state.sensenet.currentitems),
         isLoading: DMSReducers.getLoading(state.dms),
         edited: DMSReducers.getEditedItemId(state.dms),
         selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
+        menuId: DMSReducers.getMenuAnchorId(state.dms),
+        currentItems: state.sensenet.currentitems.entities,
     }
 }
 
@@ -134,13 +136,13 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
             if (from < till) {
                 ids.map((elId, i) => {
                     if (i > from && i < till + 1) {
-                        this.handleSimpleSelection(this.props.children[elId])
+                        this.handleSimpleSelection(this.props.currentItems.find((c) => c.Id === elId))
                     }
                 })
             } else {
                 for (let i = ids.length - 1; i > -1; i--) {
                     if (i < from && i > till - 1) {
-                        this.handleSimpleSelection(this.props.children[ids[i]])
+                        this.handleSimpleSelection(this.props.currentItems.find((c) => c.Id === ids[i]))
                     }
                 }
             }
@@ -157,7 +159,7 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
             const newPath = compile(this.props.match.path)({ scope: 'documents', contentId: id })
             this.props.history.push(newPath)
             this.props.loadContent(id)
-            this.props.deselect(this.props.children[id])
+            this.props.deselect(this.props.currentItems.find((c) => c.Id === id))
         } else {
             // console.log('open preview')
             this.props.openViewer(id)
@@ -168,7 +170,7 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
     public handleKeyDown(e) {
         const ctrl = e.ctrlKey ? true : false
         const shift = e.shiftKey ? true : false
-        const { children, ids } = this.props
+        const { currentItems, ids } = this.props
 
         if (ctrl) {
             this.setState({
@@ -181,14 +183,14 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
         } else {
             const id = Number(e.target.closest('tr').id)
             if (id !== 0) {
-                const type = children[id].Type
+                const type = currentItems.find((c) => c.Id === id).Type
                 this.setState({
                     active: id,
                 })
                 switch (e.which) {
                     case Key.Space:
                         e.preventDefault()
-                        this.handleSimpleSelection(children[id])
+                        this.handleSimpleSelection(currentItems.find((c) => c.Id === id))
                         break
                     case Key.Enter:
                         e.preventDefault()
@@ -198,7 +200,7 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
                         if (shift) {
                             const upperItemIndex = ids.indexOf(Number(this.state.active)) - 1
                             upperItemIndex > -1 ?
-                                this.handleSimpleSelection(children[ids[upperItemIndex]]) :
+                                this.handleSimpleSelection(currentItems.find((c) => c.Id === ids[upperItemIndex])) :
                                 // tslint:disable-next-line:no-unused-expression
                                 null
                         }
@@ -207,7 +209,7 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
                         if (shift) {
                             const upperItemIndex = ids.indexOf(Number(this.state.active)) + 1
                             upperItemIndex < ids.length ?
-                                this.handleSimpleSelection(children[ids[upperItemIndex]]) :
+                                this.handleSimpleSelection(currentItems.find((c) => c.Id === ids[upperItemIndex])) :
                                 // tslint:disable-next-line:no-unused-expression
                                 null
                         }
@@ -273,11 +275,11 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
     public handleSelectAllClick = (event, checked) => {
         if (checked) {
             this.setState({ selected: this.props.ids })
-            this.props.ids.map((id) => this.props.selected.indexOf(id) > -1 ? null : this.props.select(this.props.children[id]))
+            this.props.ids.map((id) => this.props.selected.indexOf(id) > -1 ? null : this.props.select(this.props.currentItems.find((c) => c.Id === id)))
             return
         }
         this.setState({ selected: [] })
-        this.props.ids.map((id) => { this.props.deselect(this.props.children[id]) })
+        this.props.ids.map((id) => { this.props.deselect(this.props.currentItems.find((c) => c.Id === id)) })
     }
     public handleTap(e, id, type) {
         if (type === 'Folder') {
@@ -313,14 +315,13 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
                                 <ParentFolderTableRow parentId={this.props.parentId} history={this.props.history} /> :
                                 <SharedItemsTableRow currentId={this.props.currentId} />
                             } */}
-                        {this.props.isFetching || this.props.isLoading ?
+                        {this.props.isFetching || this.props.isLoading || this.props.currentItems.entities === null ?
                             <tr>
                                 <td colSpan={5} style={styles.loader}>
                                     <CircularProgress color="secondary" size={50} />
                                 </td>
                             </tr>
-                            : this.props.ids.map((n) => {
-                                const content = this.props.children[n]
+                            : this.props.currentItems.map((content) => {
                                 return typeof content !== 'undefined' ? (
                                     <SimpleTableRow
                                         content={content}
@@ -335,7 +336,7 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
 
                     </TableBody>
                 </Table>
-                <ActionMenu id={this.props.selected.Id} />
+                <ActionMenu id={this.props.menuId} />
                 {/* <SelectionBox /> */}
             </div>)
     }

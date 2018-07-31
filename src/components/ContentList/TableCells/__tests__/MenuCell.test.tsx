@@ -12,12 +12,11 @@ it('renders without crashing', () => {
     const options = {
         persistedState: {
             sensenet: {
-                children: {
-                    entities: {
-                        123: {
-                            Id: 123,
-                        },
-                    },
+                currentitems: {
+                    entities: [{
+                        Id: 123,
+                        Actions: [],
+                    }],
                 },
             },
         },
@@ -27,11 +26,13 @@ it('renders without crashing', () => {
         withStore(
             <Table>
                 <TableBody>
-                    <MenuCell
-                        content={content}
-                        isHovered={false}
-                        isSelected={true}
-                        actionMenuIsOpen={false} />
+                    <tr>
+                        <MenuCell
+                            content={content}
+                            isHovered={false}
+                            isSelected={true}
+                            actionMenuIsOpen={false} />
+                    </tr>
                 </TableBody>
             </Table>, options), div)
 })

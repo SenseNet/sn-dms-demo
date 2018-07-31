@@ -1,7 +1,7 @@
 import { Repository } from '@sensenet/client-core'
 import { sensenetDocumentViewerReducer } from '@sensenet/document-viewer-react'
 import { Store } from '@sensenet/redux'
-import { sensenet } from '@sensenet/redux/dist/Reducers'
+import { Reducers } from '@sensenet/redux'
 import { CreateStoreOptions } from '@sensenet/redux/dist/Store'
 import * as React from 'react'
 import { Provider } from 'react-redux'
@@ -14,7 +14,7 @@ it('Should help tests', () => {
 })
 
 export const withStore = (component: JSX.Element, options?: CreateStoreOptions<rootStateType>) => {
-    const myReducer = combineReducers({ sensenet, dms, sensenetDocumentViewer: sensenetDocumentViewerReducer })
+    const myReducer = combineReducers({ sensenet: Reducers.sensenet, dms, sensenetDocumentViewer: sensenetDocumentViewerReducer })
     const repository = new Repository({
         repositoryUrl: process.env.REACT_APP_SERVICE_URL || 'https://dmsservice.demo.sensenet.com',
         requiredSelect: ['Id', 'Path', 'Name', 'Type', 'ParentId'] as any,

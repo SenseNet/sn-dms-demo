@@ -75,8 +75,7 @@ class MenuCell extends React.Component<MenuCellProps, MenuCellState> {
                             onClick={(event) => !selectionModeOn ? this.handleActionMenuClick(event, content) : null}
                         >
                             <MoreVert style={
-                                isHovered && !selectionModeOn ? styles.hoveredIcon : styles.icon &&
-                                    isSelected && !selectionModeOn ? styles.selectedIcon : styles.icon
+                                isHovered ? styles.hoveredIcon : styles.icon
                             } />
                         </IconButton>
                     </TableCell>
@@ -89,8 +88,8 @@ class MenuCell extends React.Component<MenuCellProps, MenuCellState> {
 const mapStateToProps = (state: rootStateType, match) => {
     return {
         selected: Reducers.getSelectedContentIds(state.sensenet),
-        opened: Reducers.getOpenedContent(state.sensenet.children),
-        actions: DMSReducers.getActionsOfAContent(state.sensenet.children.entities[match.content.Id]),
+        opened: Reducers.getOpenedContent(state.sensenet.currentitems),
+        actions: DMSReducers.getActionsOfAContent(state.sensenet.currentitems.entities.find((c) => c.Id === match.content.Id)),
         selectionModeOn: DMSReducers.getIsSelectionModeOn(state.dms),
     }
 }

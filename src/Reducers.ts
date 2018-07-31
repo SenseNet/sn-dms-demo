@@ -1,8 +1,9 @@
-import { IContent, IODataCollectionResponse, IODataResponse } from '@sensenet/client-core'
-import { GenericContent, IActionModel } from '@sensenet/default-content-types'
+import { IContent, IODataResponse } from '@sensenet/client-core'
+import { IActionModel, Workspace } from '@sensenet/default-content-types'
+import { createContent, deleteBatch, deleteContent, loadContent, loadContentActions, moveBatch, PromiseReturns } from '@sensenet/redux/dist/Actions'
 import { Action, AnyAction, combineReducers, Reducer } from 'redux'
 import { rootStateType } from '.'
-import { ExtendedUploadProgressInfo } from './Actions'
+import { closeMessageBar, ExtendedUploadProgressInfo, getWorkspaces, loadFavoriteWorkspaces, loadListActions, loadTypesToAddNewList, loadUserActions } from './Actions'
 import { resources } from './assets/resources'
 
 enum MessageMode { error, warning, info }
@@ -68,25 +69,24 @@ export const register = combineReducers({
     captcha,
 })
 
-export const actions: Reducer<IActionModel[], Action & { payload?: { d: { Actions: IActionModel[] } }, actions?: IActionModel[] }> = (state = [], action) => {
-    switch (action.type) {
-        case 'LOAD_CONTENT_ACTIONS_SUCCESS':
-            return action.payload && action.payload.d.Actions ? action.payload.d.Actions : []
-        case 'OPEN_ACTIONMENU':
-            return action.actions || []
-        case 'CLOSE_ACTIONMENU':
-            return []
-        default:
-            return state
-    }
-}
-
 export const open: Reducer<boolean> = (state = false, action) => {
     switch (action.type) {
         case 'OPEN_ACTIONMENU':
             return true
         case 'CLOSE_ACTIONMENU':
             return false
+        default:
+            return state
+    }
+}
+
+export const actions: Reducer<IActionModel[]> = (state = [], action) => {
+    switch (action.type) {
+        case 'LOAD_CONTENT_ACTIONS_SUCCESS':
+            const result: { d: { Actions: IActionModel[] } } = (action.result as PromiseReturns<typeof loadContentActions>) as any
+            return result && result.d.Actions ? result.d.Actions : []
+        case 'OPEN_ACTIONMENU':
+            return action.actions || []
         default:
             return state
     }
@@ -128,11 +128,12 @@ export const position: Reducer<any, Action & { position?: any }> = (state = null
     }
 }
 
-export const rootId: Reducer<number | null, Action & { payload?: IODataResponse<IContent> }> = (state = null, action) => {
+export const rootId: Reducer<number | null> = (state = null, action) => {
     switch (action.type) {
         case 'LOAD_CONTENT_SUCCESS':
-            if (!state && action.payload && action.payload.d.Path.indexOf('Default_Site') === -1) {
-                return action.payload.d.Id
+            const result = action.result as PromiseReturns<typeof loadContent>
+            if (!state && result && result.d.Path.indexOf('Default_Site') === -1) {
+                return result.d.Id
             } else {
                 return state
             }
@@ -175,20 +176,21 @@ export const editedFirst: Reducer<boolean, Action & { id?: number, edited?: bool
 }
 
 export interface BreadcrumbItemType { name: string, id: number, path: string }
-export const breadcrumb: Reducer<BreadcrumbItemType[], Action & { payload?: IODataResponse<GenericContent> }> = (state = [], action) => {
+
+export const breadcrumb: Reducer<BreadcrumbItemType[]> = (state = [], action) => {
     switch (action.type) {
         case 'LOAD_CONTENT_SUCCESS':
-            if (action.payload) {
-                const payload = action.payload
-                if (payload.d.Path.indexOf('Default_Site') === -1 && state.filter((e) => e.id === payload.d.Id).length === 0) {
+            const result = action.result as PromiseReturns<typeof loadContent>
+            if (result) {
+                if (result.d.Path.indexOf('Default_Site') === -1 && state.filter((e) => e.id === result.d.Id).length === 0) {
                     const element = {
-                        name: action.payload.d.DisplayName,
-                        id: action.payload.d.Id,
-                        path: action.payload.d.Path,
+                        name: result.d.DisplayName,
+                        id: result.d.Id,
+                        path: result.d.Path,
                     } as BreadcrumbItemType
                     return [...state, element]
-                } else if (state.filter((e) => e.id === payload.d.Id).length > 0) {
-                    const index = state.findIndex((e) => e.id === payload.d.Id) + 1
+                } else if (state.filter((e) => e.id === result.d.Id).length > 0) {
+                    const index = state.findIndex((e) => e.id === result.d.Id) + 1
                     return [...state.slice(0, index)]
                 }
             } else {
@@ -222,10 +224,30 @@ export const isSelectionModeOn: Reducer<boolean> = (state = false, action) => {
     }
 }
 
-export const userActions: Reducer<IActionModel[], Action & { payload: { d: { Actions: IActionModel[] } } }> = (state = [], action) => {
+export const userActions: Reducer<IActionModel[]> = (state = [], action) => {
     switch (action.type) {
         case 'LOAD_USER_ACTIONS_SUCCESS':
-            return action.payload.d.Actions ? action.payload.d.Actions : []
+            const result = action.result as PromiseReturns<typeof loadUserActions>
+            return result ? result.d.Actions : []
+        default:
+            return state
+    }
+}
+
+export const addNewTypes = (state = [], action) => {
+    switch (action.type) {
+        case 'LOAD_TYPES_TO_ADDNEW_LIST_SUCCESS':
+            const result = action.result as PromiseReturns<typeof loadTypesToAddNewList>
+            return result ? result.d.Actions : []
+        default:
+            return state
+    }
+}
+
+export const actionmenuId: Reducer<number | null> = (state = null, action) => {
+    switch (action.type) {
+        case 'SET_ACTIONMENU_ID':
+            return action.id
         default:
             return state
     }
@@ -236,28 +258,99 @@ export const actionmenu = combineReducers({
     open,
     anchorElement,
     position,
-    id,
+    id: actionmenuId,
     title,
     userActions,
+    addNewTypes,
 })
 
 export const messagebarmode: Reducer<MessageMode, Action & { mode?: MessageMode }> = (state = MessageMode.info, action) => {
     switch (action.type) {
-        case 'OPEN_MESSAGE_BAR':
+        case 'SET_MESSAGEBAR':
             return action.mode || state
-        case 'CLOSE_MESSAGE_BAR':
+        case 'CREATE_CONTENT_FAILURE':
+        case 'DELETE_CONTENT_FAILURE':
+        case 'LOAD_CONTENT_FAILURE':
+        case 'FETCH_CONTENT_FAILURE':
+        case 'UPDATE_CONTENT_FAILURE':
+        case 'DELETE_BATCH_FAILURE':
+        case 'COPY_CONTENT_FAILURE':
+        case 'COPY_BATCH_FAILURE':
+        case 'MOVE_CONTENT_FAILURE':
+        case 'MOVE_BATCH_FAILURE':
+        case 'CHECKOUT_CONTENT_FAILURE':
+        case 'CHECKIN_CONTENT_FAILURE':
+        case 'PUBLISH_CONTENT_FAILURE':
+        case 'APPROVE_CONTENT_FAILURE':
+        case 'REJECT_CONTENT_FAILURE':
+        case 'UNDOCHECKOUT_CONTENT_FAILURE':
+        case 'FORCE_UNDOCHECKOUT_CONTENT_FAILURE':
+        case 'RESTOREVERSION_CONTENT_FAILURE':
+        case 'MOVE_CONTENT_FAILURE':
+        case 'MOVE_BATCH_FAILURE':
+            return MessageMode.error
+        case 'CREATE_CONTENT_SUCCESS':
+        case 'DELETE_CONTENT_SUCCESS':
+        case 'LOAD_CONTENT_SUCCESS':
+        case 'FETCH_CONTENT_SUCCESS':
+        case 'UPDATE_CONTENT_SUCCESS':
+        case 'DELETE_BATCH_SUCCESS':
+        case 'COPY_CONTENT_SUCCESS':
+        case 'COPY_BATCH_SUCCESS':
+        case 'MOVE_CONTENT_SUCCESS':
+        case 'MOVE_BATCH_SUCCESS':
+        case 'CHECKOUT_CONTENT_SUCCESS':
+        case 'CHECKIN_CONTENT_SUCCESS':
+        case 'PUBLISH_CONTENT_SUCCESS':
+        case 'APPROVE_CONTENT_SUCCESS':
+        case 'REJECT_CONTENT_SUCCESS':
+        case 'UNDOCHECKOUT_CONTENT_SUCCESS':
+        case 'FORCE_UNDOCHECKOUT_CONTENT_SUCCESS':
+        case 'RESTOREVERSION_CONTENT_SUCCESS':
+        case 'MOVE_CONTENT_SUCCESS':
+        case 'MOVE_BATCH_SUCCESS':
             return MessageMode.info
         default:
             return state
     }
 }
 
-export const messagebarcontent: Reducer<{}, Action & { content: {} }> = (state = {}, action) => {
+export const messagebarcontent: Reducer<any[]> = (state = [], action) => {
     switch (action.type) {
-        case 'OPEN_MESSAGE_BAR':
+        case 'SET_MESSAGEBAR':
             return action.content
-        case 'CLOSE_MESSAGE_BAR':
-            return {}
+        case 'CREATE_CONTENT_SUCCESS':
+            // tslint:disable-next-line:no-string-literal
+            return [`${(action.result as PromiseReturns<typeof createContent>).d['DisplayName']} is successfully created`]
+        case 'DELETE_CONTENT_SUCCESS':
+            return [`${(action.result as PromiseReturns<typeof deleteContent>).d.results[0].Name} is successfully deleted`]
+        case 'DELETE_BATCH_SUCCESS':
+            const result = action.result as PromiseReturns<typeof deleteBatch>
+            return [
+                ...result.d.errors.map((r) => `Cannot delete ${r.content.Name}, because '${r.error.message}'`),
+                ...result.d.results.map((r) => `${r.Name} is successfully deleted`)]
+        case 'CREATE_CONTENT_FAILURE':
+        case 'DELETE_CONTENT_FAILURE':
+        case 'LOAD_CONTENT_FAILURE':
+        case 'FETCH_CONTENT_FAILURE':
+        case 'UPDATE_CONTENT_FAILURE':
+        case 'DELETE_BATCH_FAILURE':
+            return `${(action.result as PromiseReturns<typeof deleteBatch>).d.errors[0].error}`
+        case 'COPY_CONTENT_FAILURE':
+        case 'COPY_BATCH_FAILURE':
+        case 'MOVE_CONTENT_FAILURE':
+        case 'MOVE_BATCH_FAILURE':
+        case 'CHECKOUT_CONTENT_FAILURE':
+        case 'CHECKIN_CONTENT_FAILURE':
+        case 'PUBLISH_CONTENT_FAILURE':
+        case 'APPROVE_CONTENT_FAILURE':
+        case 'REJECT_CONTENT_FAILURE':
+        case 'UNDOCHECKOUT_CONTENT_FAILURE':
+        case 'FORCE_UNDOCHECKOUT_CONTENT_FAILURE':
+        case 'RESTOREVERSION_CONTENT_FAILURE':
+        case 'MOVE_CONTENT_FAILURE':
+        case 'MOVE_BATCH_FAILURE':
+            return `${(action.result as PromiseReturns<typeof moveBatch>).d.errors[0].error}`
         default:
             return state
     }
@@ -265,30 +358,118 @@ export const messagebarcontent: Reducer<{}, Action & { content: {} }> = (state =
 
 export const messagebaropen: Reducer<boolean> = (state = false, action) => {
     switch (action.type) {
-        case 'OPEN_MESSAGE_BAR':
+        case 'OPEN_MESSAGEBAR':
             return true
-        case 'CLOSE_MESSAGE_BAR':
+        case 'CLOSE_MESSAGEBAR':
             return false
+        case 'CREATE_CONTENT_FAILURE':
+        case 'DELETE_CONTENT_FAILURE':
+        case 'LOAD_CONTENT_FAILURE':
+        case 'FETCH_CONTENT_FAILURE':
+        case 'UPDATE_CONTENT_FAILURE':
+        case 'DELETE_BATCH_FAILURE':
+        case 'COPY_CONTENT_FAILURE':
+        case 'COPY_BATCH_FAILURE':
+        case 'MOVE_CONTENT_FAILURE':
+        case 'MOVE_BATCH_FAILURE':
+        case 'CHECKOUT_CONTENT_FAILURE':
+        case 'CHECKIN_CONTENT_FAILURE':
+        case 'PUBLISH_CONTENT_FAILURE':
+        case 'APPROVE_CONTENT_FAILURE':
+        case 'REJECT_CONTENT_FAILURE':
+        case 'UNDOCHECKOUT_CONTENT_FAILURE':
+        case 'FORCE_UNDOCHECKOUT_CONTENT_FAILURE':
+        case 'RESTOREVERSION_CONTENT_FAILURE':
+        case 'MOVE_CONTENT_FAILURE':
+        case 'MOVE_BATCH_FAILURE':
+        case 'CREATE_CONTENT_SUCCESS':
+        case 'DELETE_CONTENT_SUCCESS':
+        case 'UPDATE_CONTENT_SUCCESS':
+        case 'DELETE_BATCH_SUCCESS':
+        case 'COPY_CONTENT_SUCCESS':
+        case 'COPY_BATCH_SUCCESS':
+        case 'MOVE_CONTENT_SUCCESS':
+        case 'MOVE_BATCH_SUCCESS':
+        case 'CHECKOUT_CONTENT_SUCCESS':
+        case 'CHECKIN_CONTENT_SUCCESS':
+        case 'PUBLISH_CONTENT_SUCCESS':
+        case 'APPROVE_CONTENT_SUCCESS':
+        case 'REJECT_CONTENT_SUCCESS':
+        case 'UNDOCHECKOUT_CONTENT_SUCCESS':
+        case 'FORCE_UNDOCHECKOUT_CONTENT_SUCCESS':
+        case 'RESTOREVERSION_CONTENT_SUCCESS':
+        case 'MOVE_CONTENT_SUCCESS':
+        case 'MOVE_BATCH_SUCCESS':
+            return true
         default:
             return state
     }
 }
 
-export type verticalValues = 'top' | 'bottom'
-export const vertical: Reducer<verticalValues, Action & { vertical: verticalValues }> = (state = 'bottom', action) => {
+export const messagebarclose: Reducer<() => void | null> = (state = closeMessageBar, action) => {
     switch (action.type) {
-        case 'OPEN_MESSAGE_BAR':
-            return action.vertical
+        case 'SET_MESSAGEBAR':
+            return action.close
         default:
             return state
     }
 }
 
-export type horizontalValues = 'left' | 'right'
-export const horizontal: Reducer<horizontalValues, Action & { horizontal: horizontalValues }> = (state = 'left', action) => {
+export const messagebarexited: Reducer<() => void | null> = (state = null, action) => {
     switch (action.type) {
-        case 'OPEN_MESSAGE_BAR':
-            return action.horizontal
+        case 'SET_MESSAGEBAR':
+            return action.exited
+        default:
+            return state
+    }
+}
+
+export const hideDuration: Reducer<number> = (state = null, action) => {
+    switch (action.type) {
+        case 'SET_MESSAGEBAR':
+            return action.hideDuration
+        case 'CREATE_CONTENT_SUCCESS':
+        case 'DELETE_CONTENT_SUCCESS':
+        case 'LOAD_CONTENT_SUCCESS':
+        case 'FETCH_CONTENT_SUCCESS':
+        case 'UPDATE_CONTENT_SUCCESS':
+        case 'DELETE_BATCH_SUCCESS':
+        case 'COPY_CONTENT_SUCCESS':
+        case 'COPY_BATCH_SUCCESS':
+        case 'MOVE_CONTENT_SUCCESS':
+        case 'MOVE_BATCH_SUCCESS':
+        case 'CHECKOUT_CONTENT_SUCCESS':
+        case 'CHECKIN_CONTENT_SUCCESS':
+        case 'PUBLISH_CONTENT_SUCCESS':
+        case 'APPROVE_CONTENT_SUCCESS':
+        case 'REJECT_CONTENT_SUCCESS':
+        case 'UNDOCHECKOUT_CONTENT_SUCCESS':
+        case 'FORCE_UNDOCHECKOUT_CONTENT_SUCCESS':
+        case 'RESTOREVERSION_CONTENT_SUCCESS':
+        case 'MOVE_CONTENT_SUCCESS':
+        case 'MOVE_BATCH_SUCCESS':
+            return null
+        case 'CREATE_CONTENT_FAILURE':
+        case 'DELETE_CONTENT_FAILURE':
+        case 'LOAD_CONTENT_FAILURE':
+        case 'FETCH_CONTENT_FAILURE':
+        case 'UPDATE_CONTENT_FAILURE':
+        case 'DELETE_BATCH_FAILURE':
+        case 'COPY_CONTENT_FAILURE':
+        case 'COPY_BATCH_FAILURE':
+        case 'MOVE_CONTENT_FAILURE':
+        case 'MOVE_BATCH_FAILURE':
+        case 'CHECKOUT_CONTENT_FAILURE':
+        case 'CHECKIN_CONTENT_FAILURE':
+        case 'PUBLISH_CONTENT_FAILURE':
+        case 'APPROVE_CONTENT_FAILURE':
+        case 'REJECT_CONTENT_FAILURE':
+        case 'UNDOCHECKOUT_CONTENT_FAILURE':
+        case 'FORCE_UNDOCHECKOUT_CONTENT_FAILURE':
+        case 'RESTOREVERSION_CONTENT_FAILURE':
+        case 'MOVE_CONTENT_FAILURE':
+        case 'MOVE_BATCH_FAILURE':
+            return null
         default:
             return state
     }
@@ -298,14 +479,15 @@ export const messagebar = combineReducers({
     open: messagebaropen,
     mode: messagebarmode,
     content: messagebarcontent,
-    vertical,
-    horizontal,
+    close: messagebarclose,
+    exited: messagebarexited,
+    hideDuration,
 })
 
-export const toolbarActions: Reducer<IActionModel[], Action & { payload: { d: { Actions: IActionModel[] } } }> = (state = [], action) => {
+export const toolbarActions: Reducer<IActionModel[]> = (state = [], action) => {
     switch (action.type) {
         case 'LOAD_LIST_ACTIONS_SUCCESS':
-            return action.payload.d.Actions
+            return (action.result as PromiseReturns<typeof loadListActions>).d.Actions
         default:
             return state
     }
@@ -413,6 +595,77 @@ export const viewer: Reducer<{ isOpened: boolean, currentDocumentId: number }, A
     return state
 }
 
+export const isOpened = (state: boolean = false, action: AnyAction) => {
+    switch (action.type) {
+        case 'OPEN_DIALOG':
+            return true
+        case 'CLOSE_DIALOG':
+            return false
+    }
+    return state
+}
+
+export const onClose = (state: () => void = null, action: AnyAction) => {
+    switch (action.type) {
+        case 'OPEN_DIALOG':
+            return action.onClose
+        case 'CLOSE_DIALOG':
+            return null
+    }
+    return state
+}
+
+export const dialogContent = (state: any = '', action: AnyAction) => {
+    switch (action.type) {
+        case 'OPEN_DIALOG':
+            return action.content
+        case 'CLOSE_DIALOG':
+            return state
+    }
+    return state
+}
+
+export const dialogTitle = (state: string = '', action: AnyAction) => {
+    switch (action.type) {
+        case 'OPEN_DIALOG':
+            return action.title
+        case 'CLOSE_DIALOG':
+            return {}
+    }
+    return state
+}
+
+export const dialog = combineReducers({
+    isOpened,
+    onClose,
+    content: dialogContent,
+    title: dialogTitle,
+})
+
+export const allWorkspaces: Reducer<Workspace[]> = (state: Workspace[], action: AnyAction) => {
+    switch (action.type) {
+        case 'GET_WORKSPACES_SUCCESS':
+            return (action.result as PromiseReturns<typeof getWorkspaces>).d.results
+        default:
+            return state || []
+    }
+}
+
+export const favorites: Reducer<number[]> = (state: number[], action: AnyAction) => {
+    switch (action.type) {
+        case 'LOAD_FAVORITE_WORKSPACES_SUCCESS':
+            const items = (action.result as PromiseReturns<typeof loadFavoriteWorkspaces>).d.FollowedWorkspaces as any[]
+            return items.map((item) => item.Id)
+        default:
+            return state || []
+    }
+}
+
+export const workspaces = combineReducers({
+    favorites,
+    all: allWorkspaces,
+})
+
 export const dms = combineReducers({
     messagebar,
     actionmenu,
@@ -428,6 +681,8 @@ export const dms = combineReducers({
     uploads,
     menu,
     viewer,
+    dialog,
+    workspaces,
 })
 
 export const getRegistrationError = (state: { registrationError: ReturnType<typeof register>['registrationError'] }) => {
@@ -452,8 +707,8 @@ export const getAuthenticatedUser = (state: { session: { user: rootStateType['se
     return state.session.user
 }
 
-export const getChildrenItems = (state: { children: { entities: rootStateType['sensenet']['children']['entities'] } }) => {
-    return state.children.entities
+export const getChildrenItems = (state: { currentitems: { entities: rootStateType['sensenet']['currentitems']['entities'] } }) => {
+    return state.currentitems.entities
 }
 
 export const getCurrentContentPath = (state: { Path: string }) => {
@@ -472,7 +727,7 @@ export const getMenuPosition = (state: { position: ReturnType<typeof actionmenu>
     return state.position
 }
 
-export const getParentId = (state: { currentcontent: { content: { ParentId: rootStateType['sensenet']['currentcontent']['content']['ParentId'] } } }) => {
+export const getParentId = (state: { currentcontent }) => {
     return state.currentcontent.content.ParentId
 }
 export const getRootId = (state: { rootId: rootStateType['dms']['rootId'] }) => {
@@ -527,4 +782,10 @@ export const getActiveMenuItem = (state: ReturnType<typeof menu>) => {
 
 export const getActiveSubmenuItem = (state: ReturnType<typeof menu>) => {
     return state.activeSubmenu
+}
+export const getAddNewTypeList = (state) => {
+    return state.addNewTypes
+}
+export const getMenuAnchorId = (state) => {
+    return state.actionmenu.id
 }

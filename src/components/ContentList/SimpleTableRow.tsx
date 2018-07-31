@@ -110,7 +110,7 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
 
     public handleContextMenu(e, content) {
         const top = e.pageY - e.target.offsetTop
-        const left = e.pageX - e.target.offsetLeft
+        const left = e.pageX
         e.preventDefault()
         this.props.openActionMenu(content.Actions, content.Id, content.DisplayName, e.currentTarget,
             { top, left })
@@ -244,8 +244,8 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
 const mapStateToProps = (state, match) => {
     return {
         selected: Reducers.getSelectedContentIds(state.sensenet),
-        opened: Reducers.getOpenedContent(state.sensenet.children),
-        ids: Reducers.getIds(state.sensenet.children),
+        opened: Reducers.getOpenedContent(state.sensenet.currentitems),
+        ids: Reducers.getIds(state.sensenet.currentitems),
     }
 }
 export default connect(mapStateToProps, {
