@@ -2,7 +2,7 @@ import Collapse from '@material-ui/core/Collapse'
 import Paper from '@material-ui/core/Paper'
 import { withStyles } from '@material-ui/core/styles'
 import * as React from 'react'
-import { WorkspaceList } from './WorkspaceList'
+import WorkspaceList from './WorkspaceList'
 import WorkspaceSearch from './WorkspaceSearch'
 import WorkspaceSelectorToolbar from './WorspaceSelectorToolbar'
 
@@ -17,7 +17,7 @@ const styles = (theme) => ({
     },
     wsSelectorInner: {
         overflowY: 'auto',
-        padding: '0px 10px 10px 10px',
+        padding: 0,
     },
 })
 

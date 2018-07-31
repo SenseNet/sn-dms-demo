@@ -31,6 +31,9 @@ const styles = (theme) => ({
     startAdornment: {
         margin: '4px 0 4px 5px',
     },
+    searchContainer: {
+        padding: '0px 10px 10px 10px',
+    },
 })
 
 type C = 'wsSearchInput'
@@ -39,21 +42,23 @@ class WorkspaceSearch extends React.Component<{ classes } & WithStyles<C>, {}> {
     public render() {
         const { classes } = this.props
         return (
-            <FormControl className={classes.formControl}>
-                <TextField
-                    placeholder="Search"
-                    InputProps={{
-                        disableUnderline: true,
-                        classes: {
-                            input: classes.wsSearchInput,
-                            root: classes.wsSearchContainer,
-                        },
-                        startAdornment: <InputAdornment position="start" className={classes.startAdornment}>
-                            <SearchIcon className={classes.icon} />
-                        </InputAdornment>,
-                    }}
-                />
-            </FormControl>
+            <div className={classes.searchContainer}>
+                <FormControl className={classes.formControl}>
+                    <TextField
+                        placeholder="Search"
+                        InputProps={{
+                            disableUnderline: true,
+                            classes: {
+                                input: classes.wsSearchInput,
+                                root: classes.wsSearchContainer,
+                            },
+                            startAdornment: <InputAdornment position="start" className={classes.startAdornment}>
+                                <SearchIcon className={classes.icon} />
+                            </InputAdornment>,
+                        }}
+                    />
+                </FormControl>
+            </div>
         )
     }
 }
