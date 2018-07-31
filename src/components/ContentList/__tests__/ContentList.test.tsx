@@ -37,14 +37,24 @@ const options = {
     rootReducer: myReducer,
     persistedState: {
         sensenet: {
-            currentcontent: null,
-            selected: null,
-            batchResponses: null,
+            currentcontent: {
+                contentState: {
+                    isSaved: false,
+                },
+            },
+            selected: {
+                ids: [],
+            },
+            batchResponses: {
+                response: null,
+            },
             session: {
                 country: '',
                 language: '',
                 loginState: LoginState.Pending,
-                user: null,
+                user: {
+                    userName: 'aaa',
+                },
                 error: null,
                 repository: null,
             },
@@ -67,32 +77,44 @@ const options = {
                 },
                 ids: [4466, 4467, 123],
                 actions: null,
-                fields: null,
-                schema: null,
                 error: null,
                 isOpened: false,
                 options: null,
             },
         },
         dms: {
-            actionmenu: null,
+            actionmenu: {
+                open: false,
+                actions: [],
+            },
             rootId: 123,
-            messagebar: null,
+            messagebar: {
+                open: false,
+            },
             breadcrumb: null,
             editedItemId: 1,
             editedFirst: null,
             currentId: 1,
-            register: null,
-            dialog: null,
+            register: {
+                email: 'cc@ccc.hu',
+            },
+            dialog: {
+                isOpened: false,
+            },
             isLoading: false,
             isSelectionModeOn: false,
-            menu: null,
-            toolbar: null,
+            menu: {
+                active: null,
+            },
+            toolbar: {
+                actions: [],
+            },
             uploads: null,
             viewer: null,
-            workspaces: null,
+            workspaces: {
+                favorites: [],
+            },
         },
-        sensenetDocumentViewer: null,
     },
 } as Store.CreateStoreOptions<rootStateType>
 const store = Store.createSensenetStore(options)

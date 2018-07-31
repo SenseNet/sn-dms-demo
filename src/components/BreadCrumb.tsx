@@ -113,6 +113,7 @@ class BreadCrumb extends React.Component<BreadCrumbProps, {}> {
                                 <Button onClick={(event) => this.handleClick(event, n.id)}
                                     key={n.id}
                                     style={styles.breadCrumbItem as any}>
+                                    {n.name}
                                 </Button>
                                 {breadcrumb.length > 1 ?
                                     <Icon style={styles.breadCrumbIconLeft as any}>{icons.arrowLeft}</Icon> :

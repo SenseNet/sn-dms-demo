@@ -13,13 +13,24 @@ it('renders without crashing', () => {
 
   const options = {
     persistedState: {
-      dms: {
-        actionmenu: {
-          actions: [],
+      sensenet: {
+        currentcontent: {
+          contentState: {
+            isSaved: false,
+          },
+          content: {
+            Id: 1,
+          },
         },
       },
     },
-  } as Store.CreateStoreOptions<rootStateType>
+    dms: {
+      actionmenu: {
+        actions: [],
+      },
+    },
+  }
+
   ReactDOM.render(
     withStore(
       <MemoryRouter>

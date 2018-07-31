@@ -14,13 +14,19 @@ it('renders without crashing', () => {
   const options = {
     persistedState: {
       sensenet: {
-        currentcontent: null,
-        batchResponses: null,
+        currentcontent: {
+          contentState: {},
+        },
+        batchResponses: {
+          response: null,
+        },
         session: {
           country: '',
           language: '',
           loginState: LoginState.Pending,
-          user: null,
+          user: {
+            userName: 'aaa',
+          },
           error: null,
           repository: null,
         },
@@ -32,11 +38,9 @@ it('renders without crashing', () => {
         },
         currentitems: {
           ids: [123],
-          entities: {
-            123: {
-              Id: 123,
-            },
-          },
+          entities: [{
+            Id: 123,
+          }],
         },
       },
     },

@@ -56,7 +56,6 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
             filter: 'ContentType ne \'SystemFolder\'',
             scenario: 'DMSListItem',
         } as IODataParams<GenericContent>
-
         this.state = {
             odataOptions: defaultOptions,
             id: this.props.currentContent.Id,

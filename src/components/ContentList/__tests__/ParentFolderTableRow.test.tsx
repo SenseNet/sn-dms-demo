@@ -32,6 +32,11 @@ it('renders without crashing', () => {
               'https://dmsservice.demo.sensenet.com',
           },
         },
+        currentcontent: {
+          content: {
+            ParentId: 1,
+          },
+        },
       },
     },
   } as Store.CreateStoreOptions<any>
