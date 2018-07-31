@@ -654,6 +654,8 @@ export const allWorkspaces: Reducer<Workspace[]> = (state: Workspace[], action: 
 export const favorites: Reducer<number[]> = (state: number[], action: AnyAction) => {
     switch (action.type) {
         case 'LOAD_FAVORITE_WORKSPACES_SUCCESS':
+        case 'FOLLOW_WORKSPACE_SUCCESS':
+        case 'UNFOLLOW_WORKSPACE_SUCCESS':
             const items = (action.result as PromiseReturns<typeof loadFavoriteWorkspaces>).d.FollowedWorkspaces as any[]
             return items.map((item) => item.Id)
         default:
