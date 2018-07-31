@@ -300,3 +300,8 @@ export const unfollowWorkspace = (userName: string, contentId: number, followed:
         oDataOptions: { select: 'FollowedWorkspaces', expand: 'FollowedWorkspaces' },
     }),
 })
+
+export const searchWorkspaces = (text: string) => ({
+    type: 'SEARCH_WORKSPACES',
+    text,
+})

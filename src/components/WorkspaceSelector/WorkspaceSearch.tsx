@@ -38,13 +38,21 @@ const styles = (theme) => ({
 
 type C = 'wsSearchInput'
 
-class WorkspaceSearch extends React.Component<{ classes } & WithStyles<C>, {}> {
+class WorkspaceSearch extends React.Component<{ classes, handleKeyup: (e) => void } & WithStyles<C>, {}> {
+    constructor(props) {
+        super(props)
+        this.handleKeyup = this.handleKeyup.bind(this)
+    }
+    public handleKeyup = (e) => {
+        this.props.handleKeyup(e.target.value)
+    }
     public render() {
         const { classes } = this.props
         return (
             <div className={classes.searchContainer}>
                 <FormControl className={classes.formControl}>
                     <TextField
+                        onKeyUp={(e) => this.handleKeyup(e)}
                         placeholder="Search"
                         InputProps={{
                             disableUnderline: true,

@@ -663,9 +663,19 @@ export const favorites: Reducer<number[]> = (state: number[], action: AnyAction)
     }
 }
 
+export const searchTerm: Reducer<string> = (state: '', action: AnyAction) => {
+    switch (action.type) {
+        case 'SEARCH_WORKSPACES':
+            return action.text
+        default:
+            return state || ''
+    }
+}
+
 export const workspaces = combineReducers({
     favorites,
     all: allWorkspaces,
+    searchTerm,
 })
 
 export const dms = combineReducers({
