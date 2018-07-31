@@ -44,18 +44,24 @@ class WorkspaceList extends React.Component<ReturnType<typeof mapStateToProps> &
         if (lastState.orderedWsList === null || (newProps.favorites.length === 0 && lastState.orderedWsList.length === 0)) {
             newProps.getFavorites(newProps.user.userName)
         }
+
         return {
             ...lastState,
             workspaces: newProps.workspaces,
             favorites: newProps.favorites,
-            orderedWsList: newProps.workspaces,
+            orderedWsList: [...newProps.workspaces.filter((ws) => newProps.favorites.indexOf(ws.Id) > -1), ...newProps.workspaces.filter((ws) => newProps.favorites.indexOf(ws.Id) === -1)],
         } as WorkspaceList['state']
     }
     public render() {
-        const { orderedWsList } = this.state
+        const { orderedWsList, favorites } = this.state
         return (
             <MenuList style={styles.workspaceList}>
-                {orderedWsList.map((workspace) => <WorkspaceListItem key={workspace.Id} workspace={workspace} />)}
+                {orderedWsList.map((workspace) => <WorkspaceListItem
+                    key={workspace.Id}
+                    workspace={workspace}
+                    favorites={favorites}
+                    followed={favorites.indexOf(workspace.Id) > -1}
+                />)}
             </MenuList>
         )
     }
