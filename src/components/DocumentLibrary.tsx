@@ -59,7 +59,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
         } as IODataParams<GenericContent>
         this.state = {
             odataOptions: defaultOptions,
-            id: this.props.currentContent.Id,
+            id: this.props.currentContent ? this.props.currentContent.Id : null,
             droppedFiles: [],
             children: this.props.children,
         }
@@ -79,7 +79,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
         return {
             ...lastState,
             odataOptions: newProps.options,
-            id: newProps.currentContent.Id,
+            id: newProps.currentContent ? newProps.currentContent.Id : null,
         } as DocumentLibrary['state']
     }
 
@@ -115,8 +115,8 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
         return <div>
             <ContentList
                 children={this.props.children}
-                currentId={this.props.currentContent.Id}
-                parentId={this.props.currentContent.ParentId}
+                currentId={this.props.currentContent ? this.props.currentContent.Id : null}
+                parentId={this.props.currentContent ? this.props.currentContent.ParentId : null}
                 accepts={[FILE]}
                 onDrop={this.handleFileDrop}
                 headerColumnData={defaultHeaderColumnData}

@@ -3,7 +3,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import * as React from 'react'
 import BatchActionlist from '../ActionMenu/BatchActionlist'
 import BreadCrumb from '../BreadCrumb'
-import { WorkspaceSelector } from '../WorkspaceChooser/WorkspaceSelector'
+import { WorkspaceSelector } from '../WorkspaceSelector/WorkspaceSelector'
 
 export class ListToolbar extends React.Component<{}, {}> {
     public render() {

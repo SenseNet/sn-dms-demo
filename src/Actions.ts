@@ -1,6 +1,6 @@
 import { IContent, IUploadFromEventOptions, IUploadFromFileListOptions, IUploadProgressInfo, Repository, Upload } from '@sensenet/client-core'
 import { ObservableValue, usingAsync } from '@sensenet/client-utils'
-import { File as SnFile, GenericContent, User, Workspace } from '@sensenet/default-content-types'
+import { ContentListReferenceField, File as SnFile, GenericContent, User, Workspace } from '@sensenet/default-content-types'
 import { IActionModel } from '@sensenet/default-content-types/dist/IActionModel'
 import { Actions } from '@sensenet/redux'
 import { Action, Dispatch } from 'redux'
@@ -262,13 +262,13 @@ export const getWorkspaces = () => ({
     payload: (repository: Repository) => repository.loadCollection<Workspace>({
         path: '/',
         oDataOptions: {
-            query: 'TypeIs:Workspace',
+            query: 'TypeIs:Workspace -TypeIs:Site',
             select: ['DisplayName', 'Id', 'Path'],
         },
     }),
 })
 
-export const loadFavoriteWorkspaces = (userName) => ({
+export const loadFavoriteWorkspaces = (userName: string) => ({
     type: 'LOAD_FAVORITE_WORKSPACES',
     payload: (repository: Repository) => repository.load<User>({
         idOrPath: `/Root/IMS/Public/${userName}`,
@@ -277,4 +277,31 @@ export const loadFavoriteWorkspaces = (userName) => ({
             expand: 'FollowedWorkspaces',
         },
     }),
+})
+
+export const followWorkspace = (userName: string, contentId: number, followed: number[]) => ({
+    type: 'FOLLOW_WORKSPACE',
+    payload: (repository: Repository) => repository.patch<User>({
+        idOrPath: `/Root/IMS/Public/${userName}`,
+        content: {
+            FollowedWorkspaces: [...followed, contentId],
+        } as Partial<User>,
+        oDataOptions: { select: 'FollowedWorkspaces', expand: 'FollowedWorkspaces' },
+    }),
+})
+
+export const unfollowWorkspace = (userName: string, contentId: number, followed: number[]) => ({
+    type: 'UNFOLLOW_WORKSPACE',
+    payload: (repository: Repository) => repository.patch<User>({
+        idOrPath: `/Root/IMS/Public/${userName}`,
+        content: {
+            FollowedWorkspaces: [...followed.filter((item) => item !== contentId)],
+        } as Partial<User>,
+        oDataOptions: { select: 'FollowedWorkspaces', expand: 'FollowedWorkspaces' },
+    }),
+})
+
+export const searchWorkspaces = (text: string) => ({
+    type: 'SEARCH_WORKSPACES',
+    text,
 })

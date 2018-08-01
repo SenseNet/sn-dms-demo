@@ -8,27 +8,6 @@ import DocumentLibrary from '../DocumentLibrary'
 
 it('renders without crashing', () => {
   const div = document.createElement('div')
-
-  const options = {
-    persistedState: {
-      sensenet: {
-        currentcontent: {
-          contentState: {
-            isSaved: false,
-          },
-          content: {
-            Id: 1,
-          },
-        },
-      },
-    },
-    dms: {
-      actionmenu: {
-        actions: [],
-      },
-    },
-  }
-
   ReactDOM.render(
     withStore(
       <MemoryRouter>
