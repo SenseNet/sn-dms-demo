@@ -262,7 +262,7 @@ export const getWorkspaces = () => ({
     payload: (repository: Repository) => repository.loadCollection<Workspace>({
         path: '/',
         oDataOptions: {
-            query: 'TypeIs:Workspace',
+            query: 'TypeIs:Workspace -TypeIs:Site',
             select: ['DisplayName', 'Id', 'Path'],
         },
     }),
