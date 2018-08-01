@@ -122,13 +122,13 @@ class Login extends React.Component<LoginProps & ReturnType<typeof mapStateToPro
     }
   }
 
-  public handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
+  public handleEmailChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     this.setState({
       email: e.target.value,
     })
   }
 
-  public handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
+  public handlePasswordChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     this.setState({
       password: e.target.value,
     })
