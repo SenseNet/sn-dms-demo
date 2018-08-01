@@ -124,7 +124,7 @@ class Registration extends React.Component<RegistrationProps & ReturnType<typeof
       })
     }
   }
-  public handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
+  public handleEmailChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     this.setState({
       email: e.target.value,
       isButtonDisabled: false,
@@ -149,7 +149,7 @@ class Registration extends React.Component<RegistrationProps & ReturnType<typeof
       })
     }
   }
-  public handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
+  public handlePasswordChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     this.setState({
       password: e.target.value,
       isButtonDisabled: false,
@@ -180,7 +180,7 @@ class Registration extends React.Component<RegistrationProps & ReturnType<typeof
       })
     }
   }
-  public handleConfirmPasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
+  public handleConfirmPasswordChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     if (this.validatePassword(e.target.value) && this.confirmPasswords(e.target.value, this.state.password)) {
       this.setState({
         confirmpassword: e.target.value,
