@@ -1,5 +1,5 @@
 
-import CircularProgress from '@material-ui/core/CircularProgress'
+import LinearProgress from '@material-ui/core/LinearProgress'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import { pollDocumentData } from '@sensenet/document-viewer-react'
@@ -18,7 +18,7 @@ import * as DMSActions from '../../Actions'
 import * as DragAndDrop from '../../DragAndDrop'
 import * as DMSReducers from '../../Reducers'
 import ActionMenu from '../ActionMenu/ActionMenu'
-import ListHead from './ListHead'
+import ListHead, { HeaderColumnData } from './ListHead'
 import SimpleTableRow from './SimpleTableRow'
 
 import { compile } from 'path-to-regexp'
@@ -49,6 +49,7 @@ const mapStateToProps = (state: rootStateType) => {
         selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
         menuId: DMSReducers.getMenuAnchorId(state.dms),
         currentItems: state.sensenet.currentitems.entities,
+        currentODataOptions: state.sensenet.currentitems.options,
     }
 }
 
@@ -65,11 +66,13 @@ const mapDispatchToProps = {
     selectionModeOff: DMSActions.selectionModeOff,
     openViewer: DMSActions.openViewer,
     pollDocumentData,
+    setDefaultOdataOptions: Actions.setDefaultOdataOptions,
 }
 
 interface ContentListProps extends RouteComponentProps<any> {
     connectDropTarget,
     hostName: string
+    headerColumnData: HeaderColumnData[]
 }
 
 interface ContentListState {
@@ -88,17 +91,22 @@ interface ContentListState {
     canDrop: monitor.canDrop(),
 }))
 class ContentList extends React.Component<ContentListProps & RouteComponentProps<any> & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, ContentListState> {
+
+    public static getDerivedStateFromProps: React.GetDerivedStateFromProps<ContentList['props'], ContentListState> = (nextProps, lastState) => {
+        return {
+            ...lastState,
+            orderBy: nextProps.currentODataOptions.orderby[0][0],
+            order: nextProps.currentODataOptions.orderby[0][1],
+            ids: nextProps.ids,
+            data: nextProps.children,
+            selected: (lastState && lastState.selected) || [],
+            active: (lastState && lastState.active) || null,
+            copy: (lastState && lastState.copy) || false,
+        }
+    }
+
     constructor(props) {
         super(props)
-        this.state = {
-            order: 'desc',
-            orderBy: 'IsFolder',
-            data: this.props.children,
-            ids: this.props.ids,
-            selected: [],
-            active: null,
-            copy: false,
-        }
         this.handleRowSingleClick = this.handleRowSingleClick.bind(this)
         this.handleRowDoubleClick = this.handleRowDoubleClick.bind(this)
         this.handleKeyDown = this.handleKeyDown.bind(this)
@@ -119,14 +127,7 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
             this.props.selectionModeOff()
         }
     }
-    public componentWillReceiveProps(nextProps) {
-        if (this.props.ids.length !== nextProps.ids.length) {
 
-            this.setState({
-                data: nextProps.children,
-            })
-        }
-    }
     public handleRowSingleClick(e, content, m) {
         const { ids, selected } = this.props
         if (e.shiftKey) {
@@ -271,6 +272,10 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
     }
     public handleRequestSort = (event, property) => {
         // TODO: implement sorting
+        this.props.setDefaultOdataOptions({
+            ...this.props.currentODataOptions,
+            orderby: [[property, this.props.currentODataOptions.orderby[0][1] === 'asc' ? 'desc' : 'asc']],
+        })
     }
     public handleSelectAllClick = (event, checked) => {
         if (checked) {
@@ -302,36 +307,30 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
                     onKeyUp={(event) => this.handleKeyUp(event)}>
                     <MediaQuery minDeviceWidth={700}>
                         <ListHead
+                            headerColumnData={this.props.headerColumnData}
                             numSelected={this.state.selected.length}
                             order={this.state.order}
                             orderBy={this.state.orderBy}
                             onSelectAllClick={this.handleSelectAllClick}
-                            onRequestSort={this.handleRequestSort}
+                            onRequestSort={(event, property) => this.handleRequestSort(event, property)}
                             count={this.props.ids.length}
                         />
                     </MediaQuery>
                     <TableBody style={styles.tableBody}>
-                        {/* {this.props.parentId && this.isChildrenFolder() ?
-                                <ParentFolderTableRow parentId={this.props.parentId} history={this.props.history} /> :
-                                <SharedItemsTableRow currentId={this.props.currentId} />
-                            } */}
                         {this.props.isFetching || this.props.isLoading || this.props.currentItems.entities === null ?
-                            <tr>
-                                <td colSpan={5} style={styles.loader}>
-                                    <CircularProgress color="secondary" size={50} />
-                                </td>
-                            </tr>
-                            : this.props.currentItems.map((content) => {
-                                return typeof content !== 'undefined' ? (
-                                    <SimpleTableRow
-                                        content={content}
-                                        key={content.Id}
-                                        handleRowDoubleClick={this.handleRowDoubleClick}
-                                        handleRowSingleClick={this.handleRowSingleClick}
-                                        handleTap={(e) => this.handleTap(e, content.Id, content.Type)}
-                                        isCopy={this.state.copy} />
-                                ) : null
-                            })
+                            <LinearProgress color="secondary" style={{ position: 'absolute', width: '100%' }} />
+                            : null}
+                        {this.props.currentItems.map((content) => {
+                            return typeof content !== 'undefined' ? (
+                                <SimpleTableRow
+                                    content={content}
+                                    key={content.Id}
+                                    handleRowDoubleClick={this.handleRowDoubleClick}
+                                    handleRowSingleClick={this.handleRowSingleClick}
+                                    handleTap={(e) => this.handleTap(e, content.Id, content.Type)}
+                                    isCopy={this.state.copy} />
+                            ) : null
+                        })
                         }
 
                     </TableBody>
