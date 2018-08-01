@@ -9,6 +9,7 @@ import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
 import * as DMSReducers from '../Reducers'
 import ContentList from './ContentList/ContentList'
+import { defaultHeaderColumnData } from './ContentList/ListHead'
 import { FetchError } from './FetchError'
 
 const fetchContentAction = Actions.requestContent
@@ -71,7 +72,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
             if (newProps.currentContent && newProps.currentContent.Id && newProps.currentContent.Path) {
                 if (newProps.options !== lastState.odataOptions) {
                     newProps.options ? newProps.fetchContent(newProps.currentContent.Path, newProps.options) :
-                    newProps.fetchContent(newProps.currentContent.Path, lastState.odataOptions)
+                        newProps.fetchContent(newProps.currentContent.Path, lastState.odataOptions)
                 }
             }
         }
@@ -118,6 +119,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                 parentId={this.props.currentContent ? this.props.currentContent.ParentId : null}
                 accepts={[FILE]}
                 onDrop={this.handleFileDrop}
+                headerColumnData={defaultHeaderColumnData}
             />
         </div>
     }

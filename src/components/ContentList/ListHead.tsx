@@ -8,9 +8,16 @@ import TableSortLabel from '@material-ui/core/TableSortLabel'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 import * as React from 'react'
+import { rootStateType } from '../..'
 
-const columnData = [
-    // { id: 'Icon', numeric: false, disablePadding: true, label: 'Type' },
+export interface HeaderColumnData {
+    id: string
+    numeric: boolean
+    disablePadding: boolean
+    label: string
+}
+
+export const defaultHeaderColumnData: HeaderColumnData[] = [
     { id: 'DisplayName', numeric: false, disablePadding: true, label: 'Display Name' },
     { id: 'ModificationDate', numeric: false, disablePadding: true, label: 'Last modified' },
     { id: 'Owner', numeric: false, disablePadding: true, label: 'Owner' },
@@ -40,8 +47,16 @@ interface ListHeadProps {
     order,
     orderBy,
     count,
-    classes
+    classes,
+    headerColumnData: HeaderColumnData[]
 }
+
+export const mapStateToProps = (state: rootStateType) => ({
+    currentOrder: state.sensenet.currentitems.options,
+})
+
+export const mapDispatchToProps = ({
+})
 
 class ListHead extends React.Component<ListHeadProps, {}> {
     public createSortHandler = (property) => (event) => {
@@ -67,7 +82,7 @@ class ListHead extends React.Component<ListHeadProps, {}> {
                             checkedIcon={<CheckBoxIcon className={classes.sizeIcon} />}
                         />
                     </TableCell>
-                    {columnData.map((column) => {
+                    {this.props.headerColumnData.map((column) => {
                         return (
                             <TableCell
                                 key={column.id}
