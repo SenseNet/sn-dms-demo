@@ -92,9 +92,10 @@ export const actions: Reducer<IActionModel[]> = (state = [], action) => {
     }
 }
 
-export const id: Reducer<number | null, Action & { id?: number }> = (state = null, action) => {
+export const id: Reducer<number | null> = (state = null, action) => {
     switch (action.type) {
         case 'OPEN_ACTIONMENU':
+            console.log(actions)
             return action.id || null
         default:
             return state
@@ -246,7 +247,7 @@ export const addNewTypes = (state = [], action) => {
 
 export const actionmenuId: Reducer<number | null> = (state = null, action) => {
     switch (action.type) {
-        case 'SET_ACTIONMENU_ID':
+        case 'OPEN_ACTIONMENU':
             return action.id
         default:
             return state
