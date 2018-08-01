@@ -1,4 +1,5 @@
 import Button from '@material-ui/core/Button'
+import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import * as React from 'react'
 import * as FontAwesome from 'react-fontawesome'
 
@@ -34,14 +35,17 @@ export class WorkspaceSelector extends React.Component<{}, WorkspaceSelectorStat
     public render() {
         const { open } = this.state
         return (
-            <div style={{ flex: '0 1 auto' }}>
-                <Button
-                style={open ? {...styles.button, ...styles.activeButton} : styles.button}
-                onClick={() => this.handleButtonClick(this.state.open)}>
-                    <FontAwesome name="sitemap" />
-                </Button>
-                <WorkspaceDropDown open={this.state.open} closeDropDown={this.handleButtonClick} />
-            </div>
+            <ClickAwayListener onClickAway={this.handleButtonClick}>
+                <div style={{ flex: '0 1 auto' }}>
+                    <Button
+                        style={open ? { ...styles.button, ...styles.activeButton } : styles.button}
+                        onClick={() => this.handleButtonClick(this.state.open)}>
+                        <FontAwesome name="sitemap" />
+                    </Button>
+                    <WorkspaceDropDown open={this.state.open} closeDropDown={this.handleButtonClick} />
+                </div>
+
+            </ClickAwayListener>
         )
     }
 }
