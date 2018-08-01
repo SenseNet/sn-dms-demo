@@ -1,4 +1,8 @@
+import { withStyles } from '@material-ui/core'
+import Button from '@material-ui/core/Button'
 import MenuList from '@material-ui/core/MenuList'
+import Toolbar from '@material-ui/core/Toolbar'
+import CloseIcon from '@material-ui/icons/Close'
 import { Workspace } from '@sensenet/default-content-types'
 import * as React from 'react'
 import { Scrollbars } from 'react-custom-scrollbars'
@@ -8,13 +12,28 @@ import * as DMSActions from '../../Actions'
 import WorkspaceListItem from './WorkspaceListItem'
 import WorkspaceSearch from './WorkspaceSearch'
 
-const styles = {
+const styles = () => ({
     workspaceList: {
         padding: 0,
         margin: 0,
         overflowY: 'auto',
     },
-}
+    toolbar: {
+        padding: 10,
+        flexGrow: 1,
+        minHeight: 'auto',
+    },
+    button: {
+        'fontSize': 15,
+        'margin': 0,
+        'padding': 0,
+        'minWidth': 'auto',
+        'color': '#fff',
+        '&:hover': {
+            backgroundColor: '#016d9e',
+        },
+    },
+})
 
 const mapStateToProps = (state: rootStateType) => {
     return {
@@ -38,7 +57,11 @@ interface WorkspaceListState {
     term: string,
 }
 
-class WorkspaceList extends React.Component<ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, WorkspaceListState> {
+interface WorkspaceListProps {
+    closeDropDown: (open: boolean) => void,
+}
+
+class WorkspaceList extends React.Component<{ classes } & WorkspaceListProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, WorkspaceListState> {
     public state = {
         workspaces: this.props.workspaces,
         orderedWsList: null,
@@ -48,9 +71,9 @@ class WorkspaceList extends React.Component<ReturnType<typeof mapStateToProps> &
     }
     constructor(props) {
         super(props)
+        this.handleCloseClick = this.handleCloseClick.bind(this)
     }
     public static getDerivedStateFromProps(newProps: WorkspaceList['props'], lastState: WorkspaceList['state']) {
-        console.log(newProps.term)
         if (newProps.workspaces.length !== lastState.workspaces.length || lastState.workspaces.length === 0) {
             newProps.getWorkspaces()
         }
@@ -61,24 +84,40 @@ class WorkspaceList extends React.Component<ReturnType<typeof mapStateToProps> &
             ...lastState,
             workspaces: newProps.workspaces,
             favorites: newProps.favorites,
-            orderedWsList: newProps.term.length > 0 && newProps.term !== lastState.term ? [...newProps.workspaces.filter((ws) => newProps.favorites.indexOf(ws.Id) > -1), ...newProps.workspaces.filter((ws) => newProps.favorites.indexOf(ws.Id) === -1)].filter((ws) => ws.DisplayName.includes(newProps.term) || ws.Name.includes(newProps.term)) :
-            [...newProps.workspaces.filter((ws) => newProps.favorites.indexOf(ws.Id) > -1), ...newProps.workspaces.filter((ws) => newProps.favorites.indexOf(ws.Id) === -1)],
+            orderedWsList: newProps.term.length > 0 ? [...newProps.workspaces.filter((ws) => newProps.favorites.indexOf(ws.Id) > -1), ...newProps.workspaces.filter((ws) => newProps.favorites.indexOf(ws.Id) === -1)].filter((ws) => ws.DisplayName.includes(newProps.term) || ws.Name.includes(newProps.term)) :
+                [...newProps.workspaces.filter((ws) => newProps.favorites.indexOf(ws.Id) > -1), ...newProps.workspaces.filter((ws) => newProps.favorites.indexOf(ws.Id) === -1)],
             term: newProps.term,
         } as WorkspaceList['state']
     }
     public handleSearch = (text) => {
         this.props.searchWorkspaces(text)
     }
+    public handleCloseClick = () => {
+        this.props.closeDropDown(true)
+    }
     public render() {
         const { orderedWsList, favorites } = this.state
+        const { classes } = this.props
         return (
             <div>
-                <WorkspaceSearch handleKeyup={this.handleSearch} />
+                <Toolbar className={classes.toolbar}>
+                    <div style={{ flexGrow: 1 }}>
+
+                        <WorkspaceSearch handleKeyup={this.handleSearch} />
+                    </div>
+                    <Button
+                        disableRipple={true}
+                        disableFocusRipple={true}
+                        className={classes.button}
+                        onClick={() => this.handleCloseClick()}>
+                        <CloseIcon />
+                    </Button>
+                </Toolbar>
                 <Scrollbars
                     style={{ height: window.innerHeight - 220, width: 'calc(100% - 1px)' }}
                     renderThumbVertical={({ style }) => <div style={{ ...style, borderRadius: 2, backgroundColor: '#fff', width: 10, marginLeft: -2 }}></div>}
                     thumbMinSize={180}>
-                    <MenuList style={styles.workspaceList as any}>
+                    <MenuList className={classes.workspaceList}>
                         {orderedWsList.map((workspace) => <WorkspaceListItem
                             key={workspace.Id}
                             workspace={workspace}
@@ -92,4 +131,4 @@ class WorkspaceList extends React.Component<ReturnType<typeof mapStateToProps> &
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceList)
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles as any)(WorkspaceList))
