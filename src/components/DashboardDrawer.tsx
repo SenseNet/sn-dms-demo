@@ -1,7 +1,6 @@
 import { Divider, Drawer, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 import * as DMSActions from '../Actions'
 import { resources } from '../assets/resources'
 import { getActiveMenuItem } from '../Reducers'
