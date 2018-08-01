@@ -8,7 +8,6 @@ import TableSortLabel from '@material-ui/core/TableSortLabel'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 import * as React from 'react'
-import { connect } from 'react-redux'
 import { rootStateType } from '../..'
 
 export interface HeaderColumnData {
@@ -111,4 +110,4 @@ class ListHead extends React.Component<ListHeadProps, {}> {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(style)(ListHead))
+export default withStyles(style)(ListHead)
