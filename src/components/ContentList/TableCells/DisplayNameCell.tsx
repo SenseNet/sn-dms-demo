@@ -184,7 +184,7 @@ class DisplayNameCell extends React.Component<DisplayNameCellProps, DisplayNameC
                     return <TableCell
                         padding="none"
                         style={this.props.isHovered && !isEdited ? styles.hoveredDisplayName : styles.displayName as any}
-                        onClick={(event) => handleRowSingleClick(event, content.id)}
+                        onClick={(event) => handleRowSingleClick(event, this.props.content.id)}
                         onDoubleClick={(event) => handleRowDoubleClick(event, this.props.content.Id)}>
                         {isEdited ?
                             <div>
