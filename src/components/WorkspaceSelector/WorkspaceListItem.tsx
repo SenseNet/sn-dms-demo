@@ -5,6 +5,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import MenuItem from '@material-ui/core/MenuItem'
 import StarIcon from '@material-ui/icons/Star'
 import { Workspace } from '@sensenet/default-content-types'
+import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '../..'
@@ -53,24 +54,28 @@ interface WorkspaceListItemProps {
     workspace: Workspace,
     userName,
     favorites: number[],
+    closeDropDown: (open: boolean) => void,
 }
 
 const mapStateToProps = (state: rootStateType) => {
     return {
         userName: state.sensenet.session.user.userName,
+        options: state.sensenet.currentitems.options,
     }
 }
 
 const mapDispatchToProps = {
     followWorkspace: DMSActions.followWorkspace,
     unfollowWorkspace: DMSActions.unfollowWorkspace,
+    loadContent: Actions.loadContent,
+    fetchContent: Actions.requestContent,
 }
 
 interface WorkspaceListItemState {
     followed: boolean,
 }
 
-class WorkspaceListItem extends React.Component<{ classes } & typeof mapDispatchToProps & WorkspaceListItemProps, WorkspaceListItemState> {
+class WorkspaceListItem extends React.Component<{ classes } & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & WorkspaceListItemProps, WorkspaceListItemState> {
     public state = {
         followed: this.props.followed,
     }
@@ -80,8 +85,11 @@ class WorkspaceListItem extends React.Component<{ classes } & typeof mapDispatch
         this.handleMouseOver = this.handleMouseOver.bind(this)
         this.handleMouseLeave = this.handleMouseLeave.bind(this)
     }
-    public handleClick = (id) => {
-        // load ws
+    public handleClick = (path) => {
+        const doclibPath = `${path}/Document_Library`
+        this.props.loadContent(doclibPath)
+        this.props.fetchContent(doclibPath, this.props.options)
+        this.props.closeDropDown(true)
     }
     public startButtonClick = (id) => {
         const { userName, favorites, followWorkspace, unfollowWorkspace } = this.props
@@ -107,7 +115,10 @@ class WorkspaceListItem extends React.Component<{ classes } & typeof mapDispatch
                         <StarIcon />
                     </IconButton>
                 </ListItemIcon>
-                <ListItemText classes={{ primary: classes.primary, root: classes.listItemRoot }} primary={workspace.DisplayName} />
+                <ListItemText
+                    classes={{ primary: classes.primary, root: classes.listItemRoot }}
+                    primary={workspace.DisplayName}
+                    onClick={() => this.handleClick(workspace.Path)} />
             </MenuItem>
         )
     }

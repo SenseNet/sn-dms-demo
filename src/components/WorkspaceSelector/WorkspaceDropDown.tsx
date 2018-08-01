@@ -3,6 +3,7 @@ import Paper from '@material-ui/core/Paper'
 import { withStyles } from '@material-ui/core/styles'
 import * as React from 'react'
 import WorkspaceList from './WorkspaceList'
+import WorkspaceSelectorToolbar from './WorspaceSelectorToolbar'
 
 const styles = (theme) => ({
     wsSelectorContainer: {
@@ -30,6 +31,7 @@ class WorkspaceDropDown extends React.Component<{ classes } & WorkspaceDropDownP
         return (
             <Collapse in={open} className={classes.wsSelectorContainer}>
                 <Paper elevation={4} className={classes.wsSelectorPaper}>
+                    <WorkspaceSelectorToolbar closeDropdDown={this.props.closeDropDown} />
                     <div>
                         <div className={classes.wsSelectorInner}>
                             <WorkspaceList closeDropDown={this.props.closeDropDown} />

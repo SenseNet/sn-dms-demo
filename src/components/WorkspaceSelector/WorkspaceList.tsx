@@ -1,8 +1,5 @@
 import { withStyles } from '@material-ui/core'
-import Button from '@material-ui/core/Button'
 import MenuList from '@material-ui/core/MenuList'
-import Toolbar from '@material-ui/core/Toolbar'
-import CloseIcon from '@material-ui/icons/Close'
 import { Workspace } from '@sensenet/default-content-types'
 import * as React from 'react'
 import { Scrollbars } from 'react-custom-scrollbars'
@@ -100,25 +97,14 @@ class WorkspaceList extends React.Component<{ classes } & WorkspaceListProps & R
         const { classes } = this.props
         return (
             <div>
-                <Toolbar className={classes.toolbar}>
-                    <div style={{ flexGrow: 1 }}>
-
-                        <WorkspaceSearch handleKeyup={this.handleSearch} />
-                    </div>
-                    <Button
-                        disableRipple={true}
-                        disableFocusRipple={true}
-                        className={classes.button}
-                        onClick={() => this.handleCloseClick()}>
-                        <CloseIcon />
-                    </Button>
-                </Toolbar>
+                <WorkspaceSearch handleKeyup={this.handleSearch} />
                 <Scrollbars
                     style={{ height: window.innerHeight - 220, width: 'calc(100% - 1px)' }}
                     renderThumbVertical={({ style }) => <div style={{ ...style, borderRadius: 2, backgroundColor: '#fff', width: 10, marginLeft: -2 }}></div>}
                     thumbMinSize={180}>
                     <MenuList className={classes.workspaceList}>
                         {orderedWsList.map((workspace) => <WorkspaceListItem
+                            closeDropDown={this.props.closeDropDown}
                             key={workspace.Id}
                             workspace={workspace}
                             favorites={favorites}
