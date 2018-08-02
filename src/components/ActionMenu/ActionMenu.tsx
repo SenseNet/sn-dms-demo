@@ -16,6 +16,7 @@ import { downloadFile } from '../../assets/helpers'
 import { icons } from '../../assets/icons'
 import { resources } from '../../assets/resources'
 import DeleteDialog from '../Dialogs/DeleteDialog'
+import VersionsDialog from '../Dialogs/VersionsDialog'
 
 const mapStateToProps = (state: rootStateType) => {
     return {
@@ -153,6 +154,12 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     const currentId = this.props.contentId
                     const path = this.props.currentitems.entities.find((item) => item.Id === currentId).Path
                     downloadFile(path, this.props.hostName)
+                case 'Versions':
+                    this.handleClose()
+                    this.props.openDialog(
+                        <VersionsDialog id={this.props.contentId} />,
+                        resources.VERSIONS, this.props.closeDialog)
+                    break
                 default:
                     console.log(`${action.Name} is clicked`)
                     this.handleClose()
