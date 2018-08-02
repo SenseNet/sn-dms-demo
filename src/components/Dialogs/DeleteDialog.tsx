@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core'
+import { Typography, withStyles } from '@material-ui/core'
 import Button from '@material-ui/core/Button'
 import Checkbox from '@material-ui/core/Checkbox'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -17,6 +17,7 @@ const styles = {
     containerChild: {
         flexGrow: 1,
         display: 'inline-flex',
+        opacity: .54,
     },
     deleteButton: {
         backgroundColor: '#f44336',
@@ -32,6 +33,16 @@ const styles = {
         textAlign: 'right',
         flexGrow: 1,
         marginLeft: 'auto',
+    },
+    listItem: {
+        listStyleType: 'none',
+    },
+    list: {
+        margin: '10px 0 0',
+        padding: 0,
+    },
+    label: {
+        fontSize: 14,
     },
 }
 
@@ -54,7 +65,7 @@ const mapDispatchToProps = {
     deleteContent: Actions.deleteBatch,
 }
 
-class AddNewDialog extends React.Component<DeleteDialogProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DeleteDialogState> {
+class AddNewDialog extends React.Component<{ classes } & DeleteDialogProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DeleteDialogState> {
     public state = {
         checked: false,
     }
@@ -67,20 +78,26 @@ class AddNewDialog extends React.Component<DeleteDialogProps & ReturnType<typeof
         this.props.closeDialog()
     }
     public submitCallback = () => {
+        const permanently = this.state.checked ? true : false
+        this.props.deleteContent(this.props.selected, permanently)
         this.props.closeDialog()
-        // this.props.deleteBatch(this.props.selected, false)
     }
     public render() {
-        const { currentitems, selected } = this.props
+        const { classes, currentitems, selected } = this.props
         return (
             <div>
                 <Typography variant="headline" gutterBottom>
                     {resources.DELETE}
                 </Typography>
                 <div style={styles.inner}>
-                    <div>{resources.ARE_YOU_SURE_YOU_WANT_TO_DELETE}</div>
-                    <ul>
-                        {selected.map((id) => <li key={id}>{currentitems.map((item) => id === item.Id ? item.DisplayName : null)}</li>)}
+                    <div style={{ opacity: .54 }}>{resources.ARE_YOU_SURE_YOU_WANT_TO_DELETE}</div>
+                    <ul style={styles.list}>
+                        {selected.map((id) => <li
+                            key={id}
+                            style={styles.listItem}>
+                            {currentitems.map((item) => id === item.Id ? item.DisplayName : null)}
+                        </li>,
+                        )}
                     </ul>
                 </div>
                 <div style={styles.buttonContainer}>
@@ -94,12 +111,12 @@ class AddNewDialog extends React.Component<DeleteDialogProps & ReturnType<typeof
                                     color="primary"
                                 />
                             }
-                            label={resources.DELETE_PERMANENTLY}
+                            label={<span className={classes.label}>{resources.DELETE_PERMANENTLY}</span>}
                         />
                     </div>
                     <div style={styles.rightColumn as any}>
                         <Button color="default" style={{ marginRight: 20 }} onClick={() => this.handleCancel()}>{resources.CANCEL}</Button>
-                        <Button type="submit" variant="raised" color="secondary" style={styles.deleteButton}>{resources.DELETE_PERMANENTLY}</Button>
+                        <Button onClick={() => this.submitCallback()} variant="raised" color="secondary" style={styles.deleteButton}>{resources.DELETE}</Button>
                     </div>
                 </div>
             </div >
@@ -107,4 +124,4 @@ class AddNewDialog extends React.Component<DeleteDialogProps & ReturnType<typeof
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddNewDialog)
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles as any)(AddNewDialog))
