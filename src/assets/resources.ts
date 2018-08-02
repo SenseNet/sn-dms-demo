@@ -45,4 +45,8 @@ export const resources = {
     CUSTOM_TYPES: 'Custom types',
     MY_CUSTOM_TYPES: 'My custom types',
     PREVIEW: 'Preview',
+    DELETE: 'Delete',
+    ARE_YOU_SURE_YOU_WANT_TO_DELETE: 'Are you sure you want to delete the following(s)?',
+    CANCEL: 'Cancel',
+    DELETE_PERMANENTLY: 'Delete permanently',
 }

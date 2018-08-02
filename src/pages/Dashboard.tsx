@@ -65,6 +65,7 @@ const mapDispatchToProps = {
     loadContent: Actions.loadContent,
     setCurrentId: DMSActions.setCurrentId,
     loadUserActions: DMSActions.loadUserActions,
+    closeDialog: DMSActions.closeDialog,
 }
 
 interface DashboardProps extends RouteComponentProps<any> {
@@ -123,7 +124,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
         }
     }
     public render() {
-        const { isDialogOpen, dialogContent, dialogOnClose } = this.props
+        const { closeDialog, isDialogOpen, dialogContent, dialogOnClose } = this.props
         const filter = { filter: this.props.isViewerOpened ? 'blur(3px)' : '' }
         return (
             <MediaQuery minDeviceWidth={700}>
@@ -171,9 +172,9 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                 }
                             </div>
                             <DmsViewer />
-                            <Dialog open={isDialogOpen} onClose={dialogOnClose}>
+                            <Dialog open={isDialogOpen} onClose={closeDialog}>
                                 <DialogContent children={dialogContent} />
-                                <IconButton onClick={dialogOnClose} style={styles.dialogClose as any}>
+                                <IconButton onClick={closeDialog} style={styles.dialogClose as any}>
                                     <CloseIcon />
                                 </IconButton>
                             </Dialog>

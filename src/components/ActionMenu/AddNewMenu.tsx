@@ -37,13 +37,13 @@ interface AddNemMenuProps {
 }
 
 interface AddNemMenuState {
-    options: IActionModel[],
+    addNewOtions: IActionModel[],
     currentContent: IContent,
 }
 
 class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, AddNemMenuState> {
     public state = {
-        options: [],
+        addNewOtions: [],
         currentContent: null,
     }
     constructor(props: AddNewMenu['props']) {
@@ -52,12 +52,12 @@ class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof map
         this.handleButtonClick = this.handleButtonClick.bind(this)
     }
     public static getDerivedStateFromProps(newProps: AddNewMenu['props'], lastState: AddNewMenu['state']) {
-        if ((newProps.currentContent.Id && (lastState.currentContent !== newProps.currentContent)) && lastState.options.length === 0) {
+        if ((newProps.currentContent.Id && (lastState.currentContent !== newProps.currentContent)) && lastState.addNewOtions.length === 0) {
             newProps.getActions(newProps.currentContent.Id)
         }
         const optionList = []
         const folderList = []
-        if (lastState.options.length !== newProps.actions.length) {
+        if (lastState.addNewOtions.length !== newProps.actions.length) {
             newProps.actions.map((action) => {
                 const newDisplayName = `New ${action.DisplayName}`
                 action.DisplayName = newDisplayName
@@ -80,14 +80,14 @@ class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof map
         return {
             ...lastState,
             currentContent: newProps.currentContent,
-            options: [...optionList, ...folderList],
+            addNewOtions: lastState.addNewOtions.length !== newProps.actions.length ? [...optionList, ...folderList] : lastState.addNewOtions,
         }
     }
     public handleButtonClick = (e) => {
         const { currentId } = this.props
-        const { options } = this.state
+        const { addNewOtions } = this.state
         this.props.closeActionMenu()
-        this.props.openActionMenu(options, currentId, currentId, e.currentTarget, {
+        this.props.openActionMenu(addNewOtions, currentId, currentId, e.currentTarget, {
             top: e.currentTarget.offsetTop + 85,
             left: e.currentTarget.offsetLeft,
         })

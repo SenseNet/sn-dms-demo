@@ -13,6 +13,8 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import { rootStateType } from '../..'
 import { icons } from '../../assets/icons'
+import { resources } from '../../assets/resources'
+import DeleteDialog from '../Dialogs/DeleteDialog'
 
 const mapStateToProps = (state: rootStateType) => {
     return {
@@ -35,6 +37,8 @@ const mapDispatchToProps = {
     pollDocumentData,
     openViewer: DMSActions.openViewer,
     logout: Actions.userLogout,
+    openDialog: DMSActions.openDialog,
+    closeDialog: DMSActions.closeDialog,
 }
 
 const styles = {
@@ -128,9 +132,12 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     this.props.clearSelection()
                     break
                 case 'DeleteBatch':
+                case 'Delete':
                     this.handleClose()
                     this.props.clearSelection()
-                    this.props.deleteBatch(this.props.selected, false)
+                    this.props.openDialog(
+                        <DeleteDialog selected={[this.props.contentId]}/>,
+                        resources.DELETE, this.props.closeDialog)
                     break
                 case 'Preview':
                     this.handleClose()
