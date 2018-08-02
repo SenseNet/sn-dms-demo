@@ -302,6 +302,9 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
         const { connectDropTarget } = this.props
         return connectDropTarget(
             <div>
+                {this.props.isFetching || this.props.isLoading || this.props.currentItems.entities === null ?
+                    <LinearProgress color="secondary" style={{ position: 'absolute', width: '100%' }} />
+                    : null}
                 <Table
                     onKeyDown={(event) => this.handleKeyDown(event)}
                     onKeyUp={(event) => this.handleKeyUp(event)}>
@@ -317,9 +320,6 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
                         />
                     </MediaQuery>
                     <TableBody style={styles.tableBody}>
-                        {this.props.isFetching || this.props.isLoading || this.props.currentItems.entities === null ?
-                            <LinearProgress color="secondary" style={{ position: 'absolute', width: '100%' }} />
-                            : null}
                         {this.props.currentItems.map((content) => {
                             return typeof content !== 'undefined' ? (
                                 <SimpleTableRow
