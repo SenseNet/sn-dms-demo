@@ -51,7 +51,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
     constructor(props) {
         super(props)
         const defaultOptions = {
-            select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner'],
+            select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner', 'VersioningMode'],
             expand: ['Actions', 'Owner'],
             orderby: [['IsFolder', 'desc'], ['DisplayName', 'asc']],
             filter: 'ContentType ne \'SystemFolder\'',
