@@ -12,6 +12,7 @@ import Fade from '@material-ui/core/Fade'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import { rootStateType } from '../..'
+import { downloadFile } from '../../assets/helpers'
 import { icons } from '../../assets/icons'
 import { resources } from '../../assets/resources'
 import DeleteDialog from '../Dialogs/DeleteDialog'
@@ -26,6 +27,7 @@ const mapStateToProps = (state: rootStateType) => {
         anchorElement: DMSReducers.getAnchorElement(state.dms.actionmenu),
         position: DMSReducers.getMenuPosition(state.dms.actionmenu),
         hostName: state.sensenet.session.repository.repositoryUrl,
+        currentitems: state.sensenet.currentitems,
     }
 }
 
@@ -136,7 +138,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     this.handleClose()
                     this.props.clearSelection()
                     this.props.openDialog(
-                        <DeleteDialog selected={[this.props.contentId]}/>,
+                        <DeleteDialog selected={[this.props.contentId]} />,
                         resources.DELETE, this.props.closeDialog)
                     break
                 case 'Preview':
@@ -146,8 +148,13 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                 case 'Logout':
                     this.handleClose()
                     this.props.logout()
+                case 'Browse':
+                    this.handleClose()
+                    const currentId = this.props.contentId
+                    const path = this.props.currentitems.entities.find((item) => item.Id === currentId).Path
+                    downloadFile(path, this.props.hostName)
                 default:
-                    console.log(`${action} is clicked`)
+                    console.log(`${action.Name} is clicked`)
                     this.handleClose()
                     break
             }
