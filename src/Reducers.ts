@@ -412,7 +412,7 @@ export const messagebarclose: Reducer<() => void | null> = (state = closeMessage
         case 'SET_MESSAGEBAR':
             return action.close
         default:
-            return state
+            return state || null
     }
 }
 
@@ -421,14 +421,14 @@ export const messagebarexited: Reducer<() => void | null> = (state = null, actio
         case 'SET_MESSAGEBAR':
             return action.exited
         default:
-            return state
+            return state || null
     }
 }
 
 export const hideDuration: Reducer<number> = (state = null, action) => {
     switch (action.type) {
         case 'SET_MESSAGEBAR':
-            return action.hideDuration
+            return action.hideDuration || 3000
         case 'CREATE_CONTENT_SUCCESS':
         case 'DELETE_CONTENT_SUCCESS':
         case 'LOAD_CONTENT_SUCCESS':
