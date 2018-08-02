@@ -36,6 +36,7 @@ const styles = {
     },
     listItem: {
         listStyleType: 'none',
+        lineHeight: '25px',
     },
     list: {
         margin: '10px 0 0',
@@ -48,6 +49,7 @@ const styles = {
 
 interface DeleteDialogProps {
     selected: number[],
+    permanent?: boolean,
 }
 
 interface DeleteDialogState {
@@ -57,6 +59,7 @@ interface DeleteDialogState {
 const mapStateToProps = (state: rootStateType) => {
     return {
         currentitems: state.sensenet.currentitems.entities,
+        closeCallback: state.dms.dialog.onClose,
     }
 }
 
@@ -67,7 +70,7 @@ const mapDispatchToProps = {
 
 class AddNewDialog extends React.Component<{ classes } & DeleteDialogProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DeleteDialogState> {
     public state = {
-        checked: false,
+        checked: this.props.permanent === null || !this.props.permanent ? false : true,
     }
     public handleCheckboxClick = () => {
         this.setState({
@@ -76,11 +79,13 @@ class AddNewDialog extends React.Component<{ classes } & DeleteDialogProps & Ret
     }
     public handleCancel = () => {
         this.props.closeDialog()
+        this.props.closeCallback()
     }
     public submitCallback = () => {
         const permanently = this.state.checked ? true : false
         this.props.deleteContent(this.props.selected, permanently)
         this.props.closeDialog()
+        this.props.closeCallback()
     }
     public render() {
         const { classes, currentitems, selected } = this.props
