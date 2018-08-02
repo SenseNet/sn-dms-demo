@@ -1,6 +1,5 @@
 import * as React from 'react'
 import MediaQuery from 'react-responsive'
-import { withRouter } from 'react-router'
 import {
     Link,
 } from 'react-router-dom'
@@ -54,7 +53,7 @@ const appBarLogo = () => (
                         </span>
                 </Link>
             } else {
-                return <Link to="/" style={{...styles.logo, ...styles.logoMobile}} >
+                return <Link to="/" style={{ ...styles.logo, ...styles.logoMobile }} >
                     <img src={sensenetLogo} alt="sensenet" aria-label="sensenet" style={styles.logoImgMobile} />
                 </Link>
             }
@@ -63,4 +62,4 @@ const appBarLogo = () => (
 
 )
 
-export default withRouter(appBarLogo)
+export default appBarLogo

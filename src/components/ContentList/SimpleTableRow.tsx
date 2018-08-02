@@ -10,9 +10,6 @@ import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
-import {
-    withRouter,
-} from 'react-router-dom'
 import * as DMSActions from '../../Actions'
 import DateCell from './TableCells/DateCell'
 import DisplayNameCell from './TableCells/DisplayNameCell'

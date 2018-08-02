@@ -341,4 +341,4 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ContentList))
+export default withRouter(connect<ReturnType<typeof mapStateToProps>, typeof mapDispatchToProps, ContentListProps>(mapStateToProps, mapDispatchToProps)(ContentList))
