@@ -1,9 +1,8 @@
-import { IContent, IODataResponse } from '@sensenet/client-core'
-import { IActionModel, Workspace } from '@sensenet/default-content-types'
+import { GenericContent, IActionModel, Workspace } from '@sensenet/default-content-types'
 import { createContent, deleteBatch, deleteContent, loadContent, loadContentActions, moveBatch, PromiseReturns } from '@sensenet/redux/dist/Actions'
 import { Action, AnyAction, combineReducers, Reducer } from 'redux'
 import { rootStateType } from '.'
-import { closeMessageBar, ExtendedUploadProgressInfo, getWorkspaces, loadFavoriteWorkspaces, loadListActions, loadTypesToAddNewList, loadUserActions } from './Actions'
+import { closeMessageBar, ExtendedUploadProgressInfo, getWorkspaces, loadFavoriteWorkspaces, loadListActions, loadTypesToAddNewList, loadUserActions, loadVersions } from './Actions'
 import { resources } from './assets/resources'
 
 enum MessageMode { error, warning, info }
@@ -679,6 +678,16 @@ export const workspaces = combineReducers({
     searchTerm,
 })
 
+export const versions: Reducer<GenericContent[]> = (state: [], action: AnyAction) => {
+    switch (action.type) {
+        case 'LOAD_VERSIONS_SUCCESS':
+            const versionItems = (action.result as PromiseReturns<typeof loadVersions>).d.results as any[]
+            return versionItems
+        default:
+            return state || []
+    }
+}
+
 export const dms = combineReducers({
     messagebar,
     actionmenu,
@@ -696,6 +705,7 @@ export const dms = combineReducers({
     viewer,
     dialog,
     workspaces,
+    versions,
 })
 
 export const getRegistrationError = (state: { registrationError: ReturnType<typeof register>['registrationError'] }) => {
