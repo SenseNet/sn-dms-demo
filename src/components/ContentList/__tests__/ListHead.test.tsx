@@ -1,7 +1,7 @@
 import { shallow } from 'enzyme'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import ListHead from '../ListHead'
+import ListHead, { defaultHeaderColumnData } from '../ListHead'
 
 import * as Enzyme from 'enzyme'
 import * as Adapter from 'enzyme-adapter-react-16'
@@ -11,7 +11,7 @@ Enzyme.configure({ adapter: new Adapter() })
 describe('<ListHead />', () => {
   it('renders without crashing', () => {
     const table = document.createElement('table')
-    ReactDOM.render(<ListHead numSelected={1} onRequestSort={() => {
+    ReactDOM.render(<ListHead headerColumnData={defaultHeaderColumnData} numSelected={1} onRequestSort={() => {
       //
     }} onSelectAllClick={() => {
       //
@@ -19,7 +19,7 @@ describe('<ListHead />', () => {
   })
 
   it('renders a <TableHead /> component', () => {
-    const wrapper = shallow(<ListHead numSelected={1} onRequestSort={() => {
+    const wrapper = shallow(<ListHead headerColumnData={defaultHeaderColumnData} numSelected={1} onRequestSort={() => {
       //
     }} onSelectAllClick={() => {
       //
@@ -28,7 +28,7 @@ describe('<ListHead />', () => {
   })
 
   it('renders a <Checkbox /> component', () => {
-    const wrapper2 = shallow(<ListHead numSelected={1} onRequestSort={() => {
+    const wrapper2 = shallow(<ListHead headerColumnData={defaultHeaderColumnData} numSelected={1} onRequestSort={() => {
       //
     }} onSelectAllClick={() => {
       //
