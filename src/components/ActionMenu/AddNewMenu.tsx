@@ -13,7 +13,7 @@ const mapStateToProps = (state: rootStateType) => {
     return {
         currentContent: Reducers.getCurrentContent(state.sensenet),
         currentId: state.dms.currentId,
-        actions: state.dms.actionmenu.actions,
+        actions: state.dms.actionmenu.addNewTypes,
         schema: Reducers.getSchema(state.sensenet),
         repository: state.sensenet.session.repository,
     }
@@ -36,13 +36,13 @@ interface AddNemMenuProps {
 }
 
 interface AddNemMenuState {
-    addNewOtions: IActionModel[],
+    addNewOptions: IActionModel[],
     currentContent: IContent,
 }
 
 class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, AddNemMenuState> {
     public state = {
-        addNewOtions: [],
+        addNewOptions: [],
         currentContent: null,
     }
     constructor(props: AddNewMenu['props']) {
@@ -51,16 +51,16 @@ class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof map
         this.handleButtonClick = this.handleButtonClick.bind(this)
     }
     public static getDerivedStateFromProps(newProps: AddNewMenu['props'], lastState: AddNewMenu['state']) {
-        if ((newProps.currentContent && newProps.currentContent.Id && (lastState.currentContent !== newProps.currentContent)) && lastState.addNewOtions.length === 0) {
+        if ((newProps.currentContent && newProps.currentContent.Id && (lastState.currentContent !== newProps.currentContent)) && lastState.addNewOptions.length === 0) {
             newProps.getActions(newProps.currentContent.Id)
         }
         const optionList = []
         const folderList = []
-        if (lastState.addNewOtions.length !== newProps.actions.length) {
+        if (lastState.addNewOptions.length !== newProps.actions.length) {
             newProps.actions.map((action) => {
                 const newDisplayName = `New ${action.DisplayName}`
                 action.DisplayName = newDisplayName
-                const contentType = getContentTypeFromUrl(action.Url)
+                const contentType = action.Url.includes('ContentType') ? getContentTypeFromUrl(action.Url) : null
                 // tslint:disable-next-line:no-string-literal
                 action['Action'] = () => {
                     newProps.closeActionMenu()
@@ -80,14 +80,14 @@ class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof map
         return {
             ...lastState,
             currentContent: newProps.currentContent,
-            addNewOtions: lastState.addNewOtions.length !== newProps.actions.length ? [...optionList, ...folderList] : lastState.addNewOtions,
+            addNewOptions: lastState.addNewOptions.length !== newProps.actions.length ? [...optionList, ...folderList] : lastState.addNewOptions,
         }
     }
     public handleButtonClick = (e) => {
         const { currentId } = this.props
-        const { addNewOtions } = this.state
+        const { addNewOptions } = this.state
         this.props.closeActionMenu()
-        this.props.openActionMenu(addNewOtions, currentId, currentId, e.currentTarget, {
+        this.props.openActionMenu(addNewOptions, currentId, currentId, e.currentTarget, {
             top: e.currentTarget.offsetTop + 85,
             left: e.currentTarget.offsetLeft,
         })

@@ -6,17 +6,6 @@ import MediaQuery from 'react-responsive'
 import * as DMSActions from '../Actions'
 import UserPanel from './UserPanel'
 
-import { icons } from '../assets/icons'
-
-interface UserActionMenu {
-    loggedinUser,
-    logout,
-    loadUserActions,
-    actions,
-    openActionMenu,
-    closeActionMenu,
-}
-
 const styles = {
     actionmenuContainer: {
         flex: 1,
@@ -39,14 +28,34 @@ const styles = {
     },
 }
 
-class UserActionMenu extends React.Component<UserActionMenu, { anchorEl, open, selectedIndex }> {
+interface UserActionMenuState {
+    anchorEl,
+    open: boolean,
+    selectedIndex: number,
+}
+
+const mapStateToProps = (state, match) => {
+    return {
+        loggedinUser: state.sensenet.session.user,
+        actions: state.dms.actionmenu.userActions,
+    }
+}
+
+const mapDispatchToProps = {
+    logout: Actions.userLogout,
+    loadUserActions: DMSActions.loadUserActions,
+    openActionMenu: DMSActions.openActionMenu,
+    closeActionMenu: DMSActions.closeActionMenu,
+}
+
+class UserActionMenu extends React.Component<ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, UserActionMenuState> {
+    public state = {
+        anchorEl: null,
+        open: false,
+        selectedIndex: 1,
+    }
     constructor(props) {
         super(props)
-        this.state = {
-            anchorEl: null,
-            open: false,
-            selectedIndex: 1,
-        }
         this.handleClick = this.handleClick.bind(this)
         this.handleRequestClose = this.handleRequestClose.bind(this)
     }
@@ -86,18 +95,4 @@ class UserActionMenu extends React.Component<UserActionMenu, { anchorEl, open, s
     }
 }
 
-const userLogout = Actions.userLogout
-
-const mapStateToProps = (state, match) => {
-    return {
-        loggedinUser: state.sensenet.user,
-        actions: state.dms.actionmenu.actions,
-    }
-}
-
-export default connect(mapStateToProps, {
-    logout: userLogout,
-    loadUserActions: DMSActions.loadUserActions,
-    openActionMenu: DMSActions.openActionMenu,
-    closeActionMenu: DMSActions.closeActionMenu,
-})(UserActionMenu)
+export default connect(mapStateToProps, mapDispatchToProps)(UserActionMenu)
