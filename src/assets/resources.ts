@@ -64,4 +64,9 @@ export const resources = {
     MODIFIED: 'Modified by',
     COMMENT: 'Comment',
     REJECT_REASON: 'Reject reason',
+    VERSION_APPROVED: 'Approved',
+    VERSION_LOCKED: 'Locked',
+    VERSION_DRAFT: 'Draft',
+    VERSION_PENDING: 'Pending',
+    VERSION_REJECTED: 'Rejected',
 }

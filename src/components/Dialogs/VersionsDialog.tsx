@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableHead, TableRow, Typography, withStyles, IconButton } from '@material-ui/core'
+import { IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography, withStyles } from '@material-ui/core'
 import { Icon } from '@material-ui/core'
 import Button from '@material-ui/core/Button'
 import RestoreIcon from '@material-ui/icons/Restore'
@@ -8,6 +8,7 @@ import Moment from 'react-moment'
 import { connect } from 'react-redux'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
+import { versionName } from '../../assets/helpers'
 import { icons } from '../../assets/icons'
 import { resources } from '../../assets/resources'
 
@@ -70,6 +71,7 @@ const styles = {
     versionNumber: {
         color: '#016D9E',
         fontFamily: 'Raleway Semibold',
+        fontSize: 13,
     },
     versionTableHead: {
         fontFamily: 'Raleway Semibold',
@@ -134,9 +136,12 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
         this.props.closeDialog()
         this.props.closeCallback()
     }
+    public formatVersionNumber = (version) => {
+        const v = resources[`VERSION_${versionName(version.slice(-2))}`]
+        return `${version.substring(0, version.length - 2)} ${v}`
+    }
     public render() {
         const { classes, currentitems, id, versions } = this.props
-        console.log(id)
         const currentContent = currentitems.find((item) => item.Id === id)
         const icon = currentContent.Icon
         return (
@@ -172,7 +177,7 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                     <Table className={classes.table}>
                         <TableHead>
                             <TableRow>
-                                <TableCell className={classes.versionTableHead}>{resources.VERSION}</TableCell>
+                                <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.VERSION}</TableCell>
                                 <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.MODIFIED}</TableCell>
                                 <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.COMMENT}</TableCell>
                                 <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.REJECT_REASON}</TableCell>
@@ -182,7 +187,7 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                         <TableBody>
                             {versions.map((version, index) =>
                                 <TableRow key={index}>
-                                    <TableCell className={classes.versionNumber}>{version.Version}</TableCell>
+                                    <TableCell padding="checkbox" className={classes.versionNumber}>{this.formatVersionNumber(version.Version)}</TableCell>
                                     <TableCell padding="checkbox" className={classes.versionTableCell}>
                                         <Moment fromNow>{version.ModificationDate}</Moment>
                                         {
