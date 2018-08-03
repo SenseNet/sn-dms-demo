@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button'
 import RestoreIcon from '@material-ui/icons/Restore'
 import { GenericContent } from '@sensenet/default-content-types'
 import * as React from 'react'
+import { Scrollbars } from 'react-custom-scrollbars'
 import Moment from 'react-moment'
 import { connect } from 'react-redux'
 import { rootStateType } from '../..'
@@ -140,7 +141,7 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
         this.props.closeCallback()
     }
     public formatVersionNumber = (version: string) => {
-        const v = resources[`VERSION_${versionName(version.slice(-2))}`]
+        const v = resources[`VERSION_${versionName(version.slice(-1))}`]
         return `${version.substring(0, version.length - 2)} ${v}`
     }
     public handleRestoreButtonClick = (id: number, version: string, name: string) => {
@@ -181,6 +182,8 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                             </TableRow>
                         </TableBody>
                     </Table>
+
+
                     <Table className={classes.table}>
                         <TableHead>
                             <TableRow>

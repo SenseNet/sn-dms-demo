@@ -1,15 +1,9 @@
-import Icon from '@material-ui/core/Icon'
-import IconButton from '@material-ui/core/IconButton'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown'
 import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import * as DMSActions from '../Actions'
-import * as DMSReducers from '../Reducers'
 import UserPanel from './UserPanel'
 
 import { icons } from '../assets/icons'
@@ -96,8 +90,8 @@ const userLogout = Actions.userLogout
 
 const mapStateToProps = (state, match) => {
     return {
-        loggedinUser: DMSReducers.getAuthenticatedUser(state.sensenet),
-        actions: DMSReducers.getUserActions(state.dms.actionmenu),
+        loggedinUser: state.sensenet.user,
+        actions: state.dms.actionmenu.actions,
     }
 }
 

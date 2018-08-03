@@ -5,7 +5,6 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '../..'
 import { hideUploadItem, hideUploadProgress, removeUploadItem, uploadFileList } from '../../Actions'
-import * as DMSReducers from '../../Reducers'
 import AddNewMenu from '../ActionMenu/AddNewMenu'
 import { UploadBar } from '../Upload/UploadBar'
 import { UploadButton } from '../Upload/UploadButton'
@@ -190,7 +189,7 @@ class DocumentsMenu extends React.Component<DocumentMenuProps, {}> {
 
 const mapStateToProps = (state) => {
     return {
-        subactive: DMSReducers.getActiveSubmenuItem(state.dms.menu),
+        subactive: state.dms.menu.activeSubmenu,
         currentContent: Reducers.getCurrentContent(state.sensenet),
     }
 }

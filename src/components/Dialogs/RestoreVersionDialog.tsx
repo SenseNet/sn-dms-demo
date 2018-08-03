@@ -67,15 +67,13 @@ const mapDispatchToProps = {
 class RestoreVersionDialog extends React.Component<{ classes } & RestoreVersionDialogProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, {}> {
     public handleCancel = () => {
         this.props.closeDialog()
-        this.props.closeCallback()
     }
     public submitCallback = (id, version) => {
         this.props.restoreVersion(id, version)
         this.props.closeDialog()
-        this.props.closeCallback()
     }
     public formatVersionNumber = (version: string) => {
-        const v = resources[`VERSION_${versionName(version.slice(-2))}`]
+        const v = resources[`VERSION_${versionName(version.slice(-1))}`]
         return `${version.substring(0, version.length - 2)} ${v}`
     }
     public render() {

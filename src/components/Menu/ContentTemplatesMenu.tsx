@@ -1,9 +1,7 @@
-import { Divider, Icon, ListItemText, MenuItem, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
+import { Icon, ListItemText, MenuItem, StyleRulesCallback, withStyles } from '@material-ui/core'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { resources } from '../../assets/resources'
-import * as DMSReducers from '../../Reducers'
-import { AddNewButton } from './AddNewButton'
 
 const subMenu = [
     {
@@ -151,7 +149,7 @@ class ContentTemplatesMenu extends React.Component<ContentTemplatesMenuProps, {}
 
 const mapStateToProps = (state) => {
     return {
-        subactive: DMSReducers.getActiveSubmenuItem(state.dms.menu),
+        subactive: state.dms.menu.activeSubmenu,
     }
 }
 

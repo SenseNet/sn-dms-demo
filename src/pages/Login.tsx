@@ -10,7 +10,6 @@ import { Redirect } from 'react-router-dom'
 import LoginTabs from '../components/LoginTabs'
 import { OauthRow } from '../components/OAuthRow'
 import { WelcomeMessage } from '../components/WelcomeMessage'
-import * as DMSReducers from '../Reducers'
 
 // tslint:disable-next-line:no-var-requires
 const logo = require('../assets/logo.png')
@@ -44,7 +43,7 @@ const mapStateToProps = (state: rootStateType) => {
   return {
     loginState: state.sensenet.session.loginState,
     loginError: Reducers.getAuthenticationError(state.sensenet),
-    isRegistered: DMSReducers.registrationIsDone,
+    isRegistered: state.dms.register.registrationDone,
   }
 }
 

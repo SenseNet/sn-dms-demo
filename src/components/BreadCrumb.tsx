@@ -7,7 +7,6 @@ import {
     withRouter,
 } from 'react-router-dom'
 import * as DMSActions from '../Actions'
-import * as DMSReducers from '../Reducers'
 
 import { Actions, Reducers } from '@sensenet/redux'
 import { icons } from '../assets/icons'
@@ -133,9 +132,9 @@ class BreadCrumb extends React.Component<BreadCrumbProps, {}> {
 const mapStateToProps = (state, match) => {
 
     return {
-        breadcrumb: DMSReducers.getBreadCrumbArray(state.dms),
+        breadcrumb: state.dms.breadcrumb,
         currentId: match.match.params.id,
-        actions: DMSReducers.getActionsOfAContent(state.sensenet.currentcontent),
+        actions: state.sensenet.currentcontent.actions,
         currentContent: Reducers.getCurrentContent(state.sensenet),
     }
 }

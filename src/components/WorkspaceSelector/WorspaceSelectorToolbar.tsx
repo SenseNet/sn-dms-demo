@@ -106,7 +106,7 @@ class WorkspaceSelectorToolbar extends React.Component<{ classes } & ReturnType<
                         </ListItemIcon>
                         <ListItemText
                             classes={{ primary: classes.primary, root: classes.listItemRoot }}
-                            primary={currentworkspace.Path.includes('Profiles', userName) ? resources.MYPROFILE : currentworkspace.DisplayName} />
+                            primary={currentworkspace.Path.includes('Profiles' && userName) ? resources.MYPROFILE : currentworkspace.DisplayName} />
                     </ListItem >
                 </div>
                 <Button

@@ -6,15 +6,14 @@ import { connect } from 'react-redux'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { getContentTypeFromUrl } from '../../assets/helpers'
-import * as DMSReducers from '../../Reducers'
 import AddNewDialog from '../Dialogs/AddNewDialog'
 import { AddNewButton } from '../Menu/AddNewButton'
 
 const mapStateToProps = (state: rootStateType) => {
     return {
         currentContent: Reducers.getCurrentContent(state.sensenet),
-        currentId: DMSReducers.getCurrentId(state.dms),
-        actions: DMSReducers.getAddNewTypeList(state.dms.actionmenu),
+        currentId: state.dms.currentId,
+        actions: state.dms.actionmenu.actions,
         schema: Reducers.getSchema(state.sensenet),
         repository: state.sensenet.session.repository,
     }
@@ -62,7 +61,8 @@ class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof map
                 const newDisplayName = `New ${action.DisplayName}`
                 action.DisplayName = newDisplayName
                 const contentType = getContentTypeFromUrl(action.Url)
-                action.Action = () => {
+                // tslint:disable-next-line:no-string-literal
+                action['Action'] = () => {
                     newProps.closeActionMenu()
                     newProps.openDialog(
                         <AddNewDialog

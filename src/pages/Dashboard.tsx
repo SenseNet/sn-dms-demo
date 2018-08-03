@@ -14,7 +14,6 @@ import { DmsViewer } from '../components/DmsViewer'
 import DocumentLibrary from '../components/DocumentLibrary'
 import Header from '../components/Header'
 import MessageBar from '../components/MessageBar'
-import * as DMSReducers from '../Reducers'
 
 const styles = {
     dashBoardInner: {
@@ -51,8 +50,8 @@ const mapStateToProps = (state: rootStateType) => {
         loggedinUserName: state.sensenet.session.user.userName,
         loginState: state.sensenet.session.loginState,
         currentContent: Reducers.getCurrentContent(state.sensenet),
-        currentId: DMSReducers.getCurrentId(state.dms),
-        selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
+        currentId: state.dms.currentId,
+        selectionModeIsOn: state.dms.isSelectionModeOn,
         isViewerOpened: state.dms.viewer.isOpened,
         isDialogOpen: state.dms.dialog.isOpened,
         dialogOnClose: state.dms.dialog.onClose,

@@ -350,7 +350,7 @@ export const messagebarcontent: Reducer<any[]> = (state = [], action) => {
         case 'RESTOREVERSION_CONTENT_FAILURE':
         case 'MOVE_CONTENT_FAILURE':
         case 'MOVE_BATCH_FAILURE':
-            return `${(action.result as PromiseReturns<typeof moveBatch>).d.errors[0].error}`
+            return [action.error.message]
         default:
             return state
     }
@@ -707,108 +707,3 @@ export const dms = combineReducers({
     workspaces,
     versions,
 })
-
-export const getRegistrationError = (state: { registrationError: ReturnType<typeof register>['registrationError'] }) => {
-    return state.registrationError
-}
-export const registrationInProgress = (state: { isRegistering: ReturnType<typeof register>['isRegistering'] }) => {
-    return state.isRegistering
-}
-
-export const registrationIsDone = (state: { registrationDone: ReturnType<typeof register>['registrationDone'] }) => {
-    return state.registrationDone
-}
-
-export const getRegisteredEmail = (state: { email: ReturnType<typeof register>['email'] }) => {
-    return state.email
-}
-
-export const captchaIsVerified = (state: { captcha: ReturnType<typeof register>['captcha'] }) => {
-    return state.captcha
-}
-export const getAuthenticatedUser = (state: { session: { user: rootStateType['sensenet']['session']['user'] } }) => {
-    return state.session.user
-}
-
-export const getChildrenItems = (state: { currentitems: { entities: rootStateType['sensenet']['currentitems']['entities'] } }) => {
-    return state.currentitems.entities
-}
-
-export const getCurrentContentPath = (state: { Path: string }) => {
-    return state.Path
-}
-
-export const actionmenuIsOpen = (state: { open: ReturnType<typeof actionmenu>['open'] }) => {
-    return state.open
-}
-
-export const getAnchorElement = (state: { anchorElement: ReturnType<typeof actionmenu>['anchorElement'] }) => {
-    return state.anchorElement
-}
-
-export const getMenuPosition = (state: { position: ReturnType<typeof actionmenu>['position'] }) => {
-    return state.position
-}
-
-export const getParentId = (state: { currentcontent }) => {
-    return state.currentcontent.content.ParentId
-}
-export const getRootId = (state: { rootId: rootStateType['dms']['rootId'] }) => {
-    return state.rootId
-}
-export const getBreadCrumbArray = (state: { breadcrumb: rootStateType['dms']['breadcrumb'] }) => {
-    return state.breadcrumb
-}
-export const getCurrentId = (state: { currentId: rootStateType['dms']['currentId'] }) => {
-    return state.currentId
-}
-export const getActionsOfAContent = (state: { actions: string[] }) => {
-    return state.actions
-}
-export const getActions = (state: { actions: IActionModel[] }) => {
-    return state.actions
-}
-export const getEditedItemId = (state: { editedItemId: ReturnType<typeof dms>['editedItemId'] }) => {
-    return state.editedItemId
-}
-export const getItemOnActionMenuIsOpen = (state: { id: ReturnType<typeof actionmenu>['id'] }) => {
-    return state.id
-}
-export const getLoading = (state: { isLoading: ReturnType<typeof dms>['isLoading'] }) => {
-    return state.isLoading
-}
-export const getItemTitleOnActionMenuIsOpen = (state: { title: ReturnType<typeof actionmenu>['title'] }) => {
-    return state.title
-}
-export const getIsSelectionModeOn = (state: { isSelectionModeOn: ReturnType<typeof dms>['isSelectionModeOn'] }) => {
-    return state.isSelectionModeOn
-}
-export const getAddNewActions = (state: { addnew: any }) => {
-    return state.addnew
-}
-export const isEditedFirst = (state: ReturnType<typeof dms>) => {
-    return state.editedFirst
-}
-export const getMessageBarProps = (state: ReturnType<typeof dms>) => {
-    return state.messagebar
-}
-export const getToolbarActions = (state: ReturnType<typeof actionmenu>) => {
-    return state && state.actions ? state.actions : []
-}
-export const getUserActions = (state: ReturnType<typeof actionmenu>) => {
-    return state.userActions
-}
-
-export const getActiveMenuItem = (state: ReturnType<typeof menu>) => {
-    return state.active
-}
-
-export const getActiveSubmenuItem = (state: ReturnType<typeof menu>) => {
-    return state.activeSubmenu
-}
-export const getAddNewTypeList = (state) => {
-    return state.addNewTypes
-}
-export const getMenuAnchorId = (state) => {
-    return state.actionmenu.id
-}

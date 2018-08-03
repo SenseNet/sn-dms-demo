@@ -12,7 +12,6 @@ import GoogleReCaptcha from '../components/GoogleReCaptcha'
 import LoginTabs from '../components/LoginTabs'
 import { OauthRow } from '../components/OAuthRow'
 import { WelcomeMessage } from '../components/WelcomeMessage'
-import { captchaIsVerified, getRegistrationError, registrationInProgress, registrationIsDone } from '../Reducers'
 // tslint:disable-next-line:no-var-requires
 const logo = require('../assets/logo.png')
 
@@ -49,10 +48,10 @@ import { resources } from '../assets/resources'
 
 const mapStateToProps = (state: rootStateType) => {
   return {
-    registrationError: getRegistrationError(state.dms.register),
-    inProgress: registrationInProgress(state.dms.register),
-    isRegistered: registrationIsDone(state.dms.register),
-    isNotARobot: captchaIsVerified(state.dms.register),
+    registrationError: state.dms.register.registrationError,
+    inProgress: state.dms.register.isRegistering,
+    isRegistered: state.dms.register.registrationDone,
+    isNotARobot: state.dms.register.captcha,
   }
 }
 

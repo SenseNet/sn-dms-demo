@@ -2,7 +2,6 @@ import { Icon, ListItemText, MenuItem, MenuList, StyleRulesCallback, withStyles 
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { resources } from '../../assets/resources'
-import * as DMSReducers from '../../Reducers'
 
 const subMenu = [
     {
@@ -148,7 +147,7 @@ class SettingsMenu extends React.Component<SettingsMenuProps, {}> {
 
 const mapStateToProps = (state) => {
     return {
-        subactive: DMSReducers.getActiveSubmenuItem(state.dms.menu),
+        subactive: state.dms.menu.activeSubmenu,
     }
 }
 

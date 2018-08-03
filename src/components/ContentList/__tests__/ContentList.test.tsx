@@ -1,6 +1,5 @@
 import { LoginState, Repository } from '@sensenet/client-core'
 import { Task } from '@sensenet/default-content-types'
-import { sensenetDocumentViewerReducer } from '@sensenet/document-viewer-react'
 import { Reducers, Store } from '@sensenet/redux'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
@@ -12,9 +11,6 @@ import { combineReducers } from 'redux'
 import * as DMSReducers from '../../../Reducers'
 import ContentList from '../ContentList'
 
-import { mount } from 'enzyme'
-import { spy } from 'sinon'
-
 import { configure } from 'enzyme'
 import * as Adapter from 'enzyme-adapter-react-16'
 import { rootStateType } from '../../..'
@@ -25,7 +21,6 @@ configure({ adapter: new Adapter() })
 const sensenet = Reducers.sensenet
 const actionmenu = DMSReducers.actions
 const myReducer = combineReducers({ sensenet, actionmenu, dms }) as any
-const sensenetDocumentViewer = sensenetDocumentViewerReducer
 
 const repository = new Repository({
     repositoryUrl: process.env.REACT_APP_SERVICE_URL || 'https://dmsservice.demo.sensenet.com',

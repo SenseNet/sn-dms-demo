@@ -6,7 +6,6 @@ import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import * as DMSActions from '../../Actions'
-import * as DMSReducers from '../../Reducers'
 
 import Fade from '@material-ui/core/Fade'
 import Menu from '@material-ui/core/Menu'
@@ -20,13 +19,13 @@ import VersionsDialog from '../Dialogs/VersionsDialog'
 
 const mapStateToProps = (state: rootStateType) => {
     return {
-        actions: DMSReducers.getActions(state.dms.actionmenu),
+        actions: state.dms.actionmenu.actions,
         contentId: state.dms.actionmenu.id,
         currentContent: Reducers.getCurrentContent(state.sensenet),
         selected: Reducers.getSelectedContentIds(state.sensenet),
-        open: DMSReducers.actionmenuIsOpen(state.dms.actionmenu),
-        anchorElement: DMSReducers.getAnchorElement(state.dms.actionmenu),
-        position: DMSReducers.getMenuPosition(state.dms.actionmenu),
+        open: state.dms.actionmenu.open,
+        anchorElement: state.dms.actionmenu.anchorElement,
+        position: state.dms.actionmenu.position,
         hostName: state.sensenet.session.repository.repositoryUrl,
         currentitems: state.sensenet.currentitems,
     }
