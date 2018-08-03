@@ -34,7 +34,7 @@
     "@sensenet/client-core": "^1.2.4",
     "@sensenet/controls-react": "^2.1.0",
     "@sensenet/document-viewer-react": "^1.0.0",
-    "@sensenet/redux": "^5.0.1",
+    "@sensenet/redux": "^5.1.0",
     "@sensenet/repository-events": "^1.0.0",
     "autoprefixer": "^9.0.0",
     "chalk": "2.4.1",
