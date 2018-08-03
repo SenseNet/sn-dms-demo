@@ -233,16 +233,6 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                     </Table>
                     </div>
                 </div>
-                <div style={styles.buttonContainer}>
-                    <div style={styles.containerChild}>
-                        <Button variant="contained"
-                            component="span"
-                            color="primary" className={classes.uploadVersionButton} onClick={() => this.handleCancel()}>{resources.UPLOAD_NEW_VERSION}</Button>
-                    </div>
-                    <div style={styles.rightColumn as any}>
-                        <Button onClick={() => this.submitCallback()} variant="raised" color="secondary">{resources.OK}</Button>
-                    </div>
-                </div>
             </div >
         )
     }
