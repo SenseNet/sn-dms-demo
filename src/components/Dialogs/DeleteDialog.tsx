@@ -45,6 +45,12 @@ const styles = {
     label: {
         fontSize: 14,
     },
+    longList: {
+        maxHeight: 300,
+        overflowY: 'auto',
+        padding: 5,
+    },
+    normalList: {},
 }
 
 interface DeleteDialogProps {
@@ -96,14 +102,16 @@ class DeleteDialog extends React.Component<{ classes } & DeleteDialogProps & Ret
                 </Typography>
                 <div style={styles.inner}>
                     <div style={{ opacity: .54 }}>{resources.ARE_YOU_SURE_YOU_WANT_TO_DELETE}</div>
-                    <ul style={styles.list}>
-                        {selected.map((id) => <li
-                            key={id}
-                            style={styles.listItem}>
-                            {currentitems.map((item) => id === item.Id ? item.DisplayName : null)}
-                        </li>,
-                        )}
-                    </ul>
+                    <div style={selected.length > 3 ? styles.longList : styles.normalList }>
+                        <ul style={styles.list}>
+                            {selected.map((id) => <li
+                                key={id}
+                                style={styles.listItem}>
+                                {currentitems.map((item) => id === item.Id ? item.DisplayName : null)}
+                            </li>,
+                            )}
+                        </ul>
+                    </div>
                 </div>
                 <div style={styles.buttonContainer}>
                     <div style={styles.containerChild}>
