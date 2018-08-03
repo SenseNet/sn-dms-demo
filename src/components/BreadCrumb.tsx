@@ -48,9 +48,9 @@ const styles = {
 
 const mapStateToProps = (state, match) => {
     return {
-        breadcrumb: DMSReducers.getBreadCrumbArray(state.dms),
+        breadcrumb: state.dms.breadcrumb,
         currentId: match.match.params.id,
-        actions: DMSReducers.getActionsOfAContent(state.sensenet.currentcontent),
+        actions: state.sensenet.currentcontent.actions,
         currentContent: Reducers.getCurrentContent(state.sensenet),
     }
 }
@@ -151,4 +151,8 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
     }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(BreadCrumb))
+export default withRouter(connect(mapStateToProps, {
+    openActionMenu: DMSActions.openActionMenu,
+    closeActionMenu: DMSActions.closeActionMenu,
+    getActions: Actions.loadContentActions,
+})(BreadCrumb))

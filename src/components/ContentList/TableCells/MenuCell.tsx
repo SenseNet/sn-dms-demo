@@ -7,7 +7,6 @@ import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { rootStateType } from '../../..'
 import * as DMSActions from '../../../Actions'
-import * as DMSReducers from '../../../Reducers'
 
 const styles = {
     actionMenuButton: {
@@ -90,7 +89,7 @@ const mapStateToProps = (state: rootStateType, match) => {
         selected: Reducers.getSelectedContentIds(state.sensenet),
         opened: Reducers.getOpenedContent(state.sensenet.currentitems),
         actions: state.sensenet.currentitems.entities.find((c) => c.Id === match.content.Id).Actions,
-        selectionModeOn: DMSReducers.getIsSelectionModeOn(state.dms),
+        selectionModeOn: state.dms.isSelectionModeOn,
     }
 }
 export default connect(mapStateToProps, {

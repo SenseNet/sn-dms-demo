@@ -1,7 +1,7 @@
 
 import { Dialog, DialogContent, IconButton, LinearProgress } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
-import { Actions, Reducers } from '@sensenet/redux'
+import { Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -164,7 +164,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                 </div>
                             </div>
                             <DmsViewer />
-                            <Dialog open={isDialogOpen} onClose={closeDialog}>
+                            <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth="md">
                                 <DialogContent children={dialogContent} />
                                 <IconButton onClick={closeDialog} style={styles.dialogClose as any}>
                                     <CloseIcon />

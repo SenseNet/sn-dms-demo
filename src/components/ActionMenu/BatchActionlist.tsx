@@ -10,7 +10,6 @@ import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { icons } from '../../assets/icons'
 import { resources } from '../../assets/resources'
-import * as DMSReducers from '../../Reducers'
 import DeleteDialog from '../Dialogs/DeleteDialog'
 
 const styles = {
@@ -53,7 +52,7 @@ const styles = {
 const mapStateToProps = (state: rootStateType) => {
     return {
         actions: state.dms.toolbar.actions,
-        currentId: DMSReducers.getCurrentId(state.dms),
+        currentId: state.dms.currentId,
         selected: Reducers.getSelectedContentIds(state.sensenet),
         currentContent: Reducers.getCurrentContent(state.sensenet),
     }

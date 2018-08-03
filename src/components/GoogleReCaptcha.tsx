@@ -1,7 +1,6 @@
 import * as React from 'react'
 import ReCAPTCHA from 'react-google-recaptcha'
 import { connect } from 'react-redux'
-import * as DMSReducers from '../Reducers'
 
 class GoogleReCaptcha extends React.Component<{ verify }, { recaptchaResponse }> {
     constructor(props) {
@@ -28,7 +27,7 @@ class GoogleReCaptcha extends React.Component<{ verify }, { recaptchaResponse }>
 
 const mapStateToProps = (state, match) => {
     return {
-        isNotARobot: DMSReducers.captchaIsVerified(state.dms.register),
+        isNotARobot: state.dms.register.captcha,
     }
 }
 

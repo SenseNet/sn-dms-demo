@@ -3,7 +3,6 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import * as DMSActions from '../Actions'
 import { resources } from '../assets/resources'
-import { getActiveMenuItem } from '../Reducers'
 import ContentTemplatesMenu from './Menu/ContentTemplatesMenu'
 import ContentTypesMenu from './Menu/ContentTypesMenu'
 import DocumentsMenu from './Menu/DocumentsMenu'
@@ -116,7 +115,7 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
 
 const mapStateToProps = (state) => {
     return {
-        activeItem: getActiveMenuItem(state.dms.menu),
+        activeItem: state.dms.menu.active,
     }
 }
 

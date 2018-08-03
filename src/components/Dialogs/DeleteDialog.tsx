@@ -68,7 +68,7 @@ const mapDispatchToProps = {
     deleteContent: Actions.deleteBatch,
 }
 
-class AddNewDialog extends React.Component<{ classes } & DeleteDialogProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DeleteDialogState> {
+class DeleteDialog extends React.Component<{ classes } & DeleteDialogProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DeleteDialogState> {
     public state = {
         checked: this.props.permanent === null || !this.props.permanent ? false : true,
     }
@@ -129,4 +129,4 @@ class AddNewDialog extends React.Component<{ classes } & DeleteDialogProps & Ret
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles as any)(AddNewDialog))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles as any)(DeleteDialog))

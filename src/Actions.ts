@@ -305,3 +305,14 @@ export const searchWorkspaces = (text: string) => ({
     type: 'SEARCH_WORKSPACES',
     text,
 })
+
+export const loadVersions = (id: number) => ({
+    type: 'LOAD_VERSIONS',
+    payload: (repository: Repository) => repository.versioning.getVersions<GenericContent>(
+        id, {
+            select: ['Version', 'ModificationDate', 'CheckInComments', 'RejectReason', 'ModifiedBy/FullName' as any],
+            expand: 'ModifiedBy',
+            metadata: 'no',
+        },
+    ),
+})

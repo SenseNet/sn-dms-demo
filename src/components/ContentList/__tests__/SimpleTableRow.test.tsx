@@ -35,6 +35,12 @@ it('renders without crashing', () => {
         },
         currentitems: {
           ids: [123],
+          entities: [
+            {
+              Id: 123,
+              Actions: [],
+            },
+          ],
         },
       },
     },
