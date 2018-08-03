@@ -68,7 +68,7 @@ const styles = {
     table: {
         boxShadow: '0px 0px 3px 0px rgba(0,0,0,0.3)',
         minWidth: 800,
-        marginTop: 20,
+        marginTop: 10,
     },
     versionNumber: {
         color: '#016D9E',
@@ -88,6 +88,12 @@ const styles = {
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis',
         maxWidth: 200,
+    },
+    tableContainer: {},
+    tableContainerScroll: {
+        maxHeight: 300,
+        overflowY: 'auto',
+        padding: 5,
     },
 }
 
@@ -182,8 +188,7 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                             </TableRow>
                         </TableBody>
                     </Table>
-
-
+                    <div style={versions.length > 3 ? styles.tableContainerScroll : styles.tableContainer }>
                     <Table className={classes.table}>
                         <TableHead>
                             <TableRow>
@@ -226,6 +231,7 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                             )}
                         </TableBody>
                     </Table>
+                    </div>
                 </div>
                 <div style={styles.buttonContainer}>
                     <div style={styles.containerChild}>
