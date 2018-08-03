@@ -1,5 +1,5 @@
 import { GenericContent, IActionModel, Workspace } from '@sensenet/default-content-types'
-import { createContent, deleteBatch, deleteContent, loadContent, loadContentActions, moveBatch, PromiseReturns } from '@sensenet/redux/dist/Actions'
+import { createContent, deleteBatch, deleteContent, loadContent, loadContentActions, moveBatch, PromiseReturns, restoreVersion } from '@sensenet/redux/dist/Actions'
 import { Action, AnyAction, combineReducers, Reducer } from 'redux'
 import { rootStateType } from '.'
 import { closeMessageBar, ExtendedUploadProgressInfo, getWorkspaces, loadFavoriteWorkspaces, loadListActions, loadTypesToAddNewList, loadUserActions, loadVersions } from './Actions'
@@ -329,6 +329,10 @@ export const messagebarcontent: Reducer<any[]> = (state = [], action) => {
             return [
                 ...result.d.errors.map((r) => `Cannot delete ${r.content.Name}, because '${r.error.message}'`),
                 ...result.d.results.map((r) => `${r.Name} is successfully deleted`)]
+        case 'RESTOREVERSION_CONTENT_SUCCESS':
+                const res = action.result as PromiseReturns<typeof restoreVersion>
+                // tslint:disable-next-line:no-string-literal
+                return [`Version ${action.version} of ${res.d['DisplayName']} is succesfully restored!`]
         case 'CREATE_CONTENT_FAILURE':
         case 'DELETE_CONTENT_FAILURE':
         case 'LOAD_CONTENT_FAILURE':
