@@ -41,6 +41,7 @@ const styles = {
     },
     icon: {
         flexShrink: 0,
+        marginRight: 5,
     },
     uploadVersionButton: {
         marginRight: 20,
