@@ -1,4 +1,4 @@
-import { GenericContent, User } from '@sensenet/default-content-types'
+import { GenericContent } from '@sensenet/default-content-types'
 import { resources } from '../assets/resources'
 import * as DMSReducers from '../Reducers'
 

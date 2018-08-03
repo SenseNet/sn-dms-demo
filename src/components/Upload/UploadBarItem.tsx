@@ -1,4 +1,4 @@
-import { CircularProgress, Icon, IconButton, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText } from '@material-ui/core'
+import { Icon, IconButton, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText } from '@material-ui/core'
 import { CheckCircle, Close, Error } from '@material-ui/icons'
 import { IUploadProgressInfo } from '@sensenet/client-core'
 import * as React from 'react'

@@ -1,4 +1,4 @@
-import { Reducers, Store } from '@sensenet/redux'
+import { Store } from '@sensenet/redux'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { rootStateType } from '../..'
@@ -7,7 +7,6 @@ import UserPanel from '../UserPanel'
 
 it('renders without crashing', () => {
   const div = document.createElement('div')
-  const sensenet = Reducers.sensenet
 
   const options = {
     persistedState: {

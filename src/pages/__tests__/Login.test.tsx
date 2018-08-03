@@ -5,7 +5,6 @@ import * as ReactDOM from 'react-dom'
 import {
   MemoryRouter,
 } from 'react-router-dom'
-import { DeepPartial } from 'redux'
 import { rootStateType } from '../..'
 import { withStore } from '../../__tests__/TestHelper'
 import Login from '../Login'

@@ -1,6 +1,4 @@
-import IconButton from '@material-ui/core/IconButton'
 import Input from '@material-ui/core/Input'
-import Search from '@material-ui/icons/Search'
 import * as React from 'react'
 import MediaQuery from 'react-responsive'
 

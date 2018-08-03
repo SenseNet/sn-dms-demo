@@ -3,7 +3,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { resources } from '../../assets/resources'
 
-const subMenu = [
+export const subMenu = [
     {
         title: resources.BUILTIN_TYPES,
         name: 'builtintypes',
@@ -115,7 +115,7 @@ class ContentTemplatesMenu extends React.Component<ContentTemplatesMenuProps, {}
         this.props.chooseSubmenuItem(title)
     }
     public render() {
-        const { active, subactive, classes, item } = this.props
+        const { active, classes, item } = this.props
         return (
             <div>
                 <MenuItem

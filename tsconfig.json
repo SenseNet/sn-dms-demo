@@ -13,6 +13,7 @@
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "strict": false,
+    "noUnusedLocals": true,
     "removeComments": false,
     "preserveConstEnums": true,
     "experimentalDecorators": true,

@@ -187,49 +187,49 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                             </TableRow>
                         </TableBody>
                     </Table>
-                    <div style={versions.length > 3 ? styles.tableContainerScroll : styles.tableContainer }>
-                    <Table className={classes.table}>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.VERSION}</TableCell>
-                                <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.MODIFIED}</TableCell>
-                                <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.COMMENT}</TableCell>
-                                <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.REJECT_REASON}</TableCell>
-                                <TableCell padding="none" className={classes.versionTableHead}></TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {versions.map((version, index) =>
-                                <TableRow key={index}>
-                                    <TableCell padding="checkbox" className={classes.versionNumber}>{this.formatVersionNumber(version.Version)}</TableCell>
-                                    <TableCell padding="checkbox" className={classes.versionTableCell}>
-                                        <Moment fromNow>{version.ModificationDate}</Moment>
-                                        {
-                                            // tslint:disable-next-line:no-string-literal
-                                            ` (${version.ModifiedBy['FullName']})`
-                                        }
-                                    </TableCell>
-                                    <TableCell
-                                        padding="checkbox"
-                                        className={classes.versionTableCell}>
-                                        <Tooltip disableFocusListener title={version.CheckInComments ? version.CheckInComments : ''}>
-                                            <span>{version.CheckInComments ? version.CheckInComments : ''}</span>
-                                        </Tooltip>
-                                    </TableCell>
-                                    <TableCell padding="checkbox" className={classes.versionTableCell}>
-                                        <Tooltip disableFocusListener title={version.RejectReason ? version.RejectReason : ''}>
-                                            <span>{version.RejectReason ? version.RejectReason : ''}</span>
-                                        </Tooltip>
-                                    </TableCell>
-                                    <TableCell padding="none" style={{ width: '5%' }}>
-                                        {index !== versions.length - 1 ? <IconButton
-                                            title={resources.RESTORE_VERSION}
-                                            onClick={() => this.handleRestoreButtonClick(id, version.Version, version.Name)}><RestoreIcon color="error" /></IconButton> : null}
-                                    </TableCell>
-                                </TableRow>,
-                            )}
-                        </TableBody>
-                    </Table>
+                    <div style={versions.length > 3 ? styles.tableContainerScroll : styles.tableContainer}>
+                        <Table className={classes.table}>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.VERSION}</TableCell>
+                                    <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.MODIFIED}</TableCell>
+                                    <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.COMMENT}</TableCell>
+                                    <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.REJECT_REASON}</TableCell>
+                                    <TableCell padding="none" className={classes.versionTableHead}></TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {versions.map((version, index) =>
+                                    <TableRow key={index}>
+                                        <TableCell padding="checkbox" className={classes.versionNumber}>{this.formatVersionNumber(version.Version)}</TableCell>
+                                        <TableCell padding="checkbox" className={classes.versionTableCell}>
+                                            <Moment fromNow>{version.ModificationDate}</Moment>
+                                            {
+                                                // tslint:disable-next-line:no-string-literal
+                                                ` (${version.ModifiedBy['FullName']})`
+                                            }
+                                        </TableCell>
+                                        <TableCell
+                                            padding="checkbox"
+                                            className={classes.versionTableCell}>
+                                            <Tooltip disableFocusListener title={version.CheckInComments ? version.CheckInComments : ''}>
+                                                <span>{version.CheckInComments ? version.CheckInComments : ''}</span>
+                                            </Tooltip>
+                                        </TableCell>
+                                        <TableCell padding="checkbox" className={classes.versionTableCell}>
+                                            <Tooltip disableFocusListener title={version.RejectReason ? version.RejectReason : ''}>
+                                                <span>{version.RejectReason ? version.RejectReason : ''}</span>
+                                            </Tooltip>
+                                        </TableCell>
+                                        <TableCell padding="none" style={{ width: '5%' }}>
+                                            {index !== versions.length - 1 ? <IconButton
+                                                title={resources.RESTORE_VERSION}
+                                                onClick={() => this.handleRestoreButtonClick(id, version.Version, version.Name)}><RestoreIcon color="error" /></IconButton> : null}
+                                        </TableCell>
+                                    </TableRow>,
+                                )}
+                            </TableBody>
+                        </Table>
                     </div>
                 </div>
             </div >

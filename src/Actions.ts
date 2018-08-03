@@ -1,6 +1,6 @@
 import { IContent, IUploadFromEventOptions, IUploadFromFileListOptions, IUploadProgressInfo, Repository, Upload } from '@sensenet/client-core'
 import { ObservableValue, usingAsync } from '@sensenet/client-utils'
-import { ContentListReferenceField, File as SnFile, GenericContent, User, Workspace } from '@sensenet/default-content-types'
+import { File as SnFile, GenericContent, User, Workspace } from '@sensenet/default-content-types'
 import { IActionModel } from '@sensenet/default-content-types/dist/IActionModel'
 import { Actions } from '@sensenet/redux'
 import { Action, Dispatch } from 'redux'
@@ -16,7 +16,7 @@ export const userRegistration = (email: string, password: string) => ({
     email,
     password,
     async payload(repository: Repository) {
-        const data = await repository.executeAction({
+        return await repository.executeAction({
             name: 'RegisterUser', idOrPath: `/Root/IMS('Public')`, body: {
                 email,
                 password,
@@ -109,9 +109,9 @@ export const loadUserActions = (idOrPath: number | string, scenario?: string, cu
 export type ExtendedUploadProgressInfo = IUploadProgressInfo & { content?: GenericContent, visible?: boolean }
 
 function methodToDebounce(parentId: number, getState: () => rootStateType, dispatch: Dispatch) {
-    const currentId = getState().sensenet.currentcontent.content.Id
-    if (currentId === parentId) {
-        dispatch(Actions.requestContent(getState().sensenet.currentcontent.content.Path))
+    const currentContent = getState().sensenet.currentcontent && getState().sensenet.currentcontent.content
+    if (currentContent && currentContent.Id === parentId) {
+        dispatch(Actions.requestContent(currentContent.Path))
     }
 }
 const debounceReloadOnProgress = debounce(methodToDebounce, 2000)

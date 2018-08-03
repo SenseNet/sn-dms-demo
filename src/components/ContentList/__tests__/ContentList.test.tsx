@@ -1,6 +1,8 @@
 import { LoginState, Repository } from '@sensenet/client-core'
 import { Task } from '@sensenet/default-content-types'
 import { Reducers, Store } from '@sensenet/redux'
+import { configure } from 'enzyme'
+import * as Adapter from 'enzyme-adapter-react-16'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
@@ -11,8 +13,6 @@ import { combineReducers } from 'redux'
 import * as DMSReducers from '../../../Reducers'
 import ContentList from '../ContentList'
 
-import { configure } from 'enzyme'
-import * as Adapter from 'enzyme-adapter-react-16'
 import { rootStateType } from '../../..'
 import { dms } from '../../../Reducers'
 
