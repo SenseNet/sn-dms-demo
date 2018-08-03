@@ -1,4 +1,4 @@
-import { IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography, withStyles } from '@material-ui/core'
+import { IconButton, Table, TableBody, TableCell, TableHead, TableRow, Tooltip, Typography, withStyles } from '@material-ui/core'
 import { Icon } from '@material-ui/core'
 import Button from '@material-ui/core/Button'
 import RestoreIcon from '@material-ui/icons/Restore'
@@ -195,8 +195,18 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                                             ` (${version.ModifiedBy['FullName']})`
                                         }
                                     </TableCell>
-                                    <TableCell padding="checkbox" className={classes.versionTableCell}>{version.CheckInComments ? version.CheckInComments : ''}</TableCell>
-                                    <TableCell padding="checkbox" className={classes.versionTableCell}>{version.RejectReason ? version.RejectReason : ''}</TableCell>
+                                    <TableCell
+                                        padding="checkbox"
+                                        className={classes.versionTableCell}>
+                                        <Tooltip disableFocusListener title={version.CheckInComments ? version.CheckInComments : ''}>
+                                            <span>{version.CheckInComments ? version.CheckInComments : ''}</span>
+                                        </Tooltip>
+                                    </TableCell>
+                                    <TableCell padding="checkbox" className={classes.versionTableCell}>
+                                        <Tooltip disableFocusListener title={version.RejectReason ? version.RejectReason : ''}>
+                                            <span>{version.RejectReason ? version.RejectReason : ''}</span>
+                                        </Tooltip>
+                                    </TableCell>
                                     <TableCell padding="none" style={{ width: '5%' }}>
                                         {index > 0 ? <IconButton><RestoreIcon color="error" /></IconButton> : null}
                                     </TableCell>
