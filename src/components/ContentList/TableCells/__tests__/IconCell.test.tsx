@@ -3,6 +3,7 @@ import { Task } from '@sensenet/default-content-types'
 import { Store } from '@sensenet/redux'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
+import { rootStateType } from '../../../..'
 import { withStore } from '../../../../__tests__/TestHelper'
 import { IconCell } from '../IconCell'
 
@@ -20,7 +21,7 @@ it('renders without crashing', () => {
                 },
             },
         },
-    } as Store.CreateStoreOptions<any>
+    } as Partial<Store.CreateStoreOptions<rootStateType>>
     const content = { DisplayName: 'My content', Id: 123, Path: '/workspaces' } as Task
     ReactDOM.render(
         withStore(

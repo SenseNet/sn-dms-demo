@@ -1,4 +1,4 @@
-import { IODataParams } from '@sensenet/client-core'
+import { ConstantContent, IODataParams } from '@sensenet/client-core'
 import { GenericContent } from '@sensenet/default-content-types'
 import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
@@ -22,6 +22,7 @@ const mapStateToProps = (state: rootStateType) => {
         errorMessage: Reducers.getError(state.sensenet.currentitems),
         currentContent: Reducers.getCurrentContent(state.sensenet),
         currentId: state.dms.currentId,
+        currentUser: state.sensenet.session.user,
         options: state.sensenet.currentitems.options,
     }
 }
@@ -32,6 +33,7 @@ const mapDispatchToProps = {
     setCurrentId: DMSActions.setCurrentId,
     uploadContent: uploadContentAction,
     uploadDataTransfer: DMSActions.uploadDataTransfer,
+    loadContent: Actions.loadContent,
 }
 
 interface DocumentLibraryProps {
@@ -68,8 +70,14 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
     }
     public static getDerivedStateFromProps(newProps: DocumentLibrary['props'], lastState: DocumentLibrary['state']) {
         if (newProps.loggedinUser.userName !== 'Visitor') {
+            if (newProps.currentContent === null) {
+                newProps.loadContent(newProps.currentContent && newProps.currentContent.Id || newProps.currentFolderId)
+            }
+
             if (newProps.currentContent && newProps.currentContent.Id && newProps.currentContent.Path) {
-                if (newProps.options !== lastState.odataOptions) {
+                if (newProps.options !== lastState.odataOptions
+                    || lastState.id !== newProps.currentContent.Id
+                ) {
                     newProps.options ? newProps.fetchContent(newProps.currentContent.Path, newProps.options) :
                         newProps.fetchContent(newProps.currentContent.Path, lastState.odataOptions)
                 }
@@ -83,10 +91,8 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
     }
 
     public handleFileDrop(item, monitor) {
-
         const { uploadDataTransfer, currentContent } = this.props
         if (monitor) {
-
             const dataTransfer = monitor.getItem().dataTransfer
             uploadDataTransfer({
                 binaryPropertyName: 'Binary',
@@ -96,7 +102,6 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                 overwrite: false,
                 parentPath: currentContent.Path,
             })
-
         }
     }
     public render() {
@@ -111,7 +116,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                 />
             )
         }
-        return <div>
+        return this.props.currentContent && this.props.currentUser.content.Id !== ConstantContent.VISITOR_USER.Id ?
             <ContentList
                 children={this.props.children}
                 currentId={this.props.currentContent ? this.props.currentContent.Id : null}
@@ -120,7 +125,8 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                 onDrop={this.handleFileDrop}
                 headerColumnData={defaultHeaderColumnData}
             />
-        </div>
+            : null
+
     }
 }
 

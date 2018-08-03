@@ -4,9 +4,10 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import {
-    withRouter,
+    RouteComponentProps, withRouter,
 } from 'react-router-dom'
 import * as DMSActions from '../Actions'
+import * as DMSReducers from '../Reducers'
 
 import { Actions, Reducers } from '@sensenet/redux'
 import { icons } from '../assets/icons'
@@ -45,17 +46,38 @@ const styles = {
     },
 }
 
-interface BreadCrumbProps {
-    actions,
-    history,
-    breadcrumb,
-    openActionMenu,
-    closeActionMenu,
-    currentContent,
-    getActions,
+const mapStateToProps = (state, match) => {
+    return {
+        breadcrumb: state.dms.breadcrumb,
+        currentId: match.match.params.id,
+        actions: state.sensenet.currentcontent.actions,
+        currentContent: Reducers.getCurrentContent(state.sensenet),
+    }
 }
 
-class BreadCrumb extends React.Component<BreadCrumbProps, {}> {
+const mapDispatchToProps = {
+    openActionMenu: DMSActions.openActionMenu,
+    closeActionMenu: DMSActions.closeActionMenu,
+    getActions: Actions.loadContentActions,
+}
+
+interface BreadCrumbProps extends RouteComponentProps<any> {
+
+}
+
+interface BreadCrumbState {
+    breadcrumb: DMSReducers.BreadcrumbItemType[]
+    anchorTop: number
+    anchorLeft: number
+}
+
+class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToProps & ReturnType<typeof mapStateToProps>, BreadCrumbState> {
+    public state = {
+        anchorLeft: 0,
+        anchorTop: 0,
+        breadcrumb: [],
+    }
+
     constructor(props) {
         super(props)
         this.handleClick = this.handleClick.bind(this)
@@ -64,20 +86,20 @@ class BreadCrumb extends React.Component<BreadCrumbProps, {}> {
     public handleClick(e, id) {
         this.props.history.push(`/${id}`)
     }
-    public componentDidUpdate(prevOps) {
-        const { breadcrumb, currentContent, getActions } = this.props
-        if (breadcrumb !== prevOps.breadcrumb) {
-            this.setState({
-                data: this.props.breadcrumb,
-            })
-            if (!isNaN(currentContent.Id)) {
-                getActions(currentContent.Id, 'ExploreActions')
+
+    public static getDerivedStateFromProps(nextProps: BreadCrumb['props'], lastState: BreadCrumb['state']) {
+        if (nextProps.breadcrumb !== lastState.breadcrumb) {
+            return {
+                ...lastState,
+                breadcrumb: nextProps.breadcrumb,
             }
         }
+        return lastState
     }
-    public handleActionMenuClick(e, content) {
-        const top = e.pageY - e.target.offsetTop
-        const left = e.pageX - e.target.offsetLeft
+
+    public handleActionMenuClick(e: React.MouseEvent<HTMLElement>, content) {
+        const top = e.pageY - e.currentTarget.offsetTop
+        const left = e.pageX - e.currentTarget.offsetLeft
         this.props.closeActionMenu()
         this.props.openActionMenu(this.props.actions, content.Id, content.DisplayName, e.currentTarget, { top: top + 30, left })
         this.setState({ anchorTop: top, anchorLeft: left })
@@ -126,16 +148,6 @@ class BreadCrumb extends React.Component<BreadCrumbProps, {}> {
                 }}
             </MediaQuery>
         </div>
-    }
-}
-
-const mapStateToProps = (state, match) => {
-
-    return {
-        breadcrumb: state.dms.breadcrumb,
-        currentId: match.match.params.id,
-        actions: state.sensenet.currentcontent.actions,
-        currentContent: Reducers.getCurrentContent(state.sensenet),
     }
 }
 

@@ -70,7 +70,6 @@ const mapDispatchToProps = {
 
 export interface BatchActionlistState {
     options: IActionModel[],
-    currentId: number,
     anchorEl,
     actions,
 }
@@ -87,7 +86,7 @@ class BatchActionlist extends React.Component<ReturnType<typeof mapStateToProps>
         this.handleClick = this.handleClick.bind(this)
     }
     public static getDerivedStateFromProps(newProps: BatchActionlist['props'], lastState: BatchActionlist['state']) {
-        if ((newProps.currentContent.Id && lastState.currentId !== newProps.currentContent.Id && lastState.actions.length === 0)) {
+        if ((newProps.currentContent && newProps.currentContent.Id && lastState.currentId !== newProps.currentContent.Id && lastState.actions.length === 0)) {
             newProps.getActions(newProps.currentContent.Id, 'DMSBatchActions', [{
                 Name: 'Download', DisplayName: 'Download', Icon: 'download', Index: 1,
 
@@ -103,8 +102,8 @@ class BatchActionlist extends React.Component<ReturnType<typeof mapStateToProps>
         }
         return {
             ...lastState,
+            currentId: newProps.currentContent && newProps.currentContent.Id || null,
             options: optionList,
-            currentId: newProps.currentContent.Id,
         }
     }
     public isHidden = () => {
@@ -139,6 +138,9 @@ class BatchActionlist extends React.Component<ReturnType<typeof mapStateToProps>
     }
     public render() {
         const { actions } = this.props
+        if (!this.props.currentContent) {
+            return null
+        }
         return (
             <ul style={this.isHidden() ? { display: 'none', margin: 0 } : { display: 'block', margin: 0 }}>
                 {actions.map((action, index) => {

@@ -7,6 +7,8 @@ import ListItemText from '@material-ui/core/ListItemText'
 import Toolbar from '@material-ui/core/Toolbar'
 import CloseIcon from '@material-ui/icons/Close'
 import LocationCityIcon from '@material-ui/icons/LocationCity'
+import { ConstantContent } from '@sensenet/client-core'
+import { PathHelper } from '@sensenet/client-utils'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '../..'
@@ -84,7 +86,7 @@ interface WorkspaceSelectorToolbarProps {
 const mapStateToProps = (state: rootStateType) => {
     return {
         currentworkspace: state.sensenet.currentworkspace,
-        userName: state.sensenet.session.user.userName,
+        currentUser: state.sensenet.session.user,
     }
 }
 
@@ -93,7 +95,12 @@ class WorkspaceSelectorToolbar extends React.Component<{ classes } & ReturnType<
         this.props.closeDropdDown(true)
     }
     public render() {
-        const { classes, currentworkspace, userName } = this.props
+        const { classes, currentworkspace, currentUser } = this.props
+
+        if (this.props.currentUser.content.Id === ConstantContent.VISITOR_USER.Id || !this.props.currentworkspace) {
+            return null
+        }
+
         return (
             <Toolbar className={classes.toolbar}>
                 <div style={{ flexGrow: 1 }}>
@@ -106,7 +113,7 @@ class WorkspaceSelectorToolbar extends React.Component<{ classes } & ReturnType<
                         </ListItemIcon>
                         <ListItemText
                             classes={{ primary: classes.primary, root: classes.listItemRoot }}
-                            primary={currentworkspace.Path.includes('Profiles' && userName) ? resources.MYPROFILE : currentworkspace.DisplayName} />
+                            primary={currentworkspace.Path.includes(PathHelper.joinPaths('Profiles', currentUser.userName)) ? resources.MYPROFILE : currentworkspace.DisplayName} />
                     </ListItem >
                 </div>
                 <Button

@@ -16,7 +16,7 @@ it('renders without crashing', () => {
         },
       },
     },
-  } as Store.CreateStoreOptions<rootStateType>
+  } as Partial<Store.CreateStoreOptions<rootStateType>>
   ReactDOM.render(
     withStore(<ActionMenu id={0} />, options), div)
 })
