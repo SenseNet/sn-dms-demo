@@ -92,9 +92,10 @@ export const actions: Reducer<IActionModel[]> = (state = [], action) => {
     }
 }
 
-export const id: Reducer<number | null, Action & { id?: number }> = (state = null, action) => {
+export const id: Reducer<number | null> = (state = null, action) => {
     switch (action.type) {
         case 'OPEN_ACTIONMENU':
+            console.log(actions)
             return action.id || null
         default:
             return state
@@ -246,7 +247,7 @@ export const addNewTypes = (state = [], action) => {
 
 export const actionmenuId: Reducer<number | null> = (state = null, action) => {
     switch (action.type) {
-        case 'SET_ACTIONMENU_ID':
+        case 'OPEN_ACTIONMENU':
             return action.id
         default:
             return state
@@ -411,7 +412,7 @@ export const messagebarclose: Reducer<() => void | null> = (state = closeMessage
         case 'SET_MESSAGEBAR':
             return action.close
         default:
-            return state
+            return state || null
     }
 }
 
@@ -420,14 +421,14 @@ export const messagebarexited: Reducer<() => void | null> = (state = null, actio
         case 'SET_MESSAGEBAR':
             return action.exited
         default:
-            return state
+            return state || null
     }
 }
 
 export const hideDuration: Reducer<number> = (state = null, action) => {
     switch (action.type) {
         case 'SET_MESSAGEBAR':
-            return action.hideDuration
+            return action.hideDuration || 3000
         case 'CREATE_CONTENT_SUCCESS':
         case 'DELETE_CONTENT_SUCCESS':
         case 'LOAD_CONTENT_SUCCESS':

@@ -21,13 +21,13 @@ export class MessageBoxHandler {
 
         this.eventHub.onContentDeleteFailed.subscribe((response) => {
             store.dispatch(
-                setMessageBar(MessageMode.error, { message: response.error.message }),
+                setMessageBar(MessageMode.error, [{ message: response.error.message }], null, null),
             )
         })
 
         this.eventHub.onContentDeleted.subscribe(() => {
             store.dispatch(
-                setMessageBar(MessageMode.info, { message: 'Delete was successful' }),
+                setMessageBar(MessageMode.info, [{ message: 'Delete was successful' }], null, null),
             )
         })
     }

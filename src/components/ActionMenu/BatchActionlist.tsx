@@ -5,11 +5,13 @@ import { connect } from 'react-redux'
 
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import { IActionModel } from '@sensenet/default-content-types'
-import { Reducers } from '@sensenet/redux'
+import { Actions, Reducers } from '@sensenet/redux'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { icons } from '../../assets/icons'
+import { resources } from '../../assets/resources'
 import * as DMSReducers from '../../Reducers'
+import DeleteDialog from '../Dialogs/DeleteDialog'
 
 const styles = {
     icon: {
@@ -61,6 +63,10 @@ const mapDispatchToProps = {
     getActions: DMSActions.loadListActions,
     openActionMenu: DMSActions.openActionMenu,
     closeActionMenu: DMSActions.closeActionMenu,
+    clearSelection: Actions.clearSelection,
+    deleteBatch: Actions.deleteBatch,
+    openDialog: DMSActions.openDialog,
+    closeDialog: DMSActions.closeDialog,
 }
 
 export interface BatchActionlistState {
@@ -117,6 +123,20 @@ class BatchActionlist extends React.Component<ReturnType<typeof mapStateToProps>
     public handleClose = () => {
         this.setState({ anchorEl: null })
     }
+    public handleMenuItemClick = (actionName) => {
+        switch (actionName) {
+            case 'DeleteBatch':
+            case 'Delete':
+                this.props.openDialog(
+                    <DeleteDialog selected={this.props.selected} />,
+                    resources.DELETE, this.props.clearSelection)
+                this.handleClose()
+                break
+            default:
+                console.log(`${actionName} is clicked`)
+
+        }
+    }
     public render() {
         const { actions } = this.props
         if (!this.props.currentContent) {
@@ -127,7 +147,8 @@ class BatchActionlist extends React.Component<ReturnType<typeof mapStateToProps>
                 {actions.map((action, index) => {
                     return (index < 3) ?
                         <li key={action.Name} style={styles.icon} aria-label={action.DisplayName} title={action.DisplayName}>
-                            <IconButton aria-label={action.DisplayName} disableRipple={true}>
+                            <IconButton aria-label={action.DisplayName} disableRipple={true}
+                                onClick={() => this.handleMenuItemClick(action.Name)}>
                                 <Icon color="primary" style={styles.icon} >{icons[action.Icon.toLowerCase()]}</Icon>
                             </IconButton>
                         </li>

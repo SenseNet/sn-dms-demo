@@ -15,9 +15,11 @@ import {
 import { Key } from 'ts-keycode-enum'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
+import { resources } from '../../assets/resources'
 import * as DragAndDrop from '../../DragAndDrop'
 import * as DMSReducers from '../../Reducers'
 import ActionMenu from '../ActionMenu/ActionMenu'
+import DeleteDialog from '../Dialogs/DeleteDialog'
 import ListHead, { HeaderColumnData } from './ListHead'
 import SimpleTableRow from './SimpleTableRow'
 
@@ -68,6 +70,7 @@ const mapDispatchToProps = {
     openViewer: DMSActions.openViewer,
     pollDocumentData,
     setDefaultOdataOptions: Actions.setDefaultOdataOptions,
+    openDialog: DMSActions.openDialog,
 }
 
 interface ContentListProps extends RouteComponentProps<any> {
@@ -218,8 +221,9 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
                     case Key.Delete:
                         const permanent = shift ? true : false
                         if (this.props.selected.length > 0) {
-                            this.props.deleteBatch(this.props.selected, permanent)
-                            this.props.clearSelection()
+                            this.props.openDialog(
+                                <DeleteDialog selected={this.props.selected} permanent={permanent} />,
+                                resources.DELETE, this.props.clearSelection)
                         }
                         break
                     case Key.A:

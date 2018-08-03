@@ -12,7 +12,10 @@ import Fade from '@material-ui/core/Fade'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import { rootStateType } from '../..'
+import { downloadFile } from '../../assets/helpers'
 import { icons } from '../../assets/icons'
+import { resources } from '../../assets/resources'
+import DeleteDialog from '../Dialogs/DeleteDialog'
 
 const mapStateToProps = (state: rootStateType) => {
     return {
@@ -24,6 +27,7 @@ const mapStateToProps = (state: rootStateType) => {
         anchorElement: DMSReducers.getAnchorElement(state.dms.actionmenu),
         position: DMSReducers.getMenuPosition(state.dms.actionmenu),
         hostName: state.sensenet.session.repository.repositoryUrl,
+        currentitems: state.sensenet.currentitems,
     }
 }
 
@@ -35,6 +39,8 @@ const mapDispatchToProps = {
     pollDocumentData,
     openViewer: DMSActions.openViewer,
     logout: Actions.userLogout,
+    openDialog: DMSActions.openDialog,
+    closeDialog: DMSActions.closeDialog,
 }
 
 const styles = {
@@ -128,9 +134,12 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     this.props.clearSelection()
                     break
                 case 'DeleteBatch':
+                case 'Delete':
                     this.handleClose()
                     this.props.clearSelection()
-                    this.props.deleteBatch(this.props.selected, false)
+                    this.props.openDialog(
+                        <DeleteDialog selected={[this.props.contentId]} />,
+                        resources.DELETE, this.props.closeDialog)
                     break
                 case 'Preview':
                     this.handleClose()
@@ -139,8 +148,13 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                 case 'Logout':
                     this.handleClose()
                     this.props.logout()
+                case 'Browse':
+                    this.handleClose()
+                    const currentId = this.props.contentId
+                    const path = this.props.currentitems.entities.find((item) => item.Id === currentId).Path
+                    downloadFile(path, this.props.hostName)
                 default:
-                    console.log(`${action} is clicked`)
+                    console.log(`${action.Name} is clicked`)
                     this.handleClose()
                     break
             }
