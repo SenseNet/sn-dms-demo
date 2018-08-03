@@ -21,6 +21,7 @@ import ActionMenu from '../ActionMenu/ActionMenu'
 import ListHead, { HeaderColumnData } from './ListHead'
 import SimpleTableRow from './SimpleTableRow'
 
+import { GenericContent } from '@sensenet/default-content-types'
 import { compile } from 'path-to-regexp'
 
 const styles = {
@@ -39,7 +40,7 @@ const styles = {
 
 const mapStateToProps = (state: rootStateType) => {
     return {
-        ids: Reducers.getIds(state.sensenet.currentitems),
+        ids: state.sensenet.currentitems.ids,
         rootId: state.dms.rootId,
         selected: Reducers.getSelectedContentIds(state.sensenet),
         selectedContentItems: Reducers.getSelectedContentItems(state.sensenet),
@@ -72,14 +73,13 @@ const mapDispatchToProps = {
 interface ContentListProps extends RouteComponentProps<any> {
     connectDropTarget,
     hostName: string
+    onDoubleClick: () => any
     headerColumnData: HeaderColumnData[]
 }
 
 interface ContentListState {
-    ids,
     order,
     orderBy,
-    data,
     selected,
     active,
     copy,
@@ -92,13 +92,20 @@ interface ContentListState {
 }))
 class ContentList extends React.Component<ContentListProps & RouteComponentProps<any> & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, ContentListState> {
 
+    public state: ContentListState = {
+        active: null,
+        copy: false,
+        order: this.props.currentODataOptions.orderby[0][1],
+        orderBy: this.props.currentODataOptions.orderby[0][0],
+        selected: [],
+    }
+
     public static getDerivedStateFromProps: React.GetDerivedStateFromProps<ContentList['props'], ContentListState> = (nextProps, lastState) => {
         return {
             ...lastState,
             orderBy: nextProps.currentODataOptions.orderby[0][0],
             order: nextProps.currentODataOptions.orderby[0][1],
             ids: nextProps.ids,
-            data: nextProps.children,
             selected: (lastState && lastState.selected) || [],
             active: (lastState && lastState.active) || null,
             copy: (lastState && lastState.copy) || false,
@@ -115,12 +122,6 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
     }
 
     public componentDidUpdate(prevOps) {
-        if (this.props.edited !== prevOps.edited) {
-            this.setState({
-                data: this.props.children,
-            })
-        }
-
         if (this.props.selected.length > 0 && !prevOps.selectionModeIsOn) {
             this.props.selectionModeOn()
         } else if (this.props.selected.length === 0 && prevOps.selectionModeIsOn) {
@@ -155,17 +156,16 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
                 this.handleSimpleSelection(content)
         }
     }
-    public handleRowDoubleClick(e, id, type) {
-        if (type === 'Folder') {
-            const newPath = compile(this.props.match.path)({ scope: 'documents', contentId: id })
+    public handleRowDoubleClick(e: React.MouseEvent, content: GenericContent) {
+        if (content.IsFolder) {
+            const newPath = compile(this.props.match.path)({ scope: 'documents', folderId: content.Id })
             this.props.history.push(newPath)
-            this.props.loadContent(id)
-            this.props.deselect(this.props.currentItems.find((c) => c.Id === id))
+            this.props.loadContent(content.Id)
+            this.props.deselect(this.props.currentItems.find((c) => c.Id === content.Id))
         } else {
             // console.log('open preview')
-            this.props.openViewer(id)
-            this.props.pollDocumentData(this.props.hostName, id)
-
+            this.props.openViewer(content.Id)
+            this.props.pollDocumentData(this.props.hostName, content.Id)
         }
     }
     public handleKeyDown(e) {
@@ -184,7 +184,7 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
         } else {
             const id = Number(e.target.closest('tr').id)
             if (id !== 0) {
-                const type = currentItems.find((c) => c.Id === id).Type
+                const content = currentItems.find((c) => c.Id === id)
                 this.setState({
                     active: id,
                 })
@@ -195,7 +195,7 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
                         break
                     case Key.Enter:
                         e.preventDefault()
-                        this.handleRowDoubleClick(e, id, type)
+                        this.handleRowDoubleClick(e, content)
                         break
                     case Key.UpArrow:
                         if (shift) {
@@ -302,7 +302,7 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
         const { connectDropTarget } = this.props
         return connectDropTarget(
             <div>
-                {this.props.isFetching || this.props.isLoading || this.props.currentItems.entities === null ?
+                {this.props.isFetching || this.props.isLoading || this.props.currentItems === null ?
                     <LinearProgress color="secondary" style={{ position: 'absolute', width: '100%' }} />
                     : null}
                 <Table
@@ -325,7 +325,7 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
                                 <SimpleTableRow
                                     content={content}
                                     key={content.Id}
-                                    handleRowDoubleClick={this.handleRowDoubleClick}
+                                    handleRowDoubleClick={(ev) => this.handleRowDoubleClick(ev, content)}
                                     handleRowSingleClick={this.handleRowSingleClick}
                                     handleTap={(e) => this.handleTap(e, content.Id, content.Type)}
                                     isCopy={this.state.copy} />

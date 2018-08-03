@@ -14,7 +14,6 @@ import { DmsViewer } from '../components/DmsViewer'
 import DocumentLibrary from '../components/DocumentLibrary'
 import Header from '../components/Header'
 import MessageBar from '../components/MessageBar'
-import * as DMSReducers from '../Reducers'
 
 const styles = {
     dashBoardInner: {
@@ -50,9 +49,6 @@ const mapStateToProps = (state: rootStateType) => {
     return {
         loggedinUserName: state.sensenet.session.user.userName,
         loginState: state.sensenet.session.loginState,
-        currentContent: Reducers.getCurrentContent(state.sensenet),
-        currentId: DMSReducers.getCurrentId(state.dms),
-        selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
         isViewerOpened: state.dms.viewer.isOpened,
         isDialogOpen: state.dms.dialog.isOpened,
         dialogOnClose: state.dms.dialog.onClose,
@@ -62,8 +58,6 @@ const mapStateToProps = (state: rootStateType) => {
 }
 
 const mapDispatchToProps = {
-    loadContent: Actions.loadContent,
-    setCurrentId: DMSActions.setCurrentId,
     loadUserActions: DMSActions.loadUserActions,
 }
 
@@ -72,7 +66,6 @@ interface DashboardProps extends RouteComponentProps<any> {
 }
 
 export interface DashboardState {
-    currentFolderId?: number
     currentSelection: number[]
     currentScope: string
     currentViewName: string
@@ -94,28 +87,15 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
     }
 
     public static getDerivedStateFromProps(newProps: Dashboard['props'], lastState: Dashboard['state']) {
-        let currentFolderId = newProps.match.params.folderId && parseInt(newProps.match.params.folderId.toString(), 10) || undefined
         const currentSelection = newProps.match.params.selection && decodeURIComponent(newProps.match.params.selection) || []
         const currentViewName = newProps.match.params.action
 
-        if (lastState.currentFolderId !== currentFolderId && currentFolderId) {
-            newProps.setCurrentId(currentFolderId)
-            newProps.loadContent(currentFolderId)
-        }
-
         if (newProps.loggedinUserName !== lastState.currentUserName) {
             newProps.loadUserActions(`/Root/IMS/Public/${newProps.loggedinUserName}`, 'DMSUserActions')
-
-            if (lastState.currentFolderId === currentFolderId && currentFolderId === undefined) {
-                newProps.loadContent(`/Root/Profiles/Public/${newProps.loggedinUserName}/Document_Library`)
-                currentFolderId = 0
-
-            }
         }
 
         return {
             ...lastState,
-            currentFolderId,
             currentSelection,
             currentViewName,
             currentScope: newProps.match.params.scope || 'documents',
@@ -132,43 +112,55 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                         return <div>
                             <div style={{ ...styles.root, ...filter }}>
                                 <Header />
-                                {this.props.currentContent ?
-                                    <div style={{ width: '100%', display: 'flex' }}>
-                                        <DashboardDrawer />
-                                        <div style={styles.main}>
-                                            <div style={{ height: 48, width: '100%' }}></div>
-                                            <Switch>
-                                                <Route path="/documents/:viewName?/:contentId?" >
-                                                    <div>
-                                                        <ListToolbar />
-                                                        <DocumentLibrary currentFolderId={this.state.currentFolderId} />
-                                                    </div>
-                                                </Route>
-                                                <Route path="/users" >
-                                                    <div>Placeholder for users</div>
-                                                </Route>
-                                                <Route path="/groups" >
-                                                    <div>Placeholder for groups</div>
-                                                </Route>
-                                                <Route path="/contenttypes" >
-                                                    <div>Placeholder for content types</div>
-                                                </Route>
-                                                <Route path="/contenttemplates" >
-                                                    <div>Placeholder for content templates</div>
-                                                </Route>
-                                                <Route path="/settings" >
-                                                    <div>Placeholder for content settings</div>
-                                                </Route>
+                                <div style={{ width: '100%', display: 'flex' }}>
+                                    <DashboardDrawer />
+                                    <div style={styles.main}>
+                                        <div style={{ height: 48, width: '100%' }}></div>
+                                        <Switch>
+                                            <Route path="/documents" component={(props: RouteComponentProps<any>) => (
+                                                <Switch>
+                                                    <Route path={props.match.url + '/shared'}>
+                                                        <div>Shared</div>
+                                                    </Route>
 
-                                                <Redirect to="/documents" />
-                                            </Switch>
-                                            <MessageBar />
-                                        </div>
-                                    </div> :
-                                    <div style={styles.progress as any} >
-                                        <LinearProgress />
+                                                    <Route path={props.match.url + '/savedqueries'}>
+                                                        <div>SavedQueries</div>
+                                                    </Route>
+                                                    <Route path={props.match.url + '/trash'}>
+                                                        <div>Trash</div>
+                                                    </Route>
+                                                    <Route path={props.match.url + '/:folderId?'} component={(idProps) => (
+                                                        <div>
+                                                            <ListToolbar />
+                                                            <DocumentLibrary currentFolderId={idProps.match.params.folderId || `/Root/Profiles/Public/${this.props.loggedinUserName}/Document_Library`
+                                                            } />
+                                                        </div>
+                                                    )}>
+                                                    </Route>
+                                                </Switch>
+                                            )} >
+                                            </Route>
+                                            <Route path="/users" >
+                                                <div>Placeholder for users</div>
+                                            </Route>
+                                            <Route path="/groups" >
+                                                <div>Placeholder for groups</div>
+                                            </Route>
+                                            <Route path="/contenttypes" >
+                                                <div>Placeholder for content types</div>
+                                            </Route>
+                                            <Route path="/contenttemplates" >
+                                                <div>Placeholder for content templates</div>
+                                            </Route>
+                                            <Route path="/settings" >
+                                                <div>Placeholder for content settings</div>
+                                            </Route>
+
+                                            <Redirect to="/documents" />
+                                        </Switch>
+                                        <MessageBar />
                                     </div>
-                                }
+                                </div>
                             </div>
                             <DmsViewer />
                             <Dialog open={isDialogOpen} onClose={dialogOnClose}>

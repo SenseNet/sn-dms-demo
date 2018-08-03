@@ -1,5 +1,4 @@
-import { LoginState } from '@sensenet/client-core'
-import { Actions } from '@sensenet/redux'
+import { ConstantContent, LoginState } from '@sensenet/client-core'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { HashRouter, Redirect, Route, Switch } from 'react-router-dom'
@@ -19,19 +18,14 @@ import { AuthorizedRoute } from './components/AuthorizedRoute'
 const mapStateToProps = (state: rootStateType) => {
   return {
     loginState: state.sensenet.session.loginState,
-    loginError: state.sensenet.session.error,
-    registrationError: '',
+    currentUserId: state.sensenet.session.user.content.Id,
   }
 }
 
-const userLogin = Actions.userLogin
-const userRegistration = DMSActions.userRegistration
 const verifyCaptcha = DMSActions.verifyCaptchaSuccess
 const clearReg = DMSActions.clearRegistration
 
 const mapDispatchToProps = {
-  login: userLogin,
-  registration: userRegistration,
   recaptchaCallback: verifyCaptcha,
   clearRegistration: clearReg,
 }
@@ -48,6 +42,10 @@ class Sensenet extends React.Component<SensenetProps & ReturnType<typeof mapStat
     super(props)
   }
   public render() {
+    if (this.props.loginState === LoginState.Pending
+      || (this.props.loginState === LoginState.Authenticated && this.props.currentUserId === ConstantContent.VISITOR_USER.Id)) {
+      return null
+    }
     return (
       <MuiThemeProvider theme={theme}>
         <div className="root">

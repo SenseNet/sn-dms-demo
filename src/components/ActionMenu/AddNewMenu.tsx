@@ -52,7 +52,7 @@ class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof map
         this.handleButtonClick = this.handleButtonClick.bind(this)
     }
     public static getDerivedStateFromProps(newProps: AddNewMenu['props'], lastState: AddNewMenu['state']) {
-        if ((newProps.currentContent.Id && (lastState.currentContent !== newProps.currentContent)) && lastState.options.length === 0) {
+        if ((newProps.currentContent && newProps.currentContent.Id && (lastState.currentContent !== newProps.currentContent)) && lastState.options.length === 0) {
             newProps.getActions(newProps.currentContent.Id)
         }
         const optionList = []
