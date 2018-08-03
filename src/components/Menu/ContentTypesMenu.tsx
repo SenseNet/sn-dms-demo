@@ -2,7 +2,6 @@ import { Divider, Icon, ListItemText, MenuItem, MenuList, StyleRulesCallback, wi
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { resources } from '../../assets/resources'
-import * as DMSReducers from '../../Reducers'
 import { AddNewButton } from './AddNewButton'
 
 const subMenu = [
@@ -154,7 +153,7 @@ class ContentTypesMenu extends React.Component<ContentTypesMenuProps, {}> {
 
 const mapStateToProps = (state) => {
     return {
-        subactive: DMSReducers.getActiveSubmenuItem(state.dms.menu),
+        subactive: state.dms.menu.activeSubmenu,
     }
 }
 

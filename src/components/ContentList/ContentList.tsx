@@ -17,7 +17,6 @@ import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { resources } from '../../assets/resources'
 import * as DragAndDrop from '../../DragAndDrop'
-import * as DMSReducers from '../../Reducers'
 import ActionMenu from '../ActionMenu/ActionMenu'
 import DeleteDialog from '../Dialogs/DeleteDialog'
 import ListHead, { HeaderColumnData } from './ListHead'
@@ -47,10 +46,10 @@ const mapStateToProps = (state: rootStateType) => {
         selected: Reducers.getSelectedContentIds(state.sensenet),
         selectedContentItems: Reducers.getSelectedContentItems(state.sensenet),
         isFetching: Reducers.getFetching(state.sensenet.currentitems),
-        isLoading: DMSReducers.getLoading(state.dms),
-        edited: DMSReducers.getEditedItemId(state.dms),
-        selectionModeIsOn: DMSReducers.getIsSelectionModeOn(state.dms),
-        menuId: DMSReducers.getMenuAnchorId(state.dms),
+        isLoading: state.dms.isLoading,
+        edited: state.dms.editedItemId,
+        selectionModeIsOn: state.dms.isSelectionModeOn,
+        menuId: state.dms.actionmenu.id,
         currentItems: state.sensenet.currentitems.entities,
         currentODataOptions: state.sensenet.currentitems.options,
     }

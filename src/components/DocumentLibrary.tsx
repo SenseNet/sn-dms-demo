@@ -7,7 +7,6 @@ import HTML5Backend, { NativeTypes } from 'react-dnd-html5-backend-filedrop'
 import { connect } from 'react-redux'
 import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
-import * as DMSReducers from '../Reducers'
 import ContentList from './ContentList/ContentList'
 import { defaultHeaderColumnData } from './ContentList/ListHead'
 import { FetchError } from './FetchError'
@@ -18,11 +17,11 @@ const setOdataOptionsAction = Actions.setDefaultOdataOptions
 
 const mapStateToProps = (state: rootStateType) => {
     return {
-        loggedinUser: DMSReducers.getAuthenticatedUser(state.sensenet),
-        children: DMSReducers.getChildrenItems(state.sensenet),
+        loggedinUser: state.sensenet.session.user,
+        children: state.sensenet.currentitems.entities,
         errorMessage: Reducers.getError(state.sensenet.currentitems),
         currentContent: Reducers.getCurrentContent(state.sensenet),
-        currentId: DMSReducers.getCurrentId(state.dms),
+        currentId: state.dms.currentId,
         currentUser: state.sensenet.session.user,
         options: state.sensenet.currentitems.options,
     }
@@ -53,7 +52,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
     constructor(props) {
         super(props)
         const defaultOptions = {
-            select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner'],
+            select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner', 'VersioningMode'],
             expand: ['Actions', 'Owner'],
             orderby: [['IsFolder', 'desc'], ['DisplayName', 'asc']],
             filter: 'ContentType ne \'SystemFolder\'',

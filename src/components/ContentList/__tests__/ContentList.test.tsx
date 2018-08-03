@@ -10,10 +10,11 @@ import {
     MemoryRouter,
 } from 'react-router-dom'
 import { combineReducers } from 'redux'
-import { rootStateType } from '../../..'
 import * as DMSReducers from '../../../Reducers'
-import { dms } from '../../../Reducers'
 import ContentList from '../ContentList'
+
+import { rootStateType } from '../../..'
+import { dms } from '../../../Reducers'
 
 configure({ adapter: new Adapter() })
 

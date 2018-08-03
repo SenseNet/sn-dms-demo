@@ -1,5 +1,5 @@
 
-export const getContentTypeFromUrl = (urlString) => {
+export const getContentTypeFromUrl = (urlString: string) => {
     const urlTemp = urlString.split('ContentTypeName=')[1]
     const type = urlTemp.indexOf('&') > -1 ? urlTemp.split('&')[0] : urlTemp
     return type.indexOf('ContentTemplates') > -1 ? type.split('/')[3] : type
@@ -24,9 +24,26 @@ export const fakeClick = (obj) => {
     obj.dispatchEvent(ev)
 }
 
-export const downloadFile = (name, repositoryUrl) => {
+export const downloadFile = (name: string, repositoryUrl: string) => {
     const saveLink = document.createElement('a')
     // tslint:disable-next-line:no-string-literal
     saveLink['href'] = `${repositoryUrl}${name}?download`
     fakeClick(saveLink)
+}
+
+export const versionName = (versionChar: string) => {
+    switch (versionChar) {
+        case 'A':
+            return 'APPROVED'
+        case 'L':
+            return 'LOCKED'
+        case 'D':
+            return 'DRAFT'
+        case 'P':
+            return 'PENDING'
+        case 'R':
+            return 'REJECTED'
+        default:
+            return 'APPROVED'
+    }
 }

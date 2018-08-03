@@ -10,7 +10,6 @@ import MediaQuery from 'react-responsive'
 import * as DMSActions from '../../../Actions'
 import { icons } from '../../../assets/icons'
 import * as DragAndDrop from '../../../DragAndDrop'
-import * as DMSReducers from '../../../Reducers'
 
 const styles = {
     displayName: {
@@ -219,10 +218,10 @@ const setEdited = DMSActions.setEditedContentId
 const mapStateToProps = (state, match) => {
     return {
         currentContent: Reducers.getContent(state.sensenet.currentitems.entities, match.content.Id),
-        edited: DMSReducers.getEditedItemId(state.dms),
+        edited: state.dms.editedItemId,
         selected: Reducers.getSelectedContentIds(state.sensenet),
         selectedContentItems: Reducers.getSelectedContentItems(state.sensenet),
-        editedFirst: DMSReducers.isEditedFirst(state.dms),
+        editedFirst: state.dms.editedFirst,
     }
 }
 

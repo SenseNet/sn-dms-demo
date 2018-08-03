@@ -1,8 +1,7 @@
-import { IActionModel, Workspace } from '@sensenet/default-content-types'
-import { createContent, deleteBatch, deleteContent, loadContent, loadContentActions, moveBatch, PromiseReturns } from '@sensenet/redux/dist/Actions'
+import { GenericContent, IActionModel, Workspace } from '@sensenet/default-content-types'
+import { createContent, deleteBatch, deleteContent, loadContent, loadContentActions, PromiseReturns, restoreVersion } from '@sensenet/redux/dist/Actions'
 import { Action, AnyAction, combineReducers, Reducer } from 'redux'
-import { rootStateType } from '.'
-import { closeMessageBar, ExtendedUploadProgressInfo, getWorkspaces, loadFavoriteWorkspaces, loadListActions, loadTypesToAddNewList, loadUserActions } from './Actions'
+import { closeMessageBar, ExtendedUploadProgressInfo, getWorkspaces, loadFavoriteWorkspaces, loadListActions, loadTypesToAddNewList, loadUserActions, loadVersions } from './Actions'
 import { resources } from './assets/resources'
 
 enum MessageMode { error, warning, info }
@@ -329,6 +328,10 @@ export const messagebarcontent: Reducer<any[]> = (state = [], action) => {
             return [
                 ...result.d.errors.map((r) => `Cannot delete ${r.content.Name}, because '${r.error.message}'`),
                 ...result.d.results.map((r) => `${r.Name} is successfully deleted`)]
+        case 'RESTOREVERSION_CONTENT_SUCCESS':
+            const res = action.result as PromiseReturns<typeof restoreVersion>
+            // tslint:disable-next-line:no-string-literal
+            return [`Version ${action.version} of ${res.d['DisplayName']} is succesfully restored!`]
         case 'CREATE_CONTENT_FAILURE':
         case 'DELETE_CONTENT_FAILURE':
         case 'LOAD_CONTENT_FAILURE':
@@ -350,7 +353,7 @@ export const messagebarcontent: Reducer<any[]> = (state = [], action) => {
         case 'RESTOREVERSION_CONTENT_FAILURE':
         case 'MOVE_CONTENT_FAILURE':
         case 'MOVE_BATCH_FAILURE':
-            return `${(action.result as PromiseReturns<typeof moveBatch>).d.errors[0].error}`
+            return [action.error.message]
         default:
             return state
     }
@@ -678,6 +681,16 @@ export const workspaces = combineReducers({
     searchTerm,
 })
 
+export const versions: Reducer<GenericContent[]> = (state: [], action: AnyAction) => {
+    switch (action.type) {
+        case 'LOAD_VERSIONS_SUCCESS':
+            const versionItems = (action.result as PromiseReturns<typeof loadVersions>).d.results as any[]
+            return versionItems
+        default:
+            return state || []
+    }
+}
+
 export const dms = combineReducers({
     messagebar,
     actionmenu,
@@ -695,109 +708,5 @@ export const dms = combineReducers({
     viewer,
     dialog,
     workspaces,
+    versions,
 })
-
-export const getRegistrationError = (state: { registrationError: ReturnType<typeof register>['registrationError'] }) => {
-    return state.registrationError
-}
-export const registrationInProgress = (state: { isRegistering: ReturnType<typeof register>['isRegistering'] }) => {
-    return state.isRegistering
-}
-
-export const registrationIsDone = (state: { registrationDone: ReturnType<typeof register>['registrationDone'] }) => {
-    return state.registrationDone
-}
-
-export const getRegisteredEmail = (state: { email: ReturnType<typeof register>['email'] }) => {
-    return state.email
-}
-
-export const captchaIsVerified = (state: { captcha: ReturnType<typeof register>['captcha'] }) => {
-    return state.captcha
-}
-export const getAuthenticatedUser = (state: { session: { user: rootStateType['sensenet']['session']['user'] } }) => {
-    return state.session.user
-}
-
-export const getChildrenItems = (state: { currentitems: { entities: rootStateType['sensenet']['currentitems']['entities'] } }) => {
-    return state.currentitems.entities
-}
-
-export const getCurrentContentPath = (state: { Path: string }) => {
-    return state.Path
-}
-
-export const actionmenuIsOpen = (state: { open: ReturnType<typeof actionmenu>['open'] }) => {
-    return state.open
-}
-
-export const getAnchorElement = (state: { anchorElement: ReturnType<typeof actionmenu>['anchorElement'] }) => {
-    return state.anchorElement
-}
-
-export const getMenuPosition = (state: { position: ReturnType<typeof actionmenu>['position'] }) => {
-    return state.position
-}
-
-export const getParentId = (state: { currentcontent }) => {
-    return state.currentcontent.content.ParentId
-}
-export const getRootId = (state: { rootId: rootStateType['dms']['rootId'] }) => {
-    return state.rootId
-}
-export const getBreadCrumbArray = (state: { breadcrumb: rootStateType['dms']['breadcrumb'] }) => {
-    return state.breadcrumb
-}
-export const getCurrentId = (state: { currentId: rootStateType['dms']['currentId'] }) => {
-    return state.currentId
-}
-export const getActionsOfAContent = (state: { actions: string[] }) => {
-    return state.actions
-}
-export const getActions = (state: { actions: IActionModel[] }) => {
-    return state.actions
-}
-export const getEditedItemId = (state: { editedItemId: ReturnType<typeof dms>['editedItemId'] }) => {
-    return state.editedItemId
-}
-export const getItemOnActionMenuIsOpen = (state: { id: ReturnType<typeof actionmenu>['id'] }) => {
-    return state.id
-}
-export const getLoading = (state: { isLoading: ReturnType<typeof dms>['isLoading'] }) => {
-    return state.isLoading
-}
-export const getItemTitleOnActionMenuIsOpen = (state: { title: ReturnType<typeof actionmenu>['title'] }) => {
-    return state.title
-}
-export const getIsSelectionModeOn = (state: { isSelectionModeOn: ReturnType<typeof dms>['isSelectionModeOn'] }) => {
-    return state.isSelectionModeOn
-}
-export const getAddNewActions = (state: { addnew: any }) => {
-    return state.addnew
-}
-export const isEditedFirst = (state: ReturnType<typeof dms>) => {
-    return state.editedFirst
-}
-export const getMessageBarProps = (state: ReturnType<typeof dms>) => {
-    return state.messagebar
-}
-export const getToolbarActions = (state: ReturnType<typeof actionmenu>) => {
-    return state && state.actions ? state.actions : []
-}
-export const getUserActions = (state: ReturnType<typeof actionmenu>) => {
-    return state.userActions
-}
-
-export const getActiveMenuItem = (state: ReturnType<typeof menu>) => {
-    return state.active
-}
-
-export const getActiveSubmenuItem = (state: ReturnType<typeof menu>) => {
-    return state.activeSubmenu
-}
-export const getAddNewTypeList = (state) => {
-    return state.addNewTypes
-}
-export const getMenuAnchorId = (state) => {
-    return state.actionmenu.id
-}

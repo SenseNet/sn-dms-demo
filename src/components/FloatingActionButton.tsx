@@ -8,7 +8,6 @@ import {
     withRouter,
 } from 'react-router-dom'
 import * as DMSActions from '../Actions'
-import * as DMSReducers from '../Reducers'
 
 const styles = {
     actionButton: {
@@ -56,7 +55,7 @@ class FloatingActionButton extends React.Component<FloatingActionButton, { color
 
 const mapStateToProps = (state, match) => {
     return {
-        actions: DMSReducers.getActions(state.dms.actionmenu),
+        actions: state.dms.actionmenu.actions,
     }
 }
 export default withRouter(connect(mapStateToProps, {

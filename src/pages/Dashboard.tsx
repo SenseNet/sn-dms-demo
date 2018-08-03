@@ -163,7 +163,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                 </div>
                             </div>
                             <DmsViewer />
-                            <Dialog open={isDialogOpen} onClose={closeDialog}>
+                            <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth="md">
                                 <DialogContent children={dialogContent} />
                                 <IconButton onClick={closeDialog} style={styles.dialogClose as any}>
                                     <CloseIcon />
