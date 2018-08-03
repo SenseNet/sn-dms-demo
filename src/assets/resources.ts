@@ -69,4 +69,8 @@ export const resources = {
     VERSION_DRAFT: 'Draft',
     VERSION_PENDING: 'Pending',
     VERSION_REJECTED: 'Rejected',
+    RESTORE_VERSION: 'Restore version',
+    ARE_YOU_SURE_YOU_WANT_TO_RESTORE: 'Are you sure you want to restore version ',
+    OF: 'of',
+    RESTORE: 'Restore',
 }

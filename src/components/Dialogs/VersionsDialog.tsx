@@ -11,6 +11,7 @@ import * as DMSActions from '../../Actions'
 import { versionName } from '../../assets/helpers'
 import { icons } from '../../assets/icons'
 import { resources } from '../../assets/resources'
+import RestoreVersionsDialog from './RestoreVersionDialog'
 
 const styles = {
     buttonContainer: {
@@ -104,6 +105,7 @@ const mapStateToProps = (state: rootStateType, props: VersionsDialogProps) => {
 const mapDispatchToProps = {
     closeDialog: DMSActions.closeDialog,
     getVersionList: DMSActions.loadVersions,
+    openDialog: DMSActions.openDialog,
 }
 
 interface VersionsDialogState {
@@ -117,6 +119,7 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
     constructor(props: VersionsDialog['props']) {
         super(props)
         this.props.getVersionList(this.props.id)
+        this.handleRestoreButtonClick = this.handleRestoreButtonClick.bind(this)
     }
     public static getDerivedStateFromProps(newProps: VersionsDialog['props'], lastState: VersionsDialogState) {
         if (newProps.versions && newProps.versions.length !== lastState.versions.length) {
@@ -136,9 +139,13 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
         this.props.closeDialog()
         this.props.closeCallback()
     }
-    public formatVersionNumber = (version) => {
+    public formatVersionNumber = (version: string) => {
         const v = resources[`VERSION_${versionName(version.slice(-2))}`]
         return `${version.substring(0, version.length - 2)} ${v}`
+    }
+    public handleRestoreButtonClick = (id: number, version: string, name: string) => {
+        this.props.closeDialog()
+        this.props.openDialog(<RestoreVersionsDialog id={id} version={version} fileName={name} />)
     }
     public render() {
         const { classes, currentitems, id, versions } = this.props
@@ -208,7 +215,9 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                                         </Tooltip>
                                     </TableCell>
                                     <TableCell padding="none" style={{ width: '5%' }}>
-                                        {index > 0 ? <IconButton><RestoreIcon color="error" /></IconButton> : null}
+                                        {index !== versions.length - 1 ? <IconButton
+                                            title={resources.RESTORE_VERSION}
+                                            onClick={() => this.handleRestoreButtonClick(id, version.Version, version.Name)}><RestoreIcon color="error" /></IconButton> : null}
                                     </TableCell>
                                 </TableRow>,
                             )}
