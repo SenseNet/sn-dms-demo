@@ -35,17 +35,10 @@ it('renders without crashing', () => {
         },
         selected: {
           ids: [123],
-          entities: {
-            123: { Id: 123 },
-          },
         },
         currentitems: {
           ids: [123],
-          entities: {
-            123: {
-              Id: 123,
-            },
-          },
+          entities: [{ Id: 123 }],
         },
       },
       dms: {
@@ -54,7 +47,7 @@ it('renders without crashing', () => {
         },
       },
     },
-  } as Store.CreateStoreOptions<rootStateType>
+  } as Partial<Store.CreateStoreOptions<rootStateType>>
 
   ReactDOM.render(withStore(
     <MemoryRouter>

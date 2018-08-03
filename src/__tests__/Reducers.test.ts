@@ -1,4 +1,4 @@
-import { GenericContent } from '@sensenet/default-content-types'
+import { GenericContent, User } from '@sensenet/default-content-types'
 import { resources } from '../assets/resources'
 import * as DMSReducers from '../Reducers'
 
@@ -200,7 +200,7 @@ describe('breadcrumb reducer', () => {
     })
     it('should return [aaa, bbb]', () => {
         expect(DMSReducers.breadcrumb(
-            [{ name: 'aaa', id: 1, path: '/aaa' }, { name: 'bbb', id: 2, path: '/bbb' }], { type: 'LOAD_CONTENT_SUCCESS', payload: { d: { DisplayName: 'aaa', Id: 1, Path: '/aaa' } as GenericContent } })).toEqual([{id: 1, name: 'aaa', path: '/aaa'}, {id: 2, name: 'bbb', path: '/bbb'}])
+            [{ name: 'aaa', id: 1, path: '/aaa' }, { name: 'bbb', id: 2, path: '/bbb' }], { type: 'LOAD_CONTENT_SUCCESS', payload: { d: { DisplayName: 'aaa', Id: 1, Path: '/aaa' } as GenericContent } })).toEqual([{ id: 1, name: 'aaa', path: '/aaa' }, { id: 2, name: 'bbb', path: '/bbb' }])
     })
 })
 
@@ -266,6 +266,7 @@ describe('getAuthenticatedUser', () => {
                 userName: 'alba',
                 userLanguage: 'en-US',
                 userAvatarPath: '/Root/Sites/Default_Site/demoavatars/alba.jpg',
+                content: {} as User,
             },
         },
     }
@@ -275,6 +276,7 @@ describe('getAuthenticatedUser', () => {
             userName: 'alba',
             userLanguage: 'en-US',
             userAvatarPath: '/Root/Sites/Default_Site/demoavatars/alba.jpg',
+            content: {},
         })
     })
 })
@@ -282,18 +284,18 @@ describe('getAuthenticatedUser', () => {
 describe('getChildrenItems', () => {
     const state = {
         currentitems: {
-            entities: {
-                2103: {
+            entities: [
+                {
                     name: 'aaa',
                     id: 2,
                 },
-                2222: {
+                {
                     name: 'bbb',
                     id: 1,
                 },
-            },
+            ],
         },
-    }
+    } as any
     it('should return the children items', () => {
         expect(DMSReducers.getChildrenItems(state)).toEqual({
             2103: {

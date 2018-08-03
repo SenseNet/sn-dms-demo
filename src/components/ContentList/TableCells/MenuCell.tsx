@@ -89,7 +89,7 @@ const mapStateToProps = (state: rootStateType, match) => {
     return {
         selected: Reducers.getSelectedContentIds(state.sensenet),
         opened: Reducers.getOpenedContent(state.sensenet.currentitems),
-        actions: DMSReducers.getActionsOfAContent(state.sensenet.currentitems.entities.find((c) => c.Id === match.content.Id)),
+        actions: state.sensenet.currentitems.entities.find((c) => c.Id === match.content.Id).Actions,
         selectionModeOn: DMSReducers.getIsSelectionModeOn(state.dms),
     }
 }

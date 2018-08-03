@@ -5,6 +5,7 @@ import * as ReactDOM from 'react-dom'
 import {
   MemoryRouter,
 } from 'react-router-dom'
+import { DeepPartial } from 'redux'
 import { rootStateType } from '../..'
 import { withStore } from '../../__tests__/TestHelper'
 import Login from '../Login'
@@ -35,21 +36,16 @@ it('renders without crashing', () => {
         },
         selected: {
           ids: [123],
-          entities: {
-            123: { Id: 123 },
-          },
         },
         currentitems: {
           ids: [123],
-          entities: {
-            123: {
-              Id: 123,
-            },
-          },
+          entities: [
+            { Id: 123 },
+          ],
         },
       },
     },
-  } as Store.CreateStoreOptions<rootStateType>
+  } as Partial<Store.CreateStoreOptions<rootStateType>>
 
   ReactDOM.render(
     withStore(

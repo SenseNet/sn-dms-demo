@@ -1,4 +1,5 @@
 import { WithStyles, withStyles } from '@material-ui/core'
+import { createGenerateClassName } from '@material-ui/core'
 import Badge from '@material-ui/core/Badge'
 import Button from '@material-ui/core/Button'
 import UsersIcon from '@material-ui/icons/SupervisorAccount'
@@ -6,7 +7,7 @@ import * as React from 'react'
 
 import { resources } from '../../assets/resources'
 
-const styles = (theme) => ({
+const styles = () => ({
     button: {
         'margin': 0,
         'padding': 0,
