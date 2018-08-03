@@ -1,11 +1,10 @@
-import { Divider, Icon, ListItemText, MenuItem, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
+import { Icon, ListItemText, MenuItem, StyleRulesCallback, withStyles } from '@material-ui/core'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { resources } from '../../assets/resources'
 import * as DMSReducers from '../../Reducers'
-import { AddNewButton } from './AddNewButton'
 
-const subMenu = [
+export const subMenu = [
     {
         title: resources.BUILTIN_TYPES,
         name: 'builtintypes',
@@ -117,7 +116,7 @@ class ContentTemplatesMenu extends React.Component<ContentTemplatesMenuProps, {}
         this.props.chooseSubmenuItem(title)
     }
     public render() {
-        const { active, subactive, classes, item } = this.props
+        const { active, classes, item } = this.props
         return (
             <div>
                 <MenuItem

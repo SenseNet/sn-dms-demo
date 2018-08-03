@@ -51,8 +51,6 @@ class MenuCell extends React.Component<MenuCellProps, MenuCellState> {
         this.handleActionMenuClick = this.handleActionMenuClick.bind(this)
     }
     public handleActionMenuClick(e, content) {
-        const top = e.pageY - e.target.offsetTop
-        const left = e.pageX - e.target.offsetLeft
         this.props.closeActionMenu()
         this.setState({ anchorTop: e.clientY, anchorLeft: e.clientX })
         this.props.openActionMenu(content.Actions, content.Id, content.DisplayName, e.currentTarget,
@@ -62,7 +60,7 @@ class MenuCell extends React.Component<MenuCellProps, MenuCellState> {
             })
     }
     public render() {
-        const { isSelected, isHovered, content, actionMenuIsOpen, selectionModeOn } = this.props
+        const { isHovered, content, selectionModeOn } = this.props
         return (
             <MediaQuery minDeviceWidth={700}>
                 {(matches) => {

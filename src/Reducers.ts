@@ -1,4 +1,3 @@
-import { IContent, IODataResponse } from '@sensenet/client-core'
 import { IActionModel, Workspace } from '@sensenet/default-content-types'
 import { createContent, deleteBatch, deleteContent, loadContent, loadContentActions, moveBatch, PromiseReturns } from '@sensenet/redux/dist/Actions'
 import { Action, AnyAction, combineReducers, Reducer } from 'redux'

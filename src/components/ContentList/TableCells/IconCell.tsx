@@ -1,5 +1,4 @@
 import Icon from '@material-ui/core/Icon'
-import Table from '@material-ui/core/Table'
 import TableCell from '@material-ui/core/TableCell'
 import * as React from 'react'
 import MediaQuery from 'react-responsive'

@@ -53,10 +53,10 @@ const styles = {
         fontSize: 30,
     },
     title: {
-            flex: '1 1 auto',
-            padding: '0 16px',
-            minWidth: 0,
-        },
+        flex: '1 1 auto',
+        padding: '0 16px',
+        minWidth: 0,
+    },
 }
 
 interface DisplayNameCellProps {
@@ -172,9 +172,7 @@ class DisplayNameCell extends React.Component<DisplayNameCellProps, DisplayNameC
     }
     public isEdited(id) { return this.props.edited === id }
     public render() {
-        const content = this.props.currentContent
         const isEdited = this.isEdited(this.props.content.Id)
-        const selected = this.props.selected
         const { handleRowSingleClick, handleRowDoubleClick, connectDragSource, connectDropTarget, isCopy, icon, isSelected } = this.props
         const dropEffect = isCopy ? 'copy' : 'move'
         const iconColor = icon.toLowerCase() !== 'folder' || isSelected ? 'primary' : 'disabled'
@@ -203,7 +201,7 @@ class DisplayNameCell extends React.Component<DisplayNameCellProps, DisplayNameC
                             </div> :
                             connectDragSource(connectDropTarget(<div
                                 onClick={(event) => matches ? this.handleTitleClick(event, this.props.content.Id) : event.preventDefault()}
-                                style={isSelected ? {...styles.selectedDisplayNameDiv, ...styles.displayNameDiv} : styles.displayNameDiv as any}>
+                                style={isSelected ? { ...styles.selectedDisplayNameDiv, ...styles.displayNameDiv } : styles.displayNameDiv as any}>
                                 <Icon color={iconColor} style={styles.icon}>{icons[icon.toLowerCase()]}</Icon>
                                 <div style={styles.title}>{this.state.displayName}</div>
                             </div>), { dropEffect })

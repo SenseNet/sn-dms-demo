@@ -45,7 +45,6 @@ class FloatingActionButton extends React.Component<FloatingActionButton, { color
         })
     }
     public render() {
-        const { actionMenuIsOpen } = this.props
         return (
             <Button variant="fab" color={this.state.color} aria-label="add" style={styles.actionButton as any}
                 onClick={(event) => this.handleActionMenuClick(event)} >
