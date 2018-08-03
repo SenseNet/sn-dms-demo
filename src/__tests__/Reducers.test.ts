@@ -297,16 +297,7 @@ describe('getChildrenItems', () => {
         },
     } as any
     it('should return the children items', () => {
-        expect(DMSReducers.getChildrenItems(state)).toEqual({
-            2103: {
-                name: 'aaa',
-                id: 2,
-            },
-            2222: {
-                name: 'bbb',
-                id: 1,
-            },
-        })
+        expect(DMSReducers.getChildrenItems(state)).toEqual([{ id: 2, name: 'aaa' }, { id: 1, name: 'bbb' }])
     })
 })
 
