@@ -1,16 +1,15 @@
 import Button from '@material-ui/core/Button'
 import Icon from '@material-ui/core/Icon'
+import { Actions, Reducers } from '@sensenet/redux'
+import { compile } from 'path-to-regexp'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
-import {
-    RouteComponentProps, withRouter,
-} from 'react-router-dom'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
-import * as DMSReducers from '../Reducers'
-
-import { Actions, Reducers } from '@sensenet/redux'
 import { icons } from '../assets/icons'
+import * as DMSReducers from '../Reducers'
 
 const styles = {
     breadCrumb: {
@@ -46,7 +45,7 @@ const styles = {
     },
 }
 
-const mapStateToProps = (state, match) => {
+const mapStateToProps = (state: rootStateType, match) => {
     return {
         breadcrumb: state.dms.breadcrumb,
         currentId: match.match.params.id,
@@ -83,8 +82,9 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
         this.handleClick = this.handleClick.bind(this)
         this.handleActionMenuClick = this.handleActionMenuClick.bind(this)
     }
-    public handleClick(e, id) {
-        this.props.history.push(`/${id}`)
+    public handleClick(e, content: DMSReducers.BreadcrumbItemType) {
+        const newPath = compile(this.props.match.path)({ folderPath: btoa(content.path) })
+        this.props.history.push(newPath)
     }
 
     public static getDerivedStateFromProps(nextProps: BreadCrumb['props'], lastState: BreadCrumb['state']) {
@@ -116,7 +116,7 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
                                     aria-owns="actionmenu"
                                     onClick={
                                         i !== (breadcrumb.length - 1) ?
-                                            (event) => this.handleClick(event, n.id) :
+                                            (event) => this.handleClick(event, n) :
                                             (e) => this.handleActionMenuClick(e, currentContent)
                                     }
                                     key={n.id}
@@ -131,7 +131,7 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
                             </div>
                         } else if (!matches && i === (breadcrumb.length - 1)) {
                             return <div style={styles.item} key={i}>
-                                <Button onClick={(event) => this.handleClick(event, n.id)}
+                                <Button onClick={(event) => this.handleClick(event, n)}
                                     key={n.id}
                                     style={styles.breadCrumbItem as any}>
                                     {n.name}

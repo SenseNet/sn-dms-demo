@@ -3,6 +3,7 @@ import { IContent, IUploadProgressInfo } from '@sensenet/client-core'
 import { Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { RouteComponentProps, withRouter } from 'react-router'
 import { rootStateType } from '../..'
 import { hideUploadItem, hideUploadProgress, removeUploadItem, uploadFileList } from '../../Actions'
 import AddNewMenu from '../ActionMenu/AddNewMenu'
@@ -86,7 +87,7 @@ const styles: StyleRulesCallback = () => ({
     },
 })
 
-interface DocumentMenuProps {
+interface DocumentMenuProps extends RouteComponentProps<any> {
     active,
     subactive,
     classes,
@@ -121,9 +122,9 @@ const subMenu = [
 
 // tslint:disable-next-line:variable-name
 const ConnectedUploadBar = connect((state: rootStateType) => ({
-        items: state.dms.uploads.uploads,
-        isOpened: state.dms.uploads.showProgress,
-    }),
+    items: state.dms.uploads.uploads,
+    isOpened: state.dms.uploads.showProgress,
+}),
     {
         close: hideUploadProgress,
         removeItem: hideUploadItem,
@@ -131,9 +132,11 @@ const ConnectedUploadBar = connect((state: rootStateType) => ({
 
 class DocumentsMenu extends React.Component<DocumentMenuProps, {}> {
     public handleMenuItemClick = (title) => {
+        this.props.history.push('/documents')
         this.props.chooseMenuItem(title)
     }
     public handleSubmenuItemClick = (title) => {
+        this.props.history.push(`/documents/${title}`)
         this.props.chooseSubmenuItem(title)
     }
     public render() {
@@ -194,6 +197,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default (connect(mapStateToProps, {
+export default withRouter(connect(mapStateToProps, {
     uploadFileList,
 })(withStyles(styles)(DocumentsMenu)))

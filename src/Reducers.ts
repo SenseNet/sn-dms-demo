@@ -681,7 +681,7 @@ export const workspaces = combineReducers({
     searchTerm,
 })
 
-export const versions: Reducer<GenericContent[]> = (state: [], action: AnyAction) => {
+export const versions: Reducer<GenericContent[]> = (state: any[], action: AnyAction) => {
     switch (action.type) {
         case 'LOAD_VERSIONS_SUCCESS':
             const versionItems = (action.result as PromiseReturns<typeof loadVersions>).d.results as any[]

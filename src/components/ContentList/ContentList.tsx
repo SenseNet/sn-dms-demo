@@ -2,16 +2,12 @@
 import LinearProgress from '@material-ui/core/LinearProgress'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
-import { pollDocumentData } from '@sensenet/document-viewer-react'
 import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { DropTarget } from 'react-dnd'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { RouteComponentProps } from 'react-router'
-import {
-    withRouter,
-} from 'react-router-dom'
 import { Key } from 'ts-keycode-enum'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
@@ -23,7 +19,6 @@ import ListHead, { HeaderColumnData } from './ListHead'
 import SimpleTableRow from './SimpleTableRow'
 
 import { GenericContent } from '@sensenet/default-content-types'
-import { compile } from 'path-to-regexp'
 
 const styles = {
     paper: {
@@ -66,16 +61,13 @@ const mapDispatchToProps = {
     moveBatch: Actions.moveBatch,
     selectionModeOn: DMSActions.selectionModeOn,
     selectionModeOff: DMSActions.selectionModeOff,
-    openViewer: DMSActions.openViewer,
-    pollDocumentData,
     setDefaultOdataOptions: Actions.setDefaultOdataOptions,
     openDialog: DMSActions.openDialog,
 }
 
-interface ContentListProps extends RouteComponentProps<any> {
+interface ContentListProps {
     connectDropTarget,
-    hostName: string
-    onDoubleClick: () => any
+    onDoubleClick: (e: React.MouseEvent, content: GenericContent) => any
     headerColumnData: HeaderColumnData[]
 }
 
@@ -117,7 +109,6 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
     constructor(props) {
         super(props)
         this.handleRowSingleClick = this.handleRowSingleClick.bind(this)
-        this.handleRowDoubleClick = this.handleRowDoubleClick.bind(this)
         this.handleKeyDown = this.handleKeyDown.bind(this)
         this.handleKeyUp = this.handleKeyUp.bind(this)
         this.handleTap = this.handleTap.bind(this)
@@ -159,16 +150,7 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
         }
     }
     public handleRowDoubleClick(e: React.MouseEvent, content: GenericContent) {
-        if (content.IsFolder) {
-            const newPath = compile(this.props.match.path)({ scope: 'documents', folderId: content.Id })
-            this.props.history.push(newPath)
-            this.props.loadContent(content.Id)
-            this.props.deselect(this.props.currentItems.find((c) => c.Id === content.Id))
-        } else {
-            // console.log('open preview')
-            this.props.openViewer(content.Id)
-            this.props.pollDocumentData(this.props.hostName, content.Id)
-        }
+        this.props.onDoubleClick(e, content)
     }
     public handleKeyDown(e) {
         const ctrl = e.ctrlKey ? true : false
@@ -274,7 +256,6 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
         this.setState({ selected: [content.Id], active: content.Id })
     }
     public handleRequestSort = (event, property) => {
-        // TODO: implement sorting
         this.props.setDefaultOdataOptions({
             ...this.props.currentODataOptions,
             orderby: [[property, this.props.currentODataOptions.orderby[0][1] === 'asc' ? 'desc' : 'asc']],
@@ -328,7 +309,7 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
                                 <SimpleTableRow
                                     content={content}
                                     key={content.Id}
-                                    handleRowDoubleClick={(ev) => this.handleRowDoubleClick(ev, content)}
+                                    handleRowDoubleClick={(ev) => this.props.onDoubleClick(ev, content)}
                                     handleRowSingleClick={this.handleRowSingleClick}
                                     handleTap={(e) => this.handleTap(e, content.Id, content.Type)}
                                     isCopy={this.state.copy} />
@@ -344,4 +325,5 @@ class ContentList extends React.Component<ContentListProps & RouteComponentProps
     }
 }
 
-export default withRouter(connect<ReturnType<typeof mapStateToProps>, typeof mapDispatchToProps, ContentListProps>(mapStateToProps, mapDispatchToProps)(ContentList))
+const exportComponent = connect(mapStateToProps, mapDispatchToProps)(ContentList)
+export default exportComponent

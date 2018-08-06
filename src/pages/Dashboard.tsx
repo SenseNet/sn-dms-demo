@@ -1,4 +1,3 @@
-
 import { Dialog, DialogContent, IconButton } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import * as React from 'react'
@@ -129,11 +128,10 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                                     <Route path={props.match.url + '/trash'}>
                                                         <div>Trash</div>
                                                     </Route>
-                                                    <Route path={props.match.url + '/:folderId?'} component={(idProps) => (
+                                                    <Route path={props.match.url + '/:folderPath?'} component={(idProps) => (
                                                         <div>
                                                             <ListToolbar />
-                                                            <DocumentLibrary currentFolderId={idProps.match.params.folderId || `/Root/Profiles/Public/${this.props.loggedinUserName}/Document_Library`
-                                                            } />
+                                                            <DocumentLibrary />
                                                         </div>
                                                     )}>
                                                     </Route>
@@ -174,7 +172,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                         return <div style={styles.root}>
                             <div style={styles.dashBoardInnerMobile}>
                                 <ListToolbar />
-                                <DocumentLibrary currentFolderId={this.state.currentFolderId} />
+                                <DocumentLibrary />
                             </div>
                         </div>
                     }
