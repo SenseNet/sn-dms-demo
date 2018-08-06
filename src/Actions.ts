@@ -264,6 +264,7 @@ export const getWorkspaces = () => ({
         oDataOptions: {
             query: 'TypeIs:Workspace -TypeIs:Site',
             select: ['DisplayName', 'Id', 'Path'],
+            orderby: [['DisplayName', 'asc']],
         },
     }),
 })
@@ -295,7 +296,7 @@ export const unfollowWorkspace = (userName: string, contentId: number, followed:
     payload: (repository: Repository) => repository.patch<User>({
         idOrPath: `/Root/IMS/Public/${userName}`,
         content: {
-            FollowedWorkspaces: [...followed.filter((item) => item !== contentId)],
+            FollowedWorkspaces: followed.length === 1 && followed[0] === contentId ? null : [...followed.filter((item) => item !== contentId)],
         } as Partial<User>,
         oDataOptions: { select: 'FollowedWorkspaces', expand: 'FollowedWorkspaces' },
     }),
