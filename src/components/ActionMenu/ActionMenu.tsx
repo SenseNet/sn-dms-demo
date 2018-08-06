@@ -28,6 +28,8 @@ const mapStateToProps = (state: rootStateType) => {
         position: state.dms.actionmenu.position,
         hostName: state.sensenet.session.repository.repositoryUrl,
         currentitems: state.sensenet.currentitems,
+        userName: state.sensenet.session.user.userName,
+        queryOptions: state.sensenet.currentitems.options,
     }
 }
 
@@ -41,6 +43,8 @@ const mapDispatchToProps = {
     logout: Actions.userLogout,
     openDialog: DMSActions.openDialog,
     closeDialog: DMSActions.closeDialog,
+    loadContent: Actions.loadContent,
+    fetchContent: Actions.requestContent,
 }
 
 const styles = {
@@ -161,6 +165,12 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     this.props.openDialog(
                         <VersionsDialog id={this.props.contentId} />,
                         resources.VERSIONS, this.props.closeDialog)
+                    break
+                case 'Profile':
+                    this.handleClose()
+                    const doclibPath = `/Root/Profiles/Public/${this.props.userName}/Document_Library`
+                    this.props.loadContent(doclibPath)
+                    this.props.fetchContent(doclibPath, this.props.queryOptions)
                     break
                 default:
                     console.log(`${action.Name} is clicked`)
