@@ -86,6 +86,7 @@ class WorkspaceListItem extends React.Component<{ classes } & ReturnType<typeof 
 
         this.handleMouseOver = this.handleMouseOver.bind(this)
         this.handleMouseLeave = this.handleMouseLeave.bind(this)
+        this.handleClick = this.handleClick.bind(this)
     }
     public handleClick = (path) => {
         const doclibPath = `${path}/Document_Library`
@@ -106,7 +107,6 @@ class WorkspaceListItem extends React.Component<{ classes } & ReturnType<typeof 
         const { classes, workspace, followed } = this.props
         return (
             <MenuItem
-                onClick={() => this.handleClick(workspace.Path)}
                 onMouseOver={(e) => this.handleMouseOver(e)}
                 onMouseLeave={(e) => this.handleMouseLeave(e)}
                 style={styles.listItem}>
@@ -120,7 +120,7 @@ class WorkspaceListItem extends React.Component<{ classes } & ReturnType<typeof 
                 <ListItemText
                     classes={{ primary: classes.primary, root: classes.listItemRoot }}
                     primary={workspace.DisplayName}
-                    onClick={() => this.handleClick(workspace.Path)} />
+                    onClick={(e) => this.handleClick(workspace.Path)} />
             </MenuItem>
         )
     }
