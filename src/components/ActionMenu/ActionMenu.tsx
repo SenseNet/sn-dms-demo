@@ -145,14 +145,17 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     this.handleClose()
                     this.props.openViewer(this.props.contentId)
                     this.props.pollDocumentData(this.props.hostName, this.props.contentId)
+                    break
                 case 'Logout':
                     this.handleClose()
                     this.props.logout()
+                    break
                 case 'Browse':
                     this.handleClose()
                     const currentId = this.props.contentId
                     const path = this.props.currentitems.entities.find((item) => item.Id === currentId).Path
                     downloadFile(path, this.props.hostName)
+                    break
                 case 'Versions':
                     this.handleClose()
                     this.props.openDialog(
