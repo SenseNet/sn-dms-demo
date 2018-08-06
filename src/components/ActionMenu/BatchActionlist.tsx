@@ -87,11 +87,12 @@ class BatchActionlist extends React.Component<ReturnType<typeof mapStateToProps>
     }
     public static getDerivedStateFromProps(newProps: BatchActionlist['props'], lastState: BatchActionlist['state']) {
         if ((newProps.currentContent && newProps.currentContent.Id && lastState.currentId !== newProps.currentContent.Id && lastState.actions.length === 0)) {
-            newProps.getActions(newProps.currentContent.Id, 'DMSBatchActions', [{
-                Name: 'Download', DisplayName: 'Download', Icon: 'download', Index: 1,
+            newProps.getActions(newProps.currentContent.Id, 'DMSBatchActions',
+                // [{
+                //     Name: 'Download', DisplayName: 'Download', Icon: 'download', Index: 1,
 
-            } as IActionModel])
-        }
+                // } as IActionModel]
+            )}
         const optionList = []
         if (lastState.actions.length !== newProps.actions.length) {
             newProps.actions.map((action, index) => {
@@ -144,7 +145,7 @@ class BatchActionlist extends React.Component<ReturnType<typeof mapStateToProps>
         return (
             <ul style={this.isHidden() ? { display: 'none', margin: 0 } : { display: 'block', margin: 0 }}>
                 {actions.map((action, index) => {
-                    return (index < 3) ?
+                    return (index < 2) ?
                         <li key={action.Name} style={styles.icon} aria-label={action.DisplayName} title={action.DisplayName}>
                             <IconButton aria-label={action.DisplayName} disableRipple={true}
                                 onClick={() => this.handleMenuItemClick(action.Name)}>
