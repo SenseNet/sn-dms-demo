@@ -71,7 +71,9 @@ class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof map
                         newDisplayName, newProps.closeDialog)
                 }
                 if (action.DisplayName.indexOf('Folder') > -1) {
-                    folderList.push(action)
+                    if (action.DisplayName.indexOf('Smart') === -1) {
+                        folderList.push(action)
+                    }
                 } else {
                     optionList.push(action)
                 }
