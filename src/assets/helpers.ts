@@ -5,6 +5,13 @@ export const getContentTypeFromUrl = (urlString: string) => {
     return type.indexOf('ContentTemplates') > -1 ? type.split('/')[3] : type
 }
 
+export const getExtensionFromUrl = (urlString: string) => {
+    const urlTemp = urlString.split('ContentTypeName=')[1]
+    const typeUrl = urlTemp.indexOf('&') > -1 ? urlTemp.split('&')[0] : urlTemp
+    const name = typeUrl.split('/')[4]
+    return name.split('.')[1]
+}
+
 export const fakeClick = (obj) => {
     const ev = document.createEvent('MouseEvents')
     ev.initMouseEvent('click', true, false,

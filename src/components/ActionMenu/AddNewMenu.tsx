@@ -5,7 +5,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
-import { getContentTypeFromUrl } from '../../assets/helpers'
+import { getContentTypeFromUrl, getExtensionFromUrl } from '../../assets/helpers'
 import AddNewDialog from '../Dialogs/AddNewDialog'
 import { AddNewButton } from '../Menu/AddNewButton'
 
@@ -58,20 +58,24 @@ class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof map
         const folderList = []
         if (lastState.addNewOptions.length !== newProps.actions.length) {
             newProps.actions.map((action) => {
-                const newDisplayName = `New ${action.DisplayName}`
-                action.DisplayName = newDisplayName
                 const contentType = action.Url.includes('ContentType') ? getContentTypeFromUrl(action.Url) : null
+                const extension = contentType === 'File' ? getExtensionFromUrl(action.Url) : null
+                const displayName = action.DisplayName.indexOf('New') === -1 ? action.DisplayName : action.DisplayName.substring(3)
+                const newDisplayName = action.DisplayName.indexOf('New') === -1 ? `New ${action.DisplayName.toLowerCase()}` : action.DisplayName
+                action.DisplayName = newDisplayName
                 // tslint:disable-next-line:no-string-literal
                 action['Action'] = () => {
                     newProps.closeActionMenu()
                     newProps.openDialog(
                         <AddNewDialog
                             parentPath={newProps.currentContent.Path}
-                            contentTypeName={contentType} />,
+                            contentTypeName={contentType}
+                            extension={extension}
+                            title={contentType === 'File' ? displayName : contentType.toLowerCase()} />,
                         newDisplayName, newProps.closeDialog)
                 }
-                if (action.DisplayName.indexOf('Folder') > -1) {
-                    if (action.DisplayName.indexOf('Smart') === -1) {
+                if (action.DisplayName.indexOf('folder') > -1) {
+                    if (action.DisplayName.indexOf('smart') === -1) {
                         folderList.push(action)
                     }
                 } else {
@@ -90,7 +94,7 @@ class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof map
         const { addNewOptions } = this.state
         this.props.closeActionMenu()
         this.props.openActionMenu(addNewOptions, currentId, currentId, e.currentTarget, {
-            top: e.currentTarget.offsetTop + 85,
+            top: e.currentTarget.offsetTop + 45,
             left: e.currentTarget.offsetLeft,
         })
     }

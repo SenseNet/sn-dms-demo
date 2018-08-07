@@ -10,6 +10,8 @@ import { repository } from '../../index'
 interface AddNewDialogProps {
     parentPath: string,
     contentTypeName: string,
+    extension?: string,
+    title?: string,
 }
 
 interface AddNewDialogState {
@@ -47,18 +49,22 @@ class AddNewDialog extends React.Component<AddNewDialogProps & ReturnType<typeof
         this.props.closeDialog()
     }
     public render() {
-        const { parentPath, contentTypeName, closeDialog, createContent, schema } = this.props
+        const { parentPath, contentTypeName, closeDialog, createContent, schema, title, extension } = this.props
         return (
-            schema ?
-                <NewView
-                    schema={schema}
-                    path={parentPath}
-                    repository={repository}
-                    contentTypeName={contentTypeName}
-                    handleCancel={() => this.handleCancel()}
-                    onSubmit={createContent}
-                    submitCallback={closeDialog} /> :
-                <CircularProgress size={50} />
+            <div style={{ width: 500 }}>
+                {schema ?
+                    <NewView
+                        schema={schema}
+                        path={parentPath}
+                        repository={repository}
+                        contentTypeName={contentTypeName}
+                        handleCancel={() => this.handleCancel()}
+                        onSubmit={createContent}
+                        title={title ? title : null}
+                        extension={extension ? extension : null}
+                        submitCallback={closeDialog} /> :
+                    <CircularProgress size={50} />}
+            </div>
         )
     }
 }
