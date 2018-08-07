@@ -68,7 +68,7 @@
     "react-router-dom": "^4.2.2",
     "react-tap-event-plugin": "3.0.3",
     "source-map-loader": "^0.2.1",
-    "style-loader": "^0.21.0",
+    "style-loader": "^0.22.0",
     "sw-precache-webpack-plugin": "0.11.5",
     "ts-jest": "^23.0.0",
     "ts-keycode-enum": "^1.0.4",
