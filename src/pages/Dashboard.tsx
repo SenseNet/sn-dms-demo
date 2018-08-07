@@ -7,11 +7,19 @@ import { Redirect, Route, RouteComponentProps, Switch } from 'react-router'
 import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
 import { ListToolbar } from '../components/ContentList/ListToolbar'
+import { ContentTemplates } from '../components/ContentTemplates'
+import { ContentTypes } from '../components/ContentTypes'
 import DashboardDrawer from '../components/DashboardDrawer'
 import { DmsViewer } from '../components/DmsViewer'
 import DocumentLibrary from '../components/DocumentLibrary'
+import { Groups } from '../components/Groups'
 import Header from '../components/Header'
 import MessageBar from '../components/MessageBar'
+import { SavedQueries } from '../components/SavedQueries'
+import { Settings } from '../components/Settings'
+import { Shared } from '../components/Shared'
+import { Trash } from '../components/Trash'
+import { Users } from '../components/Users'
 
 const styles = {
     dashBoardInner: {
@@ -119,14 +127,14 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                             <Route path="/documents" component={(props: RouteComponentProps<any>) => (
                                                 <Switch>
                                                     <Route path={props.match.url + '/shared'}>
-                                                        <div>Shared</div>
+                                                        <Shared />
                                                     </Route>
 
                                                     <Route path={props.match.url + '/savedqueries'}>
-                                                        <div>SavedQueries</div>
+                                                        <SavedQueries />
                                                     </Route>
                                                     <Route path={props.match.url + '/trash'}>
-                                                        <div>Trash</div>
+                                                        <Trash />
                                                     </Route>
                                                     <Route path={props.match.url + '/:folderPath?'} component={(idProps) => (
                                                         <div>
@@ -139,19 +147,19 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                             )} >
                                             </Route>
                                             <Route path="/users" >
-                                                <div>Placeholder for users</div>
+                                                <Users />
                                             </Route>
                                             <Route path="/groups" >
-                                                <div>Placeholder for groups</div>
+                                                <Groups />
                                             </Route>
                                             <Route path="/contenttypes" >
-                                                <div>Placeholder for content types</div>
+                                                <ContentTypes />
                                             </Route>
                                             <Route path="/contenttemplates" >
-                                                <div>Placeholder for content templates</div>
+                                                <ContentTemplates />
                                             </Route>
                                             <Route path="/settings" >
-                                                <div>Placeholder for content settings</div>
+                                                <Settings />
                                             </Route>
 
                                             <Redirect to="/documents" />
