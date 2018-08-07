@@ -333,6 +333,7 @@ export const messagebarcontent: Reducer<any[]> = (state = [], action) => {
             // tslint:disable-next-line:no-string-literal
             return [`Version ${action.version} of ${res.d['DisplayName']} is succesfully restored!`]
         case 'CREATE_CONTENT_FAILURE':
+            return [`Cannot create content because: ${action.error.message}`]
         case 'DELETE_CONTENT_FAILURE':
         case 'LOAD_CONTENT_FAILURE':
         case 'FETCH_CONTENT_FAILURE':
