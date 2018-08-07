@@ -124,15 +124,14 @@ const subMenu = [
 const ConnectedUploadBar = connect((state: rootStateType) => ({
     items: state.dms.uploads.uploads,
     isOpened: state.dms.uploads.showProgress,
-}),
-    {
+}), {
         close: hideUploadProgress,
         removeItem: hideUploadItem,
     })(UploadBar)
 
-class DocumentsMenu extends React.Component<DocumentMenuProps, {}> {
+class DocumentsMenu extends React.Component<DocumentMenuProps & ReturnType<typeof mapStateToProps>, {}> {
     public handleMenuItemClick = (title) => {
-        this.props.history.push('/documents')
+        this.props.history.push(`/documents/${btoa(this.props.currentWorkspace.Path + '/Document_Library')}`)
         this.props.chooseMenuItem(title)
     }
     public handleSubmenuItemClick = (title) => {
@@ -190,10 +189,11 @@ class DocumentsMenu extends React.Component<DocumentMenuProps, {}> {
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: rootStateType) => {
     return {
         subactive: state.dms.menu.activeSubmenu,
         currentContent: Reducers.getCurrentContent(state.sensenet),
+        currentWorkspace: state.sensenet.currentworkspace,
     }
 }
 
