@@ -1,6 +1,7 @@
 import { Divider, Icon, ListItemText, MenuItem, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { RouteComponentProps, withRouter } from 'react-router'
 import { resources } from '../../assets/resources'
 import { AddNewButton } from './AddNewButton'
 
@@ -99,7 +100,7 @@ const styles: StyleRulesCallback = (theme) => ({
     },
 })
 
-interface ContentTypesMenuProps {
+interface ContentTypesMenuProps extends RouteComponentProps<any> {
     active,
     classes,
     subactive,
@@ -110,9 +111,11 @@ interface ContentTypesMenuProps {
 
 class ContentTypesMenu extends React.Component<ContentTypesMenuProps, {}> {
     public handleMenuItemClick = (title) => {
+        this.props.history.push('/contenttypes')
         this.props.chooseMenuItem(title)
     }
     public handleSubmenuItemClick = (title) => {
+        this.props.history.push(`/contenttypes/${title}`)
         this.props.chooseSubmenuItem(title)
     }
     public handleButtonClick = (e) => {
@@ -157,4 +160,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default (connect(mapStateToProps, {})(withStyles(styles)(ContentTypesMenu)))
+export default withRouter(connect(mapStateToProps, {})(withStyles(styles)(ContentTypesMenu)))

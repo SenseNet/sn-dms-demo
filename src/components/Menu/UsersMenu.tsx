@@ -1,5 +1,6 @@
 import { Divider, Icon, ListItemText, MenuItem, StyleRulesCallback, withStyles } from '@material-ui/core'
 import * as React from 'react'
+import { RouteComponentProps, withRouter } from 'react-router'
 import { AddNewButton } from './AddNewButton'
 
 const styles: StyleRulesCallback = (theme) => ({
@@ -47,7 +48,7 @@ const styles: StyleRulesCallback = (theme) => ({
     },
 })
 
-interface UsersMenuProps {
+interface UsersMenuProps extends RouteComponentProps<any> {
     active,
     classes,
     item,
@@ -57,9 +58,11 @@ interface UsersMenuProps {
 
 class UsersMenu extends React.Component<UsersMenuProps, {}> {
     public handleMenuItemClick = (title) => {
+        this.props.history.push('/users')
         this.props.chooseMenuItem(title)
     }
     public handleSubmenuItemClick = (title) => {
+        this.props.history.push(`/users/${title}`)
         this.props.chooseSubmenuItem(title)
     }
     public handleButtonClick = (e) => {
@@ -87,4 +90,4 @@ class UsersMenu extends React.Component<UsersMenuProps, {}> {
     }
 }
 
-export default withStyles(styles)(UsersMenu)
+export default withRouter(withStyles(styles)(UsersMenu))

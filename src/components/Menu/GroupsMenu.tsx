@@ -1,5 +1,6 @@
 import { Divider, Icon, ListItemText, MenuItem, StyleRulesCallback, withStyles } from '@material-ui/core'
 import * as React from 'react'
+import { RouteComponentProps, withRouter } from 'react-router'
 import { AddNewButton } from './AddNewButton'
 
 const styles: StyleRulesCallback = (theme) => ({
@@ -43,7 +44,7 @@ const styles: StyleRulesCallback = (theme) => ({
     },
 })
 
-interface GroupsMenuProps {
+interface GroupsMenuProps extends RouteComponentProps<any> {
     active,
     classes,
     item,
@@ -53,9 +54,11 @@ interface GroupsMenuProps {
 
 class GroupsMenu extends React.Component<GroupsMenuProps, {}> {
     public handleMenuItemClick = (title) => {
+        this.props.history.push('/groups')
         this.props.chooseMenuItem(title)
     }
     public handleSubmenuItemClick = (title) => {
+        this.props.history.push(`/groups/${title}`)
         this.props.chooseSubmenuItem(title)
     }
     public handleButtonClick = (e) => {
@@ -83,4 +86,4 @@ class GroupsMenu extends React.Component<GroupsMenuProps, {}> {
     }
 }
 
-export default withStyles(styles)(GroupsMenu)
+export default withRouter(withStyles(styles)(GroupsMenu))

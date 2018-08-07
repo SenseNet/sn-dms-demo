@@ -91,7 +91,6 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
                 {menu.map((item, index) => {
                     return (
                         <div key={index}>
-                            {/* <Link to={item.routeName} style={{ textDecoration: 'none' }}> */}
                             {
                                 React.createElement(
                                     item.component,
@@ -102,8 +101,6 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
                                         chooseSubmenuItem,
                                     })
                             }
-                            {/* </Link> */}
-
                             <Divider light />
                         </div>
                     )

@@ -49,7 +49,7 @@ const mapDispatchToProps = {
 
 interface WorkspaceListState {
     workspaces: Workspace[],
-    orderedWsList: [],
+    orderedWsList: Workspace[],
     top: number,
     term: string,
 }

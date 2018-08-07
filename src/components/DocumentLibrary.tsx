@@ -1,10 +1,13 @@
 import { ConstantContent, IODataParams } from '@sensenet/client-core'
 import { GenericContent } from '@sensenet/default-content-types'
+import { pollDocumentData } from '@sensenet/document-viewer-react'
 import { Actions, Reducers } from '@sensenet/redux'
+import { compile } from 'path-to-regexp'
 import * as React from 'react'
 import { DragDropContext } from 'react-dnd'
 import HTML5Backend, { NativeTypes } from 'react-dnd-html5-backend-filedrop'
 import { connect } from 'react-redux'
+import { RouteComponentProps, withRouter } from 'react-router'
 import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
 import ContentList from './ContentList/ContentList'
@@ -24,6 +27,7 @@ const mapStateToProps = (state: rootStateType) => {
         currentId: state.dms.currentId,
         currentUser: state.sensenet.session.user,
         options: state.sensenet.currentitems.options,
+        hostname: state.sensenet.session.repository.repositoryUrl,
     }
 }
 
@@ -34,14 +38,16 @@ const mapDispatchToProps = {
     uploadContent: uploadContentAction,
     uploadDataTransfer: DMSActions.uploadDataTransfer,
     loadContent: Actions.loadContent,
+    openViewer: DMSActions.openViewer,
+    pollDocumentData,
 }
 
-interface DocumentLibraryProps {
-    currentFolderId?: number
+interface DocumentLibraryProps extends RouteComponentProps<any> {
+    /** */
 }
 
 interface DocumentLibraryState {
-    id, droppedFiles, children,
+    droppedFiles,
     odataOptions: IODataParams<GenericContent>
 }
 
@@ -60,33 +66,35 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
         } as IODataParams<GenericContent>
         this.state = {
             odataOptions: defaultOptions,
-            id: this.props.currentContent ? this.props.currentContent.Id : null,
             droppedFiles: [],
-            children: this.props.children,
         }
 
         this.props.setOdataOptions(defaultOptions)
         this.handleFileDrop = this.handleFileDrop.bind(this)
+        this.handleRowDoubleClick = this.handleRowDoubleClick.bind(this)
     }
     public static getDerivedStateFromProps(newProps: DocumentLibrary['props'], lastState: DocumentLibrary['state']) {
         if (newProps.loggedinUser.userName !== 'Visitor') {
-            if (newProps.currentContent === null) {
-                newProps.loadContent(newProps.currentContent && newProps.currentContent.Id || newProps.currentFolderId)
+
+            const pathFromUrl = newProps.match.params.folderPath && atob(decodeURIComponent(newProps.match.params.folderPath))
+            const odataOptions = newProps.options ? newProps.options : lastState.odataOptions
+            const userProfilePath = `/Root/Profiles/Public/${newProps.loggedinUser.content.Name}/Document_Library`
+
+            if (!newProps.currentContent || (pathFromUrl && pathFromUrl !== newProps.currentContent.Path)) {
+                newProps.loadContent(pathFromUrl)
+                newProps.fetchContent(pathFromUrl, odataOptions)
             }
 
-            if (newProps.currentContent && newProps.currentContent.Id && newProps.currentContent.Path) {
-                if (newProps.options !== lastState.odataOptions
-                    || lastState.id !== newProps.currentContent.Id
-                ) {
-                    newProps.options ? newProps.fetchContent(newProps.currentContent.Path, newProps.options) :
-                        newProps.fetchContent(newProps.currentContent.Path, lastState.odataOptions)
-                }
+            if (!pathFromUrl &&
+                (!newProps.currentContent || newProps.currentContent.Path !== userProfilePath)
+            ) {
+                newProps.loadContent(userProfilePath)
+                newProps.fetchContent(userProfilePath, odataOptions)
             }
         }
         return {
             ...lastState,
             odataOptions: newProps.options,
-            id: newProps.currentContent ? newProps.currentContent.Id : null,
         } as DocumentLibrary['state']
     }
 
@@ -104,6 +112,17 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
             })
         }
     }
+
+    public handleRowDoubleClick(e: React.MouseEvent, content: GenericContent) {
+        if (content.IsFolder) {
+            const newPath = compile(this.props.match.path)({ folderPath: btoa(content.Path) })
+            this.props.history.push(newPath)
+        } else {
+            this.props.openViewer(content.Id)
+            this.props.pollDocumentData(this.props.hostname, content.Id)
+        }
+    }
+
     public render() {
         const { FILE } = NativeTypes
         if (this.props.errorMessage && this.props.errorMessage.length > 0) {
@@ -124,10 +143,11 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                 accepts={[FILE]}
                 onDrop={this.handleFileDrop}
                 headerColumnData={defaultHeaderColumnData}
+                onDoubleClick={this.handleRowDoubleClick}
             />
             : null
 
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentLibrary)
+export default withRouter(connect<ReturnType<typeof mapStateToProps>, typeof mapDispatchToProps, DocumentLibraryProps>(mapStateToProps, mapDispatchToProps)(DocumentLibrary))

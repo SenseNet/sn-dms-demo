@@ -6,8 +6,10 @@ import MenuItem from '@material-ui/core/MenuItem'
 import StarIcon from '@material-ui/icons/Star'
 import { Workspace } from '@sensenet/default-content-types'
 import { Actions } from '@sensenet/redux'
+import { compile } from 'path-to-regexp'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { RouteComponentProps, withRouter } from 'react-router'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 
@@ -49,7 +51,7 @@ const styles = {
     },
 }
 
-interface WorkspaceListItemProps {
+interface WorkspaceListItemProps extends RouteComponentProps<any> {
     followed: boolean,
     workspace: Workspace,
     userName,
@@ -88,8 +90,8 @@ class WorkspaceListItem extends React.Component<{ classes } & ReturnType<typeof 
     }
     public handleClick = (path) => {
         const doclibPath = `${path}/Document_Library`
-        this.props.loadContent(doclibPath)
-        this.props.fetchContent(doclibPath, this.props.options)
+        const newPath = compile(this.props.match.path)({ folderPath: btoa(doclibPath) })
+        this.props.history.push(newPath)
         this.props.closeDropDown(true)
     }
     public startButtonClick = (id) => {
@@ -111,7 +113,7 @@ class WorkspaceListItem extends React.Component<{ classes } & ReturnType<typeof 
                 <ListItemIcon className={classes.icon}>
                     <IconButton
                         className={followed ? classes.followedIconButton : classes.iconButton}
-                        onClick={() => this.startButtonClick(workspace.Id)}>
+                        onClick={() => this.startButtonClick(workspace.Path)}>
                         <StarIcon />
                     </IconButton>
                 </ListItemIcon>
@@ -124,4 +126,4 @@ class WorkspaceListItem extends React.Component<{ classes } & ReturnType<typeof 
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(WorkspaceListItem))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(WorkspaceListItem)))

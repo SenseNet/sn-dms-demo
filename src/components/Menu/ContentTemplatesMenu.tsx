@@ -1,6 +1,7 @@
 import { Icon, ListItemText, MenuItem, StyleRulesCallback, withStyles } from '@material-ui/core'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { RouteComponentProps, withRouter } from 'react-router'
 import { resources } from '../../assets/resources'
 
 export const subMenu = [
@@ -98,7 +99,7 @@ const styles: StyleRulesCallback = (theme) => ({
     },
 })
 
-interface ContentTemplatesMenuProps {
+interface ContentTemplatesMenuProps extends RouteComponentProps<any> {
     active,
     classes,
     subactive,
@@ -109,9 +110,11 @@ interface ContentTemplatesMenuProps {
 
 class ContentTemplatesMenu extends React.Component<ContentTemplatesMenuProps, {}> {
     public handleMenuItemClick = (title) => {
+        this.props.history.push('/contenttemplates')
         this.props.chooseMenuItem(title)
     }
     public handleSubmenuItemClick = (title) => {
+        this.props.history.push(`/contenttemplates/${title}`)
         this.props.chooseSubmenuItem(title)
     }
     public render() {
@@ -153,4 +156,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default (connect(mapStateToProps, {})(withStyles(styles)(ContentTemplatesMenu)))
+export default withRouter(connect(mapStateToProps, {})(withStyles(styles)(ContentTemplatesMenu)))
