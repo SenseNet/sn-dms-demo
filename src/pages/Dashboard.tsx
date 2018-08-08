@@ -136,7 +136,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                                     <Route path={props.match.url + '/trash'}>
                                                         <Trash />
                                                     </Route>
-                                                    <Route path={props.match.url + '/:folderPath?'} component={(idProps) => (
+                                                    <Route path={props.match.url + '/:folderPath?'} component={() => (
                                                         <div>
                                                             <ListToolbar />
                                                             <DocumentLibrary />

@@ -7,6 +7,7 @@ import TableCell from '@material-ui/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
+import { GenericContent } from '@sensenet/default-content-types'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -63,13 +64,10 @@ const style = (theme) => createStyles({
 })
 
 interface SimpleTableRowProps {
-    content,
-    ids,
+    content: GenericContent,
     opened: number,
     openActionMenu,
     closeActionMenu,
-    parentId,
-    rootId,
     selected,
     handleRowDoubleClick,
     handleRowSingleClick,
@@ -158,7 +156,6 @@ class SimpleTableRow extends React.Component<SimpleTableRowProps, SimpleTableRow
                     styles.row}
                 className={classes.tablecell}
                 onContextMenu={(event) => this.handleContextMenu(event, content)}
-                id={content.Id}
             >
                 <MediaQuery minDeviceWidth={700}>
                     <TableCell

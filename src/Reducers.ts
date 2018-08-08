@@ -4,6 +4,8 @@ import { Action, AnyAction, combineReducers, Reducer } from 'redux'
 import { closeMessageBar, ExtendedUploadProgressInfo, getWorkspaces, loadFavoriteWorkspaces, loadListActions, loadTypesToAddNewList, loadUserActions, loadVersions } from './Actions'
 import { resources } from './assets/resources'
 
+import { documentLibrary } from './store/documentlibrary/reducers'
+
 enum MessageMode { error, warning, info }
 
 export const email: Reducer<string, Action & { email?: string }> = (state = '', action) => {
@@ -693,6 +695,7 @@ export const versions: Reducer<GenericContent[]> = (state: any[], action: AnyAct
 }
 
 export const dms = combineReducers({
+    documentLibrary,
     messagebar,
     actionmenu,
     breadcrumb,
