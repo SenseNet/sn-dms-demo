@@ -6,6 +6,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
+import { resources } from '../assets/resources'
 
 const styles = {
     window: {
@@ -49,6 +50,22 @@ class MessageBar extends React.Component<{ classes } & ReturnType<typeof mapStat
     }
     public render() {
         const { classes, messagebar } = this.props
+        // tslint:disable-next-line:no-string-literal
+        const successful = messagebar.content ? messagebar.content['d'] && messagebar.content['d'].results && messagebar.content['d'].results.length > 0 ? messagebar.content['d'].results : messagebar.content['d'] : null
+        // tslint:disable-next-line:no-string-literal
+        const failed = messagebar.content &&  messagebar.content['d'] ? messagebar.content['d'].errors ? messagebar.content['d'].errors : null : null
+        const action = messagebar.event
+        let successMessage
+        if (successful && successful.length > 0) {
+            if (successful.length > 1) {
+                successMessage = `${successful.length} ${resources.ITEMS_ARE} ${resources[`${action}_MULTIPLE_MESSAGE`]}`
+            } else {
+                successMessage = `$successful[0] ? successful[0].Name : successful.DisplayName} ${resources[`${action}_MESSAGE`]}`
+            }
+        } else {
+            successMessage = null
+        }
+        const failedMessage = failed ? failed.length > 1 ? `${failed.length} ${resources.ITEMS} ${resources[`${action}_FAILED_MESSAGE`]}` : `${failed.DisplayName} ${resources[`${action}_FAILED_MESSAGE`]}` : null
         return (
             <Snackbar
                 anchorOrigin={{
@@ -65,9 +82,11 @@ class MessageBar extends React.Component<{ classes } & ReturnType<typeof mapStat
                         root: classes.messagebar,
                     },
                 }}
-                message={<ul style={styles.messages}>
-                    {messagebar.content.map((result, index) => <li style={styles.message} key={index}>{result}</li>)}
-                </ul>}
+                message={
+                    <ul style={styles.messages}>
+                        {successMessage && successMessage.length > 0 ? <li style={styles.message}>{successMessage}</li> : null}
+                        {failedMessage && failedMessage.length > 0 ? <li style={styles.message}>{failedMessage}</li> : null}
+                    </ul>}
                 action={[
                     <IconButton
                         key="close"

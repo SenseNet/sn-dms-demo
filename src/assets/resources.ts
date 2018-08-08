@@ -73,4 +73,10 @@ export const resources = {
     ARE_YOU_SURE_YOU_WANT_TO_RESTORE: 'Are you sure you want to restore version ',
     OF: 'of',
     RESTORE: 'Restore',
+    ITEMS_ARE: 'items are',
+    ITEMS: 'items',
+    CREATE_CONTENT_SUCCESS_MESSAGE: 'is successfully created',
+    DELETE_BATCH_SUCCESS_MULTIPLE_MESSAGE: 'successfully deleted',
+    DELETE_BATCH_SUCCESS_MESSAGE: 'is successfully deleted',
+    DELETE_BATCH_SUCCESS_FAILED_MESSAGE: 'cannot be deleted',
 }
