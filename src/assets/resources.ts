@@ -79,4 +79,5 @@ export const resources = {
     DELETE_BATCH_SUCCESS_MULTIPLE_MESSAGE: 'successfully deleted',
     DELETE_BATCH_SUCCESS_MESSAGE: 'is successfully deleted',
     DELETE_BATCH_SUCCESS_FAILED_MESSAGE: 'cannot be deleted',
+    EDIT_PROPERTIES: 'Edit properties',
 }
