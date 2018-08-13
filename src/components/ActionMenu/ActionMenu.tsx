@@ -180,7 +180,8 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                         <EditPropertiesDialog
                             content={content}
                             contentTypeName={content.Type} />,
-                            resources.EDIT_PROPERTIES, this.props.closeDialog)
+                        resources.EDIT_PROPERTIES, this.props.closeDialog)
+                    break
                 default:
                     console.log(`${action.Name} is clicked`)
                     this.handleClose()
