@@ -1,12 +1,15 @@
 import CircularProgress from '@material-ui/core/CircularProgress'
+import Typography from '@material-ui/core/Typography'
 import { EditView } from '@sensenet/controls-react'
 import { GenericContent } from '@sensenet/default-content-types'
-import { Reducers } from '@sensenet/redux'
+import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
+import { resources } from '../../assets/resources'
 import { repository } from '../../index'
+import DialogInfo from './DialogInfo'
 
 interface EditPropertiesDialogProps {
     content: GenericContent,
@@ -22,6 +25,7 @@ const mapStateToProps = (state: rootStateType) => {
 const mapDispatchToProps = {
     closeDialog: DMSActions.closeDialog,
     openDialog: DMSActions.openDialog,
+    editContent: Actions.updateContent,
 }
 
 class EditPropertiesDialog extends React.Component<EditPropertiesDialogProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, {}> {
@@ -30,16 +34,23 @@ class EditPropertiesDialog extends React.Component<EditPropertiesDialogProps & R
     }
     public submitCallback = () => {
         this.props.closeDialog()
+
     }
     public render() {
-        const { content, contentTypeName } = this.props
+        const { content, contentTypeName, editContent } = this.props
         return (
-            <div style={{ width: 500 }}>
+            <div style={{ width: 550 }}>
+                <Typography variant="headline" gutterBottom>
+                    {resources.EDIT_PROPERTIES}
+                </Typography>
+                <DialogInfo currentContent={content} />
                 {content ?
                     <EditView
                         content={content}
                         repository={repository}
-                        contentTypeName={contentTypeName} />
+                        contentTypeName={contentTypeName}
+                        onSubmit={editContent}
+                        submitCallback={this.submitCallback} />
                     : <CircularProgress size={50} />}
             </div>
         )
