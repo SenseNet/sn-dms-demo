@@ -1,6 +1,8 @@
+import { createMuiTheme, MuiThemeProvider, TableCell } from '@material-ui/core'
 import { ConstantContent } from '@sensenet/client-core'
-import { GenericContent } from '@sensenet/default-content-types'
+import { GenericContent, User } from '@sensenet/default-content-types'
 import { pollDocumentData } from '@sensenet/document-viewer-react'
+import { ContentList } from '@sensenet/list-controls-react'
 import { uploadRequest } from '@sensenet/redux/dist/Actions'
 import { compile } from 'path-to-regexp'
 import * as React from 'react'
@@ -8,9 +10,10 @@ import { connect } from 'react-redux'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
-import { loadParent } from '../store/documentlibrary/actions'
-import ContentList from './ContentList/ContentList'
-import { defaultHeaderColumnData } from './ContentList/ListHead'
+import { customSchema } from '../assets/schema'
+import { loadParent, select } from '../store/documentlibrary/actions'
+import { DateCell } from './ContentList/TableCells/DateCell'
+import DisplayNameCell from './ContentList/TableCells/DisplayNameCell'
 import { FetchError } from './FetchError'
 
 const uploadContentAction = uploadRequest
@@ -24,6 +27,8 @@ const mapStateToProps = (state: rootStateType) => {
         isLoading: state.dms.documentLibrary.isLoading,
         currentUser: state.sensenet.session.user,
         hostname: state.sensenet.session.repository.repositoryUrl,
+        selected: state.dms.documentLibrary.selected,
+        active: state.dms.documentLibrary.active,
     }
 }
 
@@ -34,6 +39,7 @@ const mapDispatchToProps = {
     uploadDataTransfer: DMSActions.uploadDataTransfer,
     openViewer: DMSActions.openViewer,
     pollDocumentData,
+    select,
 }
 
 interface DocumentLibraryProps extends RouteComponentProps<any> {
@@ -104,14 +110,54 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                 />
             )
         }
+
+        const theme = createMuiTheme({
+            overrides: {
+                MuiTableRow: {
+                    hover: {
+                        '&:hover': { color: '#016D9E', fontWeight: 'bold' },
+                        'color': '#666',
+                        'fontSize': 16,
+                        'fontFamily': 'Raleway Light',
+                        'cursor': 'pointer',
+                    },
+                },
+                MuiCheckbox: {
+                    checked: {
+                        color: '#016D9E !important',
+                    },
+                },
+            },
+        })
+
         return this.props.currentUser.content.Id !== ConstantContent.VISITOR_USER.Id ?
-            <ContentList
-                items={this.props.items}
-                headerColumnData={defaultHeaderColumnData}
-                onDoubleClick={this.handleRowDoubleClick}
-                onTap={() => { /** */ }}
-                isLoading={this.props.isLoading}
-            />
+            <MuiThemeProvider theme={theme}>
+                <ContentList
+                    schema={customSchema.find((s) => s.ContentTypeName === 'GenericContent')}
+                    selected={this.props.selected}
+                    active={this.props.active}
+                    items={this.props.items.d.results}
+                    fieldsToDisplay={['DisplayName', 'ModificationDate', 'Owner', 'Actions']}
+                    orderBy={'DisplayName'}
+                    orderDirection={'asc'}
+                    onRequestSelectionChange={(newSelection) => this.props.select(newSelection)}
+                    fieldComponent={(field, content) => (props) => {
+                        const isSelected = props.selected.find((s) => s.Id === content.Id) ? true : false
+                        switch (field) {
+                            case 'DisplayName':
+                                return (<DisplayNameCell content={content} isSelected={isSelected} updateContent={() => { /** */ }}></DisplayNameCell>)
+                            case 'ModificationDate':
+                                return (<DateCell date={content[field]} />)
+                            case 'Owner':
+                                return (<TableCell><span>{content.Owner && (content.Owner as User).DisplayName}</span></TableCell>)
+                            case 'Actions':
+                                return (<TableCell><span>ToDo</span></TableCell>)
+                            default:
+                                return (<TableCell><span>{content[field] && content[field].toString()}</span></TableCell>)
+                        }
+                    }}
+                />
+            </MuiThemeProvider>
             : null
 
     }

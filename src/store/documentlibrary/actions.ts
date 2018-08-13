@@ -74,3 +74,8 @@ export const setError = (error?: any) => ({
     type: 'DMS_DOCLIB_SET_ERROR',
     error,
 })
+
+export const select = <T extends GenericContent>(selected: T[]) => ({
+    type: 'DMS_DOCLIB_SELECT',
+    selected,
+})

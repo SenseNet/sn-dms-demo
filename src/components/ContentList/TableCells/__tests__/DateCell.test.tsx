@@ -1,19 +1,8 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import { withStore } from '../../../../__tests__/TestHelper'
-import DateCell from '../DateCell'
+import { DateCell } from '../DateCell'
 
 it('renders without crashing', () => {
     const div = document.createElement('div')
-    ReactDOM.render(
-        withStore(
-            <DateCell
-                id={1}
-                date="2017-10-05"
-                handleRowDoubleClick={() => {
-                    //
-                }}
-                handleRowSingleClick={() => {
-                    //
-                }} />), div)
+    ReactDOM.render(<DateCell date="2018-08-13T13:23:12Z" />, div)
 })

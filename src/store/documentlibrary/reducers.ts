@@ -1,7 +1,7 @@
 import { IODataCollectionResponse } from '@sensenet/client-core'
 import { GenericContent } from '@sensenet/default-content-types'
 import { Reducer } from 'redux'
-import { setError, setItems, setParent, startLoading } from './actions'
+import { select, setError, setItems, setParent, startLoading } from './actions'
 
 export interface DocumentLibraryState {
     parent?: GenericContent
@@ -9,17 +9,21 @@ export interface DocumentLibraryState {
     items: IODataCollectionResponse<GenericContent>
     isLoading: boolean
     error?: any
+    selected: GenericContent[]
+    active?: GenericContent
 }
 
 export const defaultState: DocumentLibraryState = {
     isLoading: true,
     items: { d: { __count: 0, results: [] } },
+    selected: [],
 }
 
 export const documentLibrary: Reducer<DocumentLibraryState> = (state = defaultState, action) => {
     switch (action.type) {
         case 'DMS_DOCLIB_LOADING':
             return {
+                selected: [],
                 isLoading: true,
                 parentIdOrPath: (action as ReturnType<typeof startLoading>).idOrPath,
                 parent: undefined,
@@ -44,6 +48,11 @@ export const documentLibrary: Reducer<DocumentLibraryState> = (state = defaultSt
             return {
                 ...state,
                 error: (action as ReturnType<typeof setError>).error,
+            }
+        case 'DMS_DOCLIB_SELECT':
+            return {
+                ...state,
+                selected: (action as ReturnType<typeof select>).selected,
             }
 
     }

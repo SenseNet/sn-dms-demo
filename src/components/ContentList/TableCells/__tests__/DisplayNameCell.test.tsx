@@ -22,11 +22,7 @@ it('renders without crashing', () => {
     ReactDOM.render(
         withStore(<DisplayNameCell
             content={content}
-            isHovered={false}
-            handleRowDoubleClick={() => {
-                //
-            }}
-            handleRowSingleClick={() => {
-                //
-            }} />, options), div)
+            isSelected={false}
+            updateContent={() => {/** */ }}
+        />, options), div)
 })

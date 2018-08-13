@@ -6,7 +6,7 @@ import * as React from 'react'
 import MediaQuery from 'react-responsive'
 import { Key } from 'ts-keycode-enum'
 import ListHead, { HeaderColumnData } from './ListHead'
-import SimpleTableRow from './SimpleTableRow'
+// import SimpleTableRow from './SimpleTableRow'
 
 import { IODataCollectionResponse } from '@sensenet/client-core'
 import { GenericContent } from '@sensenet/default-content-types'
@@ -293,13 +293,14 @@ class ContentList extends React.Component<ContentListProps, ContentListState> {
                 <TableBody style={styles.tableBody}>
                     {this.props.items.d.results.map((content) => {
                         return typeof content !== 'undefined' ? (
-                            <SimpleTableRow
-                                content={content}
-                                key={content.Id}
-                                handleRowDoubleClick={(ev) => this.props.onDoubleClick(ev, content)}
-                                handleRowSingleClick={this.handleRowSingleClick}
-                                handleTap={(e) => this.handleTap(e, content)}
-                                isCopy={this.state.copy} />
+                            null
+                            // <SimpleTableRow
+                            //     content={content}
+                            //     key={content.Id}
+                            //     handleRowDoubleClick={(ev) => this.props.onDoubleClick(ev, content)}
+                            //     handleRowSingleClick={this.handleRowSingleClick}
+                            //     handleTap={(e) => this.handleTap(e, content)}
+                            //     isCopy={this.state.copy} />
                         ) : null
                     })
                     }
