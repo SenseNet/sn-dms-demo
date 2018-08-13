@@ -319,7 +319,8 @@ export const messagebarcontent: Reducer<object> = (state = [], action) => {
         case 'SET_MESSAGEBAR':
             return action.content
         case 'CREATE_CONTENT_SUCCESS':
-            // tslint:disable-next-line:no-string-literal
+            return action.result as PromiseReturns<typeof createContent>
+        case 'UPDATE_CONTENT_SUCCESS':
             return action.result as PromiseReturns<typeof createContent>
         case 'DELETE_CONTENT_SUCCESS':
             return action.result as PromiseReturns<typeof deleteContent>
