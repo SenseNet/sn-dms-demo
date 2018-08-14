@@ -1,6 +1,6 @@
 import Icon from '@material-ui/core/Icon'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
-import { Forward, ModeEdit } from '@material-ui/icons'
+import { Forward, ModeEdit, Warning } from '@material-ui/icons'
 import { pollDocumentData } from '@sensenet/document-viewer-react'
 import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
@@ -49,6 +49,8 @@ const mapDispatchToProps = {
     checkoutContent: Actions.checkOut,
     checkinContent: Actions.checkIn,
     publishContent: Actions.publish,
+    undoCheckout: Actions.undoCheckout,
+    forceundoCheckout: Actions.forceUndoCheckout,
 }
 
 const styles = {
@@ -199,9 +201,11 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     break
                 case 'UndoCheckout':
                     this.handleClose()
+                    this.props.undoCheckout(content.Id)
                     break
                 case 'ForceUndoCheckout':
                     this.handleClose()
+                    this.props.forceundoCheckout(content.Id)
                     break
                 case 'Approve':
                     this.handleClose()
@@ -250,6 +254,9 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                                 }
                                 {
                                     action.Name === 'Rename' ? <ModeEdit style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
+                                }
+                                {
+                                    action.Name === 'ForceUndoCheckOut' ? <Warning style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
                                 }
                             </Icon>
                         </ListItemIcon>

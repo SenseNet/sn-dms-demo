@@ -84,4 +84,6 @@ export const resources = {
     CHECKOUT_CONTENT_SUCCESS_MESSAGE: 'is successfully checked-out',
     CHECKIN_CONTENT_SUCCESS_MESSAGE: 'is successfully checked-in',
     PUBLISH_CONTENT_SUCCESS_MESSAGE: 'is successfully published',
+    UNDOCHECKOUT_CONTENT_SUCCESS_MESSAGE: 'is successfully checked-in',
+    FORCEUNDOCHECKOUT_CONTENT_SUCCESS_MESSAGE: 'is successfully checked-in',
 }

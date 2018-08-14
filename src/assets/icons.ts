@@ -33,6 +33,6 @@ export const icons = {
     checkin: 'lock',
     publish: 'publish',
     approve: '',
-    undocheckout: '',
-    forceundocheckout: '',
+    undocheckout: 'undo',
+    forceundocheckout: 'undo',
 }
