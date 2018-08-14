@@ -83,4 +83,5 @@ export const resources = {
     UPDATE_CONTENT_SUCCESS_MESSAGE: 'is successfully updated',
     CHECKOUT_CONTENT_SUCCESS_MESSAGE: 'is successfully checked-out',
     CHECKIN_CONTENT_SUCCESS_MESSAGE: 'is successfully checked-in',
+    PUBLISH_CONTENT_SUCCESS_MESSAGE: 'is successfully published',
 }

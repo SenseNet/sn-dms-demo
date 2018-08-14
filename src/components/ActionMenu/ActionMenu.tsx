@@ -48,6 +48,7 @@ const mapDispatchToProps = {
     fetchContent: Actions.requestContent,
     checkoutContent: Actions.checkOut,
     checkinContent: Actions.checkIn,
+    publishContent: Actions.publish,
 }
 
 const styles = {
@@ -190,6 +191,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     break
                 case 'Publish':
                     this.handleClose()
+                    this.props.publishContent(content.Id)
                     break
                 case 'CheckIn':
                     this.handleClose()
