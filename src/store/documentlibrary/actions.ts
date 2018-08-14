@@ -79,3 +79,8 @@ export const select = <T extends GenericContent>(selected: T[]) => ({
     type: 'DMS_DOCLIB_SELECT',
     selected,
 })
+
+export const setActive = <T extends GenericContent>(active?: T) => ({
+    type: 'DMS_DOCLIB_SET_ACTIVE',
+    active,
+})

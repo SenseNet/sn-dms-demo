@@ -1,7 +1,7 @@
 import { IODataCollectionResponse } from '@sensenet/client-core'
 import { GenericContent } from '@sensenet/default-content-types'
 import { Reducer } from 'redux'
-import { select, setError, setItems, setParent, startLoading } from './actions'
+import { select, setActive, setError, setItems, setParent, startLoading } from './actions'
 
 export interface DocumentLibraryState {
     parent?: GenericContent
@@ -53,6 +53,11 @@ export const documentLibrary: Reducer<DocumentLibraryState> = (state = defaultSt
             return {
                 ...state,
                 selected: (action as ReturnType<typeof select>).selected,
+            }
+        case 'DMS_DOCLIB_SET_ACTIVE':
+            return {
+                ...state,
+                active: (action as ReturnType<typeof setActive>).active,
             }
 
     }

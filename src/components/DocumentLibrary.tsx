@@ -13,7 +13,7 @@ import * as DMSActions from '../Actions'
 import { contentListTheme } from '../assets/contentlist'
 import { icons } from '../assets/icons'
 import { customSchema } from '../assets/schema'
-import { loadParent, select } from '../store/documentlibrary/actions'
+import { loadParent, select, setActive } from '../store/documentlibrary/actions'
 import ActionMenu from './ActionMenu/ActionMenu'
 import { FetchError } from './FetchError'
 
@@ -25,6 +25,7 @@ const mapStateToProps = (state: rootStateType) => {
         items: state.dms.documentLibrary.items,
         errorMessage: state.dms.documentLibrary.error,
         parent: state.dms.documentLibrary.parent,
+        parentIdOrPath: state.dms.documentLibrary.parentIdOrPath,
         isLoading: state.dms.documentLibrary.isLoading,
         currentUser: state.sensenet.session.user,
         hostname: state.sensenet.session.repository.repositoryUrl,
@@ -43,6 +44,7 @@ const mapDispatchToProps = {
     closeActionMenu: DMSActions.closeActionMenu,
     pollDocumentData,
     select,
+    setActive,
 }
 
 interface DocumentLibraryProps extends RouteComponentProps<any> {
@@ -122,6 +124,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                     orderBy={'DisplayName'}
                     orderDirection={'asc'}
                     onRequestSelectionChange={(newSelection) => this.props.select(newSelection)}
+                    onRequestActiveItemChange={(active) => this.props.setActive(active)}
                     onRequestActionsMenu={(ev, content) => {
                         ev.preventDefault()
                         this.props.closeActionMenu()
@@ -132,6 +135,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                         this.props.closeActionMenu()
                         this.props.openActionMenu(content.Actions as IActionModel[], content.Id, '', ev.currentTarget.parentElement, {top: ev.clientY, left: ev.clientX})
                     }}
+                    onItemDoubleClick={this.handleRowDoubleClick}
                     fieldComponent={ null as any}
                     icons={icons}
                 />

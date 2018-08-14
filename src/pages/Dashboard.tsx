@@ -1,5 +1,6 @@
 import { Dialog, DialogContent, IconButton } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
+import { PathHelper } from '@sensenet/client-utils'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -136,7 +137,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                                     <Route path={props.match.url + '/trash'}>
                                                         <Trash />
                                                     </Route>
-                                                    <Route path={props.match.url + '/:folderPath?'} component={() => (
+                                                    <Route path={'/' + PathHelper.joinPaths(props.match.url, '/:folderPath?')} exact component={() => (
                                                         <div>
                                                             <ListToolbar />
                                                             <DocumentLibrary />
