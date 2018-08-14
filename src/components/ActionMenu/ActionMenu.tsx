@@ -46,6 +46,8 @@ const mapDispatchToProps = {
     closeDialog: DMSActions.closeDialog,
     loadContent: Actions.loadContent,
     fetchContent: Actions.requestContent,
+    checkoutContent: Actions.checkOut,
+    checkinContent: Actions.checkIn,
 }
 
 const styles = {
@@ -126,6 +128,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
         this.setState({ anchorEl: null })
     }
     public handleMenuItemClick(e: React.MouseEvent, action: any) {
+        const content = this.props.currentitems.entities.find((item) => item.Id === this.props.contentId)
         if (action.Action) {
             action.Action()
         } else {
@@ -175,12 +178,31 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     break
                 case 'Edit':
                     this.handleClose()
-                    const content = this.props.currentitems.entities.find((item) => item.Id === this.props.contentId)
                     this.props.openDialog(
                         <EditPropertiesDialog
                             content={content}
                             contentTypeName={content.Type} />,
                         resources.EDIT_PROPERTIES, this.props.closeDialog)
+                    break
+                case 'CheckOut':
+                    this.handleClose()
+                    this.props.checkoutContent(content.Id)
+                    break
+                case 'Publish':
+                    this.handleClose()
+                    break
+                case 'CheckIn':
+                    this.handleClose()
+                    this.props.checkinContent(content.Id)
+                    break
+                case 'UndoCheckout':
+                    this.handleClose()
+                    break
+                case 'ForceUndoCheckout':
+                    this.handleClose()
+                    break
+                case 'Approve':
+                    this.handleClose()
                     break
                 default:
                     console.log(`${action.Name} is clicked`)

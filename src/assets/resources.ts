@@ -81,4 +81,6 @@ export const resources = {
     DELETE_BATCH_SUCCESS_FAILED_MESSAGE: 'cannot be deleted',
     EDIT_PROPERTIES: 'Edit properties',
     UPDATE_CONTENT_SUCCESS_MESSAGE: 'is successfully updated',
+    CHECKOUT_CONTENT_SUCCESS_MESSAGE: 'is successfully checked-out',
+    CHECKIN_CONTENT_SUCCESS_MESSAGE: 'is successfully checked-in',
 }
