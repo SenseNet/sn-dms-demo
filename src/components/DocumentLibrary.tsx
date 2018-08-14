@@ -1,6 +1,6 @@
-import { createMuiTheme, MuiThemeProvider, TableCell } from '@material-ui/core'
+import { MuiThemeProvider } from '@material-ui/core'
 import { ConstantContent } from '@sensenet/client-core'
-import { GenericContent, User } from '@sensenet/default-content-types'
+import { GenericContent, IActionModel } from '@sensenet/default-content-types'
 import { pollDocumentData } from '@sensenet/document-viewer-react'
 import { ContentList } from '@sensenet/list-controls-react'
 import { uploadRequest } from '@sensenet/redux/dist/Actions'
@@ -10,10 +10,11 @@ import { connect } from 'react-redux'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
+import { contentListTheme } from '../assets/contentlist'
+import { icons } from '../assets/icons'
 import { customSchema } from '../assets/schema'
 import { loadParent, select } from '../store/documentlibrary/actions'
-import { DateCell } from './ContentList/TableCells/DateCell'
-import DisplayNameCell from './ContentList/TableCells/DisplayNameCell'
+import ActionMenu from './ActionMenu/ActionMenu'
 import { FetchError } from './FetchError'
 
 const uploadContentAction = uploadRequest
@@ -38,6 +39,8 @@ const mapDispatchToProps = {
     uploadContent: uploadContentAction,
     uploadDataTransfer: DMSActions.uploadDataTransfer,
     openViewer: DMSActions.openViewer,
+    openActionMenu: DMSActions.openActionMenu,
+    closeActionMenu: DMSActions.closeActionMenu,
     pollDocumentData,
     select,
 }
@@ -50,9 +53,6 @@ interface DocumentLibraryState {
     droppedFiles,
 }
 
-// @DragDropContext(HTML5Backend, {
-
-// })
 class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DocumentLibraryState> {
     constructor(props) {
         super(props)
@@ -111,27 +111,8 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
             )
         }
 
-        const theme = createMuiTheme({
-            overrides: {
-                MuiTableRow: {
-                    hover: {
-                        '&:hover': { color: '#016D9E', fontWeight: 'bold' },
-                        'color': '#666',
-                        'fontSize': 16,
-                        'fontFamily': 'Raleway Light',
-                        'cursor': 'pointer',
-                    },
-                },
-                MuiCheckbox: {
-                    checked: {
-                        color: '#016D9E !important',
-                    },
-                },
-            },
-        })
-
         return this.props.currentUser.content.Id !== ConstantContent.VISITOR_USER.Id ?
-            <MuiThemeProvider theme={theme}>
+            <MuiThemeProvider theme={contentListTheme}>
                 <ContentList
                     schema={customSchema.find((s) => s.ContentTypeName === 'GenericContent')}
                     selected={this.props.selected}
@@ -141,26 +122,24 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                     orderBy={'DisplayName'}
                     orderDirection={'asc'}
                     onRequestSelectionChange={(newSelection) => this.props.select(newSelection)}
-                    fieldComponent={(field, content) => (props) => {
-                        const isSelected = props.selected.find((s) => s.Id === content.Id) ? true : false
-                        switch (field) {
-                            case 'DisplayName':
-                                return (<DisplayNameCell content={content} isSelected={isSelected} updateContent={() => { /** */ }}></DisplayNameCell>)
-                            case 'ModificationDate':
-                                return (<DateCell date={content[field]} />)
-                            case 'Owner':
-                                return (<TableCell><span>{content.Owner && (content.Owner as User).DisplayName}</span></TableCell>)
-                            case 'Actions':
-                                return (<TableCell><span>ToDo</span></TableCell>)
-                            default:
-                                return (<TableCell><span>{content[field] && content[field].toString()}</span></TableCell>)
-                        }
+                    onRequestActionsMenu={(ev, content) => {
+                        ev.preventDefault()
+                        this.props.closeActionMenu()
+                        this.props.openActionMenu(content.Actions as IActionModel[], content.Id, '', ev.currentTarget.parentElement, {top: ev.clientY, left: ev.clientX})
                     }}
+                    onItemContextMenu={(ev, content) => {
+                        ev.preventDefault()
+                        this.props.closeActionMenu()
+                        this.props.openActionMenu(content.Actions as IActionModel[], content.Id, '', ev.currentTarget.parentElement, {top: ev.clientY, left: ev.clientX})
+                    }}
+                    fieldComponent={ null as any}
+                    icons={icons}
                 />
+                < ActionMenu id = {0} > </ActionMenu>
             </MuiThemeProvider>
-            : null
+            :  null
 
     }
 }
 
-export default withRouter(connect<ReturnType<typeof mapStateToProps>, typeof mapDispatchToProps, DocumentLibraryProps>(mapStateToProps, mapDispatchToProps)(DocumentLibrary))
+export default withRouter(connect<ReturnType<typeof mapStateToProps>,  typeof mapDispatchToProps, DocumentLibraryProps>(mapStateToProps, mapDispatchToProps)(DocumentLibrary))
