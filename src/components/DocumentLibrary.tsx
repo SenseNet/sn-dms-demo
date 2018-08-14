@@ -13,7 +13,7 @@ import * as DMSActions from '../Actions'
 import { contentListTheme } from '../assets/contentlist'
 import { icons } from '../assets/icons'
 import { customSchema } from '../assets/schema'
-import { loadParent, select, setActive } from '../store/documentlibrary/actions'
+import { loadParent, select, setActive, updateChildrenOptions } from '../store/documentlibrary/actions'
 import ActionMenu from './ActionMenu/ActionMenu'
 import { FetchError } from './FetchError'
 
@@ -31,6 +31,7 @@ const mapStateToProps = (state: rootStateType) => {
         hostname: state.sensenet.session.repository.repositoryUrl,
         selected: state.dms.documentLibrary.selected,
         active: state.dms.documentLibrary.active,
+        childrenOptions: state.dms.documentLibrary.childrenOptions,
     }
 }
 
@@ -45,6 +46,7 @@ const mapDispatchToProps = {
     pollDocumentData,
     select,
     setActive,
+    updateChildrenOptions,
 }
 
 interface DocumentLibraryProps extends RouteComponentProps<any> {
@@ -121,8 +123,8 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                     active={this.props.active}
                     items={this.props.items.d.results}
                     fieldsToDisplay={['DisplayName', 'ModificationDate', 'Owner', 'Actions']}
-                    orderBy={'DisplayName'}
-                    orderDirection={'asc'}
+                    orderBy={this.props.childrenOptions.orderby[0][0] as any}
+                    orderDirection={this.props.childrenOptions.orderby[0][1] as any}
                     onRequestSelectionChange={(newSelection) => this.props.select(newSelection)}
                     onRequestActiveItemChange={(active) => this.props.setActive(active)}
                     onRequestActionsMenu={(ev, content) => {
@@ -134,6 +136,12 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                         ev.preventDefault()
                         this.props.closeActionMenu()
                         this.props.openActionMenu(content.Actions as IActionModel[], content.Id, '', ev.currentTarget.parentElement, {top: ev.clientY, left: ev.clientX})
+                    }}
+                    onRequestOrderChange={(field, direction) => {
+                        this.props.updateChildrenOptions({
+                            ...this.props.childrenOptions,
+                            orderby: [[field, direction]],
+                        })
                     }}
                     onItemDoubleClick={this.handleRowDoubleClick}
                     fieldComponent={ null as any}

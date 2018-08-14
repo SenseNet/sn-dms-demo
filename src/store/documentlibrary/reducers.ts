@@ -1,7 +1,7 @@
-import { IODataCollectionResponse } from '@sensenet/client-core'
+import { IODataCollectionResponse, IODataParams } from '@sensenet/client-core'
 import { GenericContent } from '@sensenet/default-content-types'
 import { Reducer } from 'redux'
-import { select, setActive, setError, setItems, setParent, startLoading } from './actions'
+import { select, setActive, setError, setItems, setParent, startLoading, updateChildrenOptions } from './actions'
 
 export interface DocumentLibraryState {
     parent?: GenericContent
@@ -11,23 +11,39 @@ export interface DocumentLibraryState {
     error?: any
     selected: GenericContent[]
     active?: GenericContent
+    parentOptions: IODataParams<GenericContent>
+    childrenOptions: IODataParams<GenericContent>
 }
 
 export const defaultState: DocumentLibraryState = {
     isLoading: true,
     items: { d: { __count: 0, results: [] } },
     selected: [],
+    parentOptions: {
+        select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner', 'VersioningMode'],
+        expand: ['Actions', 'Owner'],
+        orderby: [['IsFolder', 'desc'], ['DisplayName', 'asc']],
+        filter: 'ContentType ne \'SystemFolder\'',
+        scenario: 'DMSListItem',
+    },
+    childrenOptions: {
+        select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner', 'VersioningMode'],
+        expand: ['Actions', 'Owner'],
+        orderby: [['IsFolder', 'desc'], ['DisplayName', 'asc']],
+        filter: 'ContentType ne \'SystemFolder\'',
+        scenario: 'DMSListItem',
+    },
 }
 
 export const documentLibrary: Reducer<DocumentLibraryState> = (state = defaultState, action) => {
     switch (action.type) {
         case 'DMS_DOCLIB_LOADING':
             return {
+                ...state,
                 selected: [],
                 isLoading: true,
                 parentIdOrPath: (action as ReturnType<typeof startLoading>).idOrPath,
-                parent: undefined,
-                items: defaultState.items,
+                // parent: undefined,
             }
         case 'DMS_DOCLIB_FINISH_LOADING':
             return {
@@ -58,6 +74,11 @@ export const documentLibrary: Reducer<DocumentLibraryState> = (state = defaultSt
             return {
                 ...state,
                 active: (action as ReturnType<typeof setActive>).active,
+            }
+        case 'DMS_DOCLIB_SET_CHILDREN_OPTIONS':
+            return {
+                ...state,
+                childrenOptions: (action as ReturnType<typeof updateChildrenOptions>).odataOptions,
             }
 
     }

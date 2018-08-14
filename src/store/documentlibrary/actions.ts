@@ -4,22 +4,6 @@ import { Action } from 'redux'
 import { InjectableAction } from 'redux-di-middleware'
 import { rootStateType } from '../..'
 
-export const parentOdataOptions: IODataParams<GenericContent> = {
-    select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner', 'VersioningMode'],
-    expand: ['Actions', 'Owner'],
-    orderby: [['IsFolder', 'desc'], ['DisplayName', 'asc']],
-    filter: 'ContentType ne \'SystemFolder\'',
-    scenario: 'DMSListItem',
-}
-
-export const listOdataOptions: IODataParams<GenericContent> = {
-    select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner', 'VersioningMode'],
-    expand: ['Actions', 'Owner'],
-    orderby: [['IsFolder', 'desc'], ['DisplayName', 'asc']],
-    filter: 'ContentType ne \'SystemFolder\'',
-    scenario: 'DMSListItem',
-}
-
 export const startLoading = (idOrPath: number | string) => ({
     type: 'DMS_DOCLIB_LOADING',
     idOrPath,
@@ -41,12 +25,13 @@ export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: s
                 const repository = options.getInjectable(Repository)
                 const newParent = await repository.load<T>({
                     idOrPath,
+                    oDataOptions: prevState.parentOptions,
                 })
                 options.dispatch(setParent(newParent.d))
 
                 const items = await repository.loadCollection({
                     path: newParent.d.Path,
-                    oDataOptions: listOdataOptions,
+                    oDataOptions: prevState.childrenOptions,
                 })
                 options.dispatch(setItems(items))
 
@@ -83,4 +68,34 @@ export const select = <T extends GenericContent>(selected: T[]) => ({
 export const setActive = <T extends GenericContent>(active?: T) => ({
     type: 'DMS_DOCLIB_SET_ACTIVE',
     active,
+})
+
+export const updateChildrenOptions = <T extends GenericContent>(odataOptions: IODataParams<T>) => ({
+    type: 'DMS_DOCLIB_UPDATE_CHILDREN_OPTIONS',
+    odataOptions,
+    inject: async (options) => {
+        const currentState = options.getState()
+        const parentPath = currentState.dms.documentLibrary.parent.Path
+        const repository = options.getInjectable(Repository)
+        options.dispatch(startLoading(currentState.dms.documentLibrary.parentIdOrPath))
+        try {
+            const items = await repository.loadCollection({
+                path: parentPath,
+                oDataOptions: odataOptions,
+            })
+            options.dispatch(setItems(items))
+        } catch (error) {
+            options.dispatch(setError(error))
+        } finally {
+            options.dispatch(finishLoading())
+            options.dispatch(setChildrenOptions(odataOptions))
+        }
+
+        /** */
+    },
+} as InjectableAction<rootStateType, Action> & { odataOptions: IODataParams<GenericContent>})
+
+export const setChildrenOptions = <T extends GenericContent>(odataOptions: IODataParams<T>) => ({
+    type: 'DMS_DOCLIB_SET_CHILDREN_OPTIONS',
+    odataOptions,
 })
