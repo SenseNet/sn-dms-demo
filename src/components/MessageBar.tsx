@@ -51,16 +51,28 @@ class MessageBar extends React.Component<{ classes } & ReturnType<typeof mapStat
     public render() {
         const { classes, messagebar } = this.props
         // tslint:disable-next-line:no-string-literal
-        const successful = messagebar.content ? messagebar.content['d'] && messagebar.content['d'].results && messagebar.content['d'].results.length > 0 ? messagebar.content['d'].results : messagebar.content['d'] : null
+        let  successful
+        if (messagebar.content) {
+            // tslint:disable-next-line:no-string-literal
+            if (messagebar.content['d'] && messagebar.content['d'].results && messagebar.content['d'].results.length > 0) {
+                // tslint:disable-next-line:no-string-literal
+                successful = messagebar.content['d'].results
+            } else {
+                // tslint:disable-next-line:no-string-literal
+                successful = messagebar.content['d']
+            }
+        } else {
+            successful = null
+        }
         // tslint:disable-next-line:no-string-literal
-        const failed = messagebar.content &&  messagebar.content['d'] ? messagebar.content['d'].errors ? messagebar.content['d'].errors : null : null
+        const failed = messagebar.content && messagebar.content['d'] ? messagebar.content['d'].errors ? messagebar.content['d'].errors : null : null
         const action = messagebar.event
         let successMessage
-        if (successful && successful.length > 0) {
+        if (successful) {
             if (successful.length > 1) {
                 successMessage = `${successful.length} ${resources.ITEMS_ARE} ${resources[`${action}_MULTIPLE_MESSAGE`]}`
             } else {
-                successMessage = `$successful[0] ? successful[0].Name : successful.DisplayName} ${resources[`${action}_MESSAGE`]}`
+                successMessage = `${successful[0] ? successful[0].Name : successful.DisplayName} ${resources[`${action}_MESSAGE`]}`
             }
         } else {
             successMessage = null

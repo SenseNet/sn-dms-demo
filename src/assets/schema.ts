@@ -1185,7 +1185,7 @@ export const customSchema = [
           OutputMethod: 0,
           Visible: false,
           VisibleBrowse: 0,
-          VisibleEdit: 2,
+          VisibleEdit: 1,
           VisibleNew: 1,
           DefaultOrder: 0,
           Type: 'NullFieldSetting',
