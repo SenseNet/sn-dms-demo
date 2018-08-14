@@ -51,7 +51,7 @@ class MessageBar extends React.Component<{ classes } & ReturnType<typeof mapStat
     public render() {
         const { classes, messagebar } = this.props
         // tslint:disable-next-line:no-string-literal
-        let  successful
+        let successful
         if (messagebar.content) {
             // tslint:disable-next-line:no-string-literal
             if (messagebar.content['d'] && messagebar.content['d'].results && messagebar.content['d'].results.length > 0) {
@@ -64,8 +64,17 @@ class MessageBar extends React.Component<{ classes } & ReturnType<typeof mapStat
         } else {
             successful = null
         }
+        let failed
         // tslint:disable-next-line:no-string-literal
-        const failed = messagebar.content && messagebar.content['d'] ? messagebar.content['d'].errors ? messagebar.content['d'].errors : null : null
+        if (messagebar.content && messagebar.content['d']) {
+            // tslint:disable-next-line:no-string-literal
+            if (messagebar.content['d'].errors) {
+                // tslint:disable-next-line:no-string-literal
+                failed = messagebar.content['d'].errors
+            } else {
+                failed = null
+            }
+        } else { failed = null }
         const action = messagebar.event
         let successMessage
         if (successful) {
@@ -77,7 +86,16 @@ class MessageBar extends React.Component<{ classes } & ReturnType<typeof mapStat
         } else {
             successMessage = null
         }
-        const failedMessage = failed ? failed.length > 1 ? `${failed.length} ${resources.ITEMS} ${resources[`${action}_FAILED_MESSAGE`]}` : `${failed.DisplayName} ${resources[`${action}_FAILED_MESSAGE`]}` : null
+        let failedMessage
+        if (failed) {
+            if (failed.length > 1) {
+                failedMessage = `${failed.length} ${resources.ITEMS} ${resources[`${action}_FAILED_MESSAGE`]}`
+            } else if (failed.length === 1) {
+                failedMessage = `${failed.DisplayName} ${resources[`${action}_FAILED_MESSAGE`]}`
+            }
+        } else {
+            failedMessage = null
+        }
         return (
             <Snackbar
                 anchorOrigin={{
