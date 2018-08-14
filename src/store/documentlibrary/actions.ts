@@ -1,8 +1,13 @@
 import { IODataCollectionResponse, IODataParams, Repository } from '@sensenet/client-core'
+import { ValueObserver } from '@sensenet/client-utils'
 import { GenericContent } from '@sensenet/default-content-types'
+import { EventHub } from '@sensenet/repository-events'
 import { Action } from 'redux'
 import { InjectableAction } from 'redux-di-middleware'
 import { rootStateType } from '../..'
+import { changedContent, debounceReloadOnProgress } from '../../Actions'
+
+const eventObservables: Array<ValueObserver<any>> = []
 
 export const startLoading = (idOrPath: number | string) => ({
     type: 'DMS_DOCLIB_LOADING',
@@ -16,10 +21,17 @@ export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: s
     = <T extends GenericContent = GenericContent>(idOrPath: number | string) => ({
         type: 'DMS_DOCLIB_LOAD_PARENT',
         inject: async (options) => {
+
             const prevState = options.getState().dms.documentLibrary
             if (prevState.parentIdOrPath === idOrPath) {
                 return
             }
+
+            eventObservables.forEach((o) => o.dispose())
+            eventObservables.length = 0
+
+            const eventHub = options.getInjectable(EventHub)
+
             options.dispatch(startLoading(idOrPath))
             try {
                 const repository = options.getInjectable(Repository)
@@ -28,6 +40,29 @@ export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: s
                     oDataOptions: prevState.parentOptions,
                 })
                 options.dispatch(setParent(newParent.d))
+                const emitChange = (content: GenericContent) => {
+                    changedContent.push(content)
+                    debounceReloadOnProgress(options.getState, options.dispatch)
+                }
+
+                eventObservables.push(
+                    eventHub.onContentCreated.subscribe((value) => emitChange(value.content)),
+                    eventHub.onContentModified.subscribe((value) => emitChange(value.content)),
+                    eventHub.onContentDeleted.subscribe((value) => {
+                        const currentItems = options.getState().dms.documentLibrary.items
+                        const filtered = currentItems.d.results.filter((item) => item.Id !== value.contentData.Id)
+                        options.dispatch(setItems(
+                        {
+                            ...currentItems,
+                            d: {
+                                __count: filtered.length,
+                                results: filtered,
+                            },
+                        },
+                    ))
+                }),
+                eventHub.onContentMoved.subscribe((value) => emitChange(value.content)),
+            )
 
                 const items = await repository.loadCollection({
                     path: newParent.d.Path,
@@ -72,7 +107,6 @@ export const setActive = <T extends GenericContent>(active?: T) => ({
 
 export const updateChildrenOptions = <T extends GenericContent>(odataOptions: IODataParams<T>) => ({
     type: 'DMS_DOCLIB_UPDATE_CHILDREN_OPTIONS',
-    odataOptions,
     inject: async (options) => {
         const currentState = options.getState()
         const parentPath = currentState.dms.documentLibrary.parent.Path
@@ -81,7 +115,10 @@ export const updateChildrenOptions = <T extends GenericContent>(odataOptions: IO
         try {
             const items = await repository.loadCollection({
                 path: parentPath,
-                oDataOptions: odataOptions,
+                oDataOptions: {
+                    ...options.getState().dms.documentLibrary.childrenOptions,
+                    ...odataOptions,
+                },
             })
             options.dispatch(setItems(items))
         } catch (error) {

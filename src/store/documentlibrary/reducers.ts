@@ -20,14 +20,14 @@ export const defaultState: DocumentLibraryState = {
     items: { d: { __count: 0, results: [] } },
     selected: [],
     parentOptions: {
-        select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner', 'VersioningMode'],
+        select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner', 'VersioningMode', 'ParentId'],
         expand: ['Actions', 'Owner'],
         orderby: [['IsFolder', 'desc'], ['DisplayName', 'asc']],
         filter: 'ContentType ne \'SystemFolder\'',
         scenario: 'DMSListItem',
     },
     childrenOptions: {
-        select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner', 'VersioningMode'],
+        select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner', 'VersioningMode', 'ParentId'],
         expand: ['Actions', 'Owner'],
         orderby: [['IsFolder', 'desc'], ['DisplayName', 'asc']],
         filter: 'ContentType ne \'SystemFolder\'',
@@ -78,7 +78,10 @@ export const documentLibrary: Reducer<DocumentLibraryState> = (state = defaultSt
         case 'DMS_DOCLIB_SET_CHILDREN_OPTIONS':
             return {
                 ...state,
-                childrenOptions: (action as ReturnType<typeof updateChildrenOptions>).odataOptions,
+                childrenOptions: {
+                    ...state.childrenOptions,
+                    ...(action as ReturnType<typeof updateChildrenOptions>).odataOptions,
+                },
             }
 
     }
