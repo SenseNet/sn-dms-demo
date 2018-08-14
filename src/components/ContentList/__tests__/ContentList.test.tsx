@@ -3,15 +3,15 @@ import { Task } from '@sensenet/default-content-types'
 import { Reducers, Store } from '@sensenet/redux'
 import { configure } from 'enzyme'
 import * as Adapter from 'enzyme-adapter-react-16'
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
-import {
-    MemoryRouter,
-} from 'react-router-dom'
+// import * as React from 'react'
+// import * as ReactDOM from 'react-dom'
+// import { Provider } from 'react-redux'
+// import {
+//     MemoryRouter,
+// } from 'react-router-dom'
 import { combineReducers } from 'redux'
 import * as DMSReducers from '../../../Reducers'
-import ContentList from '../ContentList'
+// import ContentList from '../ContentList'
 
 import { rootStateType } from '../../..'
 import { dms } from '../../../Reducers'
@@ -119,14 +119,14 @@ store.dispatch({ type: 'REQUEST_CONTENT_SUCCESS', payload: [content] })
 
 describe('<ContentList />', () => {
     it('renders without crashing', () => {
-        const div = document.createElement('div')
+        // const div = document.createElement('div')
 
-        ReactDOM.render(
-            <Provider store={store}>
-                <MemoryRouter>
-                    <ContentList children={{ 123: { Id: 123 } }} />
-                </MemoryRouter>
-            </Provider>, div)
+        // ReactDOM.render(
+        //     <Provider store={store}>
+        //         <MemoryRouter>
+        //             <ContentList children={{ 123: { Id: 123 } }} />
+        //         </MemoryRouter>
+        //     </Provider>, div)
     })
 })
 
