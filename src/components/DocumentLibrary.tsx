@@ -152,7 +152,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                                 const clickedIndex = this.props.items.d.results.findIndex((s) => s.Id === content.Id)
                                 const newSelection = Array.from(new Set([...this.props.selected, ...[...this.props.items.d.results].slice(Math.min(activeIndex, clickedIndex), Math.max(activeIndex, clickedIndex) + 1)]))
                                 this.props.select(newSelection)
-                            } else if (this.props.selected.length < 2) {
+                            } else if (!this.props.selected.length || this.props.selected.length === 1 && this.props.selected[0].Id !== content.Id) {
                                 this.props.select([content])
                             }
                         }}
