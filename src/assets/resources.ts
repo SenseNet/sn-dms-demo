@@ -93,4 +93,13 @@ export const resources = {
     REJECT: 'Reject',
     REJECT_REASON_PLACEHOLDER: 'Please provide a reason for rejecting the content',
     APPROVE_CONTENT_SUCCESS_MESSAGE: 'is successfully approved',
+    APPROVE_FAILURE_MESSAGE: 'cannot be approved',
+    CONTENT: 'Content',
+    REJECT_FAILURE_MESSAGE: 'cannot be rejected',
+    CHECKOUT_FAILURE_MESSAGE: 'cannot be checked-out',
+    CHECKIN_FAILURE_MESSAGE: 'cannot be checked-in',
+    PUBLISH_FAILURE_MESSAGE: 'cannot be published',
+    UNDOCHECKOUT_FAILURE_MESSAGE: 'cannot be checked-in',
+    FORCEUNDOCHECKOUT_FAILURE_MESSAGE: 'cannot be checked-in',
+    EDIT_PROPERTIES_FAILURE_MESSAGE: 'cannot be modified',
 }

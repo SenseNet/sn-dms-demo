@@ -349,20 +349,12 @@ export const messagebarcontent: Reducer<object> = (state = [], action) => {
         case 'DELETE_CONTENT_FAILURE':
         case 'LOAD_CONTENT_FAILURE':
         case 'FETCH_CONTENT_FAILURE':
-        case 'UPDATE_CONTENT_FAILURE':
         case 'DELETE_BATCH_FAILURE':
             return action.result as PromiseReturns<typeof deleteBatch>
         case 'COPY_CONTENT_FAILURE':
         case 'COPY_BATCH_FAILURE':
         case 'MOVE_CONTENT_FAILURE':
         case 'MOVE_BATCH_FAILURE':
-        case 'CHECKOUT_CONTENT_FAILURE':
-        case 'CHECKIN_CONTENT_FAILURE':
-        case 'PUBLISH_CONTENT_FAILURE':
-        case 'APPROVE_CONTENT_FAILURE':
-        case 'REJECT_CONTENT_FAILURE':
-        case 'UNDOCHECKOUT_CONTENT_FAILURE':
-        case 'FORCE_UNDOCHECKOUT_CONTENT_FAILURE':
         case 'RESTOREVERSION_CONTENT_FAILURE':
         case 'MOVE_CONTENT_FAILURE':
         case 'MOVE_BATCH_FAILURE':
