@@ -21,10 +21,13 @@ export const contentListTheme = createMuiTheme({
         MuiTableRow: {
             hover: {
                 ...defaultCell,
-                '&:hover': {... hoveredCell },
+                '&:hover': { ...hoveredCell },
                 '&.selected': {
                     color: '#016D9E !important',
                     fontWeight: 'bolder',
+                },
+                '&.type-folder .display-name .material-icons': {
+                    color: '#016D9E',
                 },
             },
         },
@@ -33,10 +36,14 @@ export const contentListTheme = createMuiTheme({
                 color: 'inherit',
                 fontSize: '16px',
                 fontWeight: 'inherit',
+                background: 'rgba(255,255,255,.8)',
             },
             root: {
                 '&.display-name,&.DisplayName': {
                     paddingLeft: 0,
+                },
+                '&.display-name,&.DisplayName:contains(folder)': {
+                    color: 'red',
                 },
             },
         },

@@ -17,8 +17,6 @@ import { loadParent, select, setActive, updateChildrenOptions } from '../store/d
 import ActionMenu from './ActionMenu/ActionMenu'
 import { FetchError } from './FetchError'
 
-const uploadContentAction = uploadRequest
-
 const mapStateToProps = (state: rootStateType) => {
     return {
         loggedinUser: state.sensenet.session.user,
@@ -38,7 +36,7 @@ const mapStateToProps = (state: rootStateType) => {
 const mapDispatchToProps = {
     loadParent,
     setCurrentId: DMSActions.setCurrentId,
-    uploadContent: uploadContentAction,
+    uploadContent: uploadRequest,
     uploadDataTransfer: DMSActions.uploadDataTransfer,
     openViewer: DMSActions.openViewer,
     openActionMenu: DMSActions.openActionMenu,
@@ -78,19 +76,17 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
         } as DocumentLibrary['state']
     }
 
-    public handleFileDrop(item, monitor) {
+    public handleFileDrop(ev: React.DragEvent) {
         const { uploadDataTransfer, parent } = this.props
-        if (monitor) {
-            const dataTransfer = monitor.getItem().dataTransfer
-            uploadDataTransfer({
-                binaryPropertyName: 'Binary',
-                contentTypeName: 'File',
-                createFolders: true,
-                event: new DragEvent('drop', { dataTransfer }),
-                overwrite: false,
-                parentPath: parent.Path,
-            })
-        }
+        ev.preventDefault()
+        uploadDataTransfer({
+            binaryPropertyName: 'Binary',
+            contentTypeName: 'File',
+            createFolders: true,
+            event: new DragEvent('drop', { dataTransfer: ev.dataTransfer }),
+            overwrite: false,
+            parentPath: parent.Path,
+        })
     }
 
     public handleRowDoubleClick(e: React.MouseEvent, content: GenericContent) {
@@ -116,39 +112,57 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
         }
 
         return this.props.currentUser.content.Id !== ConstantContent.VISITOR_USER.Id ?
-            <MuiThemeProvider theme={contentListTheme}>
-                <ContentList
-                    schema={customSchema.find((s) => s.ContentTypeName === 'GenericContent')}
-                    selected={this.props.selected}
-                    active={this.props.active}
-                    items={this.props.items.d.results}
-                    fieldsToDisplay={['DisplayName', 'ModificationDate', 'Owner', 'Actions']}
-                    orderBy={this.props.childrenOptions.orderby[0][0] as any}
-                    orderDirection={this.props.childrenOptions.orderby[0][1] as any}
-                    onRequestSelectionChange={(newSelection) => this.props.select(newSelection)}
-                    onRequestActiveItemChange={(active) => this.props.setActive(active)}
-                    onRequestActionsMenu={(ev, content) => {
-                        ev.preventDefault()
-                        this.props.closeActionMenu()
-                        this.props.openActionMenu(content.Actions as IActionModel[], content, '', ev.currentTarget.parentElement, { top: ev.clientY, left: ev.clientX })
-                    }}
-                    onItemContextMenu={(ev, content) => {
-                        ev.preventDefault()
-                        this.props.closeActionMenu()
-                        this.props.openActionMenu(content.Actions as IActionModel[], content, '', ev.currentTarget.parentElement, { top: ev.clientY, left: ev.clientX })
-                    }}
-                    onRequestOrderChange={(field, direction) => {
-                        this.props.updateChildrenOptions({
-                            ...this.props.childrenOptions,
-                            orderby: [[field, direction]],
-                        })
-                    }}
-                    onItemDoubleClick={this.handleRowDoubleClick}
-                    fieldComponent={null as any}
-                    icons={icons}
-                />
-                < ActionMenu id={0} />
-            </MuiThemeProvider>
+            <div onDragOver={(ev) => ev.preventDefault()} onDrop={this.handleFileDrop}>
+                <MuiThemeProvider theme={contentListTheme}>
+                    <ContentList
+                        schema={customSchema.find((s) => s.ContentTypeName === 'GenericContent')}
+                        selected={this.props.selected}
+                        active={this.props.active}
+                        items={this.props.items.d.results}
+                        fieldsToDisplay={['DisplayName', 'ModificationDate', 'Owner', 'Actions']}
+                        orderBy={this.props.childrenOptions.orderby[0][0] as any}
+                        orderDirection={this.props.childrenOptions.orderby[0][1] as any}
+                        onRequestSelectionChange={(newSelection) => this.props.select(newSelection)}
+                        onRequestActiveItemChange={(active) => this.props.setActive(active)}
+                        onRequestActionsMenu={(ev, content) => {
+                            ev.preventDefault()
+                            this.props.closeActionMenu()
+                            this.props.openActionMenu(content.Actions as IActionModel[], content, '', ev.currentTarget.parentElement, { top: ev.clientY, left: ev.clientX })
+                        }}
+                        onItemContextMenu={(ev, content) => {
+                            ev.preventDefault()
+                            this.props.closeActionMenu()
+                            this.props.openActionMenu(content.Actions as IActionModel[], content, '', ev.currentTarget.parentElement, { top: ev.clientY, left: ev.clientX })
+                        }}
+                        onRequestOrderChange={(field, direction) => {
+                            this.props.updateChildrenOptions({
+                                ...this.props.childrenOptions,
+                                orderby: [[field, direction]],
+                            })
+                        }}
+                        onItemClick={(ev, content) => {
+                            if (ev.ctrlKey) {
+                                if (this.props.selected.find((s) => s.Id === content.Id)) {
+                                    this.props.select(this.props.selected.filter((s) => s.Id !== content.Id))
+                                } else {
+                                    this.props.select([...this.props.selected, content])
+                                }
+                            } else if (ev.shiftKey) {
+                                const activeIndex = this.props.items.d.results.findIndex((s) => s.Id === this.props.active.Id)
+                                const clickedIndex = this.props.items.d.results.findIndex((s) => s.Id === content.Id)
+                                const newSelection = Array.from(new Set([...this.props.selected, ...[...this.props.items.d.results].slice(Math.min(activeIndex, clickedIndex), Math.max(activeIndex, clickedIndex) + 1)]))
+                                this.props.select(newSelection)
+                            } else if (!this.props.selected.length || this.props.selected.length === 1 && this.props.selected[0].Id !== content.Id) {
+                                this.props.select([content])
+                            }
+                        }}
+                        onItemDoubleClick={this.handleRowDoubleClick}
+                        fieldComponent={null as any}
+                        icons={icons}
+                    />
+                    < ActionMenu id={0} />
+                </MuiThemeProvider>
+            </div>
             : null
 
     }

@@ -72,11 +72,27 @@ export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: s
                     eventHub.onContentMoved.subscribe((value) => emitChange(value.content)) as any,
                 )
 
-                const items = await repository.loadCollection({
-                    path: newParent.d.Path,
-                    oDataOptions: prevState.childrenOptions,
-                })
-                options.dispatch(setItems(items))
+                await Promise.all([(async () => {
+                    const ancestors = await repository.executeAction<undefined, IODataCollectionResponse<GenericContent>>({
+                        idOrPath: newParent.d.Id,
+                        method: 'GET',
+                        name: 'Ancestors',
+                        body: undefined,
+                        oDataOptions: {
+                            ...prevState.childrenOptions,
+                            orderby: [['Path', 'asc']],
+                        },
+                    })
+                    options.dispatch(setAncestors([...ancestors.d.results, newParent.d]))
+                })(),
+                (async () => {
+                    const items = await repository.loadCollection({
+                        path: newParent.d.Path,
+                        oDataOptions: prevState.childrenOptions,
+                    })
+                    options.dispatch(setItems(items))
+                })(),
+                ])
 
             } catch (error) {
                 options.dispatch(setError(error))
@@ -90,6 +106,11 @@ export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: s
 export const setParent: <T extends GenericContent = GenericContent>(content: T) => Action & { content: T } = <T>(content: T) => ({
     type: 'DMS_DOCLIB_SET_PARENT',
     content,
+})
+
+export const setAncestors = <T extends GenericContent>(ancestors: T[]) => ({
+    type: 'DMS_DOCLIB_SET_ANCESTORS',
+    ancestors,
 })
 
 export const setItems: <T extends GenericContent = GenericContent>(items: IODataCollectionResponse<T>) => Action & { items: IODataCollectionResponse<T> }

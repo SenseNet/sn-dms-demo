@@ -25,6 +25,6 @@ it('renders without crashing', () => {
   ReactDOM.render(
     withStore(
       <MemoryRouter>
-        <BreadCrumb />
+        <BreadCrumb ancestors={[]} currentContent={{}} />
       </MemoryRouter>, options), div)
 })

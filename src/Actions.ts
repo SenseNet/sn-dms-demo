@@ -120,7 +120,7 @@ function methodToDebounce(getState: () => rootStateType, dispatch: Dispatch) {
         }
     })
 }
-export const debounceReloadOnProgress = debounce(methodToDebounce, 2000)
+export const debounceReloadOnProgress = debounce(methodToDebounce, 300)
 
 export const trackUploadProgress = async <T extends GenericContent>(currentValue: ExtendedUploadProgressInfo, getState: () => rootStateType, dispatch: Dispatch, api: Repository) => {
 
