@@ -1,6 +1,7 @@
 import Button from '@material-ui/core/Button'
 import Icon from '@material-ui/core/Icon'
-import { Actions, Reducers } from '@sensenet/redux'
+import { GenericContent, IActionModel } from '@sensenet/default-content-types'
+import { Actions } from '@sensenet/redux'
 import { compile } from 'path-to-regexp'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -47,10 +48,10 @@ const styles = {
 
 const mapStateToProps = (state: rootStateType, match) => {
     return {
-        breadcrumb: state.dms.breadcrumb,
-        currentId: match.match.params.id,
-        actions: state.sensenet.currentcontent.actions,
-        currentContent: Reducers.getCurrentContent(state.sensenet),
+        // breadcrumb: state.dms.breadcrumb,
+        // currentId: match.match.params.id,
+        // actions: state.sensenet.currentcontent.actions,
+        // currentContent: Reducers.getCurrentContent(state.sensenet),
     }
 }
 
@@ -61,7 +62,7 @@ const mapDispatchToProps = {
 }
 
 interface BreadCrumbProps extends RouteComponentProps<any> {
-
+    ancestors: GenericContent[]
 }
 
 interface BreadCrumbState {
@@ -82,64 +83,64 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
         this.handleClick = this.handleClick.bind(this)
         this.handleActionMenuClick = this.handleActionMenuClick.bind(this)
     }
-    public handleClick(e, content: DMSReducers.BreadcrumbItemType) {
-        const newPath = compile(this.props.match.path)({ folderPath: btoa(content.path) })
+    public handleClick(e, content: GenericContent) {
+        const newPath = compile(this.props.match.path)({ folderPath: btoa(content.Path) })
         this.props.history.push(newPath)
     }
 
-    public static getDerivedStateFromProps(nextProps: BreadCrumb['props'], lastState: BreadCrumb['state']) {
-        if (nextProps.breadcrumb !== lastState.breadcrumb) {
-            return {
-                ...lastState,
-                breadcrumb: nextProps.breadcrumb,
-            }
-        }
-        return lastState
-    }
+    // public static getDerivedStateFromProps(nextProps: BreadCrumb['props'], lastState: BreadCrumb['state']) {
+    //     if (nextProps.breadcrumb !== lastState.breadcrumb) {
+    //         return {
+    //             ...lastState,
+    //             breadcrumb: nextProps.breadcrumb,
+    //         }
+    //     }
+    //     return lastState
+    // }
 
-    public handleActionMenuClick(e: React.MouseEvent<HTMLElement>, content) {
+    public handleActionMenuClick(e: React.MouseEvent<HTMLElement>, content: GenericContent) {
         const top = e.pageY - e.currentTarget.offsetTop
         const left = e.pageX - e.currentTarget.offsetLeft
         this.props.closeActionMenu()
-        this.props.openActionMenu(this.props.actions, content.Id, content.DisplayName, e.currentTarget, { top: top + 30, left })
+        this.props.openActionMenu(content.Actions as IActionModel[], content, content.DisplayName, e.currentTarget, { top: top + 30, left })
         this.setState({ anchorTop: top, anchorLeft: left })
     }
     public render() {
-        const { breadcrumb, currentContent } = this.props
         return <div style={styles.breadCrumb}>
             <MediaQuery minDeviceWidth={700}>
                 {(matches) => {
-                    return breadcrumb.map((n, i) => {
+                    return this.props.ancestors.map((ancestor, i) => {
+                        const isLast = i === (this.props.ancestors.length - 1)
                         if (matches) {
                             return <div style={styles.item} key={i}>
                                 <Button
                                     aria-owns="actionmenu"
                                     onClick={
-                                        i !== (breadcrumb.length - 1) ?
-                                            (event) => this.handleClick(event, n) :
-                                            (e) => this.handleActionMenuClick(e, currentContent)
+                                        !isLast ?
+                                            (event) => this.handleClick(event, ancestor) :
+                                            (e) => this.handleActionMenuClick(e, ancestor)
                                     }
-                                    key={n.id}
-                                    style={i === (breadcrumb.length - 1) ? { ...styles.breadCrumbItem, ...styles.breadCrumbItemLast } : styles.breadCrumbItem as any}>
-                                    {n.name}
-                                    {i !== (breadcrumb.length - 1) ?
+                                    key={ancestor.Id}
+                                    style={isLast ? { ...styles.breadCrumbItem, ...styles.breadCrumbItemLast } : styles.breadCrumbItem as any}>
+                                    {ancestor.DisplayName}
+                                    {!isLast ?
                                         '' :
-                                        <Icon style={styles.breadCrumbIconLast} onClick={(e) => this.handleActionMenuClick(e, currentContent)}>{icons.arrowDropDown}</Icon>}
+                                        <Icon style={styles.breadCrumbIconLast} onClick={(e) => this.handleActionMenuClick(e, ancestor)}>{icons.arrowDropDown}</Icon>}
                                 </Button>
-                                {i !== (breadcrumb.length - 1) ?
+                                {!isLast ?
                                     <Icon style={styles.breadCrumbIcon}>{icons.arrowRight}</Icon> : ''}
                             </div>
-                        } else if (!matches && i === (breadcrumb.length - 1)) {
+                        } else if (!matches && !isLast) {
                             return <div style={styles.item} key={i}>
-                                <Button onClick={(event) => this.handleClick(event, n)}
-                                    key={n.id}
+                                <Button onClick={(event) => this.handleClick(event, ancestor)}
+                                    key={ancestor.Id}
                                     style={styles.breadCrumbItem as any}>
-                                    {n.name}
+                                    {ancestor.Name}
                                 </Button>
-                                {breadcrumb.length > 1 ?
+                                {this.props.ancestors.length > 1 ?
                                     <Icon style={styles.breadCrumbIconLeft as any}>{icons.arrowLeft}</Icon> :
                                     ''}
-                                {n.name}
+                                {ancestor.Name}
                             </div>
                         } else {
                             return null

@@ -63,6 +63,7 @@ const mapStateToProps = (state: rootStateType) => {
         dialogTitle: state.dms.dialog.title,
         docLibParent: state.dms.documentLibrary.parent,
         docLibSelection: state.dms.documentLibrary.selected,
+        ancestors: state.dms.documentLibrary.ancestors,
     }
 }
 
@@ -141,7 +142,11 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                                     </Route>
                                                     <Route path={'/' + PathHelper.joinPaths(props.match.url, '/:folderPath?')} exact component={() => (
                                                         <div>
-                                                            <ListToolbar currentContent={this.props.docLibParent} selected={this.props.docLibSelection} />
+                                                            <ListToolbar
+                                                                currentContent={this.props.docLibParent}
+                                                                selected={this.props.docLibSelection}
+                                                                ancestors={this.props.ancestors}
+                                                            />
                                                             <DocumentLibrary />
                                                         </div>
                                                     )}>
@@ -182,7 +187,11 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                     } else {
                         return <div style={styles.root}>
                             <div style={styles.dashBoardInnerMobile}>
-                                <ListToolbar currentContent={this.props.docLibParent} selected={this.props.docLibSelection} />
+                                <ListToolbar
+                                    ancestors={this.props.ancestors}
+                                    currentContent={this.props.docLibParent}
+                                    selected={this.props.docLibSelection}
+                                />
                                 <DocumentLibrary />
                             </div>
                         </div>

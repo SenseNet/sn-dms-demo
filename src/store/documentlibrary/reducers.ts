@@ -1,10 +1,11 @@
 import { IODataCollectionResponse, IODataParams } from '@sensenet/client-core'
 import { GenericContent } from '@sensenet/default-content-types'
 import { Reducer } from 'redux'
-import { select, setActive, setError, setItems, setParent, startLoading, updateChildrenOptions } from './actions'
+import { select, setActive, setAncestors, setError, setItems, setParent, startLoading, updateChildrenOptions } from './actions'
 
 export interface DocumentLibraryState {
     parent?: GenericContent
+    ancestors: GenericContent[]
     parentIdOrPath?: string | number,
     items: IODataCollectionResponse<GenericContent>
     isLoading: boolean
@@ -19,6 +20,7 @@ export const defaultState: DocumentLibraryState = {
     isLoading: true,
     items: { d: { __count: 0, results: [] } },
     selected: [],
+    ancestors: [],
     parentOptions: {
         select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner', 'VersioningMode', 'ParentId'],
         expand: ['Actions', 'Owner'],
@@ -54,6 +56,11 @@ export const documentLibrary: Reducer<DocumentLibraryState> = (state = defaultSt
             return {
                 ...state,
                 parent: (action as ReturnType<typeof setParent>).content,
+            }
+        case 'DMS_DOCLIB_SET_ANCESTORS':
+            return {
+                ...state,
+                ancestors: (action as ReturnType<typeof setAncestors>).ancestors,
             }
         case 'DMS_DOCLIB_SET_ITEMS':
             return {

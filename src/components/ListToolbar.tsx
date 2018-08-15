@@ -8,7 +8,8 @@ import { WorkspaceSelector } from './WorkspaceSelector/WorkspaceSelector'
 
 export interface ListToolbarProps {
     currentContent: GenericContent,
-    selected: GenericContent[]
+    selected: GenericContent[],
+    ancestors: GenericContent[]
 }
 
 export class ListToolbar extends React.Component<ListToolbarProps, {}> {
@@ -19,7 +20,7 @@ export class ListToolbar extends React.Component<ListToolbarProps, {}> {
                 <Toolbar style={{ display: 'flex', flexDirection: 'row', padding: '0 12px' }}>
                     <div style={{ flex: 1, display: 'flex' }}>
                         <WorkspaceSelector />
-                        <BreadCrumb />
+                        <BreadCrumb ancestors={this.props.ancestors} />
                     </div>
                     <BatchActionlist currentContent={this.props.currentContent} selected={this.props.selected} />
                 </Toolbar>
