@@ -21,7 +21,7 @@ export const contentListTheme = createMuiTheme({
         MuiTableRow: {
             hover: {
                 ...defaultCell,
-                '&:hover': {... hoveredCell },
+                '&:hover': { ...hoveredCell },
                 '&.selected': {
                     color: '#016D9E !important',
                     fontWeight: 'bolder',
@@ -33,6 +33,7 @@ export const contentListTheme = createMuiTheme({
                 color: 'inherit',
                 fontSize: '16px',
                 fontWeight: 'inherit',
+                background: '#fefefe',
             },
             root: {
                 '&.display-name,&.DisplayName': {
