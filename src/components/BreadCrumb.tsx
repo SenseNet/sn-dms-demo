@@ -10,7 +10,6 @@ import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
 import { icons } from '../assets/icons'
-import * as DMSReducers from '../Reducers'
 
 const styles = {
     breadCrumb: {
@@ -48,10 +47,6 @@ const styles = {
 
 const mapStateToProps = (state: rootStateType, match) => {
     return {
-        // breadcrumb: state.dms.breadcrumb,
-        // currentId: match.match.params.id,
-        // actions: state.sensenet.currentcontent.actions,
-        // currentContent: Reducers.getCurrentContent(state.sensenet),
     }
 }
 
@@ -63,21 +58,10 @@ const mapDispatchToProps = {
 
 interface BreadCrumbProps extends RouteComponentProps<any> {
     ancestors: GenericContent[]
+    currentContent: GenericContent
 }
 
-interface BreadCrumbState {
-    breadcrumb: DMSReducers.BreadcrumbItemType[]
-    anchorTop: number
-    anchorLeft: number
-}
-
-class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToProps & ReturnType<typeof mapStateToProps>, BreadCrumbState> {
-    public state = {
-        anchorLeft: 0,
-        anchorTop: 0,
-        breadcrumb: [],
-    }
-
+class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToProps & ReturnType<typeof mapStateToProps>> {
     constructor(props) {
         super(props)
         this.handleClick = this.handleClick.bind(this)
@@ -88,16 +72,6 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
         this.props.history.push(newPath)
     }
 
-    // public static getDerivedStateFromProps(nextProps: BreadCrumb['props'], lastState: BreadCrumb['state']) {
-    //     if (nextProps.breadcrumb !== lastState.breadcrumb) {
-    //         return {
-    //             ...lastState,
-    //             breadcrumb: nextProps.breadcrumb,
-    //         }
-    //     }
-    //     return lastState
-    // }
-
     public handleActionMenuClick(e: React.MouseEvent<HTMLElement>, content: GenericContent) {
         const top = e.pageY - e.currentTarget.offsetTop
         const left = e.pageX - e.currentTarget.offsetLeft
@@ -106,54 +80,53 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
         this.setState({ anchorTop: top, anchorLeft: left })
     }
     public render() {
+        const ancestors = this.props.ancestors
+            .filter((a) => a.Type === 'DocumentLibrary' || a.Type === 'Folder' || a.Id === this.props.currentContent.Id)
         return <div style={styles.breadCrumb}>
             <MediaQuery minDeviceWidth={700}>
                 {(matches) => {
-                    return this.props.ancestors.map((ancestor, i) => {
-                        const isLast = i === (this.props.ancestors.length - 1)
-                        if (matches) {
-                            return <div style={styles.item} key={i}>
-                                <Button
-                                    aria-owns="actionmenu"
-                                    onClick={
-                                        !isLast ?
-                                            (event) => this.handleClick(event, ancestor) :
-                                            (e) => this.handleActionMenuClick(e, ancestor)
-                                    }
-                                    key={ancestor.Id}
-                                    style={isLast ? { ...styles.breadCrumbItem, ...styles.breadCrumbItemLast } : styles.breadCrumbItem as any}>
-                                    {ancestor.DisplayName}
+                    return ancestors
+                        .map((ancestor, i) => {
+                            const isLast = i === (ancestors.length - 1)
+                            if (matches) {
+                                return <div style={styles.item} key={i}>
+                                    <Button
+                                        aria-owns="actionmenu"
+                                        onClick={
+                                            !isLast ?
+                                                (event) => this.handleClick(event, ancestor) :
+                                                (e) => this.handleActionMenuClick(e, ancestor)
+                                        }
+                                        key={ancestor.Id}
+                                        style={isLast ? { ...styles.breadCrumbItem, ...styles.breadCrumbItemLast } : styles.breadCrumbItem as any}>
+                                        {ancestor.DisplayName}
+                                        {!isLast ?
+                                            '' :
+                                            <Icon style={styles.breadCrumbIconLast} onClick={(e) => this.handleActionMenuClick(e, ancestor)}>{icons.arrowDropDown}</Icon>}
+                                    </Button>
                                     {!isLast ?
-                                        '' :
-                                        <Icon style={styles.breadCrumbIconLast} onClick={(e) => this.handleActionMenuClick(e, ancestor)}>{icons.arrowDropDown}</Icon>}
-                                </Button>
-                                {!isLast ?
-                                    <Icon style={styles.breadCrumbIcon}>{icons.arrowRight}</Icon> : ''}
-                            </div>
-                        } else if (!matches && !isLast) {
-                            return <div style={styles.item} key={i}>
-                                <Button onClick={(event) => this.handleClick(event, ancestor)}
-                                    key={ancestor.Id}
-                                    style={styles.breadCrumbItem as any}>
+                                        <Icon style={styles.breadCrumbIcon}>{icons.arrowRight}</Icon> : ''}
+                                </div>
+                            } else if (!matches && !isLast) {
+                                return <div style={styles.item} key={i}>
+                                    <Button onClick={(event) => this.handleClick(event, ancestor)}
+                                        key={ancestor.Id}
+                                        style={styles.breadCrumbItem as any}>
+                                        {ancestor.Name}
+                                    </Button>
+                                    {ancestors.length > 1 ?
+                                        <Icon style={styles.breadCrumbIconLeft as any}>{icons.arrowLeft}</Icon> :
+                                        ''}
                                     {ancestor.Name}
-                                </Button>
-                                {this.props.ancestors.length > 1 ?
-                                    <Icon style={styles.breadCrumbIconLeft as any}>{icons.arrowLeft}</Icon> :
-                                    ''}
-                                {ancestor.Name}
-                            </div>
-                        } else {
-                            return null
-                        }
-                    })
+                                </div>
+                            } else {
+                                return null
+                            }
+                        })
                 }}
             </MediaQuery>
         </div>
     }
 }
 
-export default withRouter(connect(mapStateToProps, {
-    openActionMenu: DMSActions.openActionMenu,
-    closeActionMenu: DMSActions.closeActionMenu,
-    getActions: Actions.loadContentActions,
-})(BreadCrumb))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(BreadCrumb))

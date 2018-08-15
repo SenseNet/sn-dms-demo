@@ -20,7 +20,7 @@ export class ListToolbar extends React.Component<ListToolbarProps, {}> {
                 <Toolbar style={{ display: 'flex', flexDirection: 'row', padding: '0 12px' }}>
                     <div style={{ flex: 1, display: 'flex' }}>
                         <WorkspaceSelector />
-                        <BreadCrumb ancestors={this.props.ancestors} />
+                        <BreadCrumb ancestors={this.props.ancestors} currentContent={this.props.currentContent} />
                     </div>
                     <BatchActionlist currentContent={this.props.currentContent} selected={this.props.selected} />
                 </Toolbar>
