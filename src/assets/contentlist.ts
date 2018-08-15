@@ -26,6 +26,9 @@ export const contentListTheme = createMuiTheme({
                     color: '#016D9E !important',
                     fontWeight: 'bolder',
                 },
+                '&.type-folder .display-name .material-icons': {
+                    color: '#016D9E',
+                },
             },
         },
         MuiTableCell: {
@@ -33,11 +36,14 @@ export const contentListTheme = createMuiTheme({
                 color: 'inherit',
                 fontSize: '16px',
                 fontWeight: 'inherit',
-                background: '#fefefe',
+                background: 'rgba(255,255,255,.8)',
             },
             root: {
                 '&.display-name,&.DisplayName': {
                     paddingLeft: 0,
+                },
+                '&.display-name,&.DisplayName:contains(folder)': {
+                    color: 'red',
                 },
             },
         },
