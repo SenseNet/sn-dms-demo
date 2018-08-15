@@ -50,6 +50,7 @@ class EditPropertiesDialog extends React.Component<EditPropertiesDialogProps & R
                         repository={repository}
                         contentTypeName={contentTypeName}
                         onSubmit={editContent}
+                        handleCancel={() => this.handleCancel()}
                         submitCallback={this.submitCallback} />
                     : <CircularProgress size={50} />}
             </div>

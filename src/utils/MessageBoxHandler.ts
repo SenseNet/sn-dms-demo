@@ -4,6 +4,7 @@ import { Actions } from '@sensenet/redux'
 import { EventHub } from '@sensenet/repository-events'
 import { Store } from 'redux'
 import { setMessageBar } from '../Actions'
+import { resources } from '../assets/resources'
 
 enum MessageMode { error = 'error', warning = 'warning', info = 'info' }
 
@@ -28,6 +29,20 @@ export class MessageBoxHandler {
         this.eventHub.onContentDeleted.subscribe(() => {
             store.dispatch(
                 setMessageBar(MessageMode.info, [{ message: 'Delete was successful' }], null, null),
+            )
+        })
+
+        this.eventHub.onCustomActionFailed.subscribe((response) => {
+            const message = response.error.message.length > 0 ? response.error.message : resources[`${(response.actionOptions.name).toUpperCase()}_FAILURE_MESSAGE`]
+            store.dispatch(
+                setMessageBar(MessageMode.error, [message], null, null),
+            )
+        })
+
+        this.eventHub.onContentModificationFailed.subscribe((response) => {
+            const message = response.error.message.length > 0 ? response.error.message : `${response.content.Name} ${resources.EDIT_PROPERTIES_FAILURE_MESSAGE}`
+            store.dispatch(
+                setMessageBar(MessageMode.error, [message], null, null),
             )
         })
     }
