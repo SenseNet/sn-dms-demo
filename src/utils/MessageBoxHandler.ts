@@ -38,5 +38,12 @@ export class MessageBoxHandler {
                 setMessageBar(MessageMode.error, [message], null, null),
             )
         })
+
+        this.eventHub.onContentModificationFailed.subscribe((response) => {
+            const message = response.error.message.length > 0 ? response.error.message : `${response.content.Name} ${resources.EDIT_PROPERTIES_FAILURE_MESSAGE}`
+            store.dispatch(
+                setMessageBar(MessageMode.error, [message], null, null),
+            )
+        })
     }
 }
