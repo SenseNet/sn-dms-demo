@@ -162,7 +162,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                 case 'Versions':
                     this.handleClose()
                     this.props.openDialog(
-                        <VersionsDialog id={this.props.currentContent.Id} />,
+                        <VersionsDialog currentContent={this.props.currentContent} />,
                         resources.VERSIONS, this.props.closeDialog)
                     break
                 case 'Profile':

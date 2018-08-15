@@ -46,23 +46,31 @@ export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: s
                 }
 
                 eventObservables.push(
+                    eventHub.onCustomActionExecuted.subscribe((value) => {
+                        const currentItems = options.getState().dms.documentLibrary.items
+                        if (currentItems.d.results.filter((a) => a.Id === value.actionOptions.idOrPath)
+                            || currentItems.d.results.filter((a) => a.Path === value.actionOptions.idOrPath)
+                        ) {
+                            emitChange({ ParentId: newParent.d.Id } as GenericContent)
+                        }
+                    }),
                     eventHub.onContentCreated.subscribe((value) => emitChange(value.content)),
                     eventHub.onContentModified.subscribe((value) => emitChange(value.content)),
                     eventHub.onContentDeleted.subscribe((value) => {
                         const currentItems = options.getState().dms.documentLibrary.items
                         const filtered = currentItems.d.results.filter((item) => item.Id !== value.contentData.Id)
                         options.dispatch(setItems(
-                        {
-                            ...currentItems,
-                            d: {
-                                __count: filtered.length,
-                                results: filtered,
+                            {
+                                ...currentItems,
+                                d: {
+                                    __count: filtered.length,
+                                    results: filtered,
+                                },
                             },
-                        },
-                    ))
-                }),
-                eventHub.onContentMoved.subscribe((value) => emitChange(value.content)),
-            )
+                        ))
+                    }),
+                    eventHub.onContentMoved.subscribe((value) => emitChange(value.content)),
+                )
 
                 const items = await repository.loadCollection({
                     path: newParent.d.Path,
@@ -130,7 +138,7 @@ export const updateChildrenOptions = <T extends GenericContent>(odataOptions: IO
 
         /** */
     },
-} as InjectableAction<rootStateType, Action> & { odataOptions: IODataParams<GenericContent>})
+} as InjectableAction<rootStateType, Action> & { odataOptions: IODataParams<GenericContent> })
 
 export const setChildrenOptions = <T extends GenericContent>(odataOptions: IODataParams<T>) => ({
     type: 'DMS_DOCLIB_SET_CHILDREN_OPTIONS',
