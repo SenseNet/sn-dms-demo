@@ -101,4 +101,5 @@ export const resources = {
     PUBLISH_FAILURE_MESSAGE: 'cannot be published',
     UNDOCHECKOUT_FAILURE_MESSAGE: 'cannot be checked-in',
     FORCEUNDOCHECKOUT_FAILURE_MESSAGE: 'cannot be checked-in',
+    EDIT_PROPERTIES_FAILURE_MESSAGE: 'cannot be modified',
 }
