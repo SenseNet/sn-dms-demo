@@ -6,6 +6,7 @@ import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import * as DMSActions from '../../Actions'
+import EditPropertiesDialog from '../Dialogs/EditPropertiesDialog'
 
 import Fade from '@material-ui/core/Fade'
 import Menu from '@material-ui/core/Menu'
@@ -171,6 +172,15 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     const doclibPath = `/Root/Profiles/Public/${this.props.userName}/Document_Library`
                     this.props.loadContent(doclibPath)
                     this.props.fetchContent(doclibPath, this.props.queryOptions)
+                    break
+                case 'Edit':
+                    this.handleClose()
+                    const content = this.props.currentitems.entities.find((item) => item.Id === this.props.contentId)
+                    this.props.openDialog(
+                        <EditPropertiesDialog
+                            content={content}
+                            contentTypeName={content.Type} />,
+                        resources.EDIT_PROPERTIES, this.props.closeDialog)
                     break
                 default:
                     console.log(`${action.Name} is clicked`)

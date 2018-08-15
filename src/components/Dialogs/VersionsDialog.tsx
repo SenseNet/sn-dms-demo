@@ -1,5 +1,4 @@
 import { IconButton, Table, TableBody, TableCell, TableHead, TableRow, Tooltip, Typography, withStyles } from '@material-ui/core'
-import { Icon } from '@material-ui/core'
 import RestoreIcon from '@material-ui/icons/Restore'
 import { GenericContent } from '@sensenet/default-content-types'
 import * as React from 'react'
@@ -8,8 +7,8 @@ import { connect } from 'react-redux'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { versionName } from '../../assets/helpers'
-import { icons } from '../../assets/icons'
 import { resources } from '../../assets/resources'
+import DialogInfo from './DialogInfo'
 import RestoreVersionsDialog from './RestoreVersionDialog'
 
 const styles = {
@@ -32,22 +31,10 @@ const styles = {
         fontSize: 14,
         margin: '20px 0',
     },
-    contentName: {
-        display: 'flex',
-        alignItems: 'center',
-        marginBottom: 15,
-    },
-    icon: {
-        flexShrink: 0,
-        marginRight: 5,
-    },
     uploadVersionButton: {
         marginRight: 20,
         backgroundColor: '#016d9e',
         color: '#fff',
-    },
-    displayName: {
-        fontSize: 16,
     },
     tableHead: {
         fontFamily: 'Raleway SemiBold',
@@ -156,37 +143,13 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
     public render() {
         const { classes, currentitems, id, versions } = this.props
         const currentContent = currentitems.find((item) => item.Id === id)
-        const icon = currentContent.Icon
         return (
             <div>
                 <Typography variant="headline" gutterBottom>
                     {resources.VERSIONS}
                 </Typography>
                 <div style={styles.inner}>
-                    <div style={styles.contentName}>
-                        <Icon color="primary" style={styles.icon}>{icons[icon.toLowerCase()]}</Icon>
-                        <span className={classes.displayName}>
-                            {currentContent.DisplayName}
-                        </span>
-                    </div>
-                    <Table>
-                        <TableHead>
-                            <TableRow className={classes.tableRow}>
-                                <TableCell className={classes.tableHead} padding="none">{resources.VERSIONING_MODE}</TableCell>
-                                <TableCell className={classes.tableHead} padding="none">{resources.PATH}</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            <TableRow className={classes.tableRow}>
-                                <TableCell className={classes.tableCell} padding="none">
-                                    {resources.VERSIONING[currentContent.VersioningMode]}
-                                </TableCell>
-                                <TableCell className={classes.tableCell} padding="none">
-                                    {currentContent.Path}
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
+                    <DialogInfo currentContent={currentContent} />
                     <div style={versions.length > 3 ? styles.tableContainerScroll : styles.tableContainer}>
                         <Table className={classes.table}>
                             <TableHead>

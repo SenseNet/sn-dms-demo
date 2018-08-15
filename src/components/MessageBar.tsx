@@ -6,6 +6,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
+import { resources } from '../assets/resources'
 
 const styles = {
     window: {
@@ -49,6 +50,52 @@ class MessageBar extends React.Component<{ classes } & ReturnType<typeof mapStat
     }
     public render() {
         const { classes, messagebar } = this.props
+        // tslint:disable-next-line:no-string-literal
+        let successful
+        if (messagebar.content) {
+            // tslint:disable-next-line:no-string-literal
+            if (messagebar.content['d'] && messagebar.content['d'].results && messagebar.content['d'].results.length > 0) {
+                // tslint:disable-next-line:no-string-literal
+                successful = messagebar.content['d'].results
+            } else {
+                // tslint:disable-next-line:no-string-literal
+                successful = messagebar.content['d']
+            }
+        } else {
+            successful = null
+        }
+        let failed
+        // tslint:disable-next-line:no-string-literal
+        if (messagebar.content && messagebar.content['d']) {
+            // tslint:disable-next-line:no-string-literal
+            if (messagebar.content['d'].errors) {
+                // tslint:disable-next-line:no-string-literal
+                failed = messagebar.content['d'].errors
+            } else {
+                failed = null
+            }
+        } else { failed = null }
+        const action = messagebar.event
+        let successMessage
+        if (successful) {
+            if (successful.length > 1) {
+                successMessage = `${successful.length} ${resources.ITEMS_ARE} ${resources[`${action}_MULTIPLE_MESSAGE`]}`
+            } else {
+                successMessage = `${successful[0] ? successful[0].Name : successful.DisplayName} ${resources[`${action}_MESSAGE`]}`
+            }
+        } else {
+            successMessage = null
+        }
+        let failedMessage
+        if (failed) {
+            if (failed.length > 1) {
+                failedMessage = `${failed.length} ${resources.ITEMS} ${resources[`${action}_FAILED_MESSAGE`]}`
+            } else if (failed.length === 1) {
+                failedMessage = `${failed.DisplayName} ${resources[`${action}_FAILED_MESSAGE`]}`
+            }
+        } else {
+            failedMessage = null
+        }
         return (
             <Snackbar
                 anchorOrigin={{
@@ -65,9 +112,11 @@ class MessageBar extends React.Component<{ classes } & ReturnType<typeof mapStat
                         root: classes.messagebar,
                     },
                 }}
-                message={<ul style={styles.messages}>
-                    {messagebar.content.map((result, index) => <li style={styles.message} key={index}>{result}</li>)}
-                </ul>}
+                message={
+                    <ul style={styles.messages}>
+                        {successMessage && successMessage.length > 0 ? <li style={styles.message}>{successMessage}</li> : null}
+                        {failedMessage && failedMessage.length > 0 ? <li style={styles.message}>{failedMessage}</li> : null}
+                    </ul>}
                 action={[
                     <IconButton
                         key="close"

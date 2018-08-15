@@ -316,32 +316,28 @@ export const messagebarmode: Reducer<MessageMode, Action & { mode?: MessageMode 
     }
 }
 
-export const messagebarcontent: Reducer<any[]> = (state = [], action) => {
+export const messagebarcontent: Reducer<object> = (state = [], action) => {
     switch (action.type) {
         case 'SET_MESSAGEBAR':
             return action.content
         case 'CREATE_CONTENT_SUCCESS':
-            // tslint:disable-next-line:no-string-literal
-            return [`${(action.result as PromiseReturns<typeof createContent>).d['DisplayName']} is successfully created`]
+            return action.result as PromiseReturns<typeof createContent>
+        case 'UPDATE_CONTENT_SUCCESS':
+            return action.result as PromiseReturns<typeof createContent>
         case 'DELETE_CONTENT_SUCCESS':
-            return [`${(action.result as PromiseReturns<typeof deleteContent>).d.results[0].Name} is successfully deleted`]
+            return action.result as PromiseReturns<typeof deleteContent>
         case 'DELETE_BATCH_SUCCESS':
-            const result = action.result as PromiseReturns<typeof deleteBatch>
-            return [
-                ...result.d.errors.map((r) => `Cannot delete ${r.content.Name}, because '${r.error.message}'`),
-                ...result.d.results.map((r) => `${r.Name} is successfully deleted`)]
+            return action.result as PromiseReturns<typeof deleteBatch>
         case 'RESTOREVERSION_CONTENT_SUCCESS':
-            const res = action.result as PromiseReturns<typeof restoreVersion>
-            // tslint:disable-next-line:no-string-literal
-            return [`Version ${action.version} of ${res.d['DisplayName']} is succesfully restored!`]
+            return action.result as PromiseReturns<typeof restoreVersion>
         case 'CREATE_CONTENT_FAILURE':
-            return [`Cannot create content because: ${action.error.message}`]
+            return action.error
         case 'DELETE_CONTENT_FAILURE':
         case 'LOAD_CONTENT_FAILURE':
         case 'FETCH_CONTENT_FAILURE':
         case 'UPDATE_CONTENT_FAILURE':
         case 'DELETE_BATCH_FAILURE':
-            return `${(action.result as PromiseReturns<typeof deleteBatch>).d.errors[0].error}`
+            return action.result as PromiseReturns<typeof deleteBatch>
         case 'COPY_CONTENT_FAILURE':
         case 'COPY_BATCH_FAILURE':
         case 'MOVE_CONTENT_FAILURE':
@@ -356,7 +352,7 @@ export const messagebarcontent: Reducer<any[]> = (state = [], action) => {
         case 'RESTOREVERSION_CONTENT_FAILURE':
         case 'MOVE_CONTENT_FAILURE':
         case 'MOVE_BATCH_FAILURE':
-            return [action.error.message]
+            return action.error
         default:
             return state
     }
@@ -430,6 +426,52 @@ export const messagebarexited: Reducer<() => void | null> = (state = null, actio
     }
 }
 
+export const messagebarevent: Reducer<string> = (state = '', action) => {
+    switch (action.type) {
+        case 'CREATE_CONTENT_FAILURE':
+        case 'DELETE_CONTENT_FAILURE':
+        case 'LOAD_CONTENT_FAILURE':
+        case 'FETCH_CONTENT_FAILURE':
+        case 'UPDATE_CONTENT_FAILURE':
+        case 'DELETE_BATCH_FAILURE':
+        case 'COPY_CONTENT_FAILURE':
+        case 'COPY_BATCH_FAILURE':
+        case 'MOVE_CONTENT_FAILURE':
+        case 'MOVE_BATCH_FAILURE':
+        case 'CHECKOUT_CONTENT_FAILURE':
+        case 'CHECKIN_CONTENT_FAILURE':
+        case 'PUBLISH_CONTENT_FAILURE':
+        case 'APPROVE_CONTENT_FAILURE':
+        case 'REJECT_CONTENT_FAILURE':
+        case 'UNDOCHECKOUT_CONTENT_FAILURE':
+        case 'FORCE_UNDOCHECKOUT_CONTENT_FAILURE':
+        case 'RESTOREVERSION_CONTENT_FAILURE':
+        case 'MOVE_CONTENT_FAILURE':
+        case 'MOVE_BATCH_FAILURE':
+        case 'CREATE_CONTENT_SUCCESS':
+        case 'DELETE_CONTENT_SUCCESS':
+        case 'UPDATE_CONTENT_SUCCESS':
+        case 'DELETE_BATCH_SUCCESS':
+        case 'COPY_CONTENT_SUCCESS':
+        case 'COPY_BATCH_SUCCESS':
+        case 'MOVE_CONTENT_SUCCESS':
+        case 'MOVE_BATCH_SUCCESS':
+        case 'CHECKOUT_CONTENT_SUCCESS':
+        case 'CHECKIN_CONTENT_SUCCESS':
+        case 'PUBLISH_CONTENT_SUCCESS':
+        case 'APPROVE_CONTENT_SUCCESS':
+        case 'REJECT_CONTENT_SUCCESS':
+        case 'UNDOCHECKOUT_CONTENT_SUCCESS':
+        case 'FORCE_UNDOCHECKOUT_CONTENT_SUCCESS':
+        case 'RESTOREVERSION_CONTENT_SUCCESS':
+        case 'MOVE_CONTENT_SUCCESS':
+        case 'MOVE_BATCH_SUCCESS':
+            return action.type
+        default:
+            return state
+    }
+}
+
 export const hideDuration: Reducer<number> = (state = null, action) => {
     switch (action.type) {
         case 'SET_MESSAGEBAR':
@@ -484,6 +526,7 @@ export const hideDuration: Reducer<number> = (state = null, action) => {
 export const messagebar = combineReducers({
     open: messagebaropen,
     mode: messagebarmode,
+    event: messagebarevent,
     content: messagebarcontent,
     close: messagebarclose,
     exited: messagebarexited,
