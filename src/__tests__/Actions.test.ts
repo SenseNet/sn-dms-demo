@@ -49,7 +49,7 @@ describe('OpenActionMenu', () => {
         const expectedAction = {
             type: 'OPEN_ACTIONMENU',
             actions: ['Move', 'Copy'],
-            id: 1,
+            content: { Id: 1, Path: '', Type: 'File', Name: 'alma' },
             title: 'sample doc',
             element: null,
             position: {
