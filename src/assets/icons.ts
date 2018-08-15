@@ -29,4 +29,10 @@ export const icons = {
     preview: 'search',
     versions: 'sd_storage',
     setpermissions: 'report_problem',
+    checkout: 'lock_open',
+    checkin: 'lock',
+    publish: 'publish',
+    approve: 'check_circle',
+    undocheckout: 'undo',
+    forceundocheckout: 'undo',
 }

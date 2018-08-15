@@ -1,6 +1,6 @@
 import Icon from '@material-ui/core/Icon'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
-import { Forward, ModeEdit } from '@material-ui/icons'
+import { Forward, ModeEdit, Warning } from '@material-ui/icons'
 import { pollDocumentData } from '@sensenet/document-viewer-react'
 import { Actions } from '@sensenet/redux'
 import * as React from 'react'
@@ -16,6 +16,7 @@ import { rootStateType } from '../..'
 import { downloadFile } from '../../assets/helpers'
 import { icons } from '../../assets/icons'
 import { resources } from '../../assets/resources'
+import ApproveorRejectDialog from '../Dialogs/ApproveorRejectDialog'
 import DeleteDialog from '../Dialogs/DeleteDialog'
 import VersionsDialog from '../Dialogs/VersionsDialog'
 
@@ -45,6 +46,11 @@ const mapDispatchToProps = {
     closeDialog: DMSActions.closeDialog,
     loadContent: Actions.loadContent,
     fetchContent: Actions.requestContent,
+    checkoutContent: Actions.checkOut,
+    checkinContent: Actions.checkIn,
+    publishContent: Actions.publish,
+    undoCheckout: Actions.undoCheckout,
+    forceundoCheckout: Actions.forceUndoCheckout,
 }
 
 const styles = {
@@ -128,6 +134,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
         if ((action as any).Action) {
             (action as any).Action()
         } else {
+            const content = this.props.currentContent
             switch (action.Name) {
                 case 'Rename':
                     this.handleClose()
@@ -173,12 +180,39 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     break
                 case 'Edit':
                     this.handleClose()
-                    const content = this.props.currentContent
                     this.props.openDialog(
                         <EditPropertiesDialog
                             content={content}
                             contentTypeName={content.Type} />,
                         resources.EDIT_PROPERTIES, this.props.closeDialog)
+                    break
+                case 'CheckOut':
+                    this.handleClose()
+                    this.props.checkoutContent(content.Id)
+                    break
+                case 'Publish':
+                    this.handleClose()
+                    this.props.publishContent(content.Id)
+                    break
+                case 'CheckIn':
+                    this.handleClose()
+                    this.props.checkinContent(content.Id)
+                    break
+                case 'UndoCheckout':
+                    this.handleClose()
+                    this.props.undoCheckout(content.Id)
+                    break
+                case 'ForceUndoCheckout':
+                    this.handleClose()
+                    this.props.forceundoCheckout(content.Id)
+                    break
+                case 'Approve':
+                    this.handleClose()
+                    this.props.openDialog(
+                        <ApproveorRejectDialog
+                            id={content.Id}
+                            fileName={content.DisplayName} />,
+                        resources.APPROVE_OR_REJECT, this.props.closeDialog)
                     break
                 default:
                     console.log(`${action.Name} is clicked`)
@@ -224,6 +258,9 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                                 }
                                 {
                                     action.Name === 'Rename' ? <ModeEdit style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
+                                }
+                                {
+                                    action.Name === 'ForceUndoCheckOut' ? <Warning style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
                                 }
                             </Icon>
                         </ListItemIcon>
