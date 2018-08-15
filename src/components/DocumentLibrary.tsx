@@ -140,6 +140,22 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                                 orderby: [[field, direction]],
                             })
                         }}
+                        onItemClick={(ev, content) => {
+                            if (ev.ctrlKey) {
+                                if (this.props.selected.find((s) => s.Id === content.Id)) {
+                                    this.props.select(this.props.selected.filter((s) => s.Id !== content.Id))
+                                } else {
+                                    this.props.select([...this.props.selected, content])
+                                }
+                            } else if (ev.shiftKey) {
+                                const activeIndex = this.props.items.d.results.findIndex((s) => s.Id === this.props.active.Id)
+                                const clickedIndex = this.props.items.d.results.findIndex((s) => s.Id === content.Id)
+                                const newSelection = Array.from(new Set([...this.props.selected, ...[...this.props.items.d.results].slice(Math.min(activeIndex, clickedIndex), Math.max(activeIndex, clickedIndex) + 1)]))
+                                this.props.select(newSelection)
+                            } else if (this.props.selected.length < 2) {
+                                this.props.select([content])
+                            }
+                        }}
                         onItemDoubleClick={this.handleRowDoubleClick}
                         fieldComponent={null as any}
                         icons={icons}
