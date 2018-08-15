@@ -4,8 +4,8 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 
 import MoreVertIcon from '@material-ui/icons/MoreVert'
-import { IActionModel } from '@sensenet/default-content-types'
-import { Actions, Reducers } from '@sensenet/redux'
+import { GenericContent, IActionModel } from '@sensenet/default-content-types'
+import { Actions } from '@sensenet/redux'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { icons } from '../../assets/icons'
@@ -49,12 +49,18 @@ const styles = {
     },
 }
 
+interface BatchActionListProps {
+    currentContent: GenericContent,
+    selected: GenericContent[]
+
+}
+
 const mapStateToProps = (state: rootStateType) => {
     return {
         actions: state.dms.toolbar.actions,
         currentId: state.dms.currentId,
-        selected: Reducers.getSelectedContentIds(state.sensenet),
-        currentContent: Reducers.getCurrentContent(state.sensenet),
+        // selected: Reducers.getSelectedContentIds(state.sensenet),
+        // currentContent: Reducers.getCurrentContent(state.sensenet),
     }
 }
 
@@ -70,16 +76,17 @@ const mapDispatchToProps = {
 
 export interface BatchActionlistState {
     options: IActionModel[],
+    currentId: number
     anchorEl,
     actions,
 }
 
-class BatchActionlist extends React.Component<ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, BatchActionlistState> {
+class BatchActionlist extends React.Component<BatchActionListProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, BatchActionlistState> {
     public state = {
+        currentId: 0,
         options: [],
         anchorEl: null,
         actions: [],
-        currentId: null,
     }
     constructor(props: BatchActionlist['props']) {
         super(props)
@@ -92,7 +99,8 @@ class BatchActionlist extends React.Component<ReturnType<typeof mapStateToProps>
                 //     Name: 'Download', DisplayName: 'Download', Icon: 'download', Index: 1,
 
                 // } as IActionModel]
-            )}
+            )
+        }
         const optionList = []
         if (lastState.actions.length !== newProps.actions.length) {
             newProps.actions.map((action, index) => {
@@ -114,7 +122,7 @@ class BatchActionlist extends React.Component<ReturnType<typeof mapStateToProps>
         const { currentContent } = this.props
         const { options } = this.state
         this.props.closeActionMenu()
-        this.props.openActionMenu(options, currentContent.Id, currentContent.Id.toString(), e.currentTarget, {
+        this.props.openActionMenu(options, currentContent, currentContent.Id.toString(), e.currentTarget, {
             top: e.currentTarget.offsetTop + 100,
             left: e.currentTarget.offsetLeft + 100,
         })
@@ -128,7 +136,7 @@ class BatchActionlist extends React.Component<ReturnType<typeof mapStateToProps>
             case 'DeleteBatch':
             case 'Delete':
                 this.props.openDialog(
-                    <DeleteDialog selected={this.props.selected} />,
+                    <DeleteDialog selected={this.props.selected.map((d) => d.Id)} />,
                     resources.DELETE, this.props.clearSelection)
                 this.handleClose()
                 break

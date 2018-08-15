@@ -38,10 +38,10 @@ export const setEditedContentId = (id: number) => ({
     type: 'SET_EDITED_ID',
     id,
 })
-export const openActionMenu = (actions: any[], id: number, title: string, element: HTMLElement, position?: any, customItems?: any) => ({
+export const openActionMenu = (actions: any[], content: GenericContent, title: string, element: HTMLElement, position?: any, customItems?: any) => ({
     type: 'OPEN_ACTIONMENU',
     actions: customItems && customItems.length > 0 ? customItems : actions,
-    id,
+    content,
     title,
     element,
     position,

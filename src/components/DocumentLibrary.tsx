@@ -130,12 +130,12 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                     onRequestActionsMenu={(ev, content) => {
                         ev.preventDefault()
                         this.props.closeActionMenu()
-                        this.props.openActionMenu(content.Actions as IActionModel[], content.Id, '', ev.currentTarget.parentElement, {top: ev.clientY, left: ev.clientX})
+                        this.props.openActionMenu(content.Actions as IActionModel[], content, '', ev.currentTarget.parentElement, { top: ev.clientY, left: ev.clientX })
                     }}
                     onItemContextMenu={(ev, content) => {
                         ev.preventDefault()
                         this.props.closeActionMenu()
-                        this.props.openActionMenu(content.Actions as IActionModel[], content.Id, '', ev.currentTarget.parentElement, {top: ev.clientY, left: ev.clientX})
+                        this.props.openActionMenu(content.Actions as IActionModel[], content, '', ev.currentTarget.parentElement, { top: ev.clientY, left: ev.clientX })
                     }}
                     onRequestOrderChange={(field, direction) => {
                         this.props.updateChildrenOptions({
@@ -144,14 +144,14 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                         })
                     }}
                     onItemDoubleClick={this.handleRowDoubleClick}
-                    fieldComponent={ null as any}
+                    fieldComponent={null as any}
                     icons={icons}
                 />
-                < ActionMenu id = {0} > </ActionMenu>
+                < ActionMenu id={0} />
             </MuiThemeProvider>
-            :  null
+            : null
 
     }
 }
 
-export default withRouter(connect<ReturnType<typeof mapStateToProps>,  typeof mapDispatchToProps, DocumentLibraryProps>(mapStateToProps, mapDispatchToProps)(DocumentLibrary))
+export default withRouter(connect<ReturnType<typeof mapStateToProps>, typeof mapDispatchToProps, DocumentLibraryProps>(mapStateToProps, mapDispatchToProps)(DocumentLibrary))

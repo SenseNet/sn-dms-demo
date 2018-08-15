@@ -2,7 +2,7 @@ import Icon from '@material-ui/core/Icon'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import { Forward, ModeEdit } from '@material-ui/icons'
 import { pollDocumentData } from '@sensenet/document-viewer-react'
-import { Actions, Reducers } from '@sensenet/redux'
+import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import * as DMSActions from '../../Actions'
@@ -11,6 +11,7 @@ import EditPropertiesDialog from '../Dialogs/EditPropertiesDialog'
 import Fade from '@material-ui/core/Fade'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import { IActionModel } from '@sensenet/default-content-types'
 import { rootStateType } from '../..'
 import { downloadFile } from '../../assets/helpers'
 import { icons } from '../../assets/icons'
@@ -21,9 +22,6 @@ import VersionsDialog from '../Dialogs/VersionsDialog'
 const mapStateToProps = (state: rootStateType) => {
     return {
         actions: state.dms.actionmenu.actions,
-        contentId: state.dms.actionmenu.id,
-        currentContent: Reducers.getCurrentContent(state.sensenet),
-        selected: Reducers.getSelectedContentIds(state.sensenet),
         open: state.dms.actionmenu.open,
         anchorElement: state.dms.actionmenu.anchorElement,
         position: state.dms.actionmenu.position,
@@ -31,6 +29,7 @@ const mapStateToProps = (state: rootStateType) => {
         currentitems: state.sensenet.currentitems,
         userName: state.sensenet.session.user.userName,
         queryOptions: state.sensenet.currentitems.options,
+        currentContent: state.dms.actionmenu.content,
     }
 }
 
@@ -125,9 +124,9 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
         this.props.closeActionMenu()
         this.setState({ anchorEl: null })
     }
-    public handleMenuItemClick(e: React.MouseEvent, action: any) {
-        if (action.Action) {
-            action.Action()
+    public handleMenuItemClick(e: React.MouseEvent, action: IActionModel) {
+        if ((action as any).Action) {
+            (action as any).Action()
         } else {
             switch (action.Name) {
                 case 'Rename':
@@ -143,13 +142,13 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     this.handleClose()
                     this.props.clearSelection()
                     this.props.openDialog(
-                        <DeleteDialog selected={[this.props.contentId]} />,
+                        <DeleteDialog selected={[this.props.currentContent.Id]} />,
                         resources.DELETE, this.props.closeDialog)
                     break
                 case 'Preview':
                     this.handleClose()
-                    this.props.openViewer(this.props.contentId)
-                    this.props.pollDocumentData(this.props.hostName, this.props.contentId)
+                    this.props.openViewer(this.props.currentContent.Id)
+                    this.props.pollDocumentData(this.props.hostName, this.props.currentContent.Id)
                     break
                 case 'Logout':
                     this.handleClose()
@@ -157,14 +156,13 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     break
                 case 'Browse':
                     this.handleClose()
-                    const currentId = this.props.contentId
-                    const path = this.props.currentitems.entities.find((item) => item.Id === currentId).Path
+                    const path = this.props.currentContent.Path
                     downloadFile(path, this.props.hostName)
                     break
                 case 'Versions':
                     this.handleClose()
                     this.props.openDialog(
-                        <VersionsDialog id={this.props.contentId} />,
+                        <VersionsDialog id={this.props.currentContent.Id} />,
                         resources.VERSIONS, this.props.closeDialog)
                     break
                 case 'Profile':
@@ -175,7 +173,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     break
                 case 'Edit':
                     this.handleClose()
-                    const content = this.props.currentitems.entities.find((item) => item.Id === this.props.contentId)
+                    const content = this.props.currentContent
                     this.props.openDialog(
                         <EditPropertiesDialog
                             content={content}

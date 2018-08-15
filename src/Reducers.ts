@@ -245,10 +245,10 @@ export const addNewTypes = (state = [], action) => {
     }
 }
 
-export const actionmenuId: Reducer<number | null> = (state = null, action) => {
+export const actionmenuContent: Reducer<GenericContent | null> = (state = null, action) => {
     switch (action.type) {
         case 'OPEN_ACTIONMENU':
-            return action.id
+            return action.content
         default:
             return state
     }
@@ -259,7 +259,7 @@ export const actionmenu = combineReducers({
     open,
     anchorElement,
     position,
-    id: actionmenuId,
+    content: actionmenuContent,
     title,
     userActions,
     addNewTypes,

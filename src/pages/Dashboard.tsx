@@ -61,6 +61,8 @@ const mapStateToProps = (state: rootStateType) => {
         dialogOnClose: state.dms.dialog.onClose,
         dialogContent: state.dms.dialog.content,
         dialogTitle: state.dms.dialog.title,
+        docLibParent: state.dms.documentLibrary.parent,
+        docLibSelection: state.dms.documentLibrary.selected,
     }
 }
 
@@ -139,7 +141,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                                     </Route>
                                                     <Route path={'/' + PathHelper.joinPaths(props.match.url, '/:folderPath?')} exact component={() => (
                                                         <div>
-                                                            <ListToolbar />
+                                                            <ListToolbar currentContent={this.props.docLibParent} selected={this.props.docLibSelection} />
                                                             <DocumentLibrary />
                                                         </div>
                                                     )}>
@@ -180,7 +182,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                     } else {
                         return <div style={styles.root}>
                             <div style={styles.dashBoardInnerMobile}>
-                                <ListToolbar />
+                                <ListToolbar currentContent={this.props.docLibParent} selected={this.props.docLibSelection} />
                                 <DocumentLibrary />
                             </div>
                         </div>
