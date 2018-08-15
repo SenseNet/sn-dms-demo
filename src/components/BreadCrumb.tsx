@@ -45,8 +45,9 @@ const styles = {
     },
 }
 
-const mapStateToProps = (state: rootStateType, match) => {
+const mapStateToProps: (...args: any[]) => unknown = (state: rootStateType, match) => {
     return {
+        isLoading: state.dms.isLoading,
     }
 }
 
