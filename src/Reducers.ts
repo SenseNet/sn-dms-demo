@@ -1,5 +1,5 @@
 import { GenericContent, IActionModel, Workspace } from '@sensenet/default-content-types'
-import { checkIn, checkOut, createContent, deleteBatch, deleteContent, loadContent, loadContentActions, PromiseReturns, publish, restoreVersion, undoCheckout, forceUndoCheckout } from '@sensenet/redux/dist/Actions'
+import { approve, checkIn, checkOut, createContent, deleteBatch, deleteContent, forceUndoCheckout, loadContent, loadContentActions, PromiseReturns, publish, rejectContent, restoreVersion, undoCheckout } from '@sensenet/redux/dist/Actions'
 import { Action, AnyAction, combineReducers, Reducer } from 'redux'
 import { closeMessageBar, ExtendedUploadProgressInfo, getWorkspaces, loadFavoriteWorkspaces, loadListActions, loadTypesToAddNewList, loadUserActions, loadVersions } from './Actions'
 import { resources } from './assets/resources'
@@ -338,6 +338,10 @@ export const messagebarcontent: Reducer<object> = (state = [], action) => {
             return action.result as PromiseReturns<typeof undoCheckout>
         case 'FORCE_UNDOCHECKOUT_CONTENT_SUCCESS':
             return action.result as PromiseReturns<typeof forceUndoCheckout>
+        case 'APPROVE_CONTENT_SUCCESS':
+            return action.result as PromiseReturns<typeof approve>
+        case 'REJECT_CONTENT_SUCCESS':
+            return action.result as PromiseReturns<typeof rejectContent>
         case 'CREATE_CONTENT_FAILURE':
             return action.error
         case 'DELETE_CONTENT_FAILURE':

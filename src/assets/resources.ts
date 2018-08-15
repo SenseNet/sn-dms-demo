@@ -86,4 +86,11 @@ export const resources = {
     PUBLISH_CONTENT_SUCCESS_MESSAGE: 'is successfully published',
     UNDOCHECKOUT_CONTENT_SUCCESS_MESSAGE: 'is successfully checked-in',
     FORCEUNDOCHECKOUT_CONTENT_SUCCESS_MESSAGE: 'is successfully checked-in',
+    REJECT_CONTENT_SUCCESS_MESSAGE: 'is rejected successfully',
+    APPROVE_OR_REJECT: 'Approve or reject',
+    YOU_ARE_ABOUT_TO_APPROVE_OR_REJECT: 'You are about to approve or reject',
+    APPROVE: 'Approve',
+    REJECT: 'Reject',
+    REJECT_REASON_PLACEHOLDER: 'Please provide a reason for rejecting the content',
+    APPROVE_CONTENT_SUCCESS_MESSAGE: 'is successfully approved',
 }

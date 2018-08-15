@@ -15,6 +15,7 @@ import { rootStateType } from '../..'
 import { downloadFile } from '../../assets/helpers'
 import { icons } from '../../assets/icons'
 import { resources } from '../../assets/resources'
+import ApproveorRejectDialog from '../Dialogs/ApproveorRejectDialog'
 import DeleteDialog from '../Dialogs/DeleteDialog'
 import VersionsDialog from '../Dialogs/VersionsDialog'
 
@@ -209,6 +210,11 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     break
                 case 'Approve':
                     this.handleClose()
+                    this.props.openDialog(
+                        <ApproveorRejectDialog
+                            id={content.Id}
+                            fileName={content.DisplayName} />,
+                        resources.APPROVE_OR_REJECT, this.props.closeDialog)
                     break
                 default:
                     console.log(`${action.Name} is clicked`)

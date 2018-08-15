@@ -32,7 +32,7 @@ export const icons = {
     checkout: 'lock_open',
     checkin: 'lock',
     publish: 'publish',
-    approve: '',
+    approve: 'check_circle',
     undocheckout: 'undo',
     forceundocheckout: 'undo',
 }
