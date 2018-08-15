@@ -32,7 +32,7 @@ const styles = (theme) => ({
         margin: '4px 0 4px 5px',
     },
     searchContainer: {
-        padding: '0px 10px 10px 10px',
+        padding: '10px',
     },
 })
 

@@ -113,7 +113,7 @@ class WorkspaceListItem extends React.Component<{ classes } & ReturnType<typeof 
                 <ListItemIcon className={classes.icon}>
                     <IconButton
                         className={followed ? classes.followedIconButton : classes.iconButton}
-                        onClick={() => this.startButtonClick(workspace.Path)}>
+                        onClick={() => this.startButtonClick(workspace.Id)}>
                         <StarIcon />
                     </IconButton>
                 </ListItemIcon>
