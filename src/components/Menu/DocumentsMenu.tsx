@@ -1,6 +1,5 @@
 import { Divider, Icon, ListItemText, MenuItem, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
 import { IContent, IUploadProgressInfo } from '@sensenet/client-core'
-import { Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps, withRouter } from 'react-router'
@@ -171,7 +170,7 @@ class DocumentsMenu extends React.Component<DocumentMenuProps & ReturnType<typeo
                         })}
                     />
                     <ConnectedUploadBar />
-                    <AddNewMenu />
+                    <AddNewMenu currentContent={this.props.currentContent} />
                     <MenuList className={classes.submenu}>
                         {subMenu.map((menuitem, index) => {
                             return (<MenuItem className={classes.submenuItem} key={index}
@@ -192,7 +191,7 @@ class DocumentsMenu extends React.Component<DocumentMenuProps & ReturnType<typeo
 const mapStateToProps = (state: rootStateType) => {
     return {
         subactive: state.dms.menu.activeSubmenu,
-        currentContent: Reducers.getCurrentContent(state.sensenet),
+        currentContent: state.dms.documentLibrary.parent,
         currentWorkspace: state.sensenet.currentworkspace,
     }
 }

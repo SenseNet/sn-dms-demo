@@ -3,6 +3,7 @@ import { JwtService } from '@sensenet/authentication-jwt'
 import { Repository } from '@sensenet/client-core'
 import { sensenetDocumentViewerReducer } from '@sensenet/document-viewer-react'
 import { Reducers, Store } from '@sensenet/redux'
+import { EventHub } from '@sensenet/repository-events'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
@@ -29,6 +30,7 @@ const viewerSettings = getViewerSettings(repository)
 
 const sensenet = Reducers.sensenet
 const dms = DMSReducers.dms
+const repositoryEvents = new EventHub(repository)
 const sensenetDocumentViewer = sensenetDocumentViewerReducer
 
 const myReducer = combineReducers({
@@ -40,6 +42,7 @@ const myReducer = combineReducers({
 const di = new ReduxDiMiddleware()
 di.setInjectable(repository)
 di.setInjectable(viewerSettings)
+di.setInjectable(repositoryEvents)
 
 const options = {
   repository,

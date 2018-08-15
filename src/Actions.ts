@@ -2,12 +2,12 @@ import { IContent, IUploadFromEventOptions, IUploadFromFileListOptions, IUploadP
 import { ObservableValue, usingAsync } from '@sensenet/client-utils'
 import { File as SnFile, GenericContent, User, Workspace } from '@sensenet/default-content-types'
 import { IActionModel } from '@sensenet/default-content-types/dist/IActionModel'
-import { Actions } from '@sensenet/redux'
 import { Action, Dispatch } from 'redux'
 
 import { debounce } from 'lodash'
 import { InjectableAction } from 'redux-di-middleware'
 import { rootStateType } from '.'
+import { updateChildrenOptions } from './store/documentlibrary/actions'
 
 enum MessageMode { error = 'error', warning = 'warning', info = 'info' }
 
@@ -38,10 +38,10 @@ export const setEditedContentId = (id: number) => ({
     type: 'SET_EDITED_ID',
     id,
 })
-export const openActionMenu = (actions: any[], id: number, title: string, element: HTMLElement, position?: any, customItems?: any) => ({
+export const openActionMenu = (actions: any[], content: GenericContent, title: string, element: HTMLElement, position?: any, customItems?: any) => ({
     type: 'OPEN_ACTIONMENU',
     actions: customItems && customItems.length > 0 ? customItems : actions,
-    id,
+    content,
     title,
     element,
     position,
@@ -108,13 +108,19 @@ export const loadUserActions = (idOrPath: number | string, scenario?: string, cu
 
 export type ExtendedUploadProgressInfo = IUploadProgressInfo & { content?: GenericContent, visible?: boolean }
 
-function methodToDebounce(parentId: number, getState: () => rootStateType, dispatch: Dispatch) {
-    const currentContent = getState().sensenet.currentcontent && getState().sensenet.currentcontent.content
-    if (currentContent && currentContent.Id === parentId) {
-        dispatch(Actions.requestContent(currentContent.Path))
-    }
+export const changedContent: GenericContent[] = []
+
+function methodToDebounce(getState: () => rootStateType, dispatch: Dispatch) {
+    const currentContent = getState().dms.documentLibrary.parent
+    changedContent.forEach((content) => {
+        if (currentContent && currentContent.Id === content.ParentId) {
+            dispatch(updateChildrenOptions({}))
+            changedContent.length = 0
+            return
+        }
+    })
 }
-const debounceReloadOnProgress = debounce(methodToDebounce, 2000)
+export const debounceReloadOnProgress = debounce(methodToDebounce, 2000)
 
 export const trackUploadProgress = async <T extends GenericContent>(currentValue: ExtendedUploadProgressInfo, getState: () => rootStateType, dispatch: Dispatch, api: Repository) => {
 
@@ -133,11 +139,12 @@ export const trackUploadProgress = async <T extends GenericContent>(currentValue
         const content = await api.load<T>({
             idOrPath: currentValue.createdContent.Id,
             oDataOptions: {
-                select: ['Id', 'Path', 'DisplayName', 'Icon', 'Name', 'ParentId'],
+                ...getState().dms.documentLibrary.childrenOptions,
             },
         })
         dispatch(updateUploadItem({ ...currentValue, content: content.d }))
-        debounceReloadOnProgress(content.d.ParentId || 0, getState, dispatch)
+        changedContent.push(content.d)
+        debounceReloadOnProgress(getState, dispatch)
     }
 }
 

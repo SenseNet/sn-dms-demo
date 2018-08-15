@@ -1,11 +1,17 @@
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
+import { GenericContent } from '@sensenet/default-content-types'
 import * as React from 'react'
-import BatchActionlist from '../ActionMenu/BatchActionlist'
-import BreadCrumb from '../BreadCrumb'
-import { WorkspaceSelector } from '../WorkspaceSelector/WorkspaceSelector'
+import BatchActionlist from './ActionMenu/BatchActionlist'
+import BreadCrumb from './BreadCrumb'
+import { WorkspaceSelector } from './WorkspaceSelector/WorkspaceSelector'
 
-export class ListToolbar extends React.Component<{}, {}> {
+export interface ListToolbarProps {
+    currentContent: GenericContent,
+    selected: GenericContent[]
+}
+
+export class ListToolbar extends React.Component<ListToolbarProps, {}> {
     public render() {
         return (
             <AppBar position="static" style={{ background: '#fff' }
@@ -15,7 +21,7 @@ export class ListToolbar extends React.Component<{}, {}> {
                         <WorkspaceSelector />
                         <BreadCrumb />
                     </div>
-                    <BatchActionlist />
+                    <BatchActionlist currentContent={this.props.currentContent} selected={this.props.selected} />
                 </Toolbar>
             </AppBar>
         )

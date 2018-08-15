@@ -1,12 +1,12 @@
 import { Dialog, DialogContent, IconButton } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
+import { PathHelper } from '@sensenet/client-utils'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { Redirect, Route, RouteComponentProps, Switch } from 'react-router'
 import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
-import { ListToolbar } from '../components/ContentList/ListToolbar'
 import { ContentTemplates } from '../components/ContentTemplates'
 import { ContentTypes } from '../components/ContentTypes'
 import DashboardDrawer from '../components/DashboardDrawer'
@@ -14,6 +14,7 @@ import { DmsViewer } from '../components/DmsViewer'
 import DocumentLibrary from '../components/DocumentLibrary'
 import { Groups } from '../components/Groups'
 import Header from '../components/Header'
+import { ListToolbar } from '../components/ListToolbar'
 import MessageBar from '../components/MessageBar'
 import { SavedQueries } from '../components/SavedQueries'
 import { Settings } from '../components/Settings'
@@ -60,6 +61,8 @@ const mapStateToProps = (state: rootStateType) => {
         dialogOnClose: state.dms.dialog.onClose,
         dialogContent: state.dms.dialog.content,
         dialogTitle: state.dms.dialog.title,
+        docLibParent: state.dms.documentLibrary.parent,
+        docLibSelection: state.dms.documentLibrary.selected,
     }
 }
 
@@ -136,9 +139,9 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                                     <Route path={props.match.url + '/trash'}>
                                                         <Trash />
                                                     </Route>
-                                                    <Route path={props.match.url + '/:folderPath?'} component={(idProps) => (
+                                                    <Route path={'/' + PathHelper.joinPaths(props.match.url, '/:folderPath?')} exact component={() => (
                                                         <div>
-                                                            <ListToolbar />
+                                                            <ListToolbar currentContent={this.props.docLibParent} selected={this.props.docLibSelection} />
                                                             <DocumentLibrary />
                                                         </div>
                                                     )}>
@@ -179,7 +182,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                     } else {
                         return <div style={styles.root}>
                             <div style={styles.dashBoardInnerMobile}>
-                                <ListToolbar />
+                                <ListToolbar currentContent={this.props.docLibParent} selected={this.props.docLibSelection} />
                                 <DocumentLibrary />
                             </div>
                         </div>

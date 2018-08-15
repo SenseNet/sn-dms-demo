@@ -1,6 +1,5 @@
 import { IContent } from '@sensenet/client-core'
 import { IActionModel } from '@sensenet/default-content-types'
-import { Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '../..'
@@ -11,10 +10,7 @@ import { AddNewButton } from '../Menu/AddNewButton'
 
 const mapStateToProps = (state: rootStateType) => {
     return {
-        currentContent: Reducers.getCurrentContent(state.sensenet),
-        currentId: state.dms.currentId,
         actions: state.dms.actionmenu.addNewTypes,
-        schema: Reducers.getSchema(state.sensenet),
         repository: state.sensenet.session.repository,
     }
 }
@@ -29,10 +25,7 @@ const mapDispatchToProps = {
 
 interface AddNemMenuProps {
     currentContent: IContent,
-    currentId,
     actions: IActionModel[],
-    schema,
-    repository,
 }
 
 interface AddNemMenuState {
@@ -66,12 +59,11 @@ class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof map
                 // tslint:disable-next-line:no-string-literal
                 action['Action'] = () => {
                     newProps.closeActionMenu()
-                    newProps.openDialog(
-                        <AddNewDialog
-                            parentPath={newProps.currentContent.Path}
-                            contentTypeName={contentType}
-                            extension={extension}
-                            title={contentType === 'File' ? displayName : contentType.toLowerCase()} />,
+                    newProps.openDialog(<AddNewDialog
+                        parentPath={newProps.currentContent.Path}
+                        contentTypeName={contentType}
+                        extension={extension}
+                        title={contentType === 'File' ? displayName : contentType.toLowerCase()} />,
                         newDisplayName, newProps.closeDialog)
                 }
                 if (action.DisplayName.indexOf('folder') > -1) {
@@ -90,10 +82,9 @@ class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof map
         }
     }
     public handleButtonClick = (e) => {
-        const { currentId } = this.props
         const { addNewOptions } = this.state
         this.props.closeActionMenu()
-        this.props.openActionMenu(addNewOptions, currentId, currentId, e.currentTarget, {
+        this.props.openActionMenu(addNewOptions, this.props.currentContent, this.props.currentContent.Id.toString(), e.currentTarget, {
             top: e.currentTarget.offsetTop + 45,
             left: e.currentTarget.offsetLeft,
         })

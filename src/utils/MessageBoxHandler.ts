@@ -14,7 +14,7 @@ export class MessageBoxHandler {
 
         this.eventHub.onContentCreated.subscribe((response) => {
             const currentContent: GenericContent = store.getState().sensenet.currentcontent.content
-            if (currentContent.Id === (response.content as GenericContent).ParentId) {
+            if (currentContent && currentContent.Id === (response.content as GenericContent).ParentId) {
                 store.dispatch(Actions.requestContent(store.getState().sensenet.currentcontent.content.Path))
             }
         })

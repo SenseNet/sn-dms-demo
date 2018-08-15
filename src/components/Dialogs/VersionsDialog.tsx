@@ -84,13 +84,12 @@ const styles = {
 }
 
 interface VersionsDialogProps {
-    id: number,
+    currentContent: GenericContent,
     closeCallback?: () => void
 }
 
 const mapStateToProps = (state: rootStateType, props: VersionsDialogProps) => {
     return {
-        currentitems: state.sensenet.currentitems.entities,
         versions: state.dms.versions,
     }
 }
@@ -111,12 +110,12 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
     }
     constructor(props: VersionsDialog['props']) {
         super(props)
-        this.props.getVersionList(this.props.id)
+        this.props.getVersionList(this.props.currentContent.Id)
         this.handleRestoreButtonClick = this.handleRestoreButtonClick.bind(this)
     }
     public static getDerivedStateFromProps(newProps: VersionsDialog['props'], lastState: VersionsDialogState) {
         if (newProps.versions && newProps.versions.length !== lastState.versions.length) {
-            newProps.getVersionList(newProps.id)
+            newProps.getVersionList(newProps.currentContent.Id)
         }
         return {
             ...lastState,
@@ -141,8 +140,7 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
         this.props.openDialog(<RestoreVersionsDialog id={id} version={version} fileName={name} />)
     }
     public render() {
-        const { classes, currentitems, id, versions } = this.props
-        const currentContent = currentitems.find((item) => item.Id === id)
+        const { classes, currentContent, versions } = this.props
         return (
             <div>
                 <Typography variant="headline" gutterBottom>
@@ -187,7 +185,7 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                                         <TableCell padding="none" style={{ width: '5%' }}>
                                             {index !== versions.length - 1 ? <IconButton
                                                 title={resources.RESTORE_VERSION}
-                                                onClick={() => this.handleRestoreButtonClick(id, version.Version, version.Name)}><RestoreIcon color="error" /></IconButton> : null}
+                                                onClick={() => this.handleRestoreButtonClick(currentContent.Id, version.Version, version.Name)}><RestoreIcon color="error" /></IconButton> : null}
                                         </TableCell>
                                     </TableRow>,
                                 )}
