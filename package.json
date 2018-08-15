@@ -36,7 +36,7 @@
     "@sensenet/document-viewer-react": "^1.0.0",
     "@sensenet/list-controls-react": "^1.0.0-development.3",
     "@sensenet/redux": "^5.1.0",
-    "@sensenet/repository-events": "^1.0.0",
+    "@sensenet/repository-events": "^1.1.0",
     "autoprefixer": "^9.1.1",
     "chalk": "2.4.1",
     "css-loader": "^1.0.0",

@@ -53,9 +53,9 @@ export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: s
                         ) {
                             emitChange({ ParentId: newParent.d.Id } as GenericContent)
                         }
-                    }),
-                    eventHub.onContentCreated.subscribe((value) => emitChange(value.content)),
-                    eventHub.onContentModified.subscribe((value) => emitChange(value.content)),
+                    }) as any,
+                    eventHub.onContentCreated.subscribe((value) => emitChange(value.content)) as any,
+                    eventHub.onContentModified.subscribe((value) => emitChange(value.content)) as any,
                     eventHub.onContentDeleted.subscribe((value) => {
                         const currentItems = options.getState().dms.documentLibrary.items
                         const filtered = currentItems.d.results.filter((item) => item.Id !== value.contentData.Id)
@@ -68,8 +68,8 @@ export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: s
                                 },
                             },
                         ))
-                    }),
-                    eventHub.onContentMoved.subscribe((value) => emitChange(value.content)),
+                    }) as any,
+                    eventHub.onContentMoved.subscribe((value) => emitChange(value.content)) as any,
                 )
 
                 const items = await repository.loadCollection({
