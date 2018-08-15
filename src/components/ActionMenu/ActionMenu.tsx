@@ -198,11 +198,11 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     this.handleClose()
                     this.props.checkinContent(content.Id)
                     break
-                case 'UndoCheckout':
+                case 'UndoCheckOut':
                     this.handleClose()
                     this.props.undoCheckout(content.Id)
                     break
-                case 'ForceUndoCheckout':
+                case 'ForceUndoCheckOut':
                     this.handleClose()
                     this.props.forceundoCheckout(content.Id)
                     break

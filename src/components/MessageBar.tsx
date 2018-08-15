@@ -66,15 +66,25 @@ class MessageBar extends React.Component<{ classes } & ReturnType<typeof mapStat
         }
         let failed
         // tslint:disable-next-line:no-string-literal
-        if (messagebar.content && messagebar.content['d']) {
+        if (messagebar.content) {
             // tslint:disable-next-line:no-string-literal
-            if (messagebar.content['d'].errors) {
+            if (messagebar.content['d'] && messagebar.content['d'].errors) {
                 // tslint:disable-next-line:no-string-literal
                 failed = messagebar.content['d'].errors
+            } else if (messagebar.content[0]) {
+                failed = messagebar.content
             } else {
                 failed = null
             }
-        } else { failed = null }
+        } else {
+            // tslint:disable-next-line:no-string-literal
+            if (messagebar.content['message'] !== undefined) {
+                // tslint:disable-next-line:no-string-literal
+                failed = [messagebar.content['message']]
+            } else {
+                failed = null
+            }
+        }
         const action = messagebar.event
         let successMessage
         if (successful) {
@@ -91,7 +101,7 @@ class MessageBar extends React.Component<{ classes } & ReturnType<typeof mapStat
             if (failed.length > 1) {
                 failedMessage = `${failed.length} ${resources.ITEMS} ${resources[`${action}_FAILED_MESSAGE`]}`
             } else if (failed.length === 1) {
-                failedMessage = `${failed.DisplayName} ${resources[`${action}_FAILED_MESSAGE`]}`
+                failedMessage = `${resources.CONTENT} ${failed[0]}`
             }
         } else {
             failedMessage = null
