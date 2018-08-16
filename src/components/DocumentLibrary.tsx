@@ -15,6 +15,7 @@ import { icons } from '../assets/icons'
 import { customSchema } from '../assets/schema'
 import { loadParent, select, setActive, updateChildrenOptions } from '../store/documentlibrary/actions'
 import ActionMenu from './ActionMenu/ActionMenu'
+import LockedCell from './ContentList/CellTemplates/LockedCell'
 import { FetchError } from './FetchError'
 
 const mapStateToProps = (state: rootStateType) => {
@@ -119,7 +120,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                         selected={this.props.selected}
                         active={this.props.active}
                         items={this.props.items.d.results}
-                        fieldsToDisplay={['DisplayName', 'ModificationDate', 'Owner', 'Actions']}
+                        fieldsToDisplay={['DisplayName', 'Locked', 'ModificationDate', 'Owner', 'Actions']}
                         orderBy={this.props.childrenOptions.orderby[0][0] as any}
                         orderDirection={this.props.childrenOptions.orderby[0][1] as any}
                         onRequestSelectionChange={(newSelection) => this.props.select(newSelection)}
@@ -157,7 +158,14 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                             }
                         }}
                         onItemDoubleClick={this.handleRowDoubleClick}
-                        fieldComponent={null as any}
+                        fieldComponent={(props) => {
+                            switch (props.field) {
+                                case 'Locked':
+                                    return (<LockedCell content={props.content} fieldName={props.field} />)
+                                default:
+                                    return null
+                            }
+                        }}
                         icons={icons}
                     />
                     < ActionMenu id={0} />
