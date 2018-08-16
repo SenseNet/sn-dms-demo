@@ -19,6 +19,7 @@ import { resources } from '../../assets/resources'
 import ApproveorRejectDialog from '../Dialogs/ApproveorRejectDialog'
 import DeleteDialog from '../Dialogs/DeleteDialog'
 import VersionsDialog from '../Dialogs/VersionsDialog'
+import PickerBase from '../Pickers/PickerBase'
 
 const mapStateToProps = (state: rootStateType) => {
     return {
@@ -44,6 +45,8 @@ const mapDispatchToProps = {
     logout: Actions.userLogout,
     openDialog: DMSActions.openDialog,
     closeDialog: DMSActions.closeDialog,
+    openPicker: DMSActions.openPicker,
+    closePicker: DMSActions.closePicker,
     loadContent: Actions.loadContent,
     fetchContent: Actions.requestContent,
     checkoutContent: Actions.checkOut,
@@ -213,6 +216,12 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                             id={content.Id}
                             fileName={content.DisplayName} />,
                         resources.APPROVE_OR_REJECT, this.props.closeDialog)
+                    break
+                case 'MoveTo':
+                    this.handleClose()
+                    this.props.openPicker(
+                        <PickerBase />,
+                        this.props.currentContent.DisplayName, this.props.closeDialog)
                     break
                 default:
                     console.log(`${action.Name} is clicked`)

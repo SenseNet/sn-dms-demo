@@ -104,4 +104,5 @@ export const resources = {
     EDIT_PROPERTIES_FAILURE_MESSAGE: 'cannot be modified',
     CHECKED_OUT_BY: 'Checked out by: ',
     APPROVABLE: 'Content should be approved',
+    MOVE_HERE: 'Move content here',
 }

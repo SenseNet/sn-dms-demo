@@ -719,8 +719,12 @@ export const versions: Reducer<GenericContent[]> = (state: any[], action: AnyAct
 
 export const pickerIsOpened: Reducer<boolean> = (state: false, action: AnyAction) => {
     switch (action.type) {
+        case 'OPEN_PICKER':
+            return true
+        case 'CLOSE_PICKER':
+            return false
         default:
-            return state
+            return state || false
     }
 }
 
@@ -730,8 +734,9 @@ export const pickerOnClose = (state: () => void = null, action: AnyAction) => {
             return action.onClose
         case 'CLOSE_PICKER':
             return null
+        default:
+            return state
     }
-    return state
 }
 
 export const pickerContent = (state: any = '', action: AnyAction) => {
@@ -740,18 +745,20 @@ export const pickerContent = (state: any = '', action: AnyAction) => {
             return action.content
         case 'CLOSE_PICKER':
             return state
+        default:
+            return state
     }
-    return state
 }
 
-export const pickerTitle = (state: string = '', action: AnyAction) => {
+export const pickerTitle: Reducer<string> = (state: string = '', action: AnyAction) => {
     switch (action.type) {
         case 'OPEN_PICKER':
             return action.title
         case 'CLOSE_PICKER':
             return {}
+        default:
+            return state
     }
-    return state
 }
 
 export const picker = combineReducers({
