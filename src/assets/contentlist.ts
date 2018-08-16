@@ -19,6 +19,19 @@ export const hoveredCell: React.CSSProperties = {
 export const contentListTheme = createMuiTheme({
     overrides: {
         MuiTableRow: {
+            head: {
+                '& .Locked': {
+                    'textAlign': 'center',
+                    'margin': '0 auto',
+                    '& span': {
+                        display: 'inline-flex',
+                    },
+                    'padding': '0 12px',
+                },
+                'fontFamily': 'Raleway SemiBold',
+                'fontSize': 14,
+                'color': '#999',
+            },
             hover: {
                 ...defaultCell,
                 '&:hover': { ...hoveredCell },
@@ -41,6 +54,7 @@ export const contentListTheme = createMuiTheme({
             root: {
                 '&.display-name,&.DisplayName': {
                     paddingLeft: 0,
+                    fontWeight: 'bold',
                 },
                 '&.display-name,&.DisplayName:contains(folder)': {
                     color: 'red',
