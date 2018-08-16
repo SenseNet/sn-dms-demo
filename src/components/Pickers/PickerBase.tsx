@@ -17,12 +17,13 @@ const mapStateToProps = (state: rootStateType) => {
     return {
         open: state.dms.picker.isOpened,
         anchorElement: state.dms.actionmenu.anchorElement,
+        onClose: state.dms.picker.onClose,
     }
 }
 
 class Picker extends React.Component<ReturnType<typeof mapStateToProps>, {}> {
     public handleClose = () => {
-        // Todo
+        this.props.onClose()
     }
     public handleSubmit = () => {
         // Todo

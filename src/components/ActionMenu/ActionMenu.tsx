@@ -221,7 +221,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     this.handleClose()
                     this.props.openPicker(
                         <PickerBase />,
-                        this.props.currentContent.DisplayName, this.props.closeDialog)
+                        this.props.currentContent.DisplayName, this.props.closePicker)
                     break
                 default:
                     console.log(`${action.Name} is clicked`)
