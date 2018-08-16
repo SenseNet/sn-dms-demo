@@ -42,10 +42,8 @@ export const documentLibrary: Reducer<DocumentLibraryState> = (state = defaultSt
         case 'DMS_DOCLIB_LOADING':
             return {
                 ...state,
-                selected: [],
                 isLoading: true,
                 parentIdOrPath: (action as ReturnType<typeof startLoading>).idOrPath,
-                // parent: undefined,
             }
         case 'DMS_DOCLIB_FINISH_LOADING':
             return {
@@ -66,6 +64,7 @@ export const documentLibrary: Reducer<DocumentLibraryState> = (state = defaultSt
             return {
                 ...state,
                 items: (action as ReturnType<typeof setItems>).items,
+                selected: [...state.selected.filter((s) => action.items.d.results.find((i) => i.Id === s.Id) ? true : false)],
             }
         case 'DMS_DOCLIB_SET_ERROR':
             return {
