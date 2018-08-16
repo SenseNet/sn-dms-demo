@@ -2,11 +2,11 @@ import Icon from '@material-ui/core/Icon'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import { Forward, ModeEdit, Warning } from '@material-ui/icons'
 import { pollDocumentData } from '@sensenet/document-viewer-react'
-import { openPicker, closePicker } from '../../store/picker/Actions'
 import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import * as DMSActions from '../../Actions'
+import { closePicker, loadPickerItems, openPicker, setPickerParent } from '../../store/picker/Actions'
 import EditPropertiesDialog from '../Dialogs/EditPropertiesDialog'
 
 import Fade from '@material-ui/core/Fade'
@@ -56,6 +56,8 @@ const mapDispatchToProps = {
     publishContent: Actions.publish,
     undoCheckout: Actions.undoCheckout,
     forceundoCheckout: Actions.forceUndoCheckout,
+    setPickerParent,
+    loadPickerItems,
 }
 
 const styles = {
@@ -221,9 +223,10 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     break
                 case 'MoveTo':
                     this.handleClose()
+                    this.props.setPickerParent(this.props.currentParent)
+                    this.props.loadPickerItems(this.props.currentParent.Path)
                     this.props.openPicker(
-                        <PickerBase />,
-                        this.props.currentParent.DisplayName, this.props.closePicker)
+                        <PickerBase />, this.props.closePicker)
                     break
                 default:
                     console.log(`${action.Name} is clicked`)

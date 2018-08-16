@@ -64,6 +64,7 @@ export const pickerTheme = createMuiTheme({
                         color: '#fff',
                     },
                 },
+                'borderBottom': 'solid 1px #ddd',
             },
             gutters: {
                 padding: '12px !important',

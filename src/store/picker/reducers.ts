@@ -1,5 +1,7 @@
 import { GenericContent } from '@sensenet/default-content-types'
+import { PromiseReturns } from '@sensenet/redux/dist/Actions'
 import { AnyAction, combineReducers, Reducer } from 'redux'
+import { loadPickerItems, loadPickerParent } from './Actions'
 
 export const pickerIsOpened: Reducer<boolean> = (state: false, action: AnyAction) => {
     switch (action.type) {
@@ -34,21 +36,12 @@ export const pickerContent = (state: any = '', action: AnyAction) => {
     }
 }
 
-export const pickerTitle: Reducer<string> = (state: string = '', action: AnyAction) => {
-    switch (action.type) {
-        case 'OPEN_PICKER':
-            return action.title
-        case 'CLOSE_PICKER':
-            return {}
-        default:
-            return state
-    }
-}
-
 export const pickerParent: Reducer<GenericContent | null> = (state: GenericContent = null, action: AnyAction) => {
     switch (action.type) {
         case 'SET_PICKER_PARENT':
             return action.content
+        case 'LOAD_PICKER_PARENT_SUCCESS':
+            return (action as ReturnType<typeof loadPickerParent>)
         default:
             return state
     }
@@ -57,7 +50,7 @@ export const pickerParent: Reducer<GenericContent | null> = (state: GenericConte
 export const pickerItems: Reducer<GenericContent[]> = (state: GenericContent[] = [], action: AnyAction) => {
     switch (action.type) {
         case 'LOAD_PICKER_ITEMS_SUCCESS':
-            return action.results
+            return (action.result as PromiseReturns<typeof loadPickerItems>).d.results as any[]
         default:
             return state
     }
@@ -67,6 +60,6 @@ export const picker = combineReducers({
     isOpened: pickerIsOpened,
     onClose: pickerOnClose,
     content: pickerContent,
-    title: pickerTitle,
     parent: pickerParent,
+    items: pickerItems,
 })
