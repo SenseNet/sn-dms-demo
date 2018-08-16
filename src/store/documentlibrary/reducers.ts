@@ -29,7 +29,7 @@ export const defaultState: DocumentLibraryState = {
         scenario: 'DMSListItem',
     },
     childrenOptions: {
-        select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner', 'VersioningMode', 'ParentId', 'CheckedOutTo'],
+        select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner', 'VersioningMode', 'ParentId', 'CheckedOutTo', 'Approvable'],
         expand: ['Actions', 'Owner', 'CheckedOutTo'],
         orderby: [['IsFolder', 'desc'], ['DisplayName', 'asc']],
         filter: 'ContentType ne \'SystemFolder\'',

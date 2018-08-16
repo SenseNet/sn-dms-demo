@@ -23,6 +23,12 @@ const styles = {
     },
 }
 
+enum DocumentState {
+    Default = 0,
+    CheckedOut = 1,
+    Approvable = 2,
+}
+
 const mapStateToProps = (state: rootStateType) => {
     return {
         currentUserName: state.sensenet.session.user.userName,
@@ -34,7 +40,23 @@ export interface LockedCellProps {
     fieldName: string,
 }
 
-class LockedCell extends React.Component<LockedCellProps & ReturnType<typeof mapStateToProps>, {}> {
+export interface LockedCellState {
+    status: DocumentState
+}
+
+class LockedCell extends React.Component<LockedCellProps & ReturnType<typeof mapStateToProps>, LockedCellState> {
+    public getStatus = (content) => {
+        if (content.Approvable) {
+            return DocumentState.Approvable
+        } else if (content.CheckedOutTo) {
+            return DocumentState.CheckedOut
+        } else {
+            return DocumentState.Default
+        }
+    }
+    public state = {
+        status: this.getStatus(this.props.content),
+    }
     public lockedByName = (content) => {
         // tslint:disable-next-line:no-string-literal
         if (content['CheckedOutTo'].Name === this.props.currentUserName) {
@@ -49,11 +71,8 @@ class LockedCell extends React.Component<LockedCellProps & ReturnType<typeof map
         return (
             <TableCell padding="checkbox" style={styles.cell}>
                 {content.Locked ?
-                    <div style={styles.lockedCellContainer as any}>
-                        <span style={styles.userName}>{this.lockedByName(content)}</span>
-                        <span style={styles.icon}><Icon style={{ fontSize: 20 }}>lock</Icon></span>
-                    </div> :
-                    null
+                    this.state.status === DocumentState.CheckedOut ? <div style={styles.lockedCellContainer as any}><span style={styles.userName}>{this.lockedByName(content)}</span><span style={styles.icon}><Icon style={{ fontSize: 20 }}>lock</Icon></span></div> : null :
+                    this.state.status === DocumentState.Approvable ? <div style={styles.lockedCellContainer as any}><span style={styles.icon}><Icon>access_time</Icon></span></div> : null
                 }
             </TableCell>
         )
