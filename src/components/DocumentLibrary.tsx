@@ -3,7 +3,7 @@ import { ConstantContent } from '@sensenet/client-core'
 import { GenericContent, IActionModel } from '@sensenet/default-content-types'
 import { pollDocumentData } from '@sensenet/document-viewer-react'
 import { ContentList } from '@sensenet/list-controls-react'
-import { uploadRequest } from '@sensenet/redux/dist/Actions'
+import { updateContent, uploadRequest } from '@sensenet/redux/dist/Actions'
 import { compile } from 'path-to-regexp'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -16,6 +16,7 @@ import { customSchema } from '../assets/schema'
 import { loadParent, select, setActive, updateChildrenOptions } from '../store/documentlibrary/actions'
 import ActionMenu from './ActionMenu/ActionMenu'
 import LockedCell from './ContentList/CellTemplates/LockedCell'
+import { RenameCell } from './ContentList/CellTemplates/RenameCell'
 import { FetchError } from './FetchError'
 
 const mapStateToProps = (state: rootStateType) => {
@@ -26,6 +27,7 @@ const mapStateToProps = (state: rootStateType) => {
         parent: state.dms.documentLibrary.parent,
         parentIdOrPath: state.dms.documentLibrary.parentIdOrPath,
         isLoading: state.dms.documentLibrary.isLoading,
+        editedItemId: state.dms.editedItemId,
         currentUser: state.sensenet.session.user,
         hostname: state.sensenet.session.repository.repositoryUrl,
         selected: state.dms.documentLibrary.selected,
@@ -46,6 +48,7 @@ const mapDispatchToProps = {
     select,
     setActive,
     updateChildrenOptions,
+    updateContent,
 }
 
 interface DocumentLibraryProps extends RouteComponentProps<any> {
@@ -162,6 +165,15 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                             switch (props.field) {
                                 case 'Locked':
                                     return (<LockedCell content={props.content} fieldName={props.field} />)
+                                case 'DisplayName':
+                                    if (this.props.editedItemId === props.content.Id) {
+                                        return (<RenameCell
+                                            icon={props.content.Icon}
+                                            icons={icons}
+                                            displayName={props.content.DisplayName}
+                                            onFinish={(newName) => this.props.updateContent<GenericContent>(props.content.Id, { DisplayName: newName })}
+                                        />)
+                                    }
                                 default:
                                     return null
                             }
