@@ -11,7 +11,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { rootStateType } from '../..'
-import * as DMSActions from '../../Actions'
+import { followWorkspace, unfollowWorkspace } from '../../store/workspaces/actions'
 
 const styles = {
     listItem: {
@@ -67,8 +67,8 @@ const mapStateToProps = (state: rootStateType) => {
 }
 
 const mapDispatchToProps = {
-    followWorkspace: DMSActions.followWorkspace,
-    unfollowWorkspace: DMSActions.unfollowWorkspace,
+    followWorkspace,
+    unfollowWorkspace,
     loadContent: Actions.loadContent,
     fetchContent: Actions.requestContent,
 }
@@ -95,8 +95,8 @@ class WorkspaceListItem extends React.Component<{ classes } & ReturnType<typeof 
         this.props.closeDropDown(true)
     }
     public startButtonClick = (id) => {
-        const { userName, favorites, followWorkspace, unfollowWorkspace } = this.props
-        this.state.followed ? unfollowWorkspace(userName, id, favorites) : followWorkspace(userName, id, favorites)
+        const { userName, favorites } = this.props
+        this.state.followed ? this.props.unfollowWorkspace(userName, id, favorites) : this.props.followWorkspace(userName, id, favorites)
         this.setState({
             followed: !this.state.followed,
         })

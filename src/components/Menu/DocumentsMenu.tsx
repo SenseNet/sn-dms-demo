@@ -130,7 +130,11 @@ const ConnectedUploadBar = connect((state: rootStateType) => ({
 
 class DocumentsMenu extends React.Component<DocumentMenuProps & ReturnType<typeof mapStateToProps>, {}> {
     public handleMenuItemClick = (title) => {
-        this.props.history.push(`/documents/${btoa(this.props.currentWorkspace.Path + '/Document_Library')}`)
+        if (this.props.currentWorkspace) {
+            this.props.history.push(`/documents/${btoa(this.props.currentWorkspace.Path + '/Document_Library')}`)
+        } else {
+            this.props.history.push('/documents/')
+        }
         this.props.chooseMenuItem(title)
     }
     public handleSubmenuItemClick = (title) => {

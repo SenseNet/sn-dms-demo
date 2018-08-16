@@ -1,10 +1,11 @@
-import { GenericContent, IActionModel, Workspace } from '@sensenet/default-content-types'
+import { GenericContent, IActionModel } from '@sensenet/default-content-types'
 import { approve, checkIn, checkOut, createContent, deleteBatch, deleteContent, forceUndoCheckout, loadContent, loadContentActions, PromiseReturns, publish, rejectContent, restoreVersion, undoCheckout } from '@sensenet/redux/dist/Actions'
 import { Action, AnyAction, combineReducers, Reducer } from 'redux'
-import { closeMessageBar, ExtendedUploadProgressInfo, getWorkspaces, loadFavoriteWorkspaces, loadListActions, loadTypesToAddNewList, loadUserActions, loadVersions } from './Actions'
+import { closeMessageBar, ExtendedUploadProgressInfo, loadListActions, loadTypesToAddNewList, loadUserActions, loadVersions, setListActions } from './Actions'
 import { resources } from './assets/resources'
 
 import { documentLibrary } from './store/documentlibrary/reducers'
+import { workspaces } from './store/workspaces/reducers'
 
 enum MessageMode { error, warning, info }
 
@@ -539,18 +540,27 @@ export const messagebar = combineReducers({
     hideDuration,
 })
 
-export const toolbarActions: Reducer<IActionModel[]> = (state = [], action) => {
+export const toolbar: Reducer<{ actions: IActionModel[], isLoading: boolean, idOrPath: number | string, scenario: string }> = (state = { actions: [], isLoading: false, idOrPath: 0, scenario: '' }, action) => {
     switch (action.type) {
-        case 'LOAD_LIST_ACTIONS_SUCCESS':
-            return (action.result as PromiseReturns<typeof loadListActions>).d.Actions
+        case 'LOAD_LIST_ACTIONS': {
+            const a: ReturnType<typeof loadListActions> = action as any
+            return {
+                ...state,
+                isLoading: true,
+                idOrPath: a.idOrPath,
+                scenario: a.scenario,
+            }
+        }
+        case 'SET_LIST_ACTIONS':
+            return {
+                ...state,
+                isLoading: false,
+                actions: (action as ReturnType<typeof setListActions>).actions,
+            }
         default:
             return state
     }
 }
-
-export const toolbar = combineReducers({
-    actions: toolbarActions,
-})
 
 export const uploads: Reducer<{ uploads: ExtendedUploadProgressInfo[], showProgress: boolean }>
     = (state = { uploads: [], showProgress: false }, action: AnyAction) => {
@@ -695,42 +705,6 @@ export const dialog = combineReducers({
     onClose,
     content: dialogContent,
     title: dialogTitle,
-})
-
-export const allWorkspaces: Reducer<Workspace[]> = (state: Workspace[], action: AnyAction) => {
-    switch (action.type) {
-        case 'GET_WORKSPACES_SUCCESS':
-            return (action.result as PromiseReturns<typeof getWorkspaces>).d.results
-        default:
-            return state || []
-    }
-}
-
-export const favorites: Reducer<number[]> = (state: number[], action: AnyAction) => {
-    switch (action.type) {
-        case 'LOAD_FAVORITE_WORKSPACES_SUCCESS':
-        case 'FOLLOW_WORKSPACE_SUCCESS':
-        case 'UNFOLLOW_WORKSPACE_SUCCESS':
-            const items = (action.result as PromiseReturns<typeof loadFavoriteWorkspaces>).d.FollowedWorkspaces as any[]
-            return items.map((item) => item.Id)
-        default:
-            return state || []
-    }
-}
-
-export const searchTerm: Reducer<string> = (state: '', action: AnyAction) => {
-    switch (action.type) {
-        case 'SEARCH_WORKSPACES':
-            return action.text
-        default:
-            return state || ''
-    }
-}
-
-export const workspaces = combineReducers({
-    favorites,
-    all: allWorkspaces,
-    searchTerm,
 })
 
 export const versions: Reducer<GenericContent[]> = (state: any[], action: AnyAction) => {

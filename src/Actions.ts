@@ -1,8 +1,8 @@
 import { IContent, IUploadFromEventOptions, IUploadFromFileListOptions, IUploadProgressInfo, Repository, Upload } from '@sensenet/client-core'
 import { ObservableValue, usingAsync } from '@sensenet/client-utils'
-import { File as SnFile, GenericContent, User, Workspace } from '@sensenet/default-content-types'
+import { File as SnFile, GenericContent } from '@sensenet/default-content-types'
 import { IActionModel } from '@sensenet/default-content-types/dist/IActionModel'
-import { Action, Dispatch } from 'redux'
+import { Action, AnyAction, Dispatch } from 'redux'
 
 import { debounce } from 'lodash'
 import { InjectableAction } from 'redux-di-middleware'
@@ -73,21 +73,35 @@ export const setMessageBar = (mode: MessageMode, content: any, close?: () => voi
     exited,
     hideDuration,
 })
-export const loadListActions = (idOrPath: number | string, scenario?: string, customActions?: IActionModel[]) => ({
-    type: 'LOAD_LIST_ACTIONS',
-    async payload(repository: Repository) {
-        const data: { d: { Actions: IActionModel[] } } = await repository.getActions({ idOrPath, scenario }) as any
-        const actions = customActions ? [...data.d.Actions, ...customActions] : data.d.Actions
-        return {
-            d: {
-                Actions: actions.sort((a, b) => {
-                    const x = a.Index
-                    const y = b.Index
-                    return ((x < y) ? -1 : ((x > y) ? 1 : 0))
-                }),
-            },
+
+export const getListActions = (idOrPath: number | string, scenario?: string, customActions?: IActionModel[]) => ({
+    type: 'GET_LIST_ACTIONS',
+    async inject(options) {
+        const actionsState = options.getState().dms.toolbar
+        if (!actionsState.isLoading && (actionsState.idOrPath !== idOrPath || actionsState.scenario !== scenario)) {
+            options.dispatch(loadListActions(idOrPath, scenario))
+            const repository = options.getInjectable(Repository)
+            const data: { d: { Actions: IActionModel[] } } = await repository.getActions({ idOrPath, scenario }) as any
+            const actions = customActions ? [...data.d.Actions, ...customActions] : data.d.Actions
+            const ordered = actions.sort((a, b) => {
+                const x = a.Index
+                const y = b.Index
+                return ((x < y) ? -1 : ((x > y) ? 1 : 0))
+            })
+            options.dispatch(setListActions(ordered))
         }
     },
+} as InjectableAction<rootStateType, AnyAction>)
+
+export const loadListActions = (idOrPath: number | string, scenario?: string) => ({
+    type: 'LOAD_LIST_ACTIONS',
+    idOrPath,
+    scenario,
+})
+
+export const setListActions = (actions: IActionModel[]) => ({
+    type: 'SET_LIST_ACTIONS',
+    actions,
 })
 export const loadUserActions = (idOrPath: number | string, scenario?: string, customActions?: IActionModel[]) => ({
     type: 'LOAD_USER_ACTIONS',
@@ -262,56 +276,6 @@ export const closeDialog = () => ({
 export const setActionMenuId = (id: number | null) => ({
     type: 'SET_ACTIONMENU_ID',
     id,
-})
-
-export const getWorkspaces = () => ({
-    type: 'GET_WORKSPACES',
-    payload: (repository: Repository) => repository.loadCollection<Workspace>({
-        path: '/',
-        oDataOptions: {
-            query: 'TypeIs:Workspace -TypeIs:Site',
-            select: ['DisplayName', 'Id', 'Path'],
-            orderby: [['DisplayName', 'asc']],
-        },
-    }),
-})
-
-export const loadFavoriteWorkspaces = (userName: string) => ({
-    type: 'LOAD_FAVORITE_WORKSPACES',
-    payload: (repository: Repository) => repository.load<User>({
-        idOrPath: `/Root/IMS/Public/${userName}`,
-        oDataOptions: {
-            select: 'FollowedWorkspaces',
-            expand: 'FollowedWorkspaces',
-        },
-    }),
-})
-
-export const followWorkspace = (userName: string, contentId: number, followed: number[]) => ({
-    type: 'FOLLOW_WORKSPACE',
-    payload: (repository: Repository) => repository.patch<User>({
-        idOrPath: `/Root/IMS/Public/${userName}`,
-        content: {
-            FollowedWorkspaces: [...followed, contentId],
-        } as Partial<User>,
-        oDataOptions: { select: 'FollowedWorkspaces', expand: 'FollowedWorkspaces' },
-    }),
-})
-
-export const unfollowWorkspace = (userName: string, contentId: number, followed: number[]) => ({
-    type: 'UNFOLLOW_WORKSPACE',
-    payload: (repository: Repository) => repository.patch<User>({
-        idOrPath: `/Root/IMS/Public/${userName}`,
-        content: {
-            FollowedWorkspaces: followed.length === 1 && followed[0] === contentId ? null : [...followed.filter((item) => item !== contentId)],
-        } as Partial<User>,
-        oDataOptions: { select: 'FollowedWorkspaces', expand: 'FollowedWorkspaces' },
-    }),
-})
-
-export const searchWorkspaces = (text: string) => ({
-    type: 'SEARCH_WORKSPACES',
-    text,
 })
 
 export const loadVersions = (id: number) => ({

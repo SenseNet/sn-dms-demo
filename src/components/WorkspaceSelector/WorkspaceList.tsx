@@ -5,7 +5,7 @@ import * as React from 'react'
 import { Scrollbars } from 'react-custom-scrollbars'
 import { connect } from 'react-redux'
 import { rootStateType } from '../..'
-import * as DMSActions from '../../Actions'
+import { getWorkspaces, loadFavoriteWorkspaces, searchWorkspaces } from '../../store/workspaces/actions'
 import WorkspaceListItem from './WorkspaceListItem'
 import WorkspaceSearch from './WorkspaceSearch'
 
@@ -42,9 +42,9 @@ const mapStateToProps = (state: rootStateType) => {
 }
 
 const mapDispatchToProps = {
-    getWorkspaces: DMSActions.getWorkspaces,
-    getFavorites: DMSActions.loadFavoriteWorkspaces,
-    searchWorkspaces: DMSActions.searchWorkspaces,
+    getWorkspaces,
+    getFavorites: loadFavoriteWorkspaces,
+    searchWorkspaces,
 }
 
 interface WorkspaceListState {
@@ -74,7 +74,7 @@ class WorkspaceList extends React.Component<{ classes } & WorkspaceListProps & R
         if (newProps.workspaces.length !== lastState.workspaces.length || lastState.workspaces.length === 0) {
             newProps.getWorkspaces()
         }
-        if (lastState.orderedWsList === null || (newProps.favorites.length === 0 && lastState.orderedWsList.length === 0)) {
+        if (lastState.orderedWsList === null || (newProps.favorites && newProps.favorites.length === 0 && lastState.orderedWsList.length === 0)) {
             newProps.getFavorites(newProps.user.userName)
         }
         return {

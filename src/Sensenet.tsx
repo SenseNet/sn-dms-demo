@@ -1,4 +1,4 @@
-import { ConstantContent, LoginState } from '@sensenet/client-core'
+import { LoginState } from '@sensenet/client-core'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { HashRouter, Redirect, Route, Switch } from 'react-router-dom'
@@ -42,10 +42,10 @@ class Sensenet extends React.Component<SensenetProps & ReturnType<typeof mapStat
     super(props)
   }
   public render() {
-    if (this.props.loginState === LoginState.Pending
-      || (this.props.loginState === LoginState.Authenticated && this.props.currentUserId === ConstantContent.VISITOR_USER.Id)) {
-      return null
-    }
+    // if (this.props.loginState === LoginState.Pending
+    //   || (this.props.loginState === LoginState.Authenticated && this.props.currentUserId === ConstantContent.VISITOR_USER.Id)) {
+    //   return null
+    // }
     return (
       <MuiThemeProvider theme={theme}>
         <div className="root">

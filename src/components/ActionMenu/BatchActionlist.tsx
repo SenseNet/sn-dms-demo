@@ -59,19 +59,15 @@ const mapStateToProps = (state: rootStateType) => {
     return {
         actions: state.dms.toolbar.actions,
         currentId: state.dms.currentId,
-        // selected: Reducers.getSelectedContentIds(state.sensenet),
-        // currentContent: Reducers.getCurrentContent(state.sensenet),
     }
 }
 
 const mapDispatchToProps = {
-    getActions: DMSActions.loadListActions,
+    getActions: DMSActions.getListActions,
     openActionMenu: DMSActions.openActionMenu,
     closeActionMenu: DMSActions.closeActionMenu,
     clearSelection: Actions.clearSelection,
-    deleteBatch: Actions.deleteBatch,
     openDialog: DMSActions.openDialog,
-    closeDialog: DMSActions.closeDialog,
 }
 
 export interface BatchActionlistState {
@@ -83,7 +79,7 @@ export interface BatchActionlistState {
 
 class BatchActionlist extends React.Component<BatchActionListProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, BatchActionlistState> {
     public state = {
-        currentId: 0,
+        currentId: 0, // this.props.currentContent && this.props.currentContent.Id || 0,
         options: [],
         anchorEl: null,
         actions: [],
