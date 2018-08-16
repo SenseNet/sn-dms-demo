@@ -717,6 +717,50 @@ export const versions: Reducer<GenericContent[]> = (state: any[], action: AnyAct
     }
 }
 
+export const pickerIsOpened: Reducer<boolean> = (state: false, action: AnyAction) => {
+    switch (action.type) {
+        default:
+            return state
+    }
+}
+
+export const pickerOnClose = (state: () => void = null, action: AnyAction) => {
+    switch (action.type) {
+        case 'OPEN_PICKER':
+            return action.onClose
+        case 'CLOSE_PICKER':
+            return null
+    }
+    return state
+}
+
+export const pickerContent = (state: any = '', action: AnyAction) => {
+    switch (action.type) {
+        case 'OPEN_PICKER':
+            return action.content
+        case 'CLOSE_PICKER':
+            return state
+    }
+    return state
+}
+
+export const pickerTitle = (state: string = '', action: AnyAction) => {
+    switch (action.type) {
+        case 'OPEN_PICKER':
+            return action.title
+        case 'CLOSE_PICKER':
+            return {}
+    }
+    return state
+}
+
+export const picker = combineReducers({
+    isOpened: pickerIsOpened,
+    onClose: pickerOnClose,
+    content: pickerContent,
+    title: pickerTitle,
+})
+
 export const dms = combineReducers({
     documentLibrary,
     messagebar,
@@ -736,4 +780,5 @@ export const dms = combineReducers({
     dialog,
     workspaces,
     versions,
+    picker,
 })
