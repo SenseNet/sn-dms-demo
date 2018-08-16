@@ -1,8 +1,10 @@
 import { Icon, TableCell } from '@material-ui/core'
+import Tooltip from '@material-ui/core/Tooltip'
 import { GenericContent } from '@sensenet/default-content-types'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '../../..'
+import { resources } from '../../../assets/resources'
 
 const styles = {
     cell: {
@@ -68,11 +70,26 @@ class LockedCell extends React.Component<LockedCellProps & ReturnType<typeof map
     }
     public render() {
         const { content } = this.props
+        // tslint:disable-next-line:no-string-literal
+        const checkedOutBy = content['CheckedOutTo'] ? this.lockedByName(content) : null
         return (
             <TableCell padding="checkbox" style={styles.cell}>
                 {content.Locked ?
-                    this.state.status === DocumentState.CheckedOut ? <div style={styles.lockedCellContainer as any}><span style={styles.userName}>{this.lockedByName(content)}</span><span style={styles.icon}><Icon style={{ fontSize: 20 }}>lock</Icon></span></div> : null :
-                    this.state.status === DocumentState.Approvable ? <div style={styles.lockedCellContainer as any}><span style={styles.icon}><Icon>access_time</Icon></span></div> : null
+                    this.state.status === DocumentState.CheckedOut ?
+                        <Tooltip title={`${resources.CHECKED_OUT_BY}${checkedOutBy}`}>
+                            <div style={styles.lockedCellContainer as any}>
+                                <span style={styles.userName}>{checkedOutBy}</span>
+                                <span style={styles.icon}><Icon style={{ fontSize: 20 }}>lock</Icon></span>
+                            </div>
+                        </Tooltip> :
+                        null :
+                    this.state.status === DocumentState.Approvable ?
+                        <Tooltip title={resources.APPROVABLE}>
+                            <div style={styles.lockedCellContainer as any}>
+                                <span style={styles.icon}><Icon>access_time</Icon></span>
+                            </div>
+                        </Tooltip> :
+                        null
                 }
             </TableCell>
         )

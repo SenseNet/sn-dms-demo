@@ -102,4 +102,6 @@ export const resources = {
     UNDOCHECKOUT_FAILURE_MESSAGE: 'cannot be checked-in',
     FORCEUNDOCHECKOUT_FAILURE_MESSAGE: 'cannot be checked-in',
     EDIT_PROPERTIES_FAILURE_MESSAGE: 'cannot be modified',
+    CHECKED_OUT_BY: 'Checked out by: ',
+    APPROVABLE: 'Content should be approved',
 }
