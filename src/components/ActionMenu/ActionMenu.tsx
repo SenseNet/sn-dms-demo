@@ -2,6 +2,7 @@ import Icon from '@material-ui/core/Icon'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import { Forward, ModeEdit, Warning } from '@material-ui/icons'
 import { pollDocumentData } from '@sensenet/document-viewer-react'
+import { openPicker, closePicker } from '../../store/picker/Actions'
 import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -32,6 +33,7 @@ const mapStateToProps = (state: rootStateType) => {
         userName: state.sensenet.session.user.userName,
         queryOptions: state.sensenet.currentitems.options,
         currentContent: state.dms.actionmenu.content,
+        currentParent: state.dms.documentLibrary.parent,
     }
 }
 
@@ -45,8 +47,8 @@ const mapDispatchToProps = {
     logout: Actions.userLogout,
     openDialog: DMSActions.openDialog,
     closeDialog: DMSActions.closeDialog,
-    openPicker: DMSActions.openPicker,
-    closePicker: DMSActions.closePicker,
+    openPicker,
+    closePicker,
     loadContent: Actions.loadContent,
     fetchContent: Actions.requestContent,
     checkoutContent: Actions.checkOut,
@@ -221,7 +223,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     this.handleClose()
                     this.props.openPicker(
                         <PickerBase />,
-                        this.props.currentContent.DisplayName, this.props.closePicker)
+                        this.props.currentParent.DisplayName, this.props.closePicker)
                     break
                 default:
                     console.log(`${action.Name} is clicked`)

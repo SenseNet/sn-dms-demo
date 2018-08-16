@@ -18,6 +18,7 @@ const mapStateToProps = (state: rootStateType) => {
         open: state.dms.picker.isOpened,
         anchorElement: state.dms.actionmenu.anchorElement,
         onClose: state.dms.picker.onClose,
+        title: state.dms.picker.title,
     }
 }
 
@@ -29,7 +30,7 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps>, {}> {
         // Todo
     }
     public render() {
-        const { open, anchorElement } = this.props
+        const { open, anchorElement, title } = this.props
         return (
             <MuiThemeProvider theme={pickerTheme}>
                 <Popover
@@ -42,7 +43,7 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps>, {}> {
                                 <BackIcon />
                             </IconButton>
                             <Typography variant="title" color="inherit">
-                                UX project internal
+                                {title}
                         </Typography>
                             <IconButton color="inherit" onClick={this.handleClose}>
                                 <CloseIcon />

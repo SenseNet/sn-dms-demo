@@ -5,6 +5,7 @@ import { closeMessageBar, ExtendedUploadProgressInfo, loadListActions, loadTypes
 import { resources } from './assets/resources'
 
 import { documentLibrary } from './store/documentlibrary/reducers'
+import { picker } from './store/picker/reducers'
 import { workspaces } from './store/workspaces/reducers'
 
 enum MessageMode { error, warning, info }
@@ -716,57 +717,6 @@ export const versions: Reducer<GenericContent[]> = (state: any[], action: AnyAct
             return state || []
     }
 }
-
-export const pickerIsOpened: Reducer<boolean> = (state: false, action: AnyAction) => {
-    switch (action.type) {
-        case 'OPEN_PICKER':
-            return true
-        case 'CLOSE_PICKER':
-            return false
-        default:
-            return state || false
-    }
-}
-
-export const pickerOnClose = (state: () => void = null, action: AnyAction) => {
-    switch (action.type) {
-        case 'OPEN_PICKER':
-            return action.onClose
-        case 'CLOSE_PICKER':
-            return null
-        default:
-            return state
-    }
-}
-
-export const pickerContent = (state: any = '', action: AnyAction) => {
-    switch (action.type) {
-        case 'OPEN_PICKER':
-            return action.content
-        case 'CLOSE_PICKER':
-            return state
-        default:
-            return state
-    }
-}
-
-export const pickerTitle: Reducer<string> = (state: string = '', action: AnyAction) => {
-    switch (action.type) {
-        case 'OPEN_PICKER':
-            return action.title
-        case 'CLOSE_PICKER':
-            return {}
-        default:
-            return state
-    }
-}
-
-export const picker = combineReducers({
-    isOpened: pickerIsOpened,
-    onClose: pickerOnClose,
-    content: pickerContent,
-    title: pickerTitle,
-})
 
 export const dms = combineReducers({
     documentLibrary,
