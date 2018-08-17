@@ -20,6 +20,7 @@ const mapStateToProps = (state: rootStateType) => {
         onClose: state.dms.picker.onClose,
         parent: state.dms.picker.parent,
         items: state.dms.picker.items,
+        selected: state.dms.documentLibrary.selected,
     }
 }
 
@@ -31,7 +32,7 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps>, {}> {
         // Todo
     }
     public render() {
-        const { open, anchorElement, parent } = this.props
+        const { selected, open, anchorElement, parent } = this.props
         return (
             <MuiThemeProvider theme={pickerTheme}>
                 <Popover
@@ -58,12 +59,12 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps>, {}> {
                             thumbMinSize={180}>
                             <List>
                                 {this.props.items.map((item) => {
-                                    return <ListItem button>
+                                    return selected.indexOf(item) > - 1 ? <ListItem button>
                                         <ListItemIcon>
                                             <FolderIcon />
                                         </ListItemIcon>
                                         <ListItemText primary={item.DisplayName} />
-                                    </ListItem>
+                                    </ListItem> : null
                                 },
                                 )}
                             </List>

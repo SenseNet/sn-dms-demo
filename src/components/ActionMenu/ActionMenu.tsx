@@ -6,6 +6,7 @@ import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import * as DMSActions from '../../Actions'
+import { select } from '../../store/documentlibrary/actions'
 import { closePicker, loadPickerItems, openPicker, setPickerParent } from '../../store/picker/Actions'
 import EditPropertiesDialog from '../Dialogs/EditPropertiesDialog'
 
@@ -58,6 +59,7 @@ const mapDispatchToProps = {
     forceundoCheckout: Actions.forceUndoCheckout,
     setPickerParent,
     loadPickerItems,
+    select,
 }
 
 const styles = {
@@ -223,6 +225,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     break
                 case 'MoveTo':
                     this.handleClose()
+                    this.props.select([content])
                     this.props.setPickerParent(this.props.currentParent)
                     this.props.loadPickerItems(this.props.currentParent.Path)
                     this.props.openPicker(
