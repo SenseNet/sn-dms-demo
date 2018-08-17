@@ -116,7 +116,6 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
     }
     public render() {
         const { closeDialog, isDialogOpen, dialogContent } = this.props
-        const filter = { filter: this.props.isViewerOpened ? 'blur(3px)' : '' }
 
         if (this.props.loginState !== LoginState.Unauthenticated && this.props.loggedinUserName === 'Visitor') {
             return null
@@ -127,7 +126,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                 {(matches) => {
                     if (matches) {
                         return <div>
-                            <div style={{ ...styles.root, ...filter }}>
+                            <div style={{ ...styles.root }}>
                                 <Header />
                                 <div style={{ width: '100%', display: 'flex' }}>
                                     <DashboardDrawer />
