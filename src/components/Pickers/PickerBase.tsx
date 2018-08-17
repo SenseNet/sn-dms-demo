@@ -21,6 +21,7 @@ const mapStateToProps = (state: rootStateType) => {
         parent: state.dms.picker.parent,
         items: state.dms.picker.items,
         selected: state.dms.documentLibrary.selected,
+        selectedTarget: state.dms.picker.selected,
     }
 }
 
@@ -32,7 +33,7 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps>, {}> {
         // Todo
     }
     public render() {
-        const { selected, open, anchorElement, parent } = this.props
+        const { open, anchorElement, parent, selectedTarget, items } = this.props
         return (
             <MuiThemeProvider theme={pickerTheme}>
                 <Popover
@@ -58,13 +59,13 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps>, {}> {
                             renderThumbVertical={({ style }) => <div style={{ ...style, borderRadius: 2, backgroundColor: '#999', width: 10, marginLeft: -2 }}></div>}
                             thumbMinSize={180}>
                             <List>
-                                {this.props.items.map((item) => {
-                                    return selected.indexOf(item) > - 1 ? <ListItem button>
+                                {items.map((item) => {
+                                    return <ListItem button>
                                         <ListItemIcon>
                                             <FolderIcon />
                                         </ListItemIcon>
                                         <ListItemText primary={item.DisplayName} />
-                                    </ListItem> : null
+                                    </ListItem>
                                 },
                                 )}
                             </List>
@@ -75,7 +76,7 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps>, {}> {
                             <NewFolderIcon />
                         </IconButton>
                         <Button color="default" style={{ marginRight: 20 }} onClick={() => this.handleClose()}>{resources.CANCEL}</Button>
-                        <Button onClick={() => this.handleSubmit()} variant="raised" color="primary">{resources.MOVE_HERE}</Button>
+                        <Button onClick={() => this.handleSubmit()} variant="raised" disabled={selectedTarget.length > 0 ? false : true} color="primary">{resources.MOVE_HERE}</Button>
                     </DialogActions>
                 </Popover>
             </MuiThemeProvider>

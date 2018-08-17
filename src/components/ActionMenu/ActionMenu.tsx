@@ -227,7 +227,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     this.handleClose()
                     this.props.select([content])
                     this.props.setPickerParent(this.props.currentParent)
-                    this.props.loadPickerItems(this.props.currentParent.Path)
+                    this.props.loadPickerItems(this.props.currentParent.Path, content)
                     this.props.openPicker(
                         <PickerBase />, this.props.closePicker)
                     break
