@@ -1,7 +1,6 @@
 import { MuiThemeProvider } from '@material-ui/core'
 import { ConstantContent } from '@sensenet/client-core'
 import { GenericContent, IActionModel } from '@sensenet/default-content-types'
-import { pollDocumentData } from '@sensenet/document-viewer-react'
 import { ContentList } from '@sensenet/list-controls-react'
 import { updateContent, uploadRequest } from '@sensenet/redux/dist/Actions'
 import { compile } from 'path-to-regexp'
@@ -26,10 +25,8 @@ const mapStateToProps = (state: rootStateType) => {
         errorMessage: state.dms.documentLibrary.error,
         parent: state.dms.documentLibrary.parent,
         parentIdOrPath: state.dms.documentLibrary.parentIdOrPath,
-        isLoading: state.dms.documentLibrary.isLoading,
         editedItemId: state.dms.editedItemId,
         currentUser: state.sensenet.session.user,
-        hostname: state.sensenet.session.repository.repositoryUrl,
         selected: state.dms.documentLibrary.selected,
         active: state.dms.documentLibrary.active,
         childrenOptions: state.dms.documentLibrary.childrenOptions,
@@ -38,13 +35,10 @@ const mapStateToProps = (state: rootStateType) => {
 
 const mapDispatchToProps = {
     loadParent,
-    setCurrentId: DMSActions.setCurrentId,
     uploadContent: uploadRequest,
     uploadDataTransfer: DMSActions.uploadDataTransfer,
-    openViewer: DMSActions.openViewer,
     openActionMenu: DMSActions.openActionMenu,
     closeActionMenu: DMSActions.closeActionMenu,
-    pollDocumentData,
     select,
     setActive,
     updateChildrenOptions,
@@ -60,7 +54,7 @@ interface DocumentLibraryState {
 }
 
 class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DocumentLibraryState> {
-    constructor(props) {
+    constructor(props: DocumentLibrary['props']) {
         super(props)
         this.state = {
             droppedFiles: [],
@@ -69,11 +63,24 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
         this.handleFileDrop = this.handleFileDrop.bind(this)
         this.handleRowDoubleClick = this.handleRowDoubleClick.bind(this)
     }
-    public static getDerivedStateFromProps(newProps: DocumentLibrary['props'], lastState: DocumentLibrary['state']) {
-        if (newProps.loggedinUser.userName !== 'Visitor') {
+
+    private static updateStoreFromPath(newProps: DocumentLibrary['props'], lastState: DocumentLibrary['state']) {
+        try {
             const pathFromUrl = newProps.match.params.folderPath && atob(decodeURIComponent(newProps.match.params.folderPath))
             const userProfilePath = `/Root/Profiles/Public/${newProps.loggedinUser.content.Name}/Document_Library`
             newProps.loadParent(pathFromUrl || userProfilePath)
+        } catch (error) {
+            /** Cannot parse current folder from URL */
+            return compile(newProps.match.path)({ folderPath: '' })
+        }
+    }
+
+    public static getDerivedStateFromProps(newProps: DocumentLibrary['props'], lastState: DocumentLibrary['state']) {
+        if (newProps.loggedinUser.userName !== 'Visitor') {
+            const newPath = DocumentLibrary.updateStoreFromPath(newProps, lastState)
+            if (newPath && newPath !== newProps.match.url) {
+                newProps.history.push(newPath)
+            }
         }
         return {
             ...lastState,
@@ -98,8 +105,8 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
             const newPath = compile(this.props.match.path)({ folderPath: btoa(content.Path) })
             this.props.history.push(newPath)
         } else {
-            this.props.openViewer(content.Id)
-            this.props.pollDocumentData(this.props.hostname, content.Id)
+            const newPath = compile(this.props.match.path)({ folderPath: this.props.match.params.folderPath || btoa(this.props.parentIdOrPath as any), otherActions: ['preview', btoa(content.Id as any)] })
+            this.props.history.push(newPath)
         }
     }
 
