@@ -26,7 +26,7 @@ export const pickerTheme = createMuiTheme({
         },
         MuiTypography: {
             root: {
-                '&.active, &:hover, &.active:hover': {
+                '&.selected, &.active, &:hover, &.active:hover': {
                     color: '#fff !important',
                 },
             },
@@ -36,8 +36,16 @@ export const pickerTheme = createMuiTheme({
                 flex: 1,
             },
             subheading: {
-                fontFamily: 'Raleway Medium',
-                fontSize: 15,
+                'fontFamily': 'Raleway Medium',
+                'fontSize': 15,
+                '&.selected, &.active': {
+                    color: '#fff',
+                },
+            },
+            body1: {
+                '&.picker-item-selected': {
+                    color: '#fff',
+                },
             },
         },
         MuiDialogContent: {
@@ -73,6 +81,7 @@ export const pickerTheme = createMuiTheme({
         MuiListItemText: {
             root: {
                 padding: 0,
+                color: '#b0b0b0',
             },
         },
         MuiListItemIcon: {

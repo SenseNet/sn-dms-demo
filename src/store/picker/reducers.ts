@@ -59,7 +59,7 @@ export const pickerItems: Reducer<GenericContent[]> = (state: GenericContent[] =
 export const pickerSelected: Reducer<GenericContent[]> = (state: GenericContent[] = [], action: AnyAction) => {
     switch (action.type) {
         case 'SELECT_PICKER_ITEM':
-            return action.content
+            return [action.content]
         default:
             return state
     }

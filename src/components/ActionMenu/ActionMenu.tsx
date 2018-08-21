@@ -21,7 +21,7 @@ import { resources } from '../../assets/resources'
 import ApproveorRejectDialog from '../Dialogs/ApproveorRejectDialog'
 import DeleteDialog from '../Dialogs/DeleteDialog'
 import VersionsDialog from '../Dialogs/VersionsDialog'
-import PickerBase from '../Pickers/PickerBase'
+import Picker from '../Pickers/PickerBase'
 
 const mapStateToProps = (state: rootStateType) => {
     return {
@@ -229,7 +229,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     this.props.setPickerParent(this.props.currentParent)
                     this.props.loadPickerItems(this.props.currentParent.Path, content)
                     this.props.openPicker(
-                        <PickerBase />, this.props.closePicker)
+                        <Picker />, this.props.closePicker)
                     break
                 default:
                     console.log(`${action.Name} is clicked`)
