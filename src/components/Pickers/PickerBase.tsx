@@ -31,6 +31,10 @@ const mapDispatchToProps = {
     selectPickerItem,
 }
 
+interface PickerState {
+    hovered: number,
+}
+
 const styles = {
     selected: {
         background: '#016d9e',
@@ -44,7 +48,10 @@ const styles = {
     },
 }
 
-class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, {}> {
+class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, PickerState> {
+    public state = {
+        hovered: null,
+    }
     public handleClose = () => {
         this.props.onClose()
     }
@@ -56,6 +63,19 @@ class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToP
     }
     public isSelected = (id: number) => {
         return this.props.selectedTarget.findIndex((item) => item.Id === id) > -1
+    }
+    public handleMouseOver = (id: number) => {
+        this.setState({
+            hovered: id,
+        })
+    }
+    public handleMouseOut = () => {
+        this.setState({
+            hovered: null,
+        })
+    }
+    public isHovered = (id: number) => {
+        return this.state.hovered === id
     }
     public render() {
         const { open, anchorElement, parent, selectedTarget, items } = this.props
@@ -89,6 +109,8 @@ class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToP
                                         key={item.Id}
                                         style={this.isSelected(item.Id) ? styles.selected : null}
                                         onClick={() => this.handleClick(item)}
+                                        onMouseEnter={() => this.handleMouseOver(item.Id)}
+                                        onMouseLeave={() => this.handleMouseOut()}
                                         selected={this.isSelected(item.Id)}>
                                         <ListItemIcon style={this.isSelected(item.Id) ? styles.iconsSelected : null}>
                                             <FolderIcon />
@@ -96,7 +118,7 @@ class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToP
                                         <ListItemText
                                             primary={
                                                 <Typography
-                                                className={this.isSelected(item.Id) ? 'picker-item-selected' : 'picker-item'}>
+                                                className={this.isSelected(item.Id) ? 'picker-item-selected' : this.isHovered(item.Id) ? 'picker-item-hovered' : 'picker-item'}>
                                                     {item.DisplayName}
                                                 </Typography>} />
                                     </MenuItem>

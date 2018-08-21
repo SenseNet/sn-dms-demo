@@ -46,6 +46,9 @@ export const pickerTheme = createMuiTheme({
                 '&.picker-item-selected': {
                     color: '#fff',
                 },
+                '&.picker-item-hovered': {
+                    color: '#fff',
+                },
             },
         },
         MuiDialogContent: {
