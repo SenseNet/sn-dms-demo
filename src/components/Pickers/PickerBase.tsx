@@ -88,8 +88,11 @@ class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToP
     public handleSubmit = () => {
         // Todo
     }
-    public handleClick = (content: GenericContent) => {
-        this.props.selectPickerItem(content)
+    public handleClick = (e, content: GenericContent) => {
+        // tslint:disable-next-line:no-string-literal
+        e.currentTarget.attributes.getNamedItem('role') && e.currentTarget.attributes.getNamedItem('role').value === 'menuitem' ?
+            this.props.selectPickerItem(content) :
+            this.handleLoading(content.Id)
     }
     public isSelected = (id: number) => {
         return this.props.selectedTarget.findIndex((item) => item.Id === id) > -1
@@ -183,7 +186,7 @@ class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToP
                                     return <MenuItem button
                                         key={item.Id}
                                         style={this.isSelected(item.Id) ? styles.selected : null}
-                                        onClick={(e) => this.handleClick(item)}
+                                        onClick={(e) => this.handleClick(e, item)}
                                         onMouseEnter={() => this.handleMouseOver(item.Id)}
                                         onMouseLeave={() => this.handleMouseOut()}
                                         selected={this.isSelected(item.Id)}>
@@ -198,7 +201,7 @@ class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToP
                                                 </Typography>} />
                                         {this.hasChildren(item.Id) ? <OpenIcon
                                             style={this.isHovered ? styles.openIcon : { display: 'none' }}
-                                            onClick={(e) => this.handleLoading(item.Id)} /> :
+                                            onClick={(e) => this.handleClick(e, item)} /> :
                                             null
                                         }
                                     </MenuItem>
