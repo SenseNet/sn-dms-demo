@@ -149,6 +149,9 @@ class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToP
         const content = this.props.items.find((item) => item.Id === id)
         this.props.loadPickerParent(id)
         this.props.loadPickerItems(content.Path, content)
+        this.setState({
+            backLink: true,
+        })
     }
     public render() {
         const { open, anchorElement, parent, selectedTarget, items } = this.props

@@ -72,8 +72,9 @@ export const closestWorkspace: Reducer<string | null> = (state: string = null, a
     switch (action.type) {
         case 'SET_PICKER_PARENT':
             return action.content.Workspace.Path
-        case 'LOAD_PICKER_PARENT':
-            return action.content.Workspace.Path
+        case 'LOAD_PICKER_PARENT_SUCCESS':
+            // tslint:disable-next-line:no-string-literal
+            return (action.result as PromiseReturns<typeof loadPickerParent>).d.Workspace['Path']
         default:
             return state || null
     }
