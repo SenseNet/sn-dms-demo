@@ -41,7 +41,8 @@ export const pickerParent: Reducer<GenericContent | null> = (state: GenericConte
         case 'SET_PICKER_PARENT':
             return action.content
         case 'LOAD_PICKER_PARENT_SUCCESS':
-            return (action as ReturnType<typeof loadPickerParent>)
+            // tslint:disable-next-line:no-string-literal
+            return (action as ReturnType<typeof loadPickerParent>)['result'].d
         default:
             return state
     }
@@ -59,7 +60,9 @@ export const pickerItems: Reducer<GenericContent[]> = (state: GenericContent[] =
 export const pickerSelected: Reducer<GenericContent[]> = (state: GenericContent[] = [], action: AnyAction) => {
     switch (action.type) {
         case 'SELECT_PICKER_ITEM':
-            return [action.content]
+            return action.content ? [action.content] : []
+        case 'DESELECT_PICKER_ITEM':
+            return []
         default:
             return state
     }

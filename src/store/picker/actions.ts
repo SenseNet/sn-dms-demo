@@ -47,7 +47,11 @@ export const loadPickerItems = (path: string, current: GenericContent, options?:
     current,
 })
 
-export const selectPickerItem = (content: GenericContent) => ({
+export const selectPickerItem = (content: GenericContent | null) => ({
     type: 'SELECT_PICKER_ITEM',
     content,
+})
+
+export const deselectPickeritem = () => ({
+    type: 'DESELECT_PICKER_ITEM',
 })

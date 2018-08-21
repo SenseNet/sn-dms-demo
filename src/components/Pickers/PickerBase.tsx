@@ -14,7 +14,7 @@ import { connect } from 'react-redux'
 import { rootStateType } from '../..'
 import { pickerTheme } from '../../assets/picker'
 import { resources } from '../../assets/resources'
-import { loadPickerItems, loadPickerParent, selectPickerItem, setPickerParent } from '../../store/picker/Actions'
+import { deselectPickeritem, loadPickerItems, loadPickerParent, selectPickerItem, setPickerParent } from '../../store/picker/Actions'
 
 // tslint:disable-next-line:no-var-requires
 const sensenetLogo = require('../../assets/sensenet_white.png')
@@ -34,6 +34,7 @@ const mapStateToProps = (state: rootStateType) => {
 
 const mapDispatchToProps = {
     selectPickerItem,
+    deselectPickeritem,
     loadPickerParent,
     loadPickerItems,
     setPickerParent,
@@ -105,12 +106,11 @@ class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToP
     }
     public isLastItem = () => {
         const { parent, closestWs } = this.props
-        const contentName = parent.Name
-        return parent.Path.substr(0, parent.Path.length - (contentName.length + 1)) === closestWs
+        return parent.Path === closestWs
     }
     public handleClickBack = () => {
         const { parent } = this.props
-        if (this.isLastItem) {
+        if (this.isLastItem()) {
             this.setState({
                 backLink: false,
             })
@@ -124,12 +124,14 @@ class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToP
             this.props.loadPickerItems('/', snContent,
                 {
                     query: 'TypeIs:Workspace -TypeIs:Site',
-                    select: ['DisplayName', 'Id', 'Path'],
+                    select: ['DisplayName', 'Id', 'Path', 'Children'],
                     orderby: [['DisplayName', 'asc']],
                 })
+            this.props.deselectPickeritem()
         } else {
             this.props.loadPickerParent(parent.ParentId)
-            this.props.loadPickerItems(parent.Path, { Id: parent.ParentId } as GenericContent)
+            this.props.loadPickerItems(parent.Path.substr(0, parent.Path.length - (parent.Name.length + 1)), { Id: parent.ParentId } as GenericContent)
+            this.props.deselectPickeritem()
         }
     }
     public isHovered = (id: number) => {
@@ -138,7 +140,7 @@ class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToP
     public hasChildren = (id: number) => {
         const content = this.props.items.find((item) => item.Id === id)
         // tslint:disable-next-line:no-string-literal
-        return content['Children'].filter((child) => child.TypeIs === 'Folder').length > 0 ? true : false
+        return content['Children'] ? content['Children'].filter((child) => child.IsFolder).length > 0 ? true : false : false
     }
     public handleLoading = (id: number) => {
         const content = this.props.items.find((item) => item.Id === id)
@@ -181,7 +183,7 @@ class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToP
                                     return <MenuItem button
                                         key={item.Id}
                                         style={this.isSelected(item.Id) ? styles.selected : null}
-                                        onClick={() => this.handleClick(item)}
+                                        onClick={(e) => this.handleClick(item)}
                                         onMouseEnter={() => this.handleMouseOver(item.Id)}
                                         onMouseLeave={() => this.handleMouseOut()}
                                         selected={this.isSelected(item.Id)}>
@@ -196,7 +198,7 @@ class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToP
                                                 </Typography>} />
                                         {this.hasChildren(item.Id) ? <OpenIcon
                                             style={this.isHovered ? styles.openIcon : { display: 'none' }}
-                                            onClick={() => this.handleLoading(item.Id)} /> :
+                                            onClick={(e) => this.handleLoading(item.Id)} /> :
                                             null
                                         }
                                     </MenuItem>
