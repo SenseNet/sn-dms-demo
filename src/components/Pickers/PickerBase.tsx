@@ -6,6 +6,7 @@ import BackIcon from '@material-ui/icons/ArrowBack'
 import CloseIcon from '@material-ui/icons/Close'
 import NewFolderIcon from '@material-ui/icons/CreateNewFolder'
 import FolderIcon from '@material-ui/icons/Folder'
+import OpenIcon from '@material-ui/icons/KeyboardArrowRight'
 import { GenericContent } from '@sensenet/default-content-types'
 import * as React from 'react'
 import { Scrollbars } from 'react-custom-scrollbars'
@@ -69,6 +70,10 @@ const styles = {
         display: 'inline-block',
         flexShrink: 0,
     },
+    openIcon: {
+        display: 'block',
+        color: '#fff',
+    },
 }
 
 class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, PickerState> {
@@ -130,6 +135,16 @@ class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToP
     public isHovered = (id: number) => {
         return this.state.hovered === id
     }
+    public hasChildren = (id: number) => {
+        const content = this.props.items.find((item) => item.Id === id)
+        // tslint:disable-next-line:no-string-literal
+        return content['Children'].filter((child) => child.TypeIs === 'Folder').length > 0 ? true : false
+    }
+    public handleLoading = (id: number) => {
+        const content = this.props.items.find((item) => item.Id === id)
+        this.props.loadPickerParent(id)
+        this.props.loadPickerItems(content.Path, content)
+    }
     public render() {
         const { open, anchorElement, parent, selectedTarget, items } = this.props
         const { backLink } = this.state
@@ -179,6 +194,11 @@ class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToP
                                                     className={this.isSelected(item.Id) ? 'picker-item-selected' : this.isHovered(item.Id) ? 'picker-item-hovered' : 'picker-item'}>
                                                     {item.DisplayName}
                                                 </Typography>} />
+                                        {this.hasChildren(item.Id) ? <OpenIcon
+                                            style={this.isHovered ? styles.openIcon : { display: 'none' }}
+                                            onClick={() => this.handleLoading(item.Id)} /> :
+                                            null
+                                        }
                                     </MenuItem>
                                 },
                                 )}

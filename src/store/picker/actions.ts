@@ -7,8 +7,9 @@ const pickerParentOptions: IODataParams<GenericContent> = {
     metadata: 'no',
 }
 
-const pickerItemOptions: IODataParams<GenericContent> = {
-    select: ['DisplayName', 'Path', 'Id'],
+const pickerItemOptions: IODataParams<any> = {
+    select: ['DisplayName', 'Path', 'Id', 'Children'],
+    expand: ['Children'],
     // tslint:disable-next-line:quotemark
     filter: "isOf('Folder')",
     metadata: 'no',
@@ -37,7 +38,7 @@ export const loadPickerParent = (idOrPath: string | number) => ({
     }),
 })
 
-export const loadPickerItems = (path: string, current: GenericContent, options?: IODataParams<GenericContent>) => ({
+export const loadPickerItems = (path: string, current: GenericContent, options?: IODataParams<any>) => ({
     type: 'LOAD_PICKER_ITEMS',
     payload: (repository: Repository) => repository.loadCollection({
         path,
