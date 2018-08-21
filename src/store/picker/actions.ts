@@ -2,7 +2,8 @@ import { IODataParams, Repository } from '@sensenet/client-core'
 import { GenericContent } from '@sensenet/default-content-types'
 
 const pickerParentOptions: IODataParams<GenericContent> = {
-    select: ['DisplayName', 'Path', 'Id', 'ParentId'],
+    select: ['DisplayName', 'Path', 'Id', 'ParentId', 'Workspace'],
+    expand: ['Workspace'],
     metadata: 'no',
 }
 

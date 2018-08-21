@@ -65,6 +65,17 @@ export const pickerSelected: Reducer<GenericContent[]> = (state: GenericContent[
     }
 }
 
+export const closestWorkspace: Reducer<number | null> = (state: number = null, action: AnyAction) => {
+    switch (action.type) {
+        case 'SET_PICKER_PARENT':
+            return action.content.Workspace.Id
+        case 'LOAD_PICKER_PARENT':
+            return action.content.Workspace.Id
+        default:
+            return state || null
+    }
+}
+
 export const picker = combineReducers({
     isOpened: pickerIsOpened,
     onClose: pickerOnClose,
@@ -72,4 +83,5 @@ export const picker = combineReducers({
     parent: pickerParent,
     items: pickerItems,
     selected: pickerSelected,
+    closestWorkspace,
 })
