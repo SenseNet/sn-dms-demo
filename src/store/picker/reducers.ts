@@ -65,12 +65,12 @@ export const pickerSelected: Reducer<GenericContent[]> = (state: GenericContent[
     }
 }
 
-export const closestWorkspace: Reducer<number | null> = (state: number = null, action: AnyAction) => {
+export const closestWorkspace: Reducer<string | null> = (state: string = null, action: AnyAction) => {
     switch (action.type) {
         case 'SET_PICKER_PARENT':
-            return action.content.Workspace.Id
+            return action.content.Workspace.Path
         case 'LOAD_PICKER_PARENT':
-            return action.content.Workspace.Id
+            return action.content.Workspace.Path
         default:
             return state || null
     }

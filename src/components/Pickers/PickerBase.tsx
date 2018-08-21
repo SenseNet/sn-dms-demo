@@ -13,7 +13,10 @@ import { connect } from 'react-redux'
 import { rootStateType } from '../..'
 import { pickerTheme } from '../../assets/picker'
 import { resources } from '../../assets/resources'
-import { selectPickerItem } from '../../store/picker/Actions'
+import { loadPickerItems, loadPickerParent, selectPickerItem, setPickerParent } from '../../store/picker/Actions'
+
+// tslint:disable-next-line:no-var-requires
+const sensenetLogo = require('../../assets/sensenet_white.png')
 
 const mapStateToProps = (state: rootStateType) => {
     return {
@@ -24,15 +27,20 @@ const mapStateToProps = (state: rootStateType) => {
         items: state.dms.picker.items,
         selected: state.dms.documentLibrary.selected,
         selectedTarget: state.dms.picker.selected,
+        closestWs: state.dms.picker.closestWorkspace,
     }
 }
 
 const mapDispatchToProps = {
     selectPickerItem,
+    loadPickerParent,
+    loadPickerItems,
+    setPickerParent,
 }
 
 interface PickerState {
     hovered: number,
+    backLink: boolean,
 }
 
 const styles = {
@@ -46,11 +54,27 @@ const styles = {
     textSelected: {
         color: '#fff !important',
     },
+    snButton: {
+        flex: '0 0 auto',
+        width: 48,
+        height: 48,
+        display: 'inline-flex',
+        alignItems: 'center',
+        verticalAlign: 'middle',
+        justifyContent: 'center',
+    },
+    snLogo: {
+        width: '1em',
+        height: '1em',
+        display: 'inline-block',
+        flexShrink: 0,
+    },
 }
 
 class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, PickerState> {
     public state = {
         hovered: null,
+        backLink: true,
     }
     public handleClose = () => {
         this.props.onClose()
@@ -74,11 +98,41 @@ class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToP
             hovered: null,
         })
     }
+    public isLastItem = () => {
+        const { parent, closestWs } = this.props
+        const contentName = parent.Name
+        return parent.Path.substr(0, parent.Path.length - (contentName.length + 1)) === closestWs
+    }
+    public handleClickBack = () => {
+        const { parent } = this.props
+        if (this.isLastItem) {
+            this.setState({
+                backLink: false,
+            })
+            const snContent = {
+                DisplayName: 'sensenet',
+                Workspace: {
+                    Path: null,
+                },
+            } as GenericContent
+            this.props.setPickerParent(snContent)
+            this.props.loadPickerItems('/', snContent,
+                {
+                    query: 'TypeIs:Workspace -TypeIs:Site',
+                    select: ['DisplayName', 'Id', 'Path'],
+                    orderby: [['DisplayName', 'asc']],
+                })
+        } else {
+            this.props.loadPickerParent(parent.ParentId)
+            this.props.loadPickerItems(parent.Path, { Id: parent.ParentId } as GenericContent)
+        }
+    }
     public isHovered = (id: number) => {
         return this.state.hovered === id
     }
     public render() {
         const { open, anchorElement, parent, selectedTarget, items } = this.props
+        const { backLink } = this.state
         return (
             <MuiThemeProvider theme={pickerTheme}>
                 <Popover
@@ -87,9 +141,13 @@ class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToP
                     anchorEl={anchorElement}>
                     <DialogTitle>
                         <Toolbar>
-                            <IconButton color="inherit" onClick={this.handleClose}>
-                                <BackIcon />
-                            </IconButton>
+                            {backLink ?
+                                <IconButton color="inherit" onClick={() => this.handleClickBack()}>
+                                    <BackIcon />
+                                </IconButton> :
+                                <div style={styles.snButton}>
+                                    <img src={sensenetLogo} alt="sensenet" aria-label="sensenet" style={styles.snLogo} />
+                                </div>}
                             <Typography variant="title" color="inherit">
                                 {parent ? parent.DisplayName : 'Move content'}
                             </Typography>
@@ -118,7 +176,7 @@ class Picker extends React.Component<{ classes?} & ReturnType<typeof mapStateToP
                                         <ListItemText
                                             primary={
                                                 <Typography
-                                                className={this.isSelected(item.Id) ? 'picker-item-selected' : this.isHovered(item.Id) ? 'picker-item-hovered' : 'picker-item'}>
+                                                    className={this.isSelected(item.Id) ? 'picker-item-selected' : this.isHovered(item.Id) ? 'picker-item-hovered' : 'picker-item'}>
                                                     {item.DisplayName}
                                                 </Typography>} />
                                     </MenuItem>

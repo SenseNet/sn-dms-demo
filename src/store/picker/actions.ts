@@ -37,11 +37,11 @@ export const loadPickerParent = (idOrPath: string | number) => ({
     }),
 })
 
-export const loadPickerItems = (path: string, current: GenericContent) => ({
+export const loadPickerItems = (path: string, current: GenericContent, options?: IODataParams<GenericContent>) => ({
     type: 'LOAD_PICKER_ITEMS',
     payload: (repository: Repository) => repository.loadCollection({
         path,
-        oDataOptions: pickerItemOptions,
+        oDataOptions: {...pickerItemOptions, ...options},
     }),
     current,
 })
