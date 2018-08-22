@@ -1,4 +1,4 @@
-import { DialogTitle, MuiThemeProvider, Popover } from '@material-ui/core'
+import { Dialog, DialogTitle, MuiThemeProvider } from '@material-ui/core'
 import IconButton from '@material-ui/core/IconButton'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
@@ -91,13 +91,12 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps> & typeof
         }
     }
     public render() {
-        const { backLink, open, anchorElement, parent } = this.props
+        const { backLink, open, parent } = this.props
         return (
             <MuiThemeProvider theme={pickerTheme}>
-                <Popover
+                <Dialog
                     open={open}
-                    onClose={this.handleClose}
-                    anchorEl={anchorElement}>
+                    onClose={this.handleClose}>
                     <DialogTitle>
                         <Toolbar>
                             {backLink ?
@@ -116,7 +115,7 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps> & typeof
                         </Toolbar>
                     </DialogTitle>
                     {this.props.pickerContent}
-                </Popover>
+                </Dialog>
             </MuiThemeProvider>
         )
     }
