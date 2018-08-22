@@ -19,6 +19,7 @@ import { downloadFile } from '../../assets/helpers'
 import { icons } from '../../assets/icons'
 import { resources } from '../../assets/resources'
 import ApproveorRejectDialog from '../Dialogs/ApproveorRejectDialog'
+import CopyToConfirmDialog from '../Dialogs/CopyToConfirmDialog'
 import DeleteDialog from '../Dialogs/DeleteDialog'
 import MoveToConfirmDialog from '../Dialogs/MoveToConfirmDialog'
 import VersionsDialog from '../Dialogs/VersionsDialog'
@@ -230,9 +231,24 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     this.props.setPickerParent(this.props.currentParent)
                     this.props.loadPickerItems(this.props.currentParent.Path, content)
                     this.props.openPicker(
-                        <PathPicker dialogComponent={<MoveToConfirmDialog />}
+                        <PathPicker
+                            mode="MoveTo"
+                            dialogComponent={<MoveToConfirmDialog />}
                             dialogTitle={resources.MOVE}
                             dialogCallback={Actions.moveBatch} />,
+                        this.props.closePicker)
+                    break
+                case 'CopyTo':
+                    this.handleClose()
+                    this.props.select([content])
+                    this.props.setPickerParent(this.props.currentParent)
+                    this.props.loadPickerItems(this.props.currentParent.Path, content)
+                    this.props.openPicker(
+                        <PathPicker
+                            mode="CopyTo"
+                            dialogComponent={<CopyToConfirmDialog />}
+                            dialogTitle={resources.COPY}
+                            dialogCallback={Actions.copyBatch} />,
                         this.props.closePicker)
                     break
                 default:

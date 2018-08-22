@@ -33,6 +33,7 @@ interface PathPickerProps {
     dialogComponent,
     dialogTitle: string,
     dialogCallback,
+    mode: string,
 }
 
 const mapStateToProps = (state: rootStateType) => {
@@ -142,7 +143,7 @@ class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof map
                         <NewFolderIcon />
                     </IconButton>
                     <Button color="default" style={{ marginRight: 20 }} onClick={() => this.handleClose()}>{resources.CANCEL}</Button>
-                    <Button onClick={() => this.handleSubmit()} variant="raised" disabled={selectedTarget.length > 0 ? false : true} color="primary">{resources.MOVE_HERE}</Button>
+                    <Button onClick={() => this.handleSubmit()} variant="raised" disabled={selectedTarget.length > 0 ? false : true} color="primary">{resources[`${this.props.mode.toUpperCase()}_BUTTON`]}</Button>
                 </DialogActions>
             </div>
         )

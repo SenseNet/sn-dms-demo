@@ -108,4 +108,8 @@ export const resources = {
     MOVE: 'Move content',
     ARE_YOU_SURE_YOU_WANT_TO_MOVE: 'You are about to move the following content item(s):',
     TO: 'to',
+    COPY: 'Copy content',
+    ARE_YOU_SURE_YOU_WANT_TO_COPY: 'You are about to copy the following content item(s):',
+    MOVETO_BUTTON: 'Move content here',
+    COPYTO_BUTTON: 'Copy content here',
 }
