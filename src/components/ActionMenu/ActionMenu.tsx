@@ -18,6 +18,7 @@ import { icons } from '../../assets/icons'
 import { resources } from '../../assets/resources'
 import ApproveorRejectDialog from '../Dialogs/ApproveorRejectDialog'
 import DeleteDialog from '../Dialogs/DeleteDialog'
+import ShareDialog from '../Dialogs/ShareDialog'
 import VersionsDialog from '../Dialogs/VersionsDialog'
 
 const mapStateToProps = (state: rootStateType) => {
@@ -171,6 +172,10 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     this.props.openDialog(
                         <VersionsDialog currentContent={this.props.currentContent} />,
                         resources.VERSIONS, this.props.closeDialog)
+                    break
+                case 'ShareContent':
+                    this.handleClose()
+                    this.props.openDialog(<ShareDialog currentContent={this.props.currentContent} />)
                     break
                 case 'Profile':
                     this.handleClose()
