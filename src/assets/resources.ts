@@ -105,4 +105,7 @@ export const resources = {
     CHECKED_OUT_BY: 'Checked out by: ',
     APPROVABLE: 'Content should be approved',
     MOVE_HERE: 'Move content here',
+    MOVE: 'Move content',
+    ARE_YOU_SURE_YOU_WANT_TO_MOVE: 'You are about to move the following content item(s):',
+    TO: 'to',
 }

@@ -20,8 +20,9 @@ import { icons } from '../../assets/icons'
 import { resources } from '../../assets/resources'
 import ApproveorRejectDialog from '../Dialogs/ApproveorRejectDialog'
 import DeleteDialog from '../Dialogs/DeleteDialog'
+import MoveToConfirmDialog from '../Dialogs/MoveToConfirmDialog'
 import VersionsDialog from '../Dialogs/VersionsDialog'
-import Picker from '../Pickers/PickerBase'
+import PathPicker from '../Pickers/PathPicker'
 
 const mapStateToProps = (state: rootStateType) => {
     return {
@@ -229,7 +230,10 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     this.props.setPickerParent(this.props.currentParent)
                     this.props.loadPickerItems(this.props.currentParent.Path, content)
                     this.props.openPicker(
-                        <Picker />, this.props.closePicker)
+                        <PathPicker dialogComponent={<MoveToConfirmDialog />}
+                            dialogTitle={resources.MOVE}
+                            dialogCallback={Actions.moveBatch} />,
+                        this.props.closePicker)
                     break
                 default:
                     console.log(`${action.Name} is clicked`)

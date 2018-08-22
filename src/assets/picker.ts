@@ -53,7 +53,10 @@ export const pickerTheme = createMuiTheme({
         },
         MuiDialogContent: {
             root: {
-                padding: 0,
+                'padding': 0,
+                '&:first-child': {
+                    paddingTop: 0,
+                },
             },
         },
         MuiList: {

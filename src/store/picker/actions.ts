@@ -55,3 +55,8 @@ export const selectPickerItem = (content: GenericContent | null) => ({
 export const deselectPickeritem = () => ({
     type: 'DESELECT_PICKER_ITEM',
 })
+
+export const setBackLink = (state: boolean) => ({
+    type: 'SET_BACKLINK',
+    state,
+})

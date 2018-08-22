@@ -80,6 +80,15 @@ export const closestWorkspace: Reducer<string | null> = (state: string = null, a
     }
 }
 
+export const backLink: Reducer<boolean> = (state: boolean = true, action: AnyAction) => {
+    switch (action.type) {
+        case 'SET_BACKLINK':
+            return action.state
+        default:
+            return state
+    }
+}
+
 export const picker = combineReducers({
     isOpened: pickerIsOpened,
     onClose: pickerOnClose,
@@ -88,4 +97,5 @@ export const picker = combineReducers({
     items: pickerItems,
     selected: pickerSelected,
     closestWorkspace,
+    backLink,
 })
