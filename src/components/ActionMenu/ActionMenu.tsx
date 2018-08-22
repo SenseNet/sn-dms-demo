@@ -251,6 +251,18 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                             dialogCallback={Actions.copyBatch} />,
                         this.props.closePicker)
                     break
+                case 'MoveBatch':
+                    this.handleClose()
+                    this.props.setPickerParent(this.props.currentParent)
+                    this.props.loadPickerItems(this.props.currentParent.Path, content)
+                    this.props.openPicker(
+                        <PathPicker
+                            mode="MoveTo"
+                            dialogComponent={<MoveToConfirmDialog />}
+                            dialogTitle={resources.MOVE}
+                            dialogCallback={Actions.moveBatch} />,
+                        this.props.closePicker)
+                    break
                 default:
                     console.log(`${action.Name} is clicked`)
                     this.handleClose()
