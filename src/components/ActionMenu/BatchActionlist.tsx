@@ -10,7 +10,11 @@ import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { icons } from '../../assets/icons'
 import { resources } from '../../assets/resources'
+import { closePicker, loadPickerItems, openPicker, setPickerParent } from '../../store/picker/Actions'
+import CopyToConfirmDialog from '../Dialogs/CopyToConfirmDialog'
 import DeleteDialog from '../Dialogs/DeleteDialog'
+import MoveToConfirmDialog from '../Dialogs/MoveToConfirmDialog'
+import PathPicker from '../Pickers/PathPicker'
 
 const styles = {
     icon: {
@@ -59,6 +63,7 @@ const mapStateToProps = (state: rootStateType) => {
     return {
         actions: state.dms.toolbar.actions,
         currentId: state.dms.currentId,
+        currentParent: state.dms.documentLibrary.parent,
     }
 }
 
@@ -68,6 +73,10 @@ const mapDispatchToProps = {
     closeActionMenu: DMSActions.closeActionMenu,
     clearSelection: Actions.clearSelection,
     openDialog: DMSActions.openDialog,
+    setPickerParent,
+    loadPickerItems,
+    openPicker,
+    closePicker,
 }
 
 export interface BatchActionlistState {
@@ -128,6 +137,7 @@ class BatchActionlist extends React.Component<BatchActionListProps & ReturnType<
         this.setState({ anchorEl: null })
     }
     public handleMenuItemClick = (actionName) => {
+        const content = this.props.currentContent
         switch (actionName) {
             case 'DeleteBatch':
             case 'Delete':
@@ -135,6 +145,30 @@ class BatchActionlist extends React.Component<BatchActionListProps & ReturnType<
                     <DeleteDialog selected={this.props.selected.map((d) => d.Id)} />,
                     resources.DELETE, this.props.clearSelection)
                 this.handleClose()
+                break
+            case 'MoveBatch':
+                this.handleClose()
+                this.props.setPickerParent(this.props.currentParent)
+                this.props.loadPickerItems(this.props.currentParent.Path, content)
+                this.props.openPicker(
+                    <PathPicker
+                        mode="MoveTo"
+                        dialogComponent={<MoveToConfirmDialog />}
+                        dialogTitle={resources.MOVE}
+                        dialogCallback={Actions.moveBatch} />,
+                    this.props.closePicker)
+                break
+            case 'CopyBatch':
+                this.handleClose()
+                this.props.setPickerParent(this.props.currentParent)
+                this.props.loadPickerItems(this.props.currentParent.Path, content)
+                this.props.openPicker(
+                    <PathPicker
+                        mode="CopyTo"
+                        dialogComponent={<CopyToConfirmDialog />}
+                        dialogTitle={resources.COPY}
+                        dialogCallback={Actions.copyBatch} />,
+                    this.props.closePicker)
                 break
             default:
                 console.log(`${actionName} is clicked`)
