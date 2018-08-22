@@ -57,6 +57,8 @@ class MessageBar extends React.Component<{ classes } & ReturnType<typeof mapStat
             if (messagebar.content['d'] && messagebar.content['d'].results && messagebar.content['d'].results.length > 0) {
                 // tslint:disable-next-line:no-string-literal
                 successful = messagebar.content['d'].results
+            } else if (messagebar.content[0]) {
+                successful = messagebar.content[0]
             } else {
                 // tslint:disable-next-line:no-string-literal
                 successful = messagebar.content['d']

@@ -64,8 +64,8 @@ class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof map
         this.props.onClose()
     }
     public handleSubmit = () => {
-        const { dialogComponent, dialogTitle, dialogCallback } = this.props
-        this.props.openDialog(dialogComponent, dialogTitle, null, dialogCallback)
+        const { dialogComponent, dialogTitle, dialogCallback, onClose } = this.props
+        this.props.openDialog(dialogComponent, dialogTitle, onClose, dialogCallback)
     }
     public isSelected = (id: number) => {
         return this.props.selectedTarget.findIndex((item) => item.Id === id) > -1
