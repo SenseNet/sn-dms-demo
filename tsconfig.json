@@ -11,13 +11,13 @@
     "allowJs": true,
     "jsx": "react",
     "moduleResolution": "node",
-    "forceConsistentCasingInFileNames": true,
     "strict": false,
     "noUnusedLocals": true,
     "removeComments": false,
     "preserveConstEnums": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true,
     "types": [
       "jest",
       "node"
