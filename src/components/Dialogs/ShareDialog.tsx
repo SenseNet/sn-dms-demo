@@ -1,5 +1,5 @@
-import { Button, Divider, Input, MenuItem, Select, Typography, withStyles } from '@material-ui/core'
-import { Link } from '@material-ui/icons'
+import { Button, Divider, Input, Menu, MenuItem, Select, Typography, withStyles } from '@material-ui/core'
+import { ArrowDropDown, Edit, Link } from '@material-ui/icons'
 import { PathHelper } from '@sensenet/client-utils'
 import { GenericContent } from '@sensenet/default-content-types'
 import * as React from 'react'
@@ -47,6 +47,8 @@ const styles = {
         fontFamily: 'Raleway Semibold',
         textDecoration: 'none',
         cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
     },
 }
 
@@ -75,6 +77,7 @@ interface ShareDialogState {
     addValue: string
     sharedWithValues: Array<{ value: string, type: addType }>
     linkSharingType: linkSharingType
+    anchorEl: HTMLElement
 }
 
 class ShareDialog extends React.Component<{ classes } & ShareDialogProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, ShareDialogState> {
@@ -83,6 +86,7 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
         addValue: '',
         linkSharingType: 'off',
         sharedWithValues: [],
+        anchorEl: null,
     }
     constructor(props: ShareDialog['props']) {
         super(props)
@@ -92,6 +96,8 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
         this.handleAddValueChange = this.handleAddValueChange.bind(this)
         this.handleAddEntry = this.handleAddEntry.bind(this)
         this.copyUrl = this.copyUrl.bind(this)
+        this.handleOpenLinkSharingMenu = this.handleOpenLinkSharingMenu.bind(this)
+        this.handleCloseLinkSharingMenu = this.handleCloseLinkSharingMenu.bind(this)
     }
     public static getDerivedStateFromProps(newProps: ShareDialog['props'], lastState: ShareDialogState) {
         const icon = newProps.currentContent.Icon && icons[newProps.currentContent.Icon.toLowerCase() as any]
@@ -102,11 +108,12 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
 
     public handleCancel = () => {
         this.props.closeDialog()
-        this.props.closeCallback()
+        this.props.closeCallback && this.props.closeCallback()
     }
     public submitCallback = () => {
         this.props.closeDialog()
-        this.props.closeCallback()
+        this.props.closeCallback && this.props.closeCallback()
+        console.log('Share form submitted, payload:', this.state)
     }
 
     public handleAddTypeChange(ev: React.ChangeEvent) {
@@ -161,6 +168,19 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
         })
     }
 
+    private handleOpenLinkSharingMenu(event: React.MouseEvent<HTMLElement>) {
+        this.setState({ anchorEl: event.currentTarget })
+    }
+
+    private handleCloseLinkSharingMenu(ev: React.MouseEvent, newType?: linkSharingType) {
+        this.setState({ anchorEl: null })
+        if (newType) {
+            this.setState({
+                linkSharingType: newType,
+            })
+        }
+    }
+
     public render() {
         const { currentContent } = this.props
         return (
@@ -190,30 +210,53 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
                         </Select>
                     </form>
                     {this.state.sharedWithValues.length ?
-                        <Typography variant="body2" style={{ fontSize: '.85em' }}>
-                            <strong>{resources.SHARED_WITH} </strong>
-                            {this.state.sharedWithValues.map((v) => v.value).join(', ')}
-                            <Divider />
-                        </Typography>
-                        : null}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div>
-                            <span>{resources.SHARE_LINK_PREFIX}</span>&nbsp;
-                            <strong>{this.getLinkSharingTypePostfix()}</strong>
+                            <div style={{ fontSize: '.85em', margin: '.3em 0 1.5em 0' }}>
+                                <strong>{resources.SHARED_WITH} </strong>
+                                {this.state.sharedWithValues.map((v) => v.value).join(', ')}
+                            </div>
+                            <Divider />
                         </div>
-                        <Button style={styles.link} onClick={this.copyUrl}>
+                        : null}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '1em 0' }}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            {this.state.linkSharingType !== 'off' ?
+                                <span>{resources.SHARE_LINK_PREFIX} </span> : null}
+                            <strong>&nbsp;{this.getLinkSharingTypePostfix()}</strong>
+
+                            <a style={{ ...styles.link, display: 'inline-flex', margin: '0 7px', fontSize: '18px' }}
+                                aria-owns={this.state.anchorEl ? 'simple-menu' : null}
+                                aria-haspopup="true"
+                                onClick={this.handleOpenLinkSharingMenu}
+                            >
+                                <ArrowDropDown fontSize="inherit" />
+                                <Edit fontSize="inherit" />
+                            </a>
+                            <Menu
+                                id="simple-menu"
+                                anchorEl={this.state.anchorEl}
+                                open={Boolean(this.state.anchorEl)}
+                                onClose={this.handleCloseLinkSharingMenu}
+                            >
+                                <MenuItem onClick={(ev) => this.handleCloseLinkSharingMenu(ev, 'off')}>{resources.SHARE_LINK_POSTFIX_OFF}</MenuItem>
+                                <MenuItem onClick={(ev) => this.handleCloseLinkSharingMenu(ev, 'see')}>{resources.SHARE_LINK_POSTFIX_VIEW}</MenuItem>
+                                <MenuItem onClick={(ev) => this.handleCloseLinkSharingMenu(ev, 'edit')}>{resources.SHARE_LINK_POSTFIX_EDIT}</MenuItem>
+                            </Menu>
+
+                        </div>
+                        <a style={{ ...styles.link, fontSize: '12px' }} onClick={this.copyUrl}>
                             <Link /> &nbsp;
                             {resources.SHARE_COPY_LINK}
-                        </Button>
+                        </a>
                     </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Button style={styles.link} >
+                    <a style={styles.link} >
                         {resources.MORE_SHARE_OPTIONS}
-                    </Button>
+                    </a>
                     <div>
                         <Button style={styles.actionButton} onClick={this.handleCancel}>{resources.CANCEL}</Button>
-                        <Button style={styles.actionButton} variant="contained" color="secondary" onClick={this.handleCancel}>{resources.OK}</Button>
+                        <Button style={styles.actionButton} variant="contained" color="secondary" onClick={this.submitCallback}>{resources.OK}</Button>
                     </div>
                 </div>
 
