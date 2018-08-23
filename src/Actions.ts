@@ -9,7 +9,7 @@ import { InjectableAction } from 'redux-di-middleware'
 import { rootStateType } from '.'
 import { updateChildrenOptions } from './store/documentlibrary/actions'
 
-enum MessageMode { error = 'error', warning = 'warning', info = 'info' }
+export enum MessageMode { error = 'error', warning = 'warning', info = 'info' }
 
 export const userRegistration = (email: string, password: string) => ({
     type: 'USER_REGISTRATION_REQUEST',

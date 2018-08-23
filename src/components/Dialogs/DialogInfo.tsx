@@ -47,6 +47,7 @@ const styles = {
 
 interface DialogInfoProps {
     currentContent: GenericContent
+    hideVersionInfo?: boolean
 }
 
 class DialogInfo extends React.Component<{ classes } & DialogInfoProps, {}> {
@@ -61,24 +62,26 @@ class DialogInfo extends React.Component<{ classes } & DialogInfoProps, {}> {
                         {currentContent.DisplayName}
                     </span>
                 </div>
-                <Table>
-                    <TableHead>
-                        <TableRow className={classes.tableRow}>
-                            <TableCell className={classes.tableHead} padding="none">{resources.VERSIONING_MODE}</TableCell>
-                            <TableCell className={classes.tableHead} padding="none">{resources.PATH}</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        <TableRow className={classes.tableRow}>
-                            <TableCell className={classes.tableCell} padding="none">
-                                {resources.VERSIONING[currentContent.VersioningMode]}
-                            </TableCell>
-                            <TableCell className={classes.tableCell} padding="none">
-                                {currentContent.Path}
-                            </TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
+                {this.props.hideVersionInfo ? null :
+                    <Table>
+                        <TableHead>
+                            <TableRow className={classes.tableRow}>
+                                <TableCell className={classes.tableHead} padding="none">{resources.VERSIONING_MODE}</TableCell>
+                                <TableCell className={classes.tableHead} padding="none">{resources.PATH}</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            <TableRow className={classes.tableRow}>
+                                <TableCell className={classes.tableCell} padding="none">
+                                    {resources.VERSIONING[currentContent.VersioningMode]}
+                                </TableCell>
+                                <TableCell className={classes.tableCell} padding="none">
+                                    {currentContent.Path}
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                }
             </div>
         )
     }

@@ -5,7 +5,7 @@ import { PathHelper } from '@sensenet/client-utils'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
-import { Redirect, Route, RouteComponentProps, Switch } from 'react-router'
+import { Route, RouteComponentProps, Switch } from 'react-router'
 import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
 import { ContentTemplates } from '../components/ContentTemplates'
@@ -176,7 +176,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                                 <Settings />
                                             </Route>
 
-                                            <Redirect to="/documents" />
+                                            {/* <Redirect to="/documents" /> */}
                                         </Switch>
                                         <MessageBar />
                                     </div>

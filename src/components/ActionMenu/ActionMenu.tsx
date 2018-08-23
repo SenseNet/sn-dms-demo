@@ -22,6 +22,7 @@ import ApproveorRejectDialog from '../Dialogs/ApproveorRejectDialog'
 import CopyToConfirmDialog from '../Dialogs/CopyToConfirmDialog'
 import DeleteDialog from '../Dialogs/DeleteDialog'
 import MoveToConfirmDialog from '../Dialogs/MoveToConfirmDialog'
+import ShareDialog from '../Dialogs/ShareDialog'
 import VersionsDialog from '../Dialogs/VersionsDialog'
 import PathPicker from '../Pickers/PathPicker'
 
@@ -182,6 +183,10 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     this.props.openDialog(
                         <VersionsDialog currentContent={this.props.currentContent} />,
                         resources.VERSIONS, this.props.closeDialog)
+                    break
+                case 'ShareContent':
+                    this.handleClose()
+                    this.props.openDialog(<ShareDialog currentContent={this.props.currentContent} />)
                     break
                 case 'Profile':
                     this.handleClose()
