@@ -1,5 +1,5 @@
 import { GenericContent } from '@sensenet/default-content-types'
-import { PromiseReturns, createContent } from '@sensenet/redux/dist/Actions'
+import { createContent, PromiseReturns } from '@sensenet/redux/dist/Actions'
 import { AnyAction, combineReducers, Reducer } from 'redux'
 import { loadPickerItems, loadPickerParent } from './Actions'
 
