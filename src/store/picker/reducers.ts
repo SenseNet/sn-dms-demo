@@ -1,7 +1,7 @@
 import { GenericContent } from '@sensenet/default-content-types'
 import { createContent, PromiseReturns } from '@sensenet/redux/dist/Actions'
 import { AnyAction, combineReducers, Reducer } from 'redux'
-import { loadPickerItems, loadPickerParent } from './Actions'
+import { loadPickerItems, loadPickerParent } from './actions'
 
 export const pickerIsOpened: Reducer<boolean> = (state: false, action: AnyAction) => {
     switch (action.type) {
