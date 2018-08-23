@@ -5,6 +5,7 @@ import { closeMessageBar, ExtendedUploadProgressInfo, loadListActions, loadTypes
 import { resources } from './assets/resources'
 
 import { documentLibrary } from './store/documentlibrary/reducers'
+import { editedContent } from './store/edited/reducers'
 import { picker } from './store/picker/reducers'
 import { workspaces } from './store/workspaces/reducers'
 
@@ -721,7 +722,6 @@ export const versions: Reducer<GenericContent[]> = (state: any[], action: AnyAct
             return state || []
     }
 }
-
 export const dms = combineReducers({
     documentLibrary,
     messagebar,
@@ -742,4 +742,5 @@ export const dms = combineReducers({
     workspaces,
     versions,
     picker,
+    edited: editedContent,
 })
