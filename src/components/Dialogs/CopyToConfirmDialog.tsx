@@ -42,7 +42,7 @@ const styles = {
 const mapStateToProps = (state: rootStateType) => {
     return {
         selected: state.dms.documentLibrary.selected,
-        closeCallback: state.dms.dialog.onClose,
+        closeCallback: state.dms.picker.pickerOnClose,
         target: state.dms.picker.selected,
     }
 }

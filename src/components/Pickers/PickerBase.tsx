@@ -18,7 +18,7 @@ const mapStateToProps = (state: rootStateType) => {
     return {
         open: state.dms.picker.isOpened,
         anchorElement: state.dms.actionmenu.anchorElement,
-        onClose: state.dms.picker.onClose,
+        onClose: state.dms.picker.pickerOnClose,
         parent: state.dms.picker.parent,
         items: state.dms.picker.items,
         selected: state.dms.documentLibrary.selected,

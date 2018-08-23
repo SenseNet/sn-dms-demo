@@ -1,5 +1,5 @@
 import { GenericContent } from '@sensenet/default-content-types'
-import { PromiseReturns } from '@sensenet/redux/dist/Actions'
+import { PromiseReturns, createContent } from '@sensenet/redux/dist/Actions'
 import { AnyAction, combineReducers, Reducer } from 'redux'
 import { loadPickerItems, loadPickerParent } from './Actions'
 
@@ -52,6 +52,9 @@ export const pickerItems: Reducer<GenericContent[]> = (state: GenericContent[] =
     switch (action.type) {
         case 'LOAD_PICKER_ITEMS_SUCCESS':
             return (action.result as PromiseReturns<typeof loadPickerItems>).d.results.filter((item) => item.Id !== action.current.Id)
+        case 'CREATE_CONTENT_SUCCESS':
+            const newContent = (action.result as PromiseReturns<typeof createContent>).d
+            return [...state, newContent]
         default:
             return state
     }
@@ -91,7 +94,7 @@ export const backLink: Reducer<boolean> = (state: boolean = true, action: AnyAct
 
 export const picker = combineReducers({
     isOpened: pickerIsOpened,
-    onClose: pickerOnClose,
+    pickerOnClose,
     content: pickerContent,
     parent: pickerParent,
     items: pickerItems,

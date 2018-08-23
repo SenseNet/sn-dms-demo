@@ -8,9 +8,10 @@ import * as React from 'react'
 import { Scrollbars } from 'react-custom-scrollbars'
 import { connect } from 'react-redux'
 import { rootStateType } from '../..'
-import { openDialog } from '../../Actions'
+import * as DMSActions from '../../Actions'
 import { resources } from '../../assets/resources'
 import { loadPickerItems, loadPickerParent, selectPickerItem, setBackLink } from '../../store/picker/Actions'
+import AddNewDialog from '../Dialogs/AddNewDialog'
 
 const styles = {
     selected: {
@@ -40,7 +41,8 @@ const mapStateToProps = (state: rootStateType) => {
     return {
         selectedTarget: state.dms.picker.selected,
         items: state.dms.picker.items,
-        onClose: state.dms.picker.onClose,
+        pickerClose: state.dms.picker.pickerOnClose,
+        parent: state.dms.picker.parent,
     }
 }
 
@@ -48,7 +50,8 @@ const mapDispatchToProps = {
     selectPickerItem,
     loadPickerParent,
     loadPickerItems,
-    openDialog,
+    openDialog: DMSActions.openDialog,
+    closeDialog: DMSActions.closeDialog,
     setBackLink,
 }
 
@@ -59,13 +62,24 @@ interface PathPickerState {
 class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, PathPickerState> {
     public state = {
         hovered: null,
+        items: this.props.items,
     }
+    public static getDerivedStateFromProps(newProps: PathPicker['props'], lastState: PathPicker['state']) {
+        if (lastState.items.length !== newProps.items.length) {
+            newProps.loadPickerItems(newProps.parent.Path, newProps.parent)
+        }
+        return {
+            ...lastState,
+            items: newProps.items,
+        }
+    }
+
     public handleClose = () => {
-        this.props.onClose()
+        this.props.pickerClose()
     }
     public handleSubmit = () => {
-        const { dialogComponent, dialogTitle, dialogCallback, onClose } = this.props
-        this.props.openDialog(dialogComponent, dialogTitle, onClose, dialogCallback)
+        const { dialogComponent, dialogTitle, dialogCallback } = this.props
+        this.props.openDialog(dialogComponent, dialogTitle, this.handleAddNewClose, dialogCallback)
     }
     public isSelected = (id: number) => {
         return this.props.selectedTarget.findIndex((item) => item.Id === id) > -1
@@ -100,8 +114,20 @@ class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof map
         this.props.loadPickerItems(content.Path, content)
         this.props.setBackLink(true)
     }
+    public handleAddNewClose = () => {
+        // TODO
+    }
+    public handleAddNewClick = () => {
+        const { parent, openDialog } = this.props
+        openDialog(<AddNewDialog
+            parentPath={parent.Path}
+            contentTypeName="Folder"
+            title="folder" />,
+            resources.ADD_NEW, this.handleAddNewClose)
+    }
     public render() {
-        const { items, selectedTarget } = this.props
+        const { selectedTarget } = this.props
+        const { items } = this.state
         return (
             <div>
                 <DialogContent>
@@ -139,7 +165,7 @@ class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof map
                     </Scrollbars>
                 </DialogContent>
                 <DialogActions>
-                    <IconButton>
+                    <IconButton onClick={() => this.handleAddNewClick()}>
                         <NewFolderIcon />
                     </IconButton>
                     <Button color="default" style={{ marginRight: 20 }} onClick={() => this.handleClose()}>{resources.CANCEL}</Button>
