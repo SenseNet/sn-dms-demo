@@ -17,6 +17,7 @@ import { Groups } from '../components/Groups'
 import Header from '../components/Header'
 import { ListToolbar } from '../components/ListToolbar'
 import MessageBar from '../components/MessageBar'
+import Picker from '../components/Pickers/PickerBase'
 import { SavedQueries } from '../components/SavedQueries'
 import { Settings } from '../components/Settings'
 import { Shared } from '../components/Shared'
@@ -190,6 +191,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                     <CloseIcon />
                                 </IconButton>
                             </Dialog>
+                            <Picker />
                         </div>
                     } else {
                         return <div style={styles.root}>

@@ -45,5 +45,27 @@ export class MessageBoxHandler {
                 setMessageBar(MessageMode.error, [message], null, null),
             )
         })
+
+        this.eventHub.onContentMoved.subscribe(() => {
+            store.dispatch(
+                setMessageBar(MessageMode.info, [{ message: 'Content item(s) was/were moved successfuly' }], null, null),
+            )
+        })
+        this.eventHub.onContentMoveFailed.subscribe((response) => {
+            store.dispatch(
+                setMessageBar(MessageMode.error, [{ message: response.error.message }], null, null),
+            )
+        })
+
+        this.eventHub.onContentCopied.subscribe(() => {
+            store.dispatch(
+                setMessageBar(MessageMode.info, [{ message: 'Content item(s) was/were copied successfuly' }], null, null),
+            )
+        })
+        this.eventHub.onContentCopyFailed.subscribe((response) => {
+            store.dispatch(
+                setMessageBar(MessageMode.error, [{ message: response.error.message }], null, null),
+            )
+        })
     }
 }

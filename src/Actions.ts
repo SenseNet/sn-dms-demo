@@ -263,11 +263,12 @@ export const loadTypesToAddNewList = (idOrPath: number | string) => ({
     },
 })
 
-export const openDialog = (content: any = '', title?: string, onClose?: () => void) => ({
+export const openDialog = (content: any = '', title?: string, onClose?: () => void, submitCallback?) => ({
     type: 'OPEN_DIALOG',
     title: title || '',
     content,
     onClose: onClose || null,
+    submitCallback,
 })
 
 export const closeDialog = () => ({

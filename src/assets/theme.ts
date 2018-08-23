@@ -2,7 +2,7 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 
 import './css/raleway-font.css'
 
-const theme = createMuiTheme({
+export const theme = createMuiTheme({
     palette: {
         common: {
             black: '#000',

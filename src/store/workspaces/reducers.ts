@@ -21,7 +21,7 @@ export const favorites: Reducer<number[] | null> = (state: number[] | null = nul
         case 'UNFOLLOW_WORKSPACE_SUCCESS':
             return [...state.filter((i) => i !== action.contentId)]
         default:
-            return state
+            return state || []
     }
 }
 
