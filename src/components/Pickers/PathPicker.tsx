@@ -10,7 +10,7 @@ import { connect } from 'react-redux'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { resources } from '../../assets/resources'
-import { loadPickerItems, loadPickerParent, selectPickerItem, setBackLink } from '../../store/picker/Actions'
+import { loadPickerItems, loadPickerParent, selectPickerItem, setBackLink } from '../../store/picker/actions'
 import AddNewDialog from '../Dialogs/AddNewDialog'
 
 const styles = {

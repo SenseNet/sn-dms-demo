@@ -9,7 +9,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '../..'
 import { pickerTheme } from '../../assets/picker'
-import { deselectPickeritem, loadPickerItems, loadPickerParent, selectPickerItem, setBackLink, setPickerParent } from '../../store/picker/Actions'
+import { deselectPickeritem, loadPickerItems, loadPickerParent, selectPickerItem, setBackLink, setPickerParent } from '../../store/picker/actions'
 
 // tslint:disable-next-line:no-var-requires
 const sensenetLogo = require('../../assets/sensenet_white.png')

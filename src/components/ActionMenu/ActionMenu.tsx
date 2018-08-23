@@ -7,7 +7,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import * as DMSActions from '../../Actions'
 import { select } from '../../store/documentlibrary/actions'
-import { closePicker, loadPickerItems, openPicker, setPickerParent } from '../../store/picker/Actions'
+import { closePicker, loadPickerItems, openPicker, setPickerParent } from '../../store/picker/actions'
 import EditPropertiesDialog from '../Dialogs/EditPropertiesDialog'
 
 import Fade from '@material-ui/core/Fade'
