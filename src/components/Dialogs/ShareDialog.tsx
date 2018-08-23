@@ -42,6 +42,7 @@ const styles = {
         margin: '0 15px',
     },
     link: {
+        padding: 0,
         color: '#016D9E',
         fontSize: '13px',
         fontFamily: 'Raleway Semibold',
@@ -224,14 +225,14 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
                                 <span>{resources.SHARE_LINK_PREFIX} </span> : null}
                             <strong>&nbsp;{this.getLinkSharingTypePostfix()}</strong>
 
-                            <a style={{ ...styles.link, display: 'inline-flex', margin: '0 7px', fontSize: '18px' }}
+                            <Button style={{ ...styles.link, display: 'inline-flex', margin: '0 7px', fontSize: '18px' }}
                                 aria-owns={this.state.anchorEl ? 'simple-menu' : null}
                                 aria-haspopup="true"
                                 onClick={this.handleOpenLinkSharingMenu}
                             >
                                 <ArrowDropDown fontSize="inherit" />
                                 <Edit fontSize="inherit" />
-                            </a>
+                            </Button>
                             <Menu
                                 id="simple-menu"
                                 anchorEl={this.state.anchorEl}
@@ -244,16 +245,16 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
                             </Menu>
 
                         </div>
-                        <a style={{ ...styles.link, fontSize: '12px' }} onClick={this.copyUrl}>
+                        <Button style={{ ...styles.link, fontSize: '12px' }} onClick={this.copyUrl}>
                             <Link /> &nbsp;
                             {resources.SHARE_COPY_LINK}
-                        </a>
+                        </Button>
                     </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <a style={styles.link} >
+                    <Button style={styles.link} >
                         {resources.MORE_SHARE_OPTIONS}
-                    </a>
+                    </Button>
                     <div>
                         <Button style={styles.actionButton} onClick={this.handleCancel}>{resources.CANCEL}</Button>
                         <Button style={styles.actionButton} variant="contained" color="secondary" onClick={this.submitCallback}>{resources.OK}</Button>
