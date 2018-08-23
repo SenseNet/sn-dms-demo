@@ -21,6 +21,7 @@ interface AddNewDialogState {
 const mapStateToProps = (state: rootStateType) => {
     return {
         schema: Reducers.getSchema(state.sensenet),
+        closeCallback: state.dms.dialog.onClose,
     }
 }
 
@@ -47,9 +48,10 @@ class AddNewDialog extends React.Component<AddNewDialogProps & ReturnType<typeof
     }
     public submitCallback = () => {
         this.props.closeDialog()
+        this.props.closeCallback()
     }
     public render() {
-        const { parentPath, contentTypeName, closeDialog, createContent, schema, title, extension } = this.props
+        const { parentPath, contentTypeName, createContent, schema, title, extension } = this.props
         return (
             <div style={{ width: 500 }}>
                 {schema ?
@@ -62,7 +64,7 @@ class AddNewDialog extends React.Component<AddNewDialogProps & ReturnType<typeof
                         onSubmit={createContent}
                         title={title ? title : null}
                         extension={extension ? extension : null}
-                        submitCallback={closeDialog} /> :
+                        submitCallback={this.submitCallback} /> :
                     <CircularProgress size={50} />}
             </div>
         )

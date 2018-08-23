@@ -6,6 +6,8 @@ import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import * as DMSActions from '../../Actions'
+import { select } from '../../store/documentlibrary/actions'
+import { closePicker, loadPickerItems, openPicker, setPickerParent } from '../../store/picker/actions'
 import EditPropertiesDialog from '../Dialogs/EditPropertiesDialog'
 
 import Fade from '@material-ui/core/Fade'
@@ -17,8 +19,11 @@ import { downloadFile } from '../../assets/helpers'
 import { icons } from '../../assets/icons'
 import { resources } from '../../assets/resources'
 import ApproveorRejectDialog from '../Dialogs/ApproveorRejectDialog'
+import CopyToConfirmDialog from '../Dialogs/CopyToConfirmDialog'
 import DeleteDialog from '../Dialogs/DeleteDialog'
+import MoveToConfirmDialog from '../Dialogs/MoveToConfirmDialog'
 import VersionsDialog from '../Dialogs/VersionsDialog'
+import PathPicker from '../Pickers/PathPicker'
 
 const mapStateToProps = (state: rootStateType) => {
     return {
@@ -31,6 +36,7 @@ const mapStateToProps = (state: rootStateType) => {
         userName: state.sensenet.session.user.userName,
         queryOptions: state.sensenet.currentitems.options,
         currentContent: state.dms.actionmenu.content,
+        currentParent: state.dms.documentLibrary.parent,
     }
 }
 
@@ -44,6 +50,8 @@ const mapDispatchToProps = {
     logout: Actions.userLogout,
     openDialog: DMSActions.openDialog,
     closeDialog: DMSActions.closeDialog,
+    openPicker,
+    closePicker,
     loadContent: Actions.loadContent,
     fetchContent: Actions.requestContent,
     checkoutContent: Actions.checkOut,
@@ -51,6 +59,9 @@ const mapDispatchToProps = {
     publishContent: Actions.publish,
     undoCheckout: Actions.undoCheckout,
     forceundoCheckout: Actions.forceUndoCheckout,
+    setPickerParent,
+    loadPickerItems,
+    select,
 }
 
 const styles = {
@@ -213,6 +224,44 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                             id={content.Id}
                             fileName={content.DisplayName} />,
                         resources.APPROVE_OR_REJECT, this.props.closeDialog)
+                    break
+                case 'MoveTo':
+                    this.handleClose()
+                    this.props.select([content])
+                    this.props.setPickerParent(this.props.currentParent)
+                    this.props.loadPickerItems(this.props.currentParent.Path, content)
+                    this.props.openPicker(
+                        <PathPicker
+                            mode="MoveTo"
+                            dialogComponent={<MoveToConfirmDialog />}
+                            dialogTitle={resources.MOVE}
+                            dialogCallback={Actions.moveBatch} />,
+                        this.props.closePicker)
+                    break
+                case 'CopyTo':
+                    this.handleClose()
+                    this.props.select([content])
+                    this.props.setPickerParent(this.props.currentParent)
+                    this.props.loadPickerItems(this.props.currentParent.Path, content)
+                    this.props.openPicker(
+                        <PathPicker
+                            mode="CopyTo"
+                            dialogComponent={<CopyToConfirmDialog />}
+                            dialogTitle={resources.COPY}
+                            dialogCallback={Actions.copyBatch} />,
+                        this.props.closePicker)
+                    break
+                case 'MoveBatch':
+                    this.handleClose()
+                    this.props.setPickerParent(this.props.currentParent)
+                    this.props.loadPickerItems(this.props.currentParent.Path, content)
+                    this.props.openPicker(
+                        <PathPicker
+                            mode="MoveTo"
+                            dialogComponent={<MoveToConfirmDialog />}
+                            dialogTitle={resources.MOVE}
+                            dialogCallback={Actions.moveBatch} />,
+                        this.props.closePicker)
                     break
                 default:
                     console.log(`${action.Name} is clicked`)
