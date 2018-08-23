@@ -1,7 +1,10 @@
 import { Button, Divider, Input, MenuItem, Select, Typography, withStyles } from '@material-ui/core'
+import { Link } from '@material-ui/icons'
+import { PathHelper } from '@sensenet/client-utils'
 import { GenericContent } from '@sensenet/default-content-types'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { RouteComponentProps, withRouter } from 'react-router'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { versionName } from '../../assets/helpers'
@@ -38,7 +41,7 @@ const styles = {
     actionButton: {
         margin: '0 15px',
     },
-    showMoreLink: {
+    link: {
         color: '#016D9E',
         fontSize: '13px',
         fontFamily: 'Raleway Semibold',
@@ -47,7 +50,7 @@ const styles = {
     },
 }
 
-interface ShareDialogProps {
+interface ShareDialogProps extends RouteComponentProps<any> {
     currentContent: GenericContent,
     closeCallback?: () => void
 }
@@ -63,17 +66,23 @@ const mapDispatchToProps = {
     openDialog: DMSActions.openDialog,
 }
 
+type addType = 'see' | 'edit'
+
+type linkSharingType = addType | 'off'
+
 interface ShareDialogState {
-    addType: 'see' | 'edit'
+    addType: addType
     addValue: string
-    entriesToAdd: Array<{ value: string, type: 'see' | 'edit' }>
+    sharedWithValues: Array<{ value: string, type: addType }>
+    linkSharingType: linkSharingType
 }
 
 class ShareDialog extends React.Component<{ classes } & ShareDialogProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, ShareDialogState> {
     public state: ShareDialogState = {
         addType: 'see',
         addValue: '',
-        entriesToAdd: [],
+        linkSharingType: 'off',
+        sharedWithValues: [],
     }
     constructor(props: ShareDialog['props']) {
         super(props)
@@ -82,6 +91,7 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
         this.handleAddTypeChange = this.handleAddTypeChange.bind(this)
         this.handleAddValueChange = this.handleAddValueChange.bind(this)
         this.handleAddEntry = this.handleAddEntry.bind(this)
+        this.copyUrl = this.copyUrl.bind(this)
     }
     public static getDerivedStateFromProps(newProps: ShareDialog['props'], lastState: ShareDialogState) {
         const icon = newProps.currentContent.Icon && icons[newProps.currentContent.Icon.toLowerCase() as any]
@@ -125,10 +135,29 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
         ev.currentTarget.reset()
         this.setState({
             addValue: '',
-            entriesToAdd: [
-                ...this.state.entriesToAdd,
+            sharedWithValues: [
+                ...this.state.sharedWithValues.filter((val) => val.value !== this.state.addValue),
                 { type: this.state.addType, value: this.state.addValue },
             ],
+        })
+    }
+
+    private getLinkSharingTypePostfix() {
+        switch (this.state.linkSharingType) {
+            case 'off':
+                return <span>{resources.SHARE_LINK_POSTFIX_OFF}</span>
+            case 'see':
+                return <span>{resources.SHARE_LINK_POSTFIX_VIEW}</span>
+            case 'edit':
+                return <span>{resources.SHARE_LINK_POSTFIX_EDIT}</span>
+        }
+    }
+
+    private copyUrl() {
+        const newUrl = new URL(window.location.origin)
+        newUrl.hash = PathHelper.joinPaths('preview', btoa(this.props.currentContent.Id.toString()));
+        (navigator as any).clipboard.writeText(newUrl.toString()).then(() => {
+            /** Link copied */
         })
     }
 
@@ -160,9 +189,28 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
                             <MenuItem value="edit">{resources.SHARE_PERMISSION_EDIT}</MenuItem>
                         </Select>
                     </form>
+                    {this.state.sharedWithValues.length ?
+                        <Typography variant="body2" style={{ fontSize: '.85em' }}>
+                            <strong>{resources.SHARED_WITH} </strong>
+                            {this.state.sharedWithValues.map((v) => v.value).join(', ')}
+                            <Divider />
+                        </Typography>
+                        : null}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                            <span>{resources.SHARE_LINK_PREFIX}</span>&nbsp;
+                            <strong>{this.getLinkSharingTypePostfix()}</strong>
+                        </div>
+                        <Button style={styles.link} onClick={this.copyUrl}>
+                            <Link /> &nbsp;
+                            {resources.SHARE_COPY_LINK}
+                        </Button>
+                    </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <a style={styles.showMoreLink} >{resources.MORE_SHARE_OPTIONS}</a>
+                    <Button style={styles.link} >
+                        {resources.MORE_SHARE_OPTIONS}
+                    </Button>
                     <div>
                         <Button style={styles.actionButton} onClick={this.handleCancel}>{resources.CANCEL}</Button>
                         <Button style={styles.actionButton} variant="contained" color="secondary" onClick={this.handleCancel}>{resources.OK}</Button>
@@ -174,4 +222,4 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles as any)(ShareDialog))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles as any)(ShareDialog)))
