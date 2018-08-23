@@ -1,5 +1,6 @@
 import { Dialog, DialogContent, IconButton } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
+import { LoginState } from '@sensenet/client-core'
 import { PathHelper } from '@sensenet/client-utils'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -116,13 +117,17 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
     }
     public render() {
         const { closeDialog, isDialogOpen, dialogContent } = this.props
-        const filter = { filter: this.props.isViewerOpened ? 'blur(3px)' : '' }
+
+        if (this.props.loginState !== LoginState.Unauthenticated && this.props.loggedinUserName === 'Visitor') {
+            return null
+        }
+
         return (
             <MediaQuery minDeviceWidth={700}>
                 {(matches) => {
                     if (matches) {
                         return <div>
-                            <div style={{ ...styles.root, ...filter }}>
+                            <div style={{ ...styles.root }}>
                                 <Header />
                                 <div style={{ width: '100%', display: 'flex' }}>
                                     <DashboardDrawer />
@@ -141,7 +146,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                                     <Route path={props.match.url + '/trash'}>
                                                         <Trash />
                                                     </Route>
-                                                    <Route path={'/' + PathHelper.joinPaths(props.match.url, '/:folderPath?')} exact component={() => (
+                                                    <Route path={'/' + PathHelper.joinPaths(props.match.url, '/:folderPath?/:otherActions*')} exact component={() => (
                                                         <div>
                                                             <ListToolbar
                                                                 currentContent={this.props.docLibParent}
@@ -177,7 +182,9 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                     </div>
                                 </div>
                             </div>
-                            <DmsViewer />
+                            <Route exact path="/:prefix*/preview/:documentId" component={() =>
+                                <DmsViewer />
+                            } />
                             <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth="md">
                                 <DialogContent children={dialogContent} />
                                 <IconButton onClick={closeDialog} style={styles.dialogClose as any}>

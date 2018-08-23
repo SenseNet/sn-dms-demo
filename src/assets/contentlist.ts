@@ -1,4 +1,5 @@
 import { createMuiTheme } from '@material-ui/core'
+import theme from './theme'
 
 export const defaultCell: React.CSSProperties = {
     color: '#666',
@@ -17,6 +18,7 @@ export const hoveredCell: React.CSSProperties = {
 }
 
 export const contentListTheme = createMuiTheme({
+    ...theme,
     overrides: {
         MuiTableRow: {
             head: {
@@ -56,8 +58,15 @@ export const contentListTheme = createMuiTheme({
                     paddingLeft: 0,
                     fontWeight: 'bold',
                 },
-                '&.display-name,&.DisplayName:contains(folder)': {
-                    color: 'red',
+                '&.display-name input.rename': {
+                    '&::selection': {
+                        backgroundColor: 'lightblue',
+                    },
+                    'fontFamily': 'Raleway SemiBold',
+                    'fontSize': 14,
+                    'padding': '5px 7px',
+                    'margin': '-5px -7px',
+                    'border': '1px solid #016D9E',
                 },
             },
         },

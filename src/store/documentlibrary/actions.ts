@@ -48,8 +48,8 @@ export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: s
                 eventObservables.push(
                     eventHub.onCustomActionExecuted.subscribe((value) => {
                         const currentItems = options.getState().dms.documentLibrary.items
-                        if (currentItems.d.results.filter((a) => a.Id === value.actionOptions.idOrPath)
-                            || currentItems.d.results.filter((a) => a.Path === value.actionOptions.idOrPath)
+                        if (value.actionOptions.name !== 'GetExistingPreviewImages' && (currentItems.d.results.filter((a) => a.Id === value.actionOptions.idOrPath)
+                            || currentItems.d.results.filter((a) => a.Path === value.actionOptions.idOrPath))
                         ) {
                             emitChange({ ParentId: newParent.d.Id } as GenericContent)
                         }

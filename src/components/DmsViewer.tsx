@@ -1,9 +1,11 @@
 import { MuiThemeProvider } from '@material-ui/core'
-import { DocumentTitlePager, DocumentViewer, Download, exampleTheme, LayoutAppBar, Print, RotateActivePages, SearchBar, Share, ToggleThumbnailsWidget, ZoomInOutWidget } from '@sensenet/document-viewer-react'
+import { DocumentTitlePager, DocumentViewer, Download, exampleTheme, LayoutAppBar, pollDocumentData, Print, RotateActivePages, SearchBar, Share, ToggleThumbnailsWidget, ZoomInOutWidget } from '@sensenet/document-viewer-react'
+import { compile } from 'path-to-regexp'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { RouteComponentProps, withRouter } from 'react-router'
 import { rootStateType } from '..'
-import { closeViewer } from '../Actions'
+import { closeViewer, openViewer } from '../Actions'
 
 const mapStateToProps = (state: rootStateType) => ({
     isOpened: state.dms.viewer.isOpened,
@@ -13,10 +15,12 @@ const mapStateToProps = (state: rootStateType) => ({
 
 export const mapDispatchToProps = {
     closeViewer,
+    openViewer,
+    pollDocumentData,
 }
 
 // tslint:disable-next-line:no-empty-interface
-export interface DmsViewerProps {
+export interface DmsViewerProps extends RouteComponentProps<any> {
     /**/
 }
 
@@ -29,6 +33,22 @@ export class DmsViewerComponent extends React.Component<DmsViewerProps & ReturnT
     public state = { isOpened: false }
 
     public static getDerivedStateFromProps(newProps: DmsViewerComponent['props'], lastState: DmsViewerComponent['state']) {
+        try {
+            const openedDocumentId = parseInt(newProps.match.params.documentId && atob(decodeURIComponent(newProps.match.params.documentId)), 10)
+            if (openedDocumentId) {
+
+                if (!newProps.isOpened) {
+                    newProps.openViewer(openedDocumentId)
+                }
+                if (newProps.idOrPath !== openedDocumentId) {
+                    newProps.pollDocumentData(newProps.hostName, openedDocumentId)
+                }
+            }
+        } catch (error) {
+            /** Cannot parse current folder from URL */
+            const newPath = compile(newProps.match.path)({ prefix: newProps.match.params.prefix})
+            newProps.history.push(newPath)
+        }
         return {
             ...lastState,
             isOpened: newProps.isOpened,
@@ -37,6 +57,10 @@ export class DmsViewerComponent extends React.Component<DmsViewerProps & ReturnT
 
     public keyboardHandler(event: KeyboardEvent) {
         if (event.key === 'Escape') {
+            const previewIndex = this.props.location.pathname.indexOf('/preview/')
+            if (previewIndex !== -1) {
+                this.props.history.push(this.props.location.pathname.substring(0, previewIndex))
+            }
             this.props.closeViewer()
         }
     }
@@ -105,5 +129,5 @@ export class DmsViewerComponent extends React.Component<DmsViewerProps & ReturnT
     }
 }
 
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(DmsViewerComponent)
+const connectedComponent = withRouter(connect(mapStateToProps, mapDispatchToProps)(DmsViewerComponent))
 export { connectedComponent as DmsViewer }

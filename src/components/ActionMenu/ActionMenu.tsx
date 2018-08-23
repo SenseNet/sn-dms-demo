@@ -149,7 +149,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
             switch (action.Name) {
                 case 'Rename':
                     this.handleClose()
-                    this.props.setEdited(this.props.id)
+                    this.props.setEdited(this.props.currentContent.Id)
                     break
                 case 'ClearSelection':
                     this.handleClose()

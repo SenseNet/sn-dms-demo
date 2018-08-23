@@ -21,6 +21,7 @@ export const repository = new Repository({
   requiredSelect: ['Id', 'Path', 'Name', 'Type', 'ParentId', 'Actions', 'Avatar', 'Owner', 'DisplayName', 'Locked', 'CheckedOutTo', 'Approvable'] as any,
   defaultExpand: ['Actions', 'Owner', 'CheckedOutTo'] as any,
   schemas: customSchema,
+  sessionLifetime: 'expiration',
 })
 
 const jwt = new JwtService(repository)
