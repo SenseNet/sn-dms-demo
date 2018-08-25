@@ -83,7 +83,7 @@
     "@types/enzyme": "^3.1.0",
     "codecov.io": "^0.1.6",
     "enzyme": "^3.4.4",
-    "enzyme-adapter-react-16": "^1.0.1",
+    "enzyme-adapter-react-16": "^1.2.0",
     "react-error-overlay": "^4.0.0",
     "redux-mock-store": "^1.5.1",
     "sinon": "^6.0.0",
