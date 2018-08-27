@@ -16,7 +16,7 @@ export interface DocumentLibraryState {
     childrenOptions: IODataParams<GenericContent>
 }
 
-export const loadChunkSize = 10
+export const loadChunkSize = 25
 
 export const defaultState: DocumentLibraryState = {
     isLoading: true,
