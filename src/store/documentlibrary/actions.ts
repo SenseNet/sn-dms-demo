@@ -6,6 +6,7 @@ import { Action } from 'redux'
 import { InjectableAction } from 'redux-di-middleware'
 import { rootStateType } from '../..'
 import { changedContent, debounceReloadOnProgress } from '../../Actions'
+import { loadChunkSize } from './reducers'
 
 const eventObservables: Array<ValueObserver<any>> = []
 
@@ -102,6 +103,38 @@ export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: s
 
         },
     })
+
+export const loadMore: (count?: number) => InjectableAction<rootStateType, Action> = (count: number = loadChunkSize) => ({
+    type: 'DMS_DOCLIB_LOAD_MORE',
+    inject: async (options) => {
+        const currentDocLibState = options.getState().dms.documentLibrary
+
+        if (!currentDocLibState.isLoading && currentDocLibState.items.d.results.length < currentDocLibState.items.d.__count) {
+            const repository = options.getInjectable(Repository)
+            const parentIdOrPath = currentDocLibState.parentIdOrPath
+            options.dispatch(startLoading(parentIdOrPath))
+
+            const items = await repository.loadCollection({
+                path: currentDocLibState.parent.Path,
+                oDataOptions: {
+                    ...currentDocLibState.childrenOptions,
+                    skip: currentDocLibState.items.d.results.length,
+                },
+            })
+
+            options.dispatch(setItems({
+                d: {
+                    __count: currentDocLibState.items.d.__count,
+                    results: [
+                        ...currentDocLibState.items.d.results,
+                        ...items.d.results,
+                    ],
+                },
+            }))
+            options.dispatch(finishLoading())
+        }
+    },
+})
 
 export const setParent: <T extends GenericContent = GenericContent>(content: T) => Action & { content: T } = <T>(content: T) => ({
     type: 'DMS_DOCLIB_SET_PARENT',
