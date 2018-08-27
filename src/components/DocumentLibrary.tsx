@@ -12,7 +12,7 @@ import * as DMSActions from '../Actions'
 import { contentListTheme } from '../assets/contentlist'
 import { icons } from '../assets/icons'
 import { customSchema } from '../assets/schema'
-import { loadParent, select, setActive, updateChildrenOptions } from '../store/documentlibrary/actions'
+import { loadMore, loadParent, select, setActive, updateChildrenOptions } from '../store/documentlibrary/actions'
 import ActionMenu from './ActionMenu/ActionMenu'
 import LockedCell from './ContentList/CellTemplates/LockedCell'
 import { RenameCell } from './ContentList/CellTemplates/RenameCell'
@@ -35,6 +35,7 @@ const mapStateToProps = (state: rootStateType) => {
 
 const mapDispatchToProps = {
     loadParent,
+    loadMore,
     uploadContent: uploadRequest,
     uploadDataTransfer: DMSActions.uploadDataTransfer,
     openActionMenu: DMSActions.openActionMenu,
@@ -62,6 +63,13 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
 
         this.handleFileDrop = this.handleFileDrop.bind(this)
         this.handleRowDoubleClick = this.handleRowDoubleClick.bind(this)
+        this.handleScroll = this.handleScroll.bind(this)
+    }
+
+    private handleScroll() {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+            this.props.loadMore()
+        }
     }
 
     private static updateStoreFromPath(newProps: DocumentLibrary['props'], lastState: DocumentLibrary['state']) {
@@ -108,6 +116,18 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
             const newPath = compile(this.props.match.path)({ folderPath: this.props.match.params.folderPath || btoa(this.props.parentIdOrPath as any), otherActions: ['preview', btoa(content.Id as any)] })
             this.props.history.push(newPath)
         }
+    }
+
+    public componentDidUpdate() {
+        this.handleScroll()
+    }
+
+    public componentDidMount() {
+        addEventListener('scroll', this.handleScroll)
+    }
+
+    public componentWillUnmount() {
+        removeEventListener('scroll', this.handleScroll)
     }
 
     public render() {
