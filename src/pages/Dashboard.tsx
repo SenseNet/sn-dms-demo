@@ -17,6 +17,7 @@ import { Groups } from '../components/Groups'
 import Header from '../components/Header'
 import { ListToolbar } from '../components/ListToolbar'
 import MessageBar from '../components/MessageBar'
+import MobileHeader from '../components/Mobile/Header'
 import Picker from '../components/Pickers/PickerBase'
 import { SavedQueries } from '../components/SavedQueries'
 import { Settings } from '../components/Settings'
@@ -29,7 +30,7 @@ const styles = {
         padding: 60,
     },
     dashBoardInnerMobile: {
-        padding: '30px 0 0',
+        marginTop: 48,
     },
     root: {
         flexGrow: 1,
@@ -195,6 +196,8 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                         </div>
                     } else {
                         return <div style={styles.root}>
+                            <MobileHeader />
+                            <DashboardDrawer />
                             <div style={styles.dashBoardInnerMobile}>
                                 <ListToolbar
                                     ancestors={this.props.ancestors}

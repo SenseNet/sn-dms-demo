@@ -1,6 +1,7 @@
 import { Divider, Drawer, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import MediaQuery from 'react-responsive'
 import * as DMSActions from '../Actions'
 import { resources } from '../assets/resources'
 import ContentTemplatesMenu from './Menu/ContentTemplatesMenu'
@@ -78,35 +79,39 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
     }
     public render() {
         const { classes, activeItem, chooseMenuItem, chooseSubmenuItem } = this.props
-        return <Drawer
-            variant="permanent"
-            open={true}
-            classes={{
-                paper: classes.drawerPaper,
-            }}
-        >
-            <div style={{ height: 48 }}></div>
+        return <MediaQuery minDeviceWidth={700}>
+            {(matches) => {
+                return <Drawer
+                    variant={matches ? 'permanent' : 'temporary'}
+                    open={matches}
+                    classes={{
+                        paper: matches ? classes.drawerPaper : null,
+                    }}
+                >
+                    <div style={{ height: 48 }}></div>
 
-            <MenuList>
-                {menu.map((item, index) => {
-                    return (
-                        <div key={index}>
-                            {
-                                React.createElement(
-                                    item.component,
+                    <MenuList>
+                        {menu.map((item, index) => {
+                            return (
+                                <div key={index}>
                                     {
-                                        active: activeItem === item.name,
-                                        item,
-                                        chooseMenuItem,
-                                        chooseSubmenuItem,
-                                    })
-                            }
-                            <Divider light />
-                        </div>
-                    )
-                })}
-            </MenuList>
-        </Drawer>
+                                        React.createElement(
+                                            item.component,
+                                            {
+                                                active: activeItem === item.name,
+                                                item,
+                                                chooseMenuItem,
+                                                chooseSubmenuItem,
+                                            })
+                                    }
+                                    <Divider light />
+                                </div>
+                            )
+                        })}
+                    </MenuList>
+                </Drawer>
+            }}
+        </MediaQuery>
     }
 }
 
