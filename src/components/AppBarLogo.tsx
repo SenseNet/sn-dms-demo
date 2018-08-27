@@ -25,19 +25,22 @@ const styles = {
     },
     logoImg: {
         maxWidth: 25,
-        maHeight: 25,
+        maxHeight: 25,
         verticalAlign: 'middle' as any,
         marginRight: 5,
     },
     logoImgMobile: {
-        maxWidth: 25,
-        maHeight: 25,
+        maxWidth: 20,
+        maxHeight: 20,
         verticalAlign: 'middle' as any,
-        marginRight: 0,
+        marginRight: 5,
     },
     logoText: {
         display: 'inline-block' as any,
         verticalAlign: 'middle' as any,
+    },
+    logoTextMobile: {
+        fontSize: 14,
     },
 }
 
@@ -48,8 +51,8 @@ const appBarLogo = () => (
     <MediaQuery minDeviceWidth={700}>
         {(matches) => {
             return <Link to="/" style={matches ? styles.logo : styles.logoMobile as any} >
-                <img src={sensenetLogo} alt="sensenet" aria-label="sensenet" style={styles.logoImg} />
-                <span style={styles.logoText}>
+                <img src={sensenetLogo} alt="sensenet" aria-label="sensenet" style={matches ? styles.logoImg : styles.logoImgMobile} />
+                <span style={matches ? styles.logoText : styles.logoTextMobile}>
                     <span style={styles.logoSpan}>sense</span>net
                         </span>
             </Link>

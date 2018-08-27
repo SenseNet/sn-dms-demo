@@ -11,6 +11,7 @@ const styles = {
     searchButton: {
         color: '#fff',
         marginRight: -10,
+        height: 36,
     },
 }
 

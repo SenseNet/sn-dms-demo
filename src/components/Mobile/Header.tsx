@@ -15,16 +15,18 @@ const styles = {
     },
     menuButton: {
         marginLeft: -12,
-        marginRight: 20,
+        height: 36,
     },
-    plusButton: {},
+    plusButton: {
+        height: 36,
+    },
 }
 
 class MobileHeader extends React.Component<{}, {}> {
     public render() {
         return (
             <AppBar position="absolute" style={styles.appBar}>
-                <Toolbar style={{ minHeight: 48, padding: '0px 0px 0px 10px' }}>
+                <Toolbar style={{ minHeight: 36, padding: '0px 0px 0px 10px' }}>
                     <IconButton style={styles.menuButton} color="inherit" aria-label="Menu">
                         <MenuIcon />
                     </IconButton>

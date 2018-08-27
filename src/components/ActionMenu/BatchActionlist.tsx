@@ -31,6 +31,7 @@ const styles = {
         display: 'inline-block',
         verticalAlign: 'middle',
         cursor: 'pointer',
+        height: 36,
     },
     menuIconMobile: {
         width: 'auto' as any,
@@ -219,6 +220,7 @@ class BatchActionlist extends React.Component<BatchActionListProps & ReturnType<
                         aria-owns={open ? 'batch-actions' : null}
                         aria-haspopup="true"
                         onClick={(e) => this.handleClickMobile(e)}
+                        style={{ height: 36 }}
                     >
                         <MoreVertIcon style={styles.menuIcon} />
                     </IconButton>

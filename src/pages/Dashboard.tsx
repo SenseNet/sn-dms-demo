@@ -30,7 +30,7 @@ const styles = {
         padding: 60,
     },
     dashBoardInnerMobile: {
-        marginTop: 48,
+        marginTop: 36,
     },
     root: {
         flexGrow: 1,
