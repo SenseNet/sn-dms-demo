@@ -16,6 +16,8 @@ export interface DocumentLibraryState {
     childrenOptions: IODataParams<GenericContent>
 }
 
+export const loadChunkSize = 25
+
 export const defaultState: DocumentLibraryState = {
     isLoading: true,
     items: { d: { __count: 0, results: [] } },
@@ -34,6 +36,7 @@ export const defaultState: DocumentLibraryState = {
         orderby: [['IsFolder', 'desc'], ['DisplayName', 'asc']],
         filter: 'ContentType ne \'SystemFolder\'',
         scenario: 'DMSListItem',
+        top: loadChunkSize,
     },
 }
 
