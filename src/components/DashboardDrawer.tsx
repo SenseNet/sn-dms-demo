@@ -2,6 +2,7 @@ import { Divider, Drawer, MenuList, StyleRulesCallback, withStyles } from '@mate
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
+import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
 import { resources } from '../assets/resources'
 import ContentTemplatesMenu from './Menu/ContentTemplatesMenu'
@@ -11,13 +12,14 @@ import GroupsMenu from './Menu/GroupsMenu'
 import SettingsMenu from './Menu/SettingsMenu'
 import UsersMenu from './Menu/UsersMenu'
 
-const menu: Array<{ title: string, name: string, icon: string, component: any, routeName: string }> = [
+const menu: Array<{ title: string, name: string, icon: string, component: any, routeName: string, mobile: boolean }> = [
     {
         title: resources.DOCUMENTS,
         name: 'documents',
         icon: 'folder',
         component: DocumentsMenu,
         routeName: '/documents',
+        mobile: true,
     },
     {
         title: resources.USERS,
@@ -25,6 +27,7 @@ const menu: Array<{ title: string, name: string, icon: string, component: any, r
         icon: 'person',
         component: UsersMenu,
         routeName: '/users',
+        mobile: true,
     },
     {
         title: resources.GROUPS,
@@ -32,6 +35,7 @@ const menu: Array<{ title: string, name: string, icon: string, component: any, r
         icon: 'supervised_user_circle',
         component: GroupsMenu,
         routeName: '/groups',
+        mobile: true,
     },
     {
         title: resources.CONTENT_TYPES,
@@ -39,6 +43,7 @@ const menu: Array<{ title: string, name: string, icon: string, component: any, r
         icon: 'edit',
         component: ContentTypesMenu,
         routeName: '/contenttypes',
+        mobile: false,
     },
     {
         title: resources.CONTENT_TEMPLATES,
@@ -46,6 +51,7 @@ const menu: Array<{ title: string, name: string, icon: string, component: any, r
         icon: 'view_quilt',
         component: ContentTemplatesMenu,
         routeName: '/contenttemplates',
+        mobile: false,
     },
     {
         title: resources.SETTINGS,
@@ -53,6 +59,7 @@ const menu: Array<{ title: string, name: string, icon: string, component: any, r
         icon: 'settings',
         component: SettingsMenu,
         routeName: '/settings',
+        mobile: true,
     },
 ]
 
@@ -73,7 +80,19 @@ interface DashboarDrawerProps {
     activeItem,
 }
 
-class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
+const mapStateToProps = (state: rootStateType) => {
+    return {
+        activeItem: state.dms.menu.active,
+        menuIsOpen: state.dms.menuOpen,
+    }
+}
+
+const mapDispatchToProps = {
+    chooseMenuItem: DMSActions.chooseMenuItem,
+    chooseSubmenuItem: DMSActions.chooseSubmenuItem,
+}
+
+class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, {}> {
     public handleClick = (name) => {
         this.props.chooseMenuItem(name)
     }
@@ -83,16 +102,16 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
             {(matches) => {
                 return <Drawer
                     variant={matches ? 'permanent' : 'temporary'}
-                    open={matches}
+                    open={matches ? true : this.props.menuIsOpen}
                     classes={{
                         paper: matches ? classes.drawerPaper : null,
                     }}
                 >
-                    <div style={{ height: 48 }}></div>
+                    { matches ? <div style={{ height: 48 }}></div> : null }
 
                     <MenuList>
                         {menu.map((item, index) => {
-                            return (
+                            return matches ? (
                                 <div key={index}>
                                     {
                                         React.createElement(
@@ -106,7 +125,20 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
                                     }
                                     <Divider light />
                                 </div>
-                            )
+                            ) :
+                                item.mobile ? <div key={index}>
+                                    {
+                                        React.createElement(
+                                            item.component,
+                                            {
+                                                active: activeItem === item.name,
+                                                item,
+                                                chooseMenuItem,
+                                                chooseSubmenuItem,
+                                            })
+                                    }
+                                    <Divider light />
+                                </div> : null
                         })}
                     </MenuList>
                 </Drawer>
@@ -115,13 +147,4 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        activeItem: state.dms.menu.active,
-    }
-}
-
-export default (connect(mapStateToProps, {
-    chooseMenuItem: DMSActions.chooseMenuItem,
-    chooseSubmenuItem: DMSActions.chooseSubmenuItem,
-})(withStyles(styles)(DashboardDrawer)))
+export default (connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(DashboardDrawer)))

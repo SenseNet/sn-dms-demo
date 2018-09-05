@@ -4,6 +4,9 @@ import Toolbar from '@material-ui/core/Toolbar'
 import PlusIcon from '@material-ui/icons/Add'
 import MenuIcon from '@material-ui/icons/Menu'
 import * as React from 'react'
+import { connect } from 'react-redux'
+import { rootStateType } from '../..'
+import * as DMSActions from '../../Actions'
 import AppBarLogo from '../AppBarLogo'
 import { QuickSearch } from '../QuickSearch'
 
@@ -22,12 +25,39 @@ const styles = {
     },
 }
 
-class MobileHeader extends React.Component<{}, {}> {
+const mapStateToProps = (state: rootStateType) => {
+    return {
+        menuIsOpen: state.dms.menuOpen,
+    }
+}
+
+const mapDispatchToProps = {
+    openMenu: DMSActions.handleDrawerMenu,
+}
+
+interface MobileHeaderState {
+    open: boolean,
+}
+
+class MobileHeader extends React.Component<ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, MobileHeaderState> {
+    public state = {
+        open: this.props.menuIsOpen,
+    }
+    public handleClick = () => {
+        this.props.openMenu(!this.state.open)
+        this.setState({
+            open: !this.state.open,
+        })
+    }
     public render() {
         return (
             <AppBar position="absolute" style={styles.appBar}>
                 <Toolbar style={{ minHeight: 36, padding: '0px 0px 0px 10px' }}>
-                    <IconButton style={styles.menuButton} color="inherit" aria-label="Menu">
+                    <IconButton
+                        style={styles.menuButton}
+                        color="inherit"
+                        aria-label="Menu"
+                        onClick={() => this.handleClick()}>
                         <MenuIcon />
                     </IconButton>
                     <AppBarLogo />
@@ -43,4 +73,4 @@ class MobileHeader extends React.Component<{}, {}> {
     }
 }
 
-export default MobileHeader
+export default connect(mapStateToProps, mapDispatchToProps)(MobileHeader)

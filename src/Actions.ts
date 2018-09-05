@@ -289,3 +289,8 @@ export const loadVersions = (id: number) => ({
         },
     ),
 })
+
+export const handleDrawerMenu = (open: boolean) => ({
+    type: 'HANDLE_DRAWERMENU',
+    open,
+})
