@@ -1,4 +1,4 @@
-import Dialog from '@material-ui/core/Dialog'
+import Drawer from '@material-ui/core/Drawer'
 import Fade from '@material-ui/core/Fade'
 import Icon from '@material-ui/core/Icon'
 import List from '@material-ui/core/List'
@@ -86,6 +86,11 @@ const styles = {
     },
     menuItem: {
         padding: '6px 15px',
+        fontSize: '0.9rem',
+        fontFamily: 'Raleway Medium',
+    },
+    menuItemMobile: {
+        padding: '10px 15px',
         fontSize: '0.9rem',
         fontFamily: 'Raleway Medium',
     },
@@ -327,7 +332,8 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                         })
                     }
                 </Menu > :
-                    <Dialog
+                    <Drawer
+                        anchor="bottom"
                         open={open}
                         onClose={this.handleClose}>
                         <List>
@@ -344,7 +350,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                                         e.currentTarget.style.color = '#000'
                                         e.currentTarget.style.fontWeight = 'normal'
                                     }}
-                                    style={styles.menuItem}
+                                    style={styles.menuItemMobile}
                                     title={action.DisplayName}>
                                     <ListItemIcon style={styles.actionIcon}>
                                         <Icon color="primary">{
@@ -361,13 +367,19 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                                             {
                                                 action.Name === 'ForceUndoCheckOut' ? <Warning style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
                                             }
+                                            {
+                                                action.Name === 'uploadFile' ? <Forward style={{ position: 'absolute', left: '0.86em', top: '0.48em', width: '0.5em', color: 'white', transform: 'rotate(-90deg)' }} /> : null
+                                            }
+                                            {
+                                                action.Name === 'uploadFolder' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.42em', width: '0.5em', color: 'white', transform: 'rotate(-90deg)' }} /> : null
+                                            }
                                         </Icon>
                                     </ListItemIcon>
                                     {action.DisplayName}
                                 </MenuItem>
                             })}
                         </List>
-                    </Dialog>
+                    </Drawer>
             }}
         </MediaQuery>
     }
