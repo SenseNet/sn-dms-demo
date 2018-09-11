@@ -44,7 +44,7 @@ class MobileHeader extends React.Component<ReturnType<typeof mapStateToProps> & 
         open: this.props.menuIsOpen,
     }
     public handleClick = () => {
-        this.props.openMenu(!this.state.open)
+        this.props.openMenu(!this.props.menuIsOpen)
         this.setState({
             open: !this.state.open,
         })

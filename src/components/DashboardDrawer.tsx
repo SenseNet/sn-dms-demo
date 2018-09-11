@@ -1,9 +1,10 @@
-import { Divider, Drawer, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
+import { Divider, Drawer, Icon, ListItemText, MenuItem, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
+import { icons } from '../assets/icons'
 import { resources } from '../assets/resources'
 import ContentTemplatesMenu from './Menu/ContentTemplatesMenu'
 import ContentTypesMenu from './Menu/ContentTypesMenu'
@@ -59,7 +60,7 @@ const menu: Array<{ title: string, name: string, icon: string, component: any, r
         icon: 'settings',
         component: SettingsMenu,
         routeName: '/settings',
-        mobile: true,
+        mobile: false,
     },
 ]
 
@@ -70,6 +71,61 @@ const styles: StyleRulesCallback = (theme) => ({
         position: 'relative',
         width: drawerWidth,
         padding: '0 10px',
+    },
+    iconWhite: {
+        color: '#fff',
+        background: '#666',
+        borderRadius: '50%',
+        fontSize: '14px',
+        padding: 4,
+    },
+    iconWhiteMobile: {
+        color: '#fff',
+        background: '#016d9e',
+        borderRadius: '50%',
+        fontSize: '14px',
+        padding: 4,
+    },
+    iconWhiteActive: {
+        color: '#fff',
+        background: '#016d9e',
+        borderRadius: '50%',
+        fontSize: '14px',
+        padding: 4,
+    },
+    root: {
+        color: '#666',
+        paddingLeft: 0,
+        paddingRight: 0,
+    },
+    selected: {
+        backgroundColor: '#fff !important',
+        color: '#016d9e',
+        fontWeight: 600,
+        paddingLeft: 0,
+        paddingRight: 0,
+    },
+    rootMobile: {
+        color: '#666',
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
+    selectedMobile: {
+        backgroundColor: '#fff !important',
+        color: '#016d9e',
+        fontWeight: 600,
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
+    primary: {
+        color: '#666',
+        fontFamily: 'Raleway Semibold',
+        fontSize: '14px',
+    },
+    primaryActive: {
+        color: '#016d9e',
+        fontFamily: 'Raleway Semibold',
+        fontSize: '14px',
     },
 })
 
@@ -84,20 +140,25 @@ const mapStateToProps = (state: rootStateType) => {
     return {
         activeItem: state.dms.menu.active,
         menuIsOpen: state.dms.menuOpen,
+        userActions: state.dms.actionmenu.userActions,
     }
 }
 
 const mapDispatchToProps = {
     chooseMenuItem: DMSActions.chooseMenuItem,
     chooseSubmenuItem: DMSActions.chooseSubmenuItem,
+    handleDrawerMenu: DMSActions.handleDrawerMenu,
 }
 
 class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, {}> {
     public handleClick = (name) => {
         this.props.chooseMenuItem(name)
     }
+    public toggleDrawer = () => {
+        this.props.handleDrawerMenu(false)
+    }
     public render() {
-        const { classes, activeItem, chooseMenuItem, chooseSubmenuItem } = this.props
+        const { classes, activeItem, chooseMenuItem, chooseSubmenuItem, userActions } = this.props
         return <MediaQuery minDeviceWidth={700}>
             {(matches) => {
                 return <Drawer
@@ -106,8 +167,9 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<t
                     classes={{
                         paper: matches ? classes.drawerPaper : null,
                     }}
+                    onClose={matches ? null : () => this.toggleDrawer()}
                 >
-                    { matches ? <div style={{ height: 48 }}></div> : null }
+                    {matches ? <div style={{ height: 48 }}></div> : null}
 
                     <MenuList>
                         {menu.map((item, index) => {
@@ -141,6 +203,21 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<t
                                     }
                                     <Divider light />
                                 </div> : null
+                        })}
+                        {userActions.map((action, i) => {
+                            const active = activeItem === action.Name
+                            return matches ? null : <div key={i}>
+                                <MenuItem
+                                    selected={active}
+                                    classes={matches ? { root: classes.root, selected: classes.selected } : { root: classes.rootMobile, selected: classes.selectedMobile }}
+                                    >
+                                    <Icon className={matches ? active ? classes.iconWhiteActive : classes.iconWhite : active ? classes.iconWhiteActive : classes.iconWhiteMobile} color="primary">
+                                        {icons[action.Icon]}
+                                    </Icon>
+                                    <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={action.DisplayName} />
+                                </MenuItem>
+                                <Divider light />
+                            </div>
                         })}
                     </MenuList>
                 </Drawer>
