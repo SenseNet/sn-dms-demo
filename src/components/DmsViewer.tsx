@@ -6,6 +6,8 @@ import { connect } from 'react-redux'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { rootStateType } from '..'
 import { closeViewer, openViewer } from '../Actions'
+// tslint:disable-next-line:no-var-requires
+const loaderImage = require('../assets/viewer-loader.gif')
 
 const mapStateToProps = (state: rootStateType) => ({
     isOpened: state.dms.viewer.isOpened,
@@ -46,7 +48,7 @@ export class DmsViewerComponent extends React.Component<DmsViewerProps & ReturnT
             }
         } catch (error) {
             /** Cannot parse current folder from URL */
-            const newPath = compile(newProps.match.path)({ prefix: newProps.match.params.prefix})
+            const newPath = compile(newProps.match.path)({ prefix: newProps.match.params.prefix })
             newProps.history.push(newPath)
         }
         return {
@@ -96,7 +98,9 @@ export class DmsViewerComponent extends React.Component<DmsViewerProps & ReturnT
                         <MuiThemeProvider theme={exampleTheme}>
                             <DocumentViewer
                                 documentIdOrPath={this.props.idOrPath}
-                                hostName={this.props.hostName}>
+                                hostName={this.props.hostName}
+                                loaderImage={loaderImage}
+                            >
                                 <LayoutAppBar>
                                     <div style={{ flexShrink: 0 }}>
                                         <ToggleThumbnailsWidget />
