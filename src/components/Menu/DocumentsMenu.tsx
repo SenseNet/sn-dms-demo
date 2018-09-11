@@ -53,7 +53,7 @@ const styles: StyleRulesCallback = () => ({
     rootMobile: {
         color: '#666',
         paddingLeft: 20,
-        paddingRight: 20,
+        paddingRight: 100,
     },
     selected: {
         backgroundColor: '#fff !important',
@@ -61,6 +61,9 @@ const styles: StyleRulesCallback = () => ({
         fontWeight: 600,
         paddingLeft: 0,
         paddingRight: 0,
+    },
+    selectedMobile: {
+        backgroundColor: '#fff !important',
     },
     open: {
         display: 'block',
@@ -89,6 +92,10 @@ const styles: StyleRulesCallback = () => ({
     submenuItemText: {
         fontSize: '13px',
         fontFamily: 'Raleway Semibold',
+    },
+    submenuItemMobile: {
+        paddingLeft: 20,
+        paddingRight: 20,
     },
 })
 
@@ -154,7 +161,7 @@ class DocumentsMenu extends React.Component<DocumentMenuProps & ReturnType<typeo
                 return <div>
                     <MenuItem
                         selected={active}
-                        classes={matches ? { root: classes.root, selected: classes.selected } : { root: classes.rootMobile, selected: classes.selected }}
+                        classes={matches ? { root: classes.root, selected: classes.selected } : { root: classes.rootMobile, selected: classes.selectedMobile }}
                         onClick={(e) => this.handleMenuItemClick('documents')}>
                         <Icon className={active ? classes.iconWhiteActive : classes.iconWhite} color="primary">
                             {item.icon}
@@ -162,39 +169,37 @@ class DocumentsMenu extends React.Component<DocumentMenuProps & ReturnType<typeo
                         <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={item.title} />
                     </MenuItem>
                     <div className={active ? classes.open : classes.closed}>
-                        <MediaQuery minDeviceWidth={700}>
-                            {(matches) => {
-                                return matches ? <div><Divider />
-                                    <UploadButton
-                                        style={{
-                                            width: '100%',
-                                            margin: '10px 0 0 0',
-                                            fontFamily: 'Raleway Bold',
-                                            fontSize: '14px',
-                                        }}
-                                        multiple={true}
-                                        handleUpload={(fileList) => this.props.uploadFileList({
-                                            fileList,
-                                            createFolders: true,
-                                            contentTypeName: 'File',
-                                            binaryPropertyName: 'Binary',
-                                            overwrite: false,
-                                            parentPath: this.props.currentContent.Path,
-                                        })}
-                                    />
-                                    <ConnectedUploadBar />
-                                    <AddNewMenu currentContent={this.props.currentContent} />
-                                </div> : null
-                            }}
-                        </MediaQuery>
+                        {matches ? <div><Divider />
+                            <UploadButton
+                                style={{
+                                    width: '100%',
+                                    margin: '10px 0 0 0',
+                                    fontFamily: 'Raleway Bold',
+                                    fontSize: '14px',
+                                }}
+                                multiple={true}
+                                handleUpload={(fileList) => this.props.uploadFileList({
+                                    fileList,
+                                    createFolders: true,
+                                    contentTypeName: 'File',
+                                    binaryPropertyName: 'Binary',
+                                    overwrite: false,
+                                    parentPath: this.props.currentContent.Path,
+                                })}
+                            />
+                            <ConnectedUploadBar />
+                            <AddNewMenu currentContent={this.props.currentContent} />
+                        </div> : null}
                         <MenuList className={classes.submenu}>
                             {subMenu.map((menuitem, index) => {
-                                return (<MenuItem className={classes.submenuItem} key={index}
+                                return (<MenuItem className={matches ? classes.submenuItem : classes.submenuItemMobile} key={index}
                                     onClick={(e) => this.handleSubmenuItemClick(menuitem.name)}>
                                     <Icon className={subactive === menuitem.name ? classes.submenuIconActive : classes.submenuIcon}>
                                         {menuitem.icon}
                                     </Icon>
-                                    <ListItemText classes={{ primary: subactive === menuitem.name ? classes.primarySubActive : classes.primarySub }} inset primary={menuitem.title} />
+                                    <ListItemText
+                                        classes={{ primary: subactive === menuitem.name ? classes.primarySubActive : classes.primarySub }}
+                                        inset primary={menuitem.title} />
                                 </MenuItem>)
                             })}
                         </MenuList>

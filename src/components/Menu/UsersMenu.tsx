@@ -21,6 +21,13 @@ const styles: StyleRulesCallback = (theme) => ({
         fontSize: '14px',
         padding: 4,
     },
+    iconWhiteMobile: {
+        color: '#fff',
+        background: '#016d9e',
+        borderRadius: '50%',
+        fontSize: '14px',
+        padding: 4,
+    },
     iconWhiteActive: {
         color: '#fff',
         background: '#016d9e',
@@ -40,6 +47,18 @@ const styles: StyleRulesCallback = (theme) => ({
         paddingLeft: 0,
         paddingRight: 0,
     },
+    rootMobile: {
+        color: '#666',
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
+    selectedMobile: {
+        backgroundColor: '#fff !important',
+        color: '#016d9e',
+        fontWeight: 600,
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
     open: {
         display: 'block',
     },
@@ -54,6 +73,7 @@ interface UsersMenuProps extends RouteComponentProps<any> {
     item,
     chooseMenuItem,
     chooseSubmenuItem,
+    matches,
 }
 
 class UsersMenu extends React.Component<UsersMenuProps, {}> {
@@ -69,14 +89,14 @@ class UsersMenu extends React.Component<UsersMenuProps, {}> {
         // TODO
     }
     public render() {
-        const { active, classes, item } = this.props
+        const { active, classes, item, matches } = this.props
         return (
             <div>
                 <MenuItem
                     selected={active}
-                    classes={{ root: classes.root, selected: classes.selected }}
+                    classes={matches ? { root: classes.root, selected: classes.selected } : { root: classes.rootMobile, selected: classes.selectedMobile }}
                     onClick={(e) => this.handleMenuItemClick('users')}>
-                    <Icon className={active ? classes.iconWhiteActive : classes.iconWhite} color="primary">
+                    <Icon className={matches ? active ? classes.iconWhiteActive : classes.iconWhite : active ? classes.iconWhiteActive : classes.iconWhiteMobile} color="primary">
                         {item.icon}
                     </Icon>
                     <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={item.title} />

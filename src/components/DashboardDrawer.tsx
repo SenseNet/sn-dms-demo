@@ -121,6 +121,7 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<t
                                                 item,
                                                 chooseMenuItem,
                                                 chooseSubmenuItem,
+                                                matches,
                                             })
                                     }
                                     <Divider light />
@@ -135,6 +136,7 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<t
                                                 item,
                                                 chooseMenuItem,
                                                 chooseSubmenuItem,
+                                                matches,
                                             })
                                     }
                                     <Divider light />
