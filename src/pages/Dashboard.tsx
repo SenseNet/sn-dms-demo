@@ -39,6 +39,12 @@ const styles = {
         position: 'relative' as any,
         display: 'flex' as any,
     },
+    rootMobile: {
+        flexGrow: 1,
+        zIndex: 1,
+        position: 'relative' as any,
+        display: 'flex' as any,
+    },
     main: {
         flexGrow: 1,
         backgroundColor: '#eee',
@@ -128,7 +134,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                 {(matches) => {
                     if (matches) {
                         return <div>
-                            <div style={{ ...styles.root }}>
+                            <div style={matches ? { ...styles.root } : { ...styles.rootMobile }}>
                                 <Header />
                                 <div style={{ width: '100%', display: 'flex' }}>
                                     <DashboardDrawer />
@@ -195,7 +201,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                             <Picker />
                         </div>
                     } else {
-                        return <div style={styles.root}>
+                        return <div style={matches ? styles.root : styles.rootMobile}>
                             <MobileHeader />
                             <DashboardDrawer />
                             <div style={styles.dashBoardInnerMobile}>

@@ -63,7 +63,7 @@ class WorkspaceSelector extends React.Component<ReturnType<typeof mapStateToProp
                             onClick={() => this.handleButtonClick(this.state.open)}>
                             <FontAwesome name="sitemap" />
                         </Button>
-                        <WorkspaceDropDown open={this.state.open} closeDropDown={this.handleButtonClick} />
+                        <WorkspaceDropDown matches={matches} open={this.state.open} closeDropDown={this.handleButtonClick} />
                     </div>
 
                 </ClickAwayListener>
