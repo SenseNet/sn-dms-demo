@@ -1,7 +1,7 @@
 import { MuiThemeProvider } from '@material-ui/core'
 import { ConstantContent } from '@sensenet/client-core'
 import { GenericContent, IActionModel } from '@sensenet/default-content-types'
-import { ContentList } from '@sensenet/list-controls-react'
+import { ContentList, DisplayNameCell } from '@sensenet/list-controls-react'
 import { updateContent, uploadRequest } from '@sensenet/redux/dist/Actions'
 import { compile } from 'path-to-regexp'
 import * as React from 'react'
@@ -46,7 +46,7 @@ const mapDispatchToProps = {
 }
 
 interface DocumentLibraryProps extends RouteComponentProps<any> {
-    /** */
+    matchesDesktop
 }
 
 interface DocumentLibraryState {
@@ -121,16 +121,17 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                 />
             )
         }
-
+        const { matchesDesktop } = this.props
         return this.props.currentUser.content.Id !== ConstantContent.VISITOR_USER.Id ?
             <div onDragOver={(ev) => ev.preventDefault()} onDrop={this.handleFileDrop}>
                 <MuiThemeProvider theme={contentListTheme}>
                     <ContentList
+                        displayRowCheckbox={matchesDesktop ? true : false}
                         schema={customSchema.find((s) => s.ContentTypeName === 'GenericContent')}
                         selected={this.props.selected}
                         active={this.props.active}
                         items={this.props.items.d.results}
-                        fieldsToDisplay={['DisplayName', 'Locked', 'ModificationDate', 'Owner', 'Actions']}
+                        fieldsToDisplay={matchesDesktop ? ['DisplayName', 'Locked', 'ModificationDate', 'Owner', 'Actions'] : ['DisplayName', 'Locked', 'Actions']}
                         orderBy={this.props.childrenOptions.orderby[0][0] as any}
                         orderDirection={this.props.childrenOptions.orderby[0][1] as any}
                         onRequestSelectionChange={(newSelection) => this.props.select(newSelection)}
@@ -180,6 +181,12 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                                             displayName={props.content.DisplayName}
                                             onFinish={(newName) => this.props.updateContent<GenericContent>(props.content.Id, { DisplayName: newName })}
                                         />)
+                                    }
+                                    if (!matchesDesktop) {
+                                        return (<DisplayNameCell
+                                            content={props.content}
+                                            isSelected={props.isSelected}
+                                            icons={icons} />)
                                     }
                                 default:
                                     return null

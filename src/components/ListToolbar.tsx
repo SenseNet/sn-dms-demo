@@ -26,7 +26,7 @@ const styles = {
         padding: '0 12px',
     },
     toolbarMobile: {
-        padding: '0 12px',
+        padding: '0',
         minHeight: 36,
         borderBottom: 'solid 1px #fff',
         display: 'flex',

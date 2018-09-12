@@ -24,7 +24,7 @@ const styles = {
         minWidth: 24,
         padding: 0,
         fontSize: 18,
-        marginRight: 10,
+        margin: '0 12px',
     },
     activeButtonMobile: {
 

@@ -31,6 +31,7 @@ const styles = {
     },
     dashBoardInnerMobile: {
         marginTop: 36,
+        width: '100%',
     },
     root: {
         flexGrow: 1,
@@ -160,7 +161,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                                                 selected={this.props.docLibSelection}
                                                                 ancestors={this.props.ancestors}
                                                             />
-                                                            <DocumentLibrary />
+                                                            <DocumentLibrary matchesDesktop={matches} />
                                                         </div>
                                                     )}>
                                                     </Route>
@@ -210,7 +211,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                     currentContent={this.props.docLibParent}
                                     selected={this.props.docLibSelection}
                                 />
-                                <DocumentLibrary />
+                                <DocumentLibrary matchesDesktop={matches} />
                             </div>
                         </div>
                     }
