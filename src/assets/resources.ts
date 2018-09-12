@@ -61,7 +61,7 @@ export const resources = {
     SHARE_LINK_POSTFIX_EDIT: 'can edit',
     SHARE_COPY_LINK: 'Copy link',
     COPY_LINK: 'Copy link',
-    SHARE_EMAIL_INPUT_PLACEHOLDER: 'Type a name or e-mail address',
+    SHARE_EMAIL_INPUT_PLACEHOLDER: 'Type an e-mail address',
     OK: 'Ok',
     UPLOAD_NEW_VERSION: 'Upload new version',
     VERSIONING_MODE: 'Versioning mode',
