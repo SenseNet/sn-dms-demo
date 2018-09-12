@@ -1,11 +1,11 @@
 import Icon from '@material-ui/core/Icon'
 import IconButton from '@material-ui/core/IconButton'
-import * as React from 'react'
-import { connect } from 'react-redux'
-
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import { GenericContent, IActionModel } from '@sensenet/default-content-types'
 import { Actions } from '@sensenet/redux'
+import * as React from 'react'
+import { connect } from 'react-redux'
+import MediaQuery from 'react-responsive'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { icons } from '../../assets/icons'
@@ -31,6 +31,7 @@ const styles = {
         display: 'inline-block',
         verticalAlign: 'middle',
         cursor: 'pointer',
+        height: 36,
     },
     menuIconMobile: {
         width: 'auto' as any,
@@ -133,6 +134,15 @@ class BatchActionlist extends React.Component<BatchActionListProps & ReturnType<
         })
     }
 
+    public handleClickMobile = (e) => {
+        const { actions, currentContent } = this.props
+        this.props.closeActionMenu()
+        this.props.openActionMenu(actions, currentContent, currentContent.Id.toString(), e.currentTarget, {
+            top: e.currentTarget.offsetTop + 100,
+            left: e.currentTarget.offsetLeft + 100,
+        })
+    }
+
     public handleClose = () => {
         this.setState({ anchorEl: null })
     }
@@ -180,31 +190,42 @@ class BatchActionlist extends React.Component<BatchActionListProps & ReturnType<
         if (!this.props.currentContent) {
             return null
         }
-        return (
-            <ul style={this.isHidden() ? { display: 'none', margin: 0 } : { display: 'block', margin: 0 }}>
-                {actions.map((action, index) => {
-                    return (index < 2) ?
-                        <li key={action.Name} style={styles.icon} aria-label={action.DisplayName} title={action.DisplayName}>
-                            <IconButton aria-label={action.DisplayName} disableRipple={true}
-                                onClick={() => this.handleMenuItemClick(action.Name)}>
-                                <Icon color="primary" style={styles.icon} >{icons[action.Icon.toLowerCase()]}</Icon>
-                            </IconButton>
-                        </li>
-                        : null
-                })}
-                <li key="More" style={styles.icon}>
+        return <MediaQuery minDeviceWidth={700}>
+            {(matches) => {
+                return matches ? <ul style={this.isHidden() ? { display: 'none', margin: 0 } : { display: 'block', margin: 0 }}>
+                    {actions.map((action, index) => {
+                        return (index < 2) ?
+                            <li key={action.Name} style={styles.icon} aria-label={action.DisplayName} title={action.DisplayName}>
+                                <IconButton aria-label={action.DisplayName} disableRipple={true}
+                                    onClick={() => this.handleMenuItemClick(action.Name)}>
+                                    <Icon color="primary" style={styles.icon} >{icons[action.Icon.toLowerCase()]}</Icon>
+                                </IconButton>
+                            </li>
+                            : null
+                    })}
+                    <li key="More" style={styles.icon}>
+                        <IconButton
+                            aria-label="More"
+                            aria-owns="actionmenu"
+                            aria-haspopup="true"
+                            onClick={(e) => this.handleClick(e)}
+                            style={{ position: 'relative' }}
+                        >
+                            <MoreVertIcon color="primary" />
+                        </IconButton>
+                    </li>
+                </ul> :
                     <IconButton
-                        aria-label="More"
-                        aria-owns="actionmenu"
+                        aria-label="Actions"
+                        aria-owns={open ? 'batch-actions' : null}
                         aria-haspopup="true"
-                        onClick={(e) => this.handleClick(e)}
-                        style={{ position: 'relative' }}
+                        onClick={(e) => this.handleClickMobile(e)}
+                        style={{ height: 36 }}
                     >
-                        <MoreVertIcon color="primary" />
+                        <MoreVertIcon style={styles.menuIcon} />
                     </IconButton>
-                </li>
-            </ul>
-        )
+            }}
+        </MediaQuery>
     }
 }
 

@@ -1,26 +1,28 @@
+import Drawer from '@material-ui/core/Drawer'
+import Fade from '@material-ui/core/Fade'
 import Icon from '@material-ui/core/Icon'
+import List from '@material-ui/core/List'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
 import { Forward, ModeEdit, Warning } from '@material-ui/icons'
+import { IActionModel } from '@sensenet/default-content-types'
 import { pollDocumentData } from '@sensenet/document-viewer-react'
 import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import * as DMSActions from '../../Actions'
-import { select } from '../../store/documentlibrary/actions'
-import { closePicker, loadPickerItems, openPicker, setPickerParent } from '../../store/picker/actions'
-import EditPropertiesDialog from '../Dialogs/EditPropertiesDialog'
-
-import Fade from '@material-ui/core/Fade'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
-import { IActionModel } from '@sensenet/default-content-types'
+import MediaQuery from 'react-responsive'
 import { rootStateType } from '../..'
+import * as DMSActions from '../../Actions'
 import { downloadFile } from '../../assets/helpers'
 import { icons } from '../../assets/icons'
 import { resources } from '../../assets/resources'
+import { select } from '../../store/documentlibrary/actions'
+import { closePicker, loadPickerItems, openPicker, setPickerParent } from '../../store/picker/actions'
 import ApproveorRejectDialog from '../Dialogs/ApproveorRejectDialog'
 import CopyToConfirmDialog from '../Dialogs/CopyToConfirmDialog'
 import DeleteDialog from '../Dialogs/DeleteDialog'
+import EditPropertiesDialog from '../Dialogs/EditPropertiesDialog'
 import MoveToConfirmDialog from '../Dialogs/MoveToConfirmDialog'
 import ShareDialog from '../Dialogs/ShareDialog'
 import VersionsDialog from '../Dialogs/VersionsDialog'
@@ -84,6 +86,11 @@ const styles = {
     },
     menuItem: {
         padding: '6px 15px',
+        fontSize: '0.9rem',
+        fontFamily: 'Raleway Medium',
+    },
+    menuItemMobile: {
+        padding: '10px 15px',
         fontSize: '0.9rem',
         fontFamily: 'Raleway Medium',
     },
@@ -277,52 +284,104 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
     }
     public render() {
         const { actions, open, position } = this.props
-        return <Menu
-            id="actionmenu"
-            open={open}
-            onClose={this.handleClose}
-            anchorReference="anchorPosition"
-            anchorPosition={position}
-            TransitionComponent={Fade}
-        >
-            {
-                actions.map((action, index) => {
-                    return <MenuItem
-                        key={index}
-                        onClick={(event) => this.handleMenuItemClick(event, action)}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.color = '#016d9e'
-                            e.currentTarget.style.fontWeight = 'bold'
-                        }
-                        }
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.color = '#000'
-                            e.currentTarget.style.fontWeight = 'normal'
-                        }}
-                        style={styles.menuItem}
-                        title={action.DisplayName}>
-                        <ListItemIcon style={styles.actionIcon}>
-                            <Icon color="primary">{
-                                action.Icon === 'Application' ?
-                                    icons[action.Name.toLowerCase() as keyof typeof icons] :
-                                    icons[action.Icon.toLowerCase() as keyof typeof icons]
-                            }
-                                {
-                                    action.Name === 'MoveTo' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.3em', width: '0.5em', color: 'white' }} /> : null
+        return <MediaQuery minDeviceWidth={700}>
+            {(matches) => {
+                return matches ? <Menu
+                    id="actionmenu"
+                    open={open}
+                    onClose={this.handleClose}
+                    anchorReference="anchorPosition"
+                    anchorPosition={position}
+                    TransitionComponent={Fade}
+                >
+                    {
+                        actions.map((action, index) => {
+                            return <MenuItem
+                                key={index}
+                                onClick={(event) => this.handleMenuItemClick(event, action)}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.color = '#016d9e'
+                                    e.currentTarget.style.fontWeight = 'bold'
                                 }
-                                {
-                                    action.Name === 'Rename' ? <ModeEdit style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
                                 }
-                                {
-                                    action.Name === 'ForceUndoCheckOut' ? <Warning style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
-                                }
-                            </Icon>
-                        </ListItemIcon>
-                        {action.DisplayName}
-                    </MenuItem>
-                })
-            }
-        </Menu >
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.color = '#000'
+                                    e.currentTarget.style.fontWeight = 'normal'
+                                }}
+                                style={styles.menuItem}
+                                title={action.DisplayName}>
+                                <ListItemIcon style={styles.actionIcon}>
+                                    <Icon color="primary">{
+                                        action.Icon === 'Application' ?
+                                            icons[action.Name.toLowerCase() as keyof typeof icons] :
+                                            icons[action.Icon.toLowerCase() as keyof typeof icons]
+                                    }
+                                        {
+                                            action.Name === 'MoveTo' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.3em', width: '0.5em', color: 'white' }} /> : null
+                                        }
+                                        {
+                                            action.Name === 'Rename' ? <ModeEdit style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
+                                        }
+                                        {
+                                            action.Name === 'ForceUndoCheckOut' ? <Warning style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
+                                        }
+                                    </Icon>
+                                </ListItemIcon>
+                                {action.DisplayName}
+                            </MenuItem>
+                        })
+                    }
+                </Menu > :
+                    <Drawer
+                        anchor="bottom"
+                        open={open}
+                        onClose={this.handleClose}>
+                        <List>
+                            {actions.map((action, index) => {
+                                return <MenuItem
+                                    key={index}
+                                    onClick={(event) => this.handleMenuItemClick(event, action)}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.color = '#016d9e'
+                                        e.currentTarget.style.fontWeight = 'bold'
+                                    }
+                                    }
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.color = '#000'
+                                        e.currentTarget.style.fontWeight = 'normal'
+                                    }}
+                                    style={styles.menuItemMobile}
+                                    title={action.DisplayName}>
+                                    <ListItemIcon style={styles.actionIcon}>
+                                        <Icon color="primary">{
+                                            action.Icon === 'Application' ?
+                                                icons[action.Name.toLowerCase() as keyof typeof icons] :
+                                                icons[action.Icon.toLowerCase() as keyof typeof icons]
+                                        }
+                                            {
+                                                action.Name === 'MoveTo' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.3em', width: '0.5em', color: 'white' }} /> : null
+                                            }
+                                            {
+                                                action.Name === 'Rename' ? <ModeEdit style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
+                                            }
+                                            {
+                                                action.Name === 'ForceUndoCheckOut' ? <Warning style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
+                                            }
+                                            {
+                                                action.Name === 'uploadFile' ? <Forward style={{ position: 'absolute', left: '0.86em', top: '0.48em', width: '0.5em', color: 'white', transform: 'rotate(-90deg)' }} /> : null
+                                            }
+                                            {
+                                                action.Name === 'uploadFolder' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.42em', width: '0.5em', color: 'white', transform: 'rotate(-90deg)' }} /> : null
+                                            }
+                                        </Icon>
+                                    </ListItemIcon>
+                                    {action.DisplayName}
+                                </MenuItem>
+                            })}
+                        </List>
+                    </Drawer>
+            }}
+        </MediaQuery>
     }
 }
 

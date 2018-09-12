@@ -15,10 +15,21 @@ const styles = {
     breadCrumb: {
         flexGrow: 2,
     },
+    breadCrumbMobile: {
+        width: '50%',
+    },
     breadCrumbItem: {
         fontFamily: 'Raleway SemiBold',
         textTransform: 'none',
         color: '#666',
+        padding: 8,
+        letterSpacing: '0.05rem',
+        fontSize: 16,
+    },
+    breadCrumbItemMobile: {
+        color: '#fff',
+        fontFamily: 'Raleway SemiBold',
+        textTransform: 'none',
         padding: 8,
         letterSpacing: '0.05rem',
         fontSize: 16,
@@ -83,10 +94,10 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
     public render() {
         const ancestors = this.props.ancestors
             .filter((a) => a.Type === 'DocumentLibrary' || a.Type === 'Folder' || a.Id === this.props.currentContent.Id)
-        return <div style={styles.breadCrumb}>
-            <MediaQuery minDeviceWidth={700}>
-                {(matches) => {
-                    return ancestors
+        return <MediaQuery minDeviceWidth={700}>
+            {(matches) => {
+                return <div style={matches ? styles.breadCrumb : styles.breadCrumbMobile}>
+                    {ancestors
                         .map((ancestor, i) => {
                             const isLast = i === (ancestors.length - 1)
                             if (matches) {
@@ -108,25 +119,21 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
                                     {!isLast ?
                                         <Icon style={styles.breadCrumbIcon}>{icons.arrowRight}</Icon> : ''}
                                 </div>
-                            } else if (!matches && !isLast) {
+                            } else if (!matches && isLast) {
                                 return <div style={styles.item} key={i}>
                                     <Button onClick={(event) => this.handleClick(event, ancestor)}
                                         key={ancestor.Id}
-                                        style={styles.breadCrumbItem as any}>
-                                        {ancestor.Name}
+                                        style={styles.breadCrumbItemMobile as any}>
+                                        {ancestor.DisplayName}
                                     </Button>
-                                    {ancestors.length > 1 ?
-                                        <Icon style={styles.breadCrumbIconLeft as any}>{icons.arrowLeft}</Icon> :
-                                        ''}
-                                    {ancestor.Name}
                                 </div>
                             } else {
                                 return null
                             }
-                        })
-                }}
-            </MediaQuery>
-        </div>
+                        })}
+                </div>
+            }}
+        </MediaQuery>
     }
 }
 

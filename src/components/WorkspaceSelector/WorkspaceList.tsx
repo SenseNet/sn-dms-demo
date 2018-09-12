@@ -56,6 +56,7 @@ interface WorkspaceListState {
 
 interface WorkspaceListProps {
     closeDropDown: (open: boolean) => void,
+    matches,
 }
 
 class WorkspaceList extends React.Component<{ classes } & WorkspaceListProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, WorkspaceListState> {
@@ -94,12 +95,12 @@ class WorkspaceList extends React.Component<{ classes } & WorkspaceListProps & R
     }
     public render() {
         const { orderedWsList, favorites } = this.state
-        const { classes } = this.props
+        const { classes, matches } = this.props
         return (
             <div>
-                <WorkspaceSearch handleKeyup={this.handleSearch} />
+                <WorkspaceSearch matches={matches} handleKeyup={this.handleSearch} closeDropDown={this.props.closeDropDown} />
                 <Scrollbars
-                    style={{ height: window.innerHeight - 220, width: 'calc(100% - 1px)' }}
+                    style={{ height: matches ? window.innerHeight - 220 : window.innerHeight - 88, width: 'calc(100% - 1px)' }}
                     renderThumbVertical={({ style }) => <div style={{ ...style, borderRadius: 2, backgroundColor: '#fff', width: 10, marginLeft: -2 }}></div>}
                     thumbMinSize={180}>
                     <MenuList className={classes.workspaceList}>

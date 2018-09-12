@@ -17,6 +17,7 @@ import { Groups } from '../components/Groups'
 import Header from '../components/Header'
 import { ListToolbar } from '../components/ListToolbar'
 import MessageBar from '../components/MessageBar'
+import MobileHeader from '../components/Mobile/Header'
 import Picker from '../components/Pickers/PickerBase'
 import { SavedQueries } from '../components/SavedQueries'
 import { Settings } from '../components/Settings'
@@ -29,12 +30,18 @@ const styles = {
         padding: 60,
     },
     dashBoardInnerMobile: {
-        padding: '30px 0 0',
+        marginTop: 36,
     },
     root: {
         flexGrow: 1,
         zIndex: 1,
         overflow: 'hidden' as any,
+        position: 'relative' as any,
+        display: 'flex' as any,
+    },
+    rootMobile: {
+        flexGrow: 1,
+        zIndex: 1,
         position: 'relative' as any,
         display: 'flex' as any,
     },
@@ -127,7 +134,7 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                 {(matches) => {
                     if (matches) {
                         return <div>
-                            <div style={{ ...styles.root }}>
+                            <div style={matches ? { ...styles.root } : { ...styles.rootMobile }}>
                                 <Header />
                                 <div style={{ width: '100%', display: 'flex' }}>
                                     <DashboardDrawer />
@@ -194,7 +201,9 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                             <Picker />
                         </div>
                     } else {
-                        return <div style={styles.root}>
+                        return <div style={matches ? styles.root : styles.rootMobile}>
+                            <MobileHeader />
+                            <DashboardDrawer />
                             <div style={styles.dashBoardInnerMobile}>
                                 <ListToolbar
                                     ancestors={this.props.ancestors}

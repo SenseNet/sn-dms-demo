@@ -722,6 +722,16 @@ export const versions: Reducer<GenericContent[]> = (state: any[], action: AnyAct
             return state || []
     }
 }
+
+export const menuOpen: Reducer<boolean> = (state: boolean = false, action: AnyAction) => {
+    switch (action.type) {
+        case 'HANDLE_DRAWERMENU':
+            return action.open
+        default:
+            return state || false
+    }
+}
+
 export const dms = combineReducers({
     documentLibrary,
     messagebar,
@@ -743,4 +753,5 @@ export const dms = combineReducers({
     versions,
     picker,
     edited: editedContent,
+    menuOpen,
 })

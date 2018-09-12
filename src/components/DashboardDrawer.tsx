@@ -1,7 +1,10 @@
-import { Divider, Drawer, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
+import { Divider, Drawer, Icon, ListItemText, MenuItem, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import MediaQuery from 'react-responsive'
+import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
+import { icons } from '../assets/icons'
 import { resources } from '../assets/resources'
 import ContentTemplatesMenu from './Menu/ContentTemplatesMenu'
 import ContentTypesMenu from './Menu/ContentTypesMenu'
@@ -10,13 +13,14 @@ import GroupsMenu from './Menu/GroupsMenu'
 import SettingsMenu from './Menu/SettingsMenu'
 import UsersMenu from './Menu/UsersMenu'
 
-const menu: Array<{ title: string, name: string, icon: string, component: any, routeName: string }> = [
+const menu: Array<{ title: string, name: string, icon: string, component: any, routeName: string, mobile: boolean }> = [
     {
         title: resources.DOCUMENTS,
         name: 'documents',
         icon: 'folder',
         component: DocumentsMenu,
         routeName: '/documents',
+        mobile: true,
     },
     {
         title: resources.USERS,
@@ -24,6 +28,7 @@ const menu: Array<{ title: string, name: string, icon: string, component: any, r
         icon: 'person',
         component: UsersMenu,
         routeName: '/users',
+        mobile: true,
     },
     {
         title: resources.GROUPS,
@@ -31,6 +36,7 @@ const menu: Array<{ title: string, name: string, icon: string, component: any, r
         icon: 'supervised_user_circle',
         component: GroupsMenu,
         routeName: '/groups',
+        mobile: true,
     },
     {
         title: resources.CONTENT_TYPES,
@@ -38,6 +44,7 @@ const menu: Array<{ title: string, name: string, icon: string, component: any, r
         icon: 'edit',
         component: ContentTypesMenu,
         routeName: '/contenttypes',
+        mobile: false,
     },
     {
         title: resources.CONTENT_TEMPLATES,
@@ -45,6 +52,7 @@ const menu: Array<{ title: string, name: string, icon: string, component: any, r
         icon: 'view_quilt',
         component: ContentTemplatesMenu,
         routeName: '/contenttemplates',
+        mobile: false,
     },
     {
         title: resources.SETTINGS,
@@ -52,6 +60,7 @@ const menu: Array<{ title: string, name: string, icon: string, component: any, r
         icon: 'settings',
         component: SettingsMenu,
         routeName: '/settings',
+        mobile: false,
     },
 ]
 
@@ -63,6 +72,61 @@ const styles: StyleRulesCallback = (theme) => ({
         width: drawerWidth,
         padding: '0 10px',
     },
+    iconWhite: {
+        color: '#fff',
+        background: '#666',
+        borderRadius: '50%',
+        fontSize: '14px',
+        padding: 4,
+    },
+    iconWhiteMobile: {
+        color: '#fff',
+        background: '#016d9e',
+        borderRadius: '50%',
+        fontSize: '14px',
+        padding: 4,
+    },
+    iconWhiteActive: {
+        color: '#fff',
+        background: '#016d9e',
+        borderRadius: '50%',
+        fontSize: '14px',
+        padding: 4,
+    },
+    root: {
+        color: '#666',
+        paddingLeft: 0,
+        paddingRight: 0,
+    },
+    selected: {
+        backgroundColor: '#fff !important',
+        color: '#016d9e',
+        fontWeight: 600,
+        paddingLeft: 0,
+        paddingRight: 0,
+    },
+    rootMobile: {
+        color: '#666',
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
+    selectedMobile: {
+        backgroundColor: '#fff !important',
+        color: '#016d9e',
+        fontWeight: 600,
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
+    primary: {
+        color: '#666',
+        fontFamily: 'Raleway Semibold',
+        fontSize: '14px',
+    },
+    primaryActive: {
+        color: '#016d9e',
+        fontFamily: 'Raleway Semibold',
+        fontSize: '14px',
+    },
 })
 
 interface DashboarDrawerProps {
@@ -72,51 +136,94 @@ interface DashboarDrawerProps {
     activeItem,
 }
 
-class DashboardDrawer extends React.Component<DashboarDrawerProps, {}> {
+const mapStateToProps = (state: rootStateType) => {
+    return {
+        activeItem: state.dms.menu.active,
+        menuIsOpen: state.dms.menuOpen,
+        userActions: state.dms.actionmenu.userActions,
+    }
+}
+
+const mapDispatchToProps = {
+    chooseMenuItem: DMSActions.chooseMenuItem,
+    chooseSubmenuItem: DMSActions.chooseSubmenuItem,
+    handleDrawerMenu: DMSActions.handleDrawerMenu,
+}
+
+class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, {}> {
     public handleClick = (name) => {
         this.props.chooseMenuItem(name)
     }
+    public toggleDrawer = () => {
+        this.props.handleDrawerMenu(false)
+    }
     public render() {
-        const { classes, activeItem, chooseMenuItem, chooseSubmenuItem } = this.props
-        return <Drawer
-            variant="permanent"
-            open={true}
-            classes={{
-                paper: classes.drawerPaper,
-            }}
-        >
-            <div style={{ height: 48 }}></div>
+        const { classes, activeItem, chooseMenuItem, chooseSubmenuItem, userActions } = this.props
+        return <MediaQuery minDeviceWidth={700}>
+            {(matches) => {
+                return <Drawer
+                    variant={matches ? 'permanent' : 'temporary'}
+                    open={matches ? true : this.props.menuIsOpen}
+                    classes={{
+                        paper: matches ? classes.drawerPaper : null,
+                    }}
+                    onClose={matches ? null : () => this.toggleDrawer()}
+                >
+                    {matches ? <div style={{ height: 48 }}></div> : null}
 
-            <MenuList>
-                {menu.map((item, index) => {
-                    return (
-                        <div key={index}>
-                            {
-                                React.createElement(
-                                    item.component,
+                    <MenuList>
+                        {menu.map((item, index) => {
+                            return matches ? (
+                                <div key={index}>
                                     {
-                                        active: activeItem === item.name,
-                                        item,
-                                        chooseMenuItem,
-                                        chooseSubmenuItem,
-                                    })
-                            }
-                            <Divider light />
-                        </div>
-                    )
-                })}
-            </MenuList>
-        </Drawer>
+                                        React.createElement(
+                                            item.component,
+                                            {
+                                                active: activeItem === item.name,
+                                                item,
+                                                chooseMenuItem,
+                                                chooseSubmenuItem,
+                                                matches,
+                                            })
+                                    }
+                                    <Divider light />
+                                </div>
+                            ) :
+                                item.mobile ? <div key={index}>
+                                    {
+                                        React.createElement(
+                                            item.component,
+                                            {
+                                                active: activeItem === item.name,
+                                                item,
+                                                chooseMenuItem,
+                                                chooseSubmenuItem,
+                                                matches,
+                                            })
+                                    }
+                                    <Divider light />
+                                </div> : null
+                        })}
+                        {userActions.map((action, i) => {
+                            const active = activeItem === action.Name
+                            return matches ? null : <div key={i}>
+                                <MenuItem
+                                    selected={active}
+                                    classes={matches ? { root: classes.root, selected: classes.selected } : { root: classes.rootMobile, selected: classes.selectedMobile }}
+                                    >
+                                    <Icon className={matches ? active ? classes.iconWhiteActive : classes.iconWhite : active ? classes.iconWhiteActive : classes.iconWhiteMobile} color="primary">
+                                        {icons[action.Icon]}
+                                    </Icon>
+                                    <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={action.DisplayName} />
+                                </MenuItem>
+                                <Divider light />
+                            </div>
+                        })}
+                    </MenuList>
+                </Drawer>
+            }}
+        </MediaQuery>
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        activeItem: state.dms.menu.active,
-    }
-}
-
-export default (connect(mapStateToProps, {
-    chooseMenuItem: DMSActions.chooseMenuItem,
-    chooseSubmenuItem: DMSActions.chooseSubmenuItem,
-})(withStyles(styles)(DashboardDrawer)))
+export default (connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(DashboardDrawer)))

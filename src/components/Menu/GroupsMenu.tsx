@@ -19,6 +19,11 @@ const styles: StyleRulesCallback = (theme) => ({
         fontSize: 26,
         marginLeft: -2,
     },
+    iconMobile: {
+        color: '#016d9e',
+        fontSize: 26,
+        marginLeft: -2,
+    },
     iconActive: {
         color: '#016d9e',
         fontSize: 26,
@@ -36,6 +41,18 @@ const styles: StyleRulesCallback = (theme) => ({
         paddingLeft: 0,
         paddingRight: 0,
     },
+    rootMobile: {
+        color: '#666',
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
+    selectedMobile: {
+        backgroundColor: '#fff !important',
+        color: '#016d9e',
+        fontWeight: 600,
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
     open: {
         display: 'block',
     },
@@ -50,6 +67,7 @@ interface GroupsMenuProps extends RouteComponentProps<any> {
     item,
     chooseMenuItem,
     chooseSubmenuItem,
+    matches
 }
 
 class GroupsMenu extends React.Component<GroupsMenuProps, {}> {
@@ -65,14 +83,14 @@ class GroupsMenu extends React.Component<GroupsMenuProps, {}> {
         // TODO
     }
     public render() {
-        const { active, classes, item } = this.props
+        const { active, classes, item, matches } = this.props
         return (
             <div>
                 <MenuItem
                     selected={active}
-                    classes={{ root: classes.root, selected: classes.selected }}
+                    classes={matches ? { root: classes.root, selected: classes.selected } : { root: classes.rootMobile, selected: classes.selectedMobile }}
                     onClick={(e) => this.handleMenuItemClick('groups')}>
-                    <Icon className={active ? classes.iconActive : classes.icon} color="primary">
+                    <Icon className={matches ? active ? classes.iconActive : classes.icon : active ? classes.iconActive : classes.iconMobile} color="primary">
                         {item.icon}
                     </Icon>
                     <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={item.title} />

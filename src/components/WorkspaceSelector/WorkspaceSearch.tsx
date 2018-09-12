@@ -1,4 +1,4 @@
-import { InputAdornment, WithStyles, withStyles } from '@material-ui/core'
+import { Icon, InputAdornment, WithStyles, withStyles } from '@material-ui/core'
 import FormControl from '@material-ui/core/FormControl'
 import TextField from '@material-ui/core/TextField'
 import SearchIcon from '@material-ui/icons/Search'
@@ -25,6 +25,10 @@ const styles = (theme) => ({
     formControl: {
         width: '100%',
     },
+    formControlMobile: {
+        display: 'inline-flex',
+        flexGrow: 1,
+    },
     icon: {
         color: '#7b7b7b',
     },
@@ -34,11 +38,19 @@ const styles = (theme) => ({
     searchContainer: {
         padding: '10px',
     },
+    searchContainerMobile: {
+        padding: '10px',
+        display: 'flex',
+    },
+    closeIcon: {
+        marginLeft: 12,
+        marginTop: 6,
+    },
 })
 
 type C = 'wsSearchInput'
 
-class WorkspaceSearch extends React.Component<{ classes, handleKeyup: (e) => void } & WithStyles<C>, {}> {
+class WorkspaceSearch extends React.Component<{ classes, handleKeyup: (e) => void, matches, closeDropDown } & WithStyles<C>, {}> {
     constructor(props) {
         super(props)
         this.handleKeyup = this.handleKeyup.bind(this)
@@ -46,18 +58,21 @@ class WorkspaceSearch extends React.Component<{ classes, handleKeyup: (e) => voi
     public handleKeyup = (e) => {
         this.props.handleKeyup(e.target.value)
     }
+    public closeDropdown = () => {
+        this.props.closeDropDown(false)
+    }
     public render() {
-        const { classes } = this.props
+        const { classes, matches } = this.props
         return (
-            <div className={classes.searchContainer}>
-                <FormControl className={classes.formControl}>
+            <div className={matches ? classes.searchContainer : classes.searchContainerMobile}>
+                <FormControl className={matches ? classes.formControl : classes.formControlMobile}>
                     <TextField
                         onKeyUp={(e) => this.handleKeyup(e)}
                         placeholder="Search"
                         InputProps={{
                             disableUnderline: true,
                             classes: {
-                                input: classes.wsSearchInput,
+                                input: matches ? classes.wsSearchInput : classes.wsSearchInputMobile,
                                 root: classes.wsSearchContainer,
                             },
                             startAdornment: <InputAdornment position="start" className={classes.startAdornment}>
@@ -66,6 +81,7 @@ class WorkspaceSearch extends React.Component<{ classes, handleKeyup: (e) => voi
                         }}
                     />
                 </FormControl>
+                {matches ? null : <Icon className={classes.closeIcon} onClick={() => this.closeDropdown()}>close</Icon>}
             </div>
         )
     }

@@ -82,7 +82,7 @@ class UserActionMenu extends React.Component<ReturnType<typeof mapStateToProps> 
             <MediaQuery minDeviceWidth={700}>
                 {(matches) => {
                     return <div
-                        style={matches ? null : styles.actionmenuContainer}
+                        style={matches ? {} : styles.actionmenuContainer}
                         aria-owns="actionmenu"
                         onClick={(e) => this.handleClick(e)}>
                         <UserPanel user={this.props.loggedinUser} style={styles.avatar} />

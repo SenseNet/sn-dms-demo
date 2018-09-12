@@ -2,7 +2,9 @@ import Button from '@material-ui/core/Button'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import * as React from 'react'
 import * as FontAwesome from 'react-fontawesome'
-
+import { connect } from 'react-redux'
+import MediaQuery from 'react-responsive'
+import { rootStateType } from '../..'
 import '../../assets/css/font-awesome.min.css'
 import WorkspaceDropDown from './WorkspaceDropDown'
 
@@ -17,13 +19,30 @@ const styles = {
     activeButton: {
         background: '#016d9e',
     },
+    buttonMobile: {
+        color: '#fff',
+        minWidth: 24,
+        padding: 0,
+        fontSize: 18,
+        marginRight: 10,
+    },
+    activeButtonMobile: {
+
+    },
 }
 
 interface WorkspaceSelectorState {
     open: boolean,
 }
 
-export class WorkspaceSelector extends React.Component<{}, WorkspaceSelectorState> {
+const mapStateToProps = (state: rootStateType) => {
+    return {
+        currentContent: state.dms.documentLibrary.parent,
+        user: state.sensenet.session.user,
+    }
+}
+
+class WorkspaceSelector extends React.Component<ReturnType<typeof mapStateToProps>, WorkspaceSelectorState> {
     public state = {
         open: false,
     }
@@ -34,18 +53,24 @@ export class WorkspaceSelector extends React.Component<{}, WorkspaceSelectorStat
     }
     public render() {
         const { open } = this.state
-        return (
-            <ClickAwayListener onClickAway={this.handleButtonClick}>
-                <div style={{ flex: '0 1 auto' }}>
-                    <Button
-                        style={open ? { ...styles.button, ...styles.activeButton } : styles.button}
-                        onClick={() => this.handleButtonClick(this.state.open)}>
-                        <FontAwesome name="sitemap" />
-                    </Button>
-                    <WorkspaceDropDown open={this.state.open} closeDropDown={this.handleButtonClick} />
-                </div>
+        return <MediaQuery minDeviceWidth={700}>
+            {(matches) => {
+                const iconStyle = matches ? open ? { ...styles.button, ...styles.activeButton } : styles.button : open ? { ...styles.buttonMobile, ...styles.activeButtonMobile } : styles.buttonMobile
+                return <ClickAwayListener onClickAway={this.handleButtonClick}>
+                    <div style={matches ? { flex: '0 1 auto' } : { flex: '0 0 auto' }}>
+                        <Button
+                            style={iconStyle}
+                            onClick={() => this.handleButtonClick(this.state.open)}>
+                            <FontAwesome name="sitemap" />
+                        </Button>
+                        <WorkspaceDropDown matches={matches} open={this.state.open} closeDropDown={this.handleButtonClick} />
+                    </div>
 
-            </ClickAwayListener>
-        )
+                </ClickAwayListener>
+            }}
+        </MediaQuery>
     }
+
 }
+
+export default connect(mapStateToProps, {})(WorkspaceSelector)

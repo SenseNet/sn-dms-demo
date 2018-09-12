@@ -2,6 +2,7 @@ import { Divider, Icon, ListItemText, MenuItem, MenuList, StyleRulesCallback, wi
 import { IContent, IUploadProgressInfo } from '@sensenet/client-core'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import MediaQuery from 'react-responsive'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { rootStateType } from '../..'
 import { hideUploadItem, hideUploadProgress, removeUploadItem, uploadFileList } from '../../Actions'
@@ -49,12 +50,20 @@ const styles: StyleRulesCallback = () => ({
         paddingLeft: 0,
         paddingRight: 0,
     },
+    rootMobile: {
+        color: '#666',
+        paddingLeft: 20,
+        paddingRight: 100,
+    },
     selected: {
         backgroundColor: '#fff !important',
         color: '#016d9e',
         fontWeight: 600,
         paddingLeft: 0,
         paddingRight: 0,
+    },
+    selectedMobile: {
+        backgroundColor: '#fff !important',
     },
     open: {
         display: 'block',
@@ -83,6 +92,10 @@ const styles: StyleRulesCallback = () => ({
     submenuItemText: {
         fontSize: '13px',
         fontFamily: 'Raleway Semibold',
+    },
+    submenuItemMobile: {
+        paddingLeft: 20,
+        paddingRight: 20,
     },
 })
 
@@ -143,52 +156,57 @@ class DocumentsMenu extends React.Component<DocumentMenuProps & ReturnType<typeo
     }
     public render() {
         const { active, classes, subactive, item } = this.props
-        return (
-            <div>
-                <MenuItem
-                    selected={active}
-                    classes={{ root: classes.root, selected: classes.selected }}
-                    onClick={(e) => this.handleMenuItemClick('documents')}>
-                    <Icon className={active ? classes.iconWhiteActive : classes.iconWhite} color="primary">
-                        {item.icon}
-                    </Icon>
-                    <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={item.title} />
-                </MenuItem>
-                <div className={active ? classes.open : classes.closed}>
-                    <Divider />
-                    <UploadButton
-                        style={{
-                            width: '100%',
-                            margin: '10px 0 0 0',
-                            fontFamily: 'Raleway Bold',
-                            fontSize: '14px',
-                        }}
-                        multiple={true}
-                        handleUpload={(fileList) => this.props.uploadFileList({
-                            fileList,
-                            createFolders: true,
-                            contentTypeName: 'File',
-                            binaryPropertyName: 'Binary',
-                            overwrite: false,
-                            parentPath: this.props.currentContent.Path,
-                        })}
-                    />
-                    <ConnectedUploadBar />
-                    <AddNewMenu currentContent={this.props.currentContent} />
-                    <MenuList className={classes.submenu}>
-                        {subMenu.map((menuitem, index) => {
-                            return (<MenuItem className={classes.submenuItem} key={index}
-                                onClick={(e) => this.handleSubmenuItemClick(menuitem.name)}>
-                                <Icon className={subactive === menuitem.name ? classes.submenuIconActive : classes.submenuIcon}>
-                                    {menuitem.icon}
-                                </Icon>
-                                <ListItemText classes={{ primary: subactive === menuitem.name ? classes.primarySubActive : classes.primarySub }} inset primary={menuitem.title} />
-                            </MenuItem>)
-                        })}
-                    </MenuList>
+        return <MediaQuery minDeviceWidth={700}>
+            {(matches) => {
+                return <div>
+                    <MenuItem
+                        selected={active}
+                        classes={matches ? { root: classes.root, selected: classes.selected } : { root: classes.rootMobile, selected: classes.selectedMobile }}
+                        onClick={(e) => this.handleMenuItemClick('documents')}>
+                        <Icon className={active ? classes.iconWhiteActive : classes.iconWhite} color="primary">
+                            {item.icon}
+                        </Icon>
+                        <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={item.title} />
+                    </MenuItem>
+                    <div className={active ? classes.open : classes.closed}>
+                        {matches ? <div><Divider />
+                            <UploadButton
+                                style={{
+                                    width: '100%',
+                                    margin: '10px 0 0 0',
+                                    fontFamily: 'Raleway Bold',
+                                    fontSize: '14px',
+                                }}
+                                multiple={true}
+                                handleUpload={(fileList) => this.props.uploadFileList({
+                                    fileList,
+                                    createFolders: true,
+                                    contentTypeName: 'File',
+                                    binaryPropertyName: 'Binary',
+                                    overwrite: false,
+                                    parentPath: this.props.currentContent.Path,
+                                })}
+                            />
+                            <ConnectedUploadBar />
+                            <AddNewMenu currentContent={this.props.currentContent} />
+                        </div> : null}
+                        <MenuList className={classes.submenu}>
+                            {subMenu.map((menuitem, index) => {
+                                return (<MenuItem className={matches ? classes.submenuItem : classes.submenuItemMobile} key={index}
+                                    onClick={(e) => this.handleSubmenuItemClick(menuitem.name)}>
+                                    <Icon className={subactive === menuitem.name ? classes.submenuIconActive : classes.submenuIcon}>
+                                        {menuitem.icon}
+                                    </Icon>
+                                    <ListItemText
+                                        classes={{ primary: subactive === menuitem.name ? classes.primarySubActive : classes.primarySub }}
+                                        inset primary={menuitem.title} />
+                                </MenuItem>)
+                            })}
+                        </MenuList>
+                    </div>
                 </div>
-            </div>
-        )
+            }}
+        </MediaQuery>
     }
 }
 

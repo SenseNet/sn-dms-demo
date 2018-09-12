@@ -50,6 +50,13 @@ const styles: StyleRulesCallback = (theme) => ({
         fontSize: '16px',
         padding: 3,
     },
+    iconWhiteMobile: {
+        color: '#fff',
+        background: '#016d9e',
+        borderRadius: '50%',
+        fontSize: '16px',
+        padding: 3,
+    },
     iconWhiteActive: {
         color: '#fff',
         background: '#016d9e',
@@ -68,6 +75,18 @@ const styles: StyleRulesCallback = (theme) => ({
         fontWeight: 600,
         paddingLeft: 0,
         paddingRight: 0,
+    },
+    rootMobile: {
+        color: '#666',
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
+    selectedMobile: {
+        backgroundColor: '#fff !important',
+        color: '#016d9e',
+        fontWeight: 600,
+        paddingLeft: 20,
+        paddingRight: 20,
     },
     open: {
         display: 'block',
@@ -105,7 +124,8 @@ interface SettingsMenuProps extends RouteComponentProps<any> {
     subactive,
     item,
     chooseMenuItem,
-    chooseSubmenuItem
+    chooseSubmenuItem,
+    matches,
 }
 
 class SettingsMenu extends React.Component<SettingsMenuProps, {}> {
@@ -118,14 +138,14 @@ class SettingsMenu extends React.Component<SettingsMenuProps, {}> {
         this.props.chooseSubmenuItem(title)
     }
     public render() {
-        const { active, subactive, classes, item } = this.props
+        const { active, subactive, classes, item, matches } = this.props
         return (
             <div>
                 <MenuItem
                     selected={active}
-                    classes={{ root: classes.root, selected: classes.selected }}
+                    classes={matches ? { root: classes.root, selected: classes.selected } : { root: classes.rootMobile, selected: classes.selectedMobile }}
                     onClick={(e) => this.handleMenuItemClick('settings')}>
-                    <Icon className={active ? classes.iconWhiteActive : classes.iconWhite} color="primary">
+                    <Icon className={matches ? active ? classes.iconWhiteActive : classes.iconWhite : active ? classes.iconWhiteActive : classes.iconWhiteMobile} color="primary">
                         {item.icon}
                     </Icon>
                     <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={item.title} />
