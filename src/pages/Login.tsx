@@ -183,7 +183,7 @@ class Login extends React.Component<LoginProps & ReturnType<typeof mapStateToPro
   public render() {
 
     if (this.props.loginState === LoginState.Authenticated) {
-      return (<Redirect to="/" />)
+      return (<Redirect to="/documents/" />)
     }
 
     if (this.props.loginState === LoginState.Pending) {

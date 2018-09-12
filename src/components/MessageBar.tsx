@@ -2,6 +2,7 @@ import { withStyles } from '@material-ui/core'
 import IconButton from '@material-ui/core/IconButton'
 import Snackbar from '@material-ui/core/Snackbar'
 import CloseIcon from '@material-ui/icons/Close'
+import { ExtendedError, isExtendedError } from '@sensenet/client-core/dist/Repository/Repository'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '..'
@@ -52,7 +53,7 @@ class MessageBar extends React.Component<{ classes } & ReturnType<typeof mapStat
         const { classes, messagebar } = this.props
         // tslint:disable-next-line:no-string-literal
         let successful
-        if (messagebar.content) {
+        if (messagebar.content && !isExtendedError(messagebar.content as any)) {
             // tslint:disable-next-line:no-string-literal
             if (messagebar.content['d'] && messagebar.content['d'].results && messagebar.content['d'].results.length > 0) {
                 // tslint:disable-next-line:no-string-literal
@@ -73,6 +74,8 @@ class MessageBar extends React.Component<{ classes } & ReturnType<typeof mapStat
             if (messagebar.content['d'] && messagebar.content['d'].errors) {
                 // tslint:disable-next-line:no-string-literal
                 failed = messagebar.content['d'].errors
+            } else if (isExtendedError(messagebar.content as Error)) {
+                failed = [(messagebar.content as ExtendedError).message]
             } else if (messagebar.content[0]) {
                 failed = messagebar.content
             } else {
