@@ -294,3 +294,11 @@ export const handleDrawerMenu = (open: boolean) => ({
     type: 'HANDLE_DRAWERMENU',
     open,
 })
+
+export const loadBreadcrumbActions = (idOrPath: number | string) => ({
+    type: 'LOAD_BREADCRUMB_ACTIONS',
+    async payload(repository: Repository) {
+        const data: { d: { Actions: IActionModel[] } } = await repository.getActions({ idOrPath, scenario: 'DMSBreadcrumb' }) as any
+        return data
+    },
+})

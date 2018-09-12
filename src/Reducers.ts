@@ -1,7 +1,7 @@
 import { GenericContent, IActionModel } from '@sensenet/default-content-types'
 import { approve, checkIn, checkOut, copyBatch, createContent, deleteBatch, deleteContent, forceUndoCheckout, loadContent, loadContentActions, moveBatch, PromiseReturns, publish, rejectContent, restoreVersion, undoCheckout } from '@sensenet/redux/dist/Actions'
 import { Action, AnyAction, combineReducers, Reducer } from 'redux'
-import { closeMessageBar, ExtendedUploadProgressInfo, loadListActions, loadTypesToAddNewList, loadUserActions, loadVersions, setListActions } from './Actions'
+import { closeMessageBar, ExtendedUploadProgressInfo, loadBreadcrumbActions, loadListActions, loadTypesToAddNewList, loadUserActions, loadVersions, setListActions } from './Actions'
 import { resources } from './assets/resources'
 
 import { documentLibrary } from './store/documentlibrary/reducers'
@@ -257,6 +257,16 @@ export const actionmenuContent: Reducer<GenericContent | null> = (state = null, 
     }
 }
 
+export const breadcrumbActions: Reducer<IActionModel[] | null> = (state: [], action: AnyAction) => {
+    switch (action.type) {
+        case 'LOAD_BREADCRUMB_ACTIONS_SUCCESS':
+            const result = action.result as PromiseReturns<typeof loadBreadcrumbActions>
+            return result ? result.d.Actions : []
+        default:
+            return state || []
+    }
+}
+
 export const actionmenu = combineReducers({
     actions,
     open,
@@ -266,6 +276,7 @@ export const actionmenu = combineReducers({
     title,
     userActions,
     addNewTypes,
+    breadcrumb: breadcrumbActions,
 })
 
 export const messagebarmode: Reducer<MessageMode, Action & { mode?: MessageMode }> = (state = MessageMode.info, action) => {
