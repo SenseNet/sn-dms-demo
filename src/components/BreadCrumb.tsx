@@ -87,7 +87,7 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
         this.handleActionMenuClick = this.handleActionMenuClick.bind(this)
     }
     public static getDerivedStateFromProps(newProps: BreadCrumb['props'], lastState: BreadCrumb['state']) {
-        if (newProps.currentContent && newProps.currentContent.Id !== lastState.currentContent.Id || newProps.currentContent && newProps.actions.length === 0) {
+        if (newProps.currentContent && lastState.currentContent && newProps.currentContent.Id !== lastState.currentContent.Id || newProps.currentContent && lastState.currentContent && newProps.actions.length === 0) {
             newProps.getActions(newProps.currentContent.Id)
         }
         return {
