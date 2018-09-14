@@ -1,11 +1,13 @@
-import { MuiThemeProvider } from '@material-ui/core'
+import { MuiThemeProvider, Typography } from '@material-ui/core'
 import { DocumentTitlePager, DocumentViewer, Download, exampleTheme, LayoutAppBar, pollDocumentData, Print, RotateActivePages, SearchBar, Share, ToggleThumbnailsWidget, ZoomInOutWidget } from '@sensenet/document-viewer-react'
 import { compile } from 'path-to-regexp'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import MediaQuery from 'react-responsive'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { rootStateType } from '..'
 import { closeViewer, openViewer } from '../Actions'
+import { theme } from '../assets/theme'
 // tslint:disable-next-line:no-var-requires
 const loaderImage = require('../assets/viewer-loader.gif')
 
@@ -13,6 +15,7 @@ const mapStateToProps = (state: rootStateType) => ({
     isOpened: state.dms.viewer.isOpened,
     hostName: state.sensenet.session.repository.repositoryUrl,
     idOrPath: state.dms.viewer.currentDocumentId,
+    documentName: state.sensenetDocumentViewer.documentState.document.documentName,
 })
 
 export const mapDispatchToProps = {
@@ -101,29 +104,44 @@ export class DmsViewerComponent extends React.Component<DmsViewerProps & ReturnT
                                 hostName={this.props.hostName}
                                 loaderImage={loaderImage}
                             >
-                                <LayoutAppBar>
-                                    <div style={{ flexShrink: 0 }}>
-                                        <ToggleThumbnailsWidget />
-                                        <Download download={(doc) => {
-                                            // tslint:disable-next-line:no-console
-                                            console.log('Download triggered', doc)
-                                        }} />
-                                        <Print print={(doc) => {
-                                            // tslint:disable-next-line:no-console
-                                            console.log('Print triggered', doc)
-                                        }} />
+                                    <MediaQuery minDeviceWidth={700}>
+                                    {(matches) => matches ? (<div>
+                                        <LayoutAppBar>
+                                            <div style={{ flexShrink: 0 }}>
+                                            <ToggleThumbnailsWidget />
+                                            <Download download={(doc) => {
+                                                // tslint:disable-next-line:no-console
+                                                console.log('Download triggered', doc)
+                                            }} />
+                                            <Print print={(doc) => {
+                                                // tslint:disable-next-line:no-console
+                                                console.log('Print triggered', doc)
+                                            }} />
+                                            <Share share={(doc) => {
+                                                // tslint:disable-next-line:no-console
+                                                console.log('Share triggered', doc)
+                                            }} />
+                                            <ZoomInOutWidget />
+                                            <RotateActivePages />
+                                        </div>
+                                        <DocumentTitlePager />
+                                        <div style={{ flexShrink: 0 }}>
+                                            <SearchBar />
+                                        </div>
+                                        </LayoutAppBar>
+                                    </div>) : <div>
+                                    <LayoutAppBar>
+                                        <Typography variant="title" color="inherit">{this.props.documentName}</Typography>
+                                        <div>
                                         <Share share={(doc) => {
-                                            // tslint:disable-next-line:no-console
-                                            console.log('Share triggered', doc)
-                                        }} />
-                                        <ZoomInOutWidget />
-                                        <RotateActivePages />
+                                                // tslint:disable-next-line:no-console
+                                                console.log('Share triggered', doc)
+                                            }} />
+                                        </div>
+                                    </LayoutAppBar>
                                     </div>
-                                    <DocumentTitlePager />
-                                    <div style={{ flexShrink: 0 }}>
-                                        <SearchBar />
-                                    </div>
-                                </LayoutAppBar>
+                                    }
+                                    </MediaQuery>
                             </DocumentViewer>
                         </MuiThemeProvider>
                     </div>
