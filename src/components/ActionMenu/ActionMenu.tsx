@@ -9,9 +9,11 @@ import { Forward, ModeEdit, Warning } from '@material-ui/icons'
 import { IActionModel } from '@sensenet/default-content-types'
 import { pollDocumentData } from '@sensenet/document-viewer-react'
 import { Actions } from '@sensenet/redux'
+import { compile } from 'path-to-regexp'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
+import { RouteComponentProps, withRouter } from 'react-router'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { downloadFile } from '../../assets/helpers'
@@ -103,7 +105,7 @@ const styles = {
     },
 }
 
-interface ActionMenuProps {
+interface ActionMenuProps extends RouteComponentProps<any> {
     id: number,
 }
 
@@ -173,8 +175,10 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     break
                 case 'Preview':
                     this.handleClose()
-                    this.props.openViewer(this.props.currentContent.Id)
-                    this.props.pollDocumentData(this.props.hostName, this.props.currentContent.Id)
+                    // this.props.openViewer(this.props.currentContent.Id)
+                    // this.props.pollDocumentData(this.props.hostName, this.props.currentContent.Id)
+                    const newPath = compile(this.props.match.path)({ folderPath: this.props.match.params.folderPath || btoa(this.props.id as any), otherActions: ['preview', btoa(content.Id as any)] })
+                    this.props.history.push(newPath)
                     break
                 case 'Logout':
                     this.handleClose()
@@ -385,4 +389,4 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ActionMenu)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ActionMenu))
