@@ -1,4 +1,5 @@
-import { MuiThemeProvider, Typography } from '@material-ui/core'
+import { IconButton, MuiThemeProvider, Typography } from '@material-ui/core'
+import { Search } from '@material-ui/icons'
 import { DocumentTitlePager, DocumentViewer, Download, exampleTheme, LayoutAppBar, pollDocumentData, Print, RotateActivePages, SearchBar, Share, ToggleThumbnailsWidget, ZoomInOutWidget } from '@sensenet/document-viewer-react'
 import { compile } from 'path-to-regexp'
 import * as React from 'react'
@@ -6,8 +7,9 @@ import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { rootStateType } from '..'
-import { closeViewer, openViewer } from '../Actions'
-import { theme } from '../assets/theme'
+import { closeViewer, openDialog, openViewer } from '../Actions'
+import ShareDialog from './Dialogs/ShareDialog'
+
 // tslint:disable-next-line:no-var-requires
 const loaderImage = require('../assets/viewer-loader.gif')
 
@@ -16,12 +18,14 @@ const mapStateToProps = (state: rootStateType) => ({
     hostName: state.sensenet.session.repository.repositoryUrl,
     idOrPath: state.dms.viewer.currentDocumentId,
     documentName: state.sensenetDocumentViewer.documentState.document.documentName,
+    currentContent: state.dms.documentLibrary.items.d.results.find((i) => i.Id === state.sensenetDocumentViewer.documentState.document.idOrPath),
 })
 
 export const mapDispatchToProps = {
     closeViewer,
     openViewer,
     pollDocumentData,
+    openDialog,
 }
 
 // tslint:disable-next-line:no-empty-interface
@@ -93,7 +97,7 @@ export class DmsViewerComponent extends React.Component<DmsViewerProps & ReturnT
                     margin: 0,
                     padding: 0,
                     overflow: 'hidden',
-                    zIndex: 9999,
+                    zIndex: 1299,
                 }}
                 >
                     <div className="overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(238,238,238,.8)', filter: 'blur(5px)', backdropFilter: 'blur(5px)' }} />
@@ -119,7 +123,8 @@ export class DmsViewerComponent extends React.Component<DmsViewerProps & ReturnT
                                             }} />
                                             <Share share={(doc) => {
                                                 // tslint:disable-next-line:no-console
-                                                console.log('Share triggered', doc)
+                                                // console.log('Share triggered', doc)
+                                                this.props.openDialog((<ShareDialog currentContent={this.props.currentContent} />))
                                             }} />
                                             <ZoomInOutWidget />
                                             <RotateActivePages />
@@ -135,8 +140,11 @@ export class DmsViewerComponent extends React.Component<DmsViewerProps & ReturnT
                                         <div>
                                         <Share share={(doc) => {
                                                 // tslint:disable-next-line:no-console
-                                                console.log('Share triggered', doc)
+                                                this.props.openDialog((<ShareDialog currentContent={this.props.currentContent} />))
                                             }} />
+                                            <IconButton color="inherit">
+                                                <Search />
+                                            </IconButton>
                                         </div>
                                     </LayoutAppBar>
                                     </div>
