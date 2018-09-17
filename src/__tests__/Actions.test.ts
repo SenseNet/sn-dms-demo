@@ -57,7 +57,7 @@ describe('OpenActionMenu', () => {
                 left: 2,
             },
         }
-        expect(DMSActions.openActionMenu(['Move', 'Copy'], { Id: 1, Path: '', Type: 'File', Name: 'alma' }, 'sample doc', null, { top: 2, left: 2 })).toEqual(expectedAction)
+        expect(DMSActions.openActionMenu([], { Id: 1, Path: '', Type: 'File', Name: 'alma' }, 'sample doc', null, { top: 2, left: 2 })).toEqual(expectedAction)
     })
 })
 

@@ -5,9 +5,8 @@ import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { rootStateType } from '../..'
-import { hideUploadItem, hideUploadProgress, removeUploadItem, uploadFileList } from '../../Actions'
+import { removeUploadItem, uploadFileList } from '../../Actions'
 import AddNewMenu from '../ActionMenu/AddNewMenu'
-import { UploadBar } from '../Upload/UploadBar'
 import { UploadButton } from '../Upload/UploadButton'
 
 const styles: StyleRulesCallback = () => ({
@@ -132,15 +131,6 @@ const subMenu = [
     },
 ]
 
-// tslint:disable-next-line:variable-name
-const ConnectedUploadBar = connect((state: rootStateType) => ({
-    items: state.dms.uploads.uploads,
-    isOpened: state.dms.uploads.showProgress,
-}), {
-        close: hideUploadProgress,
-        removeItem: hideUploadItem,
-    })(UploadBar)
-
 class DocumentsMenu extends React.Component<DocumentMenuProps & ReturnType<typeof mapStateToProps>, {}> {
     public handleMenuItemClick = (title) => {
         if (this.props.currentWorkspace) {
@@ -187,7 +177,6 @@ class DocumentsMenu extends React.Component<DocumentMenuProps & ReturnType<typeo
                                     parentPath: this.props.currentContent.Path,
                                 })}
                             />
-                            <ConnectedUploadBar />
                             <AddNewMenu currentContent={this.props.currentContent} />
                         </div> : null}
                         <MenuList className={classes.submenu}>

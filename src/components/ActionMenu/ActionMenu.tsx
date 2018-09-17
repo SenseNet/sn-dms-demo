@@ -5,7 +5,7 @@ import List from '@material-ui/core/List'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import { Forward, ModeEdit, Warning } from '@material-ui/icons'
+import { Folder, Forward, InsertDriveFile, ModeEdit, Warning } from '@material-ui/icons'
 import { IActionModel } from '@sensenet/default-content-types'
 import { pollDocumentData } from '@sensenet/document-viewer-react'
 import { Actions } from '@sensenet/redux'
@@ -14,6 +14,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { RouteComponentProps, withRouter } from 'react-router'
+import { v1 } from 'uuid'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { downloadFile } from '../../assets/helpers'
@@ -29,6 +30,7 @@ import MoveToConfirmDialog from '../Dialogs/MoveToConfirmDialog'
 import ShareDialog from '../Dialogs/ShareDialog'
 import VersionsDialog from '../Dialogs/VersionsDialog'
 import PathPicker from '../Pickers/PathPicker'
+import { UPLOAD_FILE_BUTTON_ID, UPLOAD_FOLDER_BUTTON_ID } from '../Upload/UploadButton'
 
 const mapStateToProps = (state: rootStateType) => {
     return {
@@ -67,6 +69,7 @@ const mapDispatchToProps = {
     setPickerParent,
     loadPickerItems,
     select,
+    uploadFileList: DMSActions.uploadFileList,
 }
 
 const styles = {
@@ -286,6 +289,20 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
             }
         }
     }
+
+    private async handleUpload(ev: React.ChangeEvent<HTMLInputElement>) {
+        ev.persist()
+        this.handleClose()
+        ev.target.files && await this.props.uploadFileList({
+            fileList: ev.target.files,
+            createFolders: true,
+            contentTypeName: 'File',
+            binaryPropertyName: 'Binary',
+            overwrite: false,
+            parentPath: this.props.currentContent.Path,
+        })
+    }
+
     public render() {
         const { actions, open, position } = this.props
         return <MediaQuery minDeviceWidth={700}>
@@ -342,6 +359,56 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                         onClose={this.handleClose}>
                         <List>
                             {actions.map((action, index) => {
+
+                                if (action.Name === 'uploadFile') {
+                                    const uploadFileButtonId = `${UPLOAD_FILE_BUTTON_ID}-${v1()}`
+                                    return <label htmlFor={uploadFileButtonId} style={{ outline: 'none' }}>
+                                        <MenuItem style={styles.menuItem}>
+                                            <ListItemIcon style={styles.actionIcon}>
+                                                <div>
+                                                    <InsertDriveFile />
+                                                    <Forward style={{ position: 'absolute', left: '0.86em', top: '0.28em', width: '0.5em', color: 'white', transform: 'rotate(-90deg)' }} />
+                                                </div>
+                                            </ListItemIcon>
+                                            {resources.UPLOAD_BUTTON_UPLOAD_FILE_TITLE}
+                                        </MenuItem>
+                                        <input
+                                            multiple={true}
+                                            id={uploadFileButtonId}
+                                            type="file"
+                                            onChange={(ev) => this.handleUpload(ev)}
+                                            style={{ display: 'none' }}
+                                        />
+                                    </label>
+                                }
+
+                                if (action.Name === 'uploadFolder') {
+                                    const uploadFolderButtonId = `${UPLOAD_FOLDER_BUTTON_ID}-${v1()}`
+                                    return <label htmlFor={uploadFolderButtonId} style={{ outline: 'none' }}>
+                                        <MenuItem style={styles.menuItem}>
+                                            <ListItemIcon style={styles.actionIcon}>
+                                                <div>
+                                                    <Folder />
+                                                    <Forward style={{ position: 'absolute', left: '0.87em', top: '0.22em', width: '0.5em', color: 'white', transform: 'rotate(-90deg)' }} />
+                                                </div>
+                                            </ListItemIcon>
+                                            {resources.UPLOAD_BUTTON_UPLOAD_FOLDER_TITLE}
+                                        </MenuItem>
+                                        <input
+                                            multiple={true}
+                                            id={uploadFolderButtonId}
+                                            type="file"
+                                            onChange={(ev) => this.handleUpload(ev)}
+                                            style={{ display: 'none' }}
+                                            {...{
+                                                directory: '',
+                                                webkitdirectory: '',
+                                            } as any
+                                            }
+                                        />
+                                    </label>
+                                }
+
                                 return <MenuItem
                                     key={index}
                                     onClick={(event) => this.handleMenuItemClick(event, action)}

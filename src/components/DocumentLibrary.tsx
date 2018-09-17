@@ -17,6 +17,16 @@ import ActionMenu from './ActionMenu/ActionMenu'
 import LockedCell from './ContentList/CellTemplates/LockedCell'
 import { RenameCell } from './ContentList/CellTemplates/RenameCell'
 import { FetchError } from './FetchError'
+import { UploadBar } from './Upload/UploadBar'
+
+// tslint:disable-next-line:variable-name
+const ConnectedUploadBar = connect((state: rootStateType) => ({
+    items: state.dms.uploads.uploads,
+    isOpened: state.dms.uploads.showProgress,
+}), {
+        close: DMSActions.hideUploadProgress,
+        removeItem: DMSActions.hideUploadItem,
+    })(UploadBar)
 
 const mapStateToProps = (state: rootStateType) => {
     return {
@@ -144,6 +154,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
         const { matchesDesktop } = this.props
         return this.props.currentUser.content.Id !== ConstantContent.VISITOR_USER.Id ?
             <div onDragOver={(ev) => ev.preventDefault()} onDrop={this.handleFileDrop}>
+                <ConnectedUploadBar />
                 <MuiThemeProvider theme={contentListTheme}>
                     <ContentList
                         displayRowCheckbox={matchesDesktop ? true : false}

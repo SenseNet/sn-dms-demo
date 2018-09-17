@@ -44,6 +44,7 @@ const mapDispatchToProps = {
     openActionMenu: DMSActions.openActionMenu,
     openDialog: DMSActions.openDialog,
     closeDialog: DMSActions.closeDialog,
+    uploadFileList: DMSActions.uploadFileList,
 }
 
 interface MobileHeaderProps {
@@ -86,7 +87,7 @@ class MobileHeader extends React.Component<MobileHeaderProps & ReturnType<typeof
         if ((newProps.currentContent && newProps.currentContent.Id && (lastState.currentContent !== newProps.currentContent)) && lastState.addNewOptions.length === 0) {
             newProps.getActions(newProps.currentContent.Id)
         }
-        const uploadList = [{
+        const uploadList: Array<Partial<IActionModel>> = [{
             DisplayName: 'Upload file',
             Icon: 'file',
             Name: 'uploadFile',
