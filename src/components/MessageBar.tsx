@@ -5,6 +5,7 @@ import CloseIcon from '@material-ui/icons/Close'
 import { ExtendedError, isExtendedError } from '@sensenet/client-core/dist/Repository/Repository'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import MediaQuery from 'react-responsive'
 import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
 import { resources } from '../assets/resources'
@@ -14,11 +15,20 @@ const styles = {
         left: 14,
         bottom: 14,
     },
+    windowMobile: {
+    },
     messagebar: {
         background: '#666666',
         padding: '0px 14px',
         fontFamily: 'Raleway Medium',
         fontSize: 15,
+    },
+    messagebarMobile: {
+        background: '#fff',
+        padding: '0px 14px',
+        fontFamily: 'Raleway Medium',
+        fontSize: 15,
+        color: '#000',
     },
     messages: {
         margin: 0,
@@ -112,37 +122,41 @@ class MessageBar extends React.Component<{ classes } & ReturnType<typeof mapStat
             failedMessage = null
         }
         return (
-            <Snackbar
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                open={messagebar.open}
-                autoHideDuration={messagebar.hideDuration}
-                onClose={this.closeMessageBar}
-                onExited={this.props.messagebar.exited}
-                className={classes.window}
-                ContentProps={{
-                    classes: {
-                        root: classes.messagebar,
-                    },
-                }}
-                message={
-                    <ul style={styles.messages}>
-                        {successMessage && successMessage.length > 0 ? <li style={styles.message}>{successMessage}</li> : null}
-                        {failedMessage && failedMessage.length > 0 ? <li style={styles.message}>{failedMessage}</li> : null}
-                    </ul>}
-                action={[
-                    <IconButton
-                        key="close"
-                        aria-label="Close"
-                        color="inherit"
-                        onClick={() => this.closeMessageBar()}
-                    >
-                        <CloseIcon />
-                    </IconButton>,
-                ]}
-            />
+            <MediaQuery minDeviceWidth={700}>
+                {(matches) =>
+                    <Snackbar
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                        }}
+                        open={messagebar.open}
+                        autoHideDuration={messagebar.hideDuration}
+                        onClose={this.closeMessageBar}
+                        onExited={this.props.messagebar.exited}
+                        className={matches ? classes.window : classes.windowMobile}
+                        ContentProps={{
+                            classes: {
+                                root: matches ? classes.messagebar : classes.messagebarMobile,
+                            },
+                        }}
+                        message={
+                            <ul style={styles.messages}>
+                                {successMessage && successMessage.length > 0 ? <li style={styles.message}>{successMessage}</li> : null}
+                                {failedMessage && failedMessage.length > 0 ? <li style={styles.message}>{failedMessage}</li> : null}
+                            </ul>}
+                        action={[
+                            <IconButton
+                                key="close"
+                                aria-label="Close"
+                                color={matches ? 'inherit' : 'primary'}
+                                onClick={() => this.closeMessageBar()}
+                            >
+                                <CloseIcon />
+                            </IconButton>,
+                        ]}
+                    />
+                }
+            </MediaQuery>
         )
     }
 }

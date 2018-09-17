@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, IconButton } from '@material-ui/core'
+import { Dialog, DialogContent, Drawer, IconButton } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { LoginState } from '@sensenet/client-core'
 import { PathHelper } from '@sensenet/client-utils'
@@ -133,10 +133,11 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
         return (
             <MediaQuery minDeviceWidth={700}>
                 {(matches) => {
-                    if (matches) {
-                        return <div>
-                            <div style={matches ? { ...styles.root } : { ...styles.rootMobile }}>
-                                <Header />
+                    return <div>
+                        <div style={matches ? { ...styles.root } : { ...styles.rootMobile }}>
+                            {matches ? <Header /> : <MobileHeader />}
+                            {matches ? null : <DashboardDrawer />}
+                            {matches ?
                                 <div style={{ width: '100%', display: 'flex' }}>
                                     <DashboardDrawer />
                                     <div style={styles.main}>
@@ -189,33 +190,77 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                         <MessageBar />
                                     </div>
                                 </div>
-                            </div>
-                            <Route exact path="/:prefix*/preview/:documentId" component={() =>
-                                <DmsViewer />
-                            } />
-                            <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth="md">
-                                <DialogContent children={dialogContent} />
-                                <IconButton onClick={closeDialog} style={styles.dialogClose as any}>
-                                    <CloseIcon />
-                                </IconButton>
-                            </Dialog>
-                            <Picker />
-                        </div>
-                    } else {
-                        return <div style={matches ? styles.root : styles.rootMobile}>
-                            <MobileHeader />
-                            <DashboardDrawer />
-                            <div style={styles.dashBoardInnerMobile}>
-                                <ListToolbar
-                                    ancestors={this.props.ancestors}
-                                    currentContent={this.props.docLibParent}
-                                    selected={this.props.docLibSelection}
-                                />
-                                <DocumentLibrary matchesDesktop={matches} />
-                            </div>
-                        </div>
-                    }
+                                :
+                                <div style={styles.dashBoardInnerMobile}>
+                                    <ListToolbar
+                                        ancestors={this.props.ancestors}
+                                        currentContent={this.props.docLibParent}
+                                        selected={this.props.docLibSelection}
+                                    />
+                                    <DocumentLibrary matchesDesktop={matches} />
+                                    <Switch>
+                                        <Route path="/documents" component={(props: RouteComponentProps<any>) => (
+                                            <Switch>
+                                                <Route path={props.match.url + '/shared'}>
+                                                    <Shared />
+                                                </Route>
 
+                                                <Route path={props.match.url + '/savedqueries'}>
+                                                    <SavedQueries />
+                                                </Route>
+                                                <Route path={props.match.url + '/trash'}>
+                                                    <Trash />
+                                                </Route>
+                                                <Route path={'/' + PathHelper.joinPaths(props.match.url, '/:folderPath?/:otherActions*')} exact component={() => (
+                                                    <div>
+                                                        <ListToolbar
+                                                            currentContent={this.props.docLibParent}
+                                                            selected={this.props.docLibSelection}
+                                                            ancestors={this.props.ancestors}
+                                                        />
+                                                        <DocumentLibrary matchesDesktop={matches} />
+                                                    </div>
+                                                )}>
+                                                </Route>
+                                            </Switch>
+                                        )} >
+                                        </Route>
+                                        <Route path="/users" >
+                                            <Users />
+                                        </Route>
+                                        <Route path="/groups" >
+                                            <Groups />
+                                        </Route>
+                                        <Route path="/contenttypes" >
+                                            <ContentTypes />
+                                        </Route>
+                                        <Route path="/contenttemplates" >
+                                            <ContentTemplates />
+                                        </Route>
+                                        <Route path="/settings" >
+                                            <Settings />
+                                        </Route>
+
+                                        {/* <Redirect to="/documents" /> */}
+                                    </Switch>
+                                    <MessageBar />
+                                </div>}
+                        </div>
+                        <Route exact path="/:prefix*/preview/:documentId" component={() =>
+                            <DmsViewer />
+                        } />
+                        {matches ? <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth="md">
+                            <DialogContent children={dialogContent} />
+                            <IconButton onClick={closeDialog} style={styles.dialogClose as any}>
+                                <CloseIcon />
+                            </IconButton>
+                        </Dialog> :
+                            <Drawer open={isDialogOpen} anchor="bottom" onClose={closeDialog}>
+                                <DialogContent children={dialogContent} />
+                            </Drawer>
+                        }
+                        <Picker />
+                    </div>
                 }}
             </MediaQuery>
         )
