@@ -133,12 +133,13 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
         return (
             <MediaQuery minDeviceWidth={700}>
                 {(matches) => {
+                    if (matches) {
                         return <div>
-                            <div style={matches ? styles.root : styles.rootMobile}>
-                                {matches ?  <Header /> : <MobileHeader /> }
+                            <div style={matches ? { ...styles.root } : { ...styles.rootMobile }}>
+                                <Header />
                                 <div style={{ width: '100%', display: 'flex' }}>
                                     <DashboardDrawer />
-                                    <div style={matches ? styles.main : styles.dashBoardInnerMobile }>
+                                    <div style={styles.main}>
                                         <div style={{ height: 48, width: '100%' }}></div>
                                         <Switch>
                                             <Route path="/documents" component={(props: RouteComponentProps<any>) => (
@@ -214,7 +215,8 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                             </div>
                         </div>
                     }
-                }
+
+                }}
             </MediaQuery>
         )
     }
