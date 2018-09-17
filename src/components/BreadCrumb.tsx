@@ -1,7 +1,6 @@
 import Button from '@material-ui/core/Button'
 import Icon from '@material-ui/core/Icon'
-import { GenericContent, IActionModel } from '@sensenet/default-content-types'
-import { Actions } from '@sensenet/redux'
+import { GenericContent } from '@sensenet/default-content-types'
 import { compile } from 'path-to-regexp'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -16,7 +15,7 @@ const styles = {
         flexGrow: 2,
     },
     breadCrumbMobile: {
-        width: '50%',
+        flexGrow: 1,
     },
     breadCrumbItem: {
         fontFamily: 'Raleway SemiBold',
@@ -56,28 +55,45 @@ const styles = {
     },
 }
 
-const mapStateToProps: (...args: any[]) => unknown = (state: rootStateType, match) => {
+const mapStateToProps = (state: rootStateType) => {
     return {
         isLoading: state.dms.isLoading,
+        actions: state.dms.actionmenu.breadcrumb,
     }
 }
 
 const mapDispatchToProps = {
     openActionMenu: DMSActions.openActionMenu,
     closeActionMenu: DMSActions.closeActionMenu,
-    getActions: Actions.loadContentActions,
+    getActions: DMSActions.loadBreadcrumbActions,
 }
 
 interface BreadCrumbProps extends RouteComponentProps<any> {
     ancestors: GenericContent[]
-    currentContent: GenericContent
+    currentContent: GenericContent,
 }
 
-class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToProps & ReturnType<typeof mapStateToProps>> {
-    constructor(props) {
+interface BreadCrumbState {
+    currentContent: GenericContent,
+}
+
+class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToProps & ReturnType<typeof mapStateToProps>, BreadCrumbState> {
+    public state ={
+        currentContent: this.props.currentContent,
+    }
+    constructor(props: BreadCrumb['props']) {
         super(props)
         this.handleClick = this.handleClick.bind(this)
         this.handleActionMenuClick = this.handleActionMenuClick.bind(this)
+    }
+    public static getDerivedStateFromProps(newProps: BreadCrumb['props'], lastState: BreadCrumb['state']) {
+        if (newProps.currentContent && lastState.currentContent && newProps.currentContent.Id !== lastState.currentContent.Id || newProps.currentContent && lastState.currentContent && newProps.actions.length === 0) {
+            newProps.getActions(newProps.currentContent.Id)
+        }
+        return {
+            currentContent: newProps.currentContent,
+            ...lastState,
+        } as BreadCrumb['state']
     }
     public handleClick(e, content: GenericContent) {
         const newPath = compile(this.props.match.path)({ folderPath: btoa(content.Path) })
@@ -88,8 +104,8 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
         const top = e.pageY - e.currentTarget.offsetTop
         const left = e.pageX - e.currentTarget.offsetLeft
         this.props.closeActionMenu()
-        this.props.openActionMenu(content.Actions as IActionModel[], content, content.DisplayName, e.currentTarget, { top: top + 30, left })
-        this.setState({ anchorTop: top, anchorLeft: left })
+        this.props.openActionMenu(this.props.actions, content, content.DisplayName, e.currentTarget, { top: top + 30, left })
+        // this.setState({ anchorTop: top, anchorLeft: left })
     }
     public render() {
         const ancestors = this.props.ancestors
