@@ -3,6 +3,7 @@ import { NewView } from '@sensenet/controls-react'
 import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import MediaQuery from 'react-responsive'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { repository } from '../../index'
@@ -53,20 +54,24 @@ class AddNewDialog extends React.Component<AddNewDialogProps & ReturnType<typeof
     public render() {
         const { parentPath, contentTypeName, createContent, schema, title, extension } = this.props
         return (
-            <div style={{ width: 500 }}>
-                {schema ?
-                    <NewView
-                        schema={schema}
-                        path={parentPath}
-                        repository={repository}
-                        contentTypeName={contentTypeName}
-                        handleCancel={() => this.handleCancel()}
-                        onSubmit={createContent}
-                        title={title ? title : null}
-                        extension={extension ? extension : null}
-                        submitCallback={this.submitCallback} /> :
-                    <CircularProgress size={50} />}
-            </div>
+            <MediaQuery minDeviceWidth={700}>
+                {(matches) =>
+                    <div style={matches ? { width: 500 } : null}>
+                        {schema ?
+                            <NewView
+                                schema={schema}
+                                path={parentPath}
+                                repository={repository}
+                                contentTypeName={contentTypeName}
+                                handleCancel={() => this.handleCancel()}
+                                onSubmit={createContent}
+                                title={title ? title : null}
+                                extension={extension ? extension : null}
+                                submitCallback={this.submitCallback} /> :
+                            <CircularProgress size={50} />}
+                    </div>
+                }
+            </MediaQuery>
         )
     }
 }
