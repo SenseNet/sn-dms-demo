@@ -138,16 +138,19 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
         this.props.openDialog(<RestoreVersionsDialog id={id} version={version} fileName={name} />)
     }
 
-    public handleAddEntry(ev: React.FormEvent<HTMLFormElement>) {
-        ev.preventDefault()
-        ev.currentTarget.reset()
-        this.setState({
-            addValue: '',
-            sharedWithValues: [
-                ...this.state.sharedWithValues.filter((val) => val.value !== this.state.addValue),
-                { type: this.state.addType, value: this.state.addValue },
-            ],
-        })
+    public handleAddEntry(ev: React.KeyboardEvent<HTMLInputElement>) {
+        if (ev.key === 'Enter' && (ev.target as HTMLInputElement).form.reportValidity()) {
+            ev.preventDefault()
+            ev.stopPropagation()
+            ev.currentTarget.value = '' // .reset()
+            this.setState({
+                addValue: '',
+                sharedWithValues: [
+                    ...this.state.sharedWithValues.filter((val) => val.value !== this.state.addValue),
+                    { type: this.state.addType, value: this.state.addValue },
+                ],
+            })
+        }
     }
 
     private getLinkSharingTypePostfix() {
@@ -185,21 +188,22 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
     public render() {
         const { currentContent } = this.props
         return (
-            <div>
+            <form onSubmit={this.submitCallback}>
                 <Typography variant="headline" gutterBottom>
                     {resources.SHARE}
                 </Typography>
                 <div style={styles.inner}>
                     <DialogInfo currentContent={currentContent} hideVersionInfo={true} />
                     <Divider />
-                    <form style={{ display: 'flex', margin: '10px 0' }} onSubmit={this.handleAddEntry}>
+                    <div style={{ display: 'flex', margin: '10px 0' }}>
                         <Input
                             defaultValue={this.state.addValue}
                             style={{ flexGrow: 1 }}
-                            type="text"
-                            required
+                            type="email"
                             onChange={this.handleAddValueChange}
-                            placeholder={resources.SHARE_EMAIL_INPUT_PLACEHOLDER} />
+                            placeholder={resources.SHARE_EMAIL_INPUT_PLACEHOLDER}
+                            onKeyPress={this.handleAddEntry as any}
+                        />
                         <Select
                             onChange={this.handleAddTypeChange}
                             value={this.state.addType}
@@ -209,7 +213,7 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
                             <MenuItem value="see">{resources.SHARE_PERMISSION_VIEW}</MenuItem>
                             <MenuItem value="edit">{resources.SHARE_PERMISSION_EDIT}</MenuItem>
                         </Select>
-                    </form>
+                    </div>
                     {this.state.sharedWithValues.length ?
                         <div>
                             <div style={{ fontSize: '.85em', margin: '.3em 0 1.5em 0' }}>
@@ -257,11 +261,11 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
                     </Button>
                     <div>
                         <Button style={styles.actionButton} onClick={this.handleCancel}>{resources.CANCEL}</Button>
-                        <Button style={styles.actionButton} variant="contained" color="secondary" onClick={this.submitCallback}>{resources.OK}</Button>
+                        <Button style={styles.actionButton} variant="contained" color="secondary" type="submit">{resources.OK}</Button>
                     </div>
                 </div>
 
-            </div >
+            </form >
         )
     }
 }

@@ -56,7 +56,7 @@
     "react": "^16.4.2",
     "react-async-script": "^1.0.0",
     "react-custom-scrollbars": "^4.2.1",
-    "react-dom": "^16.4.2",
+    "react-dom": "16.4.2",
     "react-fontawesome": "^1.6.1",
     "react-google-recaptcha": "^1.0.0",
     "react-moment": "^0.7.9",
