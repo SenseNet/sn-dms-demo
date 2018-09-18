@@ -34,11 +34,9 @@ const styles = {
     },
     table: {
         boxShadow: '0px 0px 3px 0px rgba(0,0,0,0.3)',
-        minWidth: 550,
         marginTop: 10,
     },
     inner: {
-        minWidth: 550,
         fontFamily: 'Raleway Medium',
         fontSize: 14,
         margin: '20px 0',
