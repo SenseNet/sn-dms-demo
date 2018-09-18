@@ -34,9 +34,9 @@ export interface UploadButtonState {
     anchorElement: HTMLElement | undefined
 }
 
-const UPLOAD_FILE_BUTTON_ID: string = 'sn-dms-upload-button'
-const UPLOAD_FOLDER_BUTTON_ID: string = 'sn-dms-upload-button'
-const UPLOAD_MENU_ID: string = 'sn-dms-upload-button'
+export const UPLOAD_FILE_BUTTON_ID: string = 'sn-dms-upload-button'
+export const UPLOAD_FOLDER_BUTTON_ID: string = 'sn-dms-upload-button'
+export const UPLOAD_MENU_ID: string = 'sn-dms-upload-button'
 
 export class UploadButton extends React.Component<UploadButtonProps, UploadButtonState> {
     private readonly uploadFileButtonId = `${UPLOAD_FILE_BUTTON_ID}-${v1()}`

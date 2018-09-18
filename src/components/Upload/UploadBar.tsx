@@ -1,7 +1,8 @@
-import { IconButton, LinearProgress, List, ListSubheader, Paper, Snackbar } from '@material-ui/core'
+import { Drawer, IconButton, LinearProgress, List, ListSubheader, Paper, Snackbar } from '@material-ui/core'
 import { Close } from '@material-ui/icons'
 import { IUploadProgressInfo } from '@sensenet/client-core'
 import * as React from 'react'
+import MediaQuery from 'react-responsive'
 import { ExtendedUploadProgressInfo } from '../../Actions'
 import { resources } from '../../assets/resources'
 import theme from '../../assets/theme'
@@ -60,16 +61,13 @@ export class UploadBar extends React.Component<UploadBarProps, UploadBarState> {
     }
 
     public render() {
-        return (<Snackbar
-            open={this.props.isOpened}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            title={resources.UPLOAD_BAR_TITLE}
-        >
-            <Paper>
-                <List dense={true} subheader={
-                    <ListSubheader style={{ backgroundColor: theme.palette.text.primary, color: theme.palette.primary.contrastText, padding: 0, textIndent: '.5em', lineHeight: '2em' }} >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 1px 3px 4px' }}>
-                            <div style={{ color: '#dedede', padding: '3px' }}>{resources.UPLOAD_BAR_TITLE}</div>
+
+        const innerContent = (<MediaQuery minWidth={700}>{
+            (matches) => (<Paper style={{ maxWidth: '100%', width: matches ? undefined : '100%' }}>
+                <List dense={matches} subheader={
+                    <ListSubheader style={{ backgroundColor: matches ? theme.palette.text.primary : theme.palette.background.paper, color: matches ? theme.palette.primary.contrastText : 'black !important', padding: 0, textIndent: '.5em', lineHeight: '2em' }} >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: matches ? '3px 1px 3px 4px' : '13px 1px 13px 13px' }}>
+                            <div style={{ color: matches ? '#dedede' : 'black', padding: matches ? '3px' : '', fontSize: matches ? undefined : '1.25em' }}>{resources.UPLOAD_BAR_TITLE}</div>
                             <IconButton
                                 style={{
                                     width: '32px',
@@ -90,10 +88,23 @@ export class UploadBar extends React.Component<UploadBarProps, UploadBarState> {
                     style={{ maxHeight: 400, minWidth: 300, maxWidth: 600, overflowY: 'auto', paddingBottom: 0 }}
                 >
                     {this.props.items && this.props.items.filter((item) => item.visible).map((item) => (
-                        <UploadBarItem remove={(i) => this.onRemoveItem(i)} key={item.guid} item={item} />
+                        <UploadBarItem remove={(i) => this.onRemoveItem(i)} key={item.guid} item={item} isMobile={!matches} />
                     ))}
                 </List>
-            </Paper>
-        </Snackbar>)
+            </Paper>)}
+        </MediaQuery>)
+
+        return (<MediaQuery minWidth={700}>{(matches) => (matches ? <Snackbar
+            open={this.props.isOpened}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            title={resources.UPLOAD_BAR_TITLE}
+        >
+            {innerContent}
+        </Snackbar> : <Drawer
+            open={this.props.isOpened}
+            anchor="bottom"
+            title={resources.UPLOAD_BAR_TITLE}
+        >{innerContent}</Drawer>)}</MediaQuery>
+        )
     }
 }
