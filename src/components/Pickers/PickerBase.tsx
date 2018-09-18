@@ -1,4 +1,4 @@
-import { Dialog, DialogTitle, Drawer, MuiThemeProvider } from '@material-ui/core'
+import { Button, Dialog, DialogTitle, Drawer, MuiThemeProvider } from '@material-ui/core'
 import IconButton from '@material-ui/core/IconButton'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { rootStateType } from '../..'
 import { pickerTheme } from '../../assets/picker'
+import { resources } from '../../assets/resources'
 import { deselectPickeritem, loadPickerItems, loadPickerParent, selectPickerItem, setBackLink, setPickerParent } from '../../store/picker/actions'
 
 // tslint:disable-next-line:no-var-requires
@@ -26,6 +27,7 @@ const mapStateToProps = (state: rootStateType) => {
         closestWs: state.dms.picker.closestWorkspace,
         backLink: state.dms.picker.backLink,
         pickerContent: state.dms.picker.content,
+        pickerMode: state.dms.picker.mode,
     }
 }
 
@@ -53,6 +55,26 @@ const styles = {
         height: '1em',
         display: 'inline-block',
         flexShrink: 0,
+    },
+    mobileToolbar: {
+        background: '#fff',
+        color: '#000',
+    },
+    mobilePickerHeader: {
+        display: 'flex',
+    },
+    mobilePickerTitle: {
+        flexGrow: 1,
+        padding: '8px 16px',
+        fontFamily: 'Raleway SemiBold',
+    },
+    mobilePickerClose: {
+        fontFamily: 'Raleway Medium',
+        fontSize: 14,
+        color: '#016D9E',
+    },
+    mobileContentTitle: {
+        fontSize: 16,
     },
 }
 
@@ -124,7 +146,13 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps> & typeof
                                 open={open}
                                 onClose={this.handleClose}>
                                 <DialogTitle>
-                                    <Toolbar>
+                                    <Toolbar style={{ ...styles.mobileToolbar, ...styles.mobilePickerHeader }}>
+                                        <Typography style={styles.mobilePickerTitle}>{resources[`${this.props.pickerMode.toUpperCase()}_HERE`]}</Typography>
+                                        <Button color="inherit" onClick={this.handleClose} style={styles.mobilePickerClose}>
+                                            {resources.CANCEL}
+                                        </Button>
+                                    </Toolbar>
+                                    <Toolbar style={styles.mobileToolbar}>
                                         {backLink ?
                                             <IconButton color="inherit" onClick={() => this.handleClickBack()}>
                                                 <BackIcon />
@@ -132,12 +160,9 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps> & typeof
                                             <div style={styles.snButton}>
                                                 <img src={sensenetLogo} alt="sensenet" aria-label="sensenet" style={styles.snLogo} />
                                             </div>}
-                                        <Typography variant="title" color="inherit">
+                                        <Typography variant="title" color="inherit" style={styles.mobileContentTitle}>
                                             {parent ? parent.DisplayName : 'Move content'}
                                         </Typography>
-                                        <IconButton color="inherit" onClick={this.handleClose}>
-                                            <CloseIcon />
-                                        </IconButton>
                                     </Toolbar>
                                 </DialogTitle>
                                 {this.props.pickerContent}

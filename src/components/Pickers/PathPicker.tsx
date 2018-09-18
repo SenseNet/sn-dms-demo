@@ -7,6 +7,7 @@ import { GenericContent } from '@sensenet/default-content-types'
 import * as React from 'react'
 import { Scrollbars } from 'react-custom-scrollbars'
 import { connect } from 'react-redux'
+import MediaQuery from 'react-responsive'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { resources } from '../../assets/resources'
@@ -153,10 +154,11 @@ class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof map
                                                 className={this.isSelected(item.Id) ? 'picker-item-selected' : this.isHovered(item.Id) ? 'picker-item-hovered' : 'picker-item'}>
                                                 {item.DisplayName}
                                             </Typography>} />
-                                    {this.hasChildren(item.Id) ? <OpenIcon
-                                        style={this.isHovered ? styles.openIcon : { display: 'none' }}
-                                        onClick={(e) => this.handleClick(e, item)} /> :
-                                        null
+                                    {
+                                        this.hasChildren(item.Id) ? <OpenIcon
+                                            style={this.isHovered ? styles.openIcon : { display: 'none' }}
+                                            onClick={(e) => this.handleClick(e, item)} /> :
+                                            null
                                     }
                                 </MenuItem>
                             },
@@ -164,13 +166,21 @@ class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof map
                         </List>
                     </Scrollbars>
                 </DialogContent>
-                <DialogActions>
-                    <IconButton onClick={() => this.handleAddNewClick()}>
-                        <NewFolderIcon />
-                    </IconButton>
-                    <Button color="default" style={{ marginRight: 20 }} onClick={() => this.handleClose()}>{resources.CANCEL}</Button>
-                    <Button onClick={() => this.handleSubmit()} variant="raised" disabled={selectedTarget.length > 0 ? false : true} color="primary">{resources[`${this.props.mode.toUpperCase()}_BUTTON`]}</Button>
-                </DialogActions>
+
+                <MediaQuery minDeviceWidth={700}>
+                    {(matches) =>
+                        <DialogActions className="mobile-picker-buttonRow">
+                            <IconButton onClick={() => this.handleAddNewClick()}>
+                                <NewFolderIcon style={{color: '#016D9E'}} />
+                            </IconButton>
+                            <Typography style={{ flexGrow: 1, color: '#016D9E', fontFamily: 'Raleway Medium', fontSize: 14 }} onClick={() => this.handleAddNewClick()}>
+                                {matches ? null : resources.NEW_FOLDER}
+                            </Typography>
+                            {matches ? <Button color="default" style={{ marginRight: 20 }} onClick={() => this.handleClose()}>{resources.CANCEL}</Button> : null}
+                            <Button onClick={() => this.handleSubmit()} variant="raised" className="disabled-mobile-button" disabled={selectedTarget.length > 0 ? false : true} color={ matches ? 'primary' : 'default'}>{resources[`${this.props.mode.toUpperCase()}_BUTTON`]}</Button>
+                        </DialogActions>
+                    }
+                </MediaQuery>
             </div>
         )
     }
