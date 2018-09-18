@@ -12,7 +12,7 @@ import './Sensenet.css'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import { IOauthProvider } from '@sensenet/authentication-jwt'
 import { rootStateType } from '.'
-import { dmsTheme } from './assets/dmsTheme'
+import { dmsTheme } from './assets/dmstheme'
 import { AuthorizedRoute } from './components/AuthorizedRoute'
 
 const mapStateToProps = (state: rootStateType) => {
