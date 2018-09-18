@@ -9,6 +9,7 @@ import theme from '../../assets/theme'
 
 export interface UploadBarItemProps {
     item: ExtendedUploadProgressInfo
+    isMobile: boolean
     handleSelectItem?: (item: IUploadProgressInfo) => void
     remove: (item: IUploadProgressInfo) => void
 }
@@ -46,7 +47,7 @@ export class UploadBarItem extends React.Component<UploadBarItemProps, UploadBar
 
     public render() {
         return (
-            <ListItem style={{ padding: '.3em', opacity: this.state.isLoading ? 0.65 : 1, boxShadow: '0px -2px 0px #ddd' }}>
+            <ListItem style={{ padding: this.props.isMobile ? undefined : '.3em', opacity: this.state.isLoading ? 0.65 : 1, boxShadow: '0px -2px 0px #ddd' }}>
                 <ListItemIcon style={{ marginRight: '-.5em' }}>
                     <Icon style={{ color: theme.palette.secondary.main }}>{this.state.icon}</Icon>
                 </ListItemIcon>
