@@ -65,7 +65,7 @@ export class UploadBar extends React.Component<UploadBarProps, UploadBarState> {
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             title={resources.UPLOAD_BAR_TITLE}
         >
-            <Paper>
+            <Paper style={{ maxWidth: '100%' }}>
                 <List dense={true} subheader={
                     <ListSubheader style={{ backgroundColor: theme.palette.text.primary, color: theme.palette.primary.contrastText, padding: 0, textIndent: '.5em', lineHeight: '2em' }} >
                         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 1px 3px 4px' }}>

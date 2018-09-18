@@ -192,12 +192,6 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                 </div>
                                 :
                                 <div style={styles.dashBoardInnerMobile}>
-                                    <ListToolbar
-                                        ancestors={this.props.ancestors}
-                                        currentContent={this.props.docLibParent}
-                                        selected={this.props.docLibSelection}
-                                    />
-                                    <DocumentLibrary matchesDesktop={matches} />
                                     <Switch>
                                         <Route path="/documents" component={(props: RouteComponentProps<any>) => (
                                             <Switch>
