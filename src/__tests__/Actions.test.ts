@@ -48,7 +48,7 @@ describe('OpenActionMenu', () => {
     it('should create an action to handle actionmenu open', () => {
         const expectedAction = {
             type: 'OPEN_ACTIONMENU',
-            actions: ['Move', 'Copy'],
+            actions: [{ Name: 'Move' }],
             content: { Id: 1, Path: '', Type: 'File', Name: 'alma' },
             title: 'sample doc',
             element: null,
@@ -57,7 +57,7 @@ describe('OpenActionMenu', () => {
                 left: 2,
             },
         }
-        expect(DMSActions.openActionMenu([], { Id: 1, Path: '', Type: 'File', Name: 'alma' }, 'sample doc', null, { top: 2, left: 2 })).toEqual(expectedAction)
+        expect(DMSActions.openActionMenu([{ Name: 'Move' } as any], { Id: 1, Path: '', Type: 'File', Name: 'alma' }, 'sample doc', null, { top: 2, left: 2 })).toEqual(expectedAction)
     })
 })
 
