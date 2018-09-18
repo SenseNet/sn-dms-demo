@@ -1,6 +1,7 @@
 import { Icon, Table, TableBody, TableCell, TableHead, TableRow, withStyles } from '@material-ui/core'
 import { GenericContent } from '@sensenet/default-content-types'
 import * as React from 'react'
+import MediaQuery from 'react-responsive'
 import { icons } from '../../assets/icons'
 import { resources } from '../../assets/resources'
 
@@ -17,6 +18,10 @@ const styles = {
     displayName: {
         fontSize: 16,
     },
+    displayNameMobile: {
+        fontFamily: 'Raleway SemiBold',
+        fontSize: 14,
+    },
     tableHead: {
         fontFamily: 'Raleway SemiBold',
         fontSize: 12,
@@ -24,10 +29,28 @@ const styles = {
         border: 0,
         paddingBottom: 0,
     },
+    tableHeadMobile: {
+        fontFamily: 'Raleway SemiBold',
+        fontSize: 12,
+        color: '#000',
+        border: 0,
+        paddingBottom: 0,
+        whiteSpace: 'nowrap',
+        paddingRight: 20,
+    },
     tableCell: {
         border: 0,
         fontStyle: 'italic',
         fontSize: 12,
+    },
+    tableCellMobile: {
+        border: 0,
+        fontStyle: 'italic',
+        fontSize: 12,
+        wordWrap: 'break-word',
+        wordBreak: 'break-all',
+        fontFamily: 'Raleway Semibold',
+        opacity: .54,
     },
     tableRow: {
         height: 24,
@@ -53,34 +76,38 @@ class DialogInfo extends React.Component<{ classes } & DialogInfoProps, {}> {
         const { classes, currentContent } = this.props
         const icon = currentContent.Icon
         return (
-            <div style={styles.inner}>
-                <div style={styles.contentName}>
-                    <Icon color="primary" style={styles.icon}>{icons[icon.toLowerCase()]}</Icon>
-                    <span className={classes.displayName}>
-                        {currentContent.DisplayName}
-                    </span>
-                </div>
-                {this.props.hideVersionInfo ? null :
-                    <Table>
-                        <TableHead>
-                            <TableRow className={classes.tableRow}>
-                                <TableCell className={classes.tableHead} padding="none">{resources.VERSIONING_MODE}</TableCell>
-                                <TableCell className={classes.tableHead} padding="none">{resources.PATH}</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            <TableRow className={classes.tableRow}>
-                                <TableCell className={classes.tableCell} padding="none">
-                                    {resources.VERSIONING[currentContent.VersioningMode]}
-                                </TableCell>
-                                <TableCell className={classes.tableCell} padding="none">
-                                    {currentContent.Path}
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
+            <MediaQuery minDeviceWidth={700}>
+                {(matches) =>
+                    <div style={styles.inner}>
+                        <div style={styles.contentName}>
+                            <Icon color="primary" style={styles.icon}>{icons[icon.toLowerCase()]}</Icon>
+                            <span className={matches ? classes.displayName : classes.displayNameMobile}>
+                                {currentContent.DisplayName}
+                            </span>
+                        </div>
+                        {this.props.hideVersionInfo ? null :
+                            <Table>
+                                <TableHead>
+                                    <TableRow className={classes.tableRow}>
+                                        <TableCell className={matches ? classes.tableHead : classes.tableHeadMobile} padding="none">{resources.VERSIONING_MODE}</TableCell>
+                                        <TableCell className={matches ? classes.tableHead : classes.tableHeadMobile} padding="none">{resources.PATH}</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    <TableRow className={classes.tableRow}>
+                                        <TableCell className={matches ? classes.tableCell : classes.tableCellMobile} padding="none">
+                                            {resources.VERSIONING[currentContent.VersioningMode]}
+                                        </TableCell>
+                                        <TableCell className={matches ? classes.tableCell : classes.tableCellMobile} padding="none">
+                                            {currentContent.Path}
+                                        </TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                        }
+                    </div>
                 }
-            </div>
+            </MediaQuery>
         )
     }
 }
