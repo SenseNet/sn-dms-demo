@@ -60,7 +60,7 @@ export const contentListTheme = createMuiTheme({
                     [theme.breakpoints.down('md')]: {
                         paddingLeft: 12,
                         fontSize: 14,
-                      },
+                    },
                 },
                 '&.display-name input.rename': {
                     '&::selection': {
