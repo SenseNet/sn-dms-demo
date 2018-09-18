@@ -8,7 +8,7 @@ export const dmsTheme = createMuiTheme({
             headline: {
                 [theme.breakpoints.down('md')]: {
                     fontSize: 14,
-                  },
+                },
             },
             gutterBottom: {
                 marginBottom: 10,
