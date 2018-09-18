@@ -120,6 +120,7 @@ export const resources = {
     EDIT_PROPERTIES_FAILURE_MESSAGE: 'cannot be modified',
     CHECKED_OUT_BY: 'Checked out by: ',
     APPROVABLE: 'Content should be approved',
+    COPY_HERE: 'Copy content here',
     MOVE_HERE: 'Move content here',
     MOVE: 'Move content',
     ARE_YOU_SURE_YOU_WANT_TO_MOVE: 'You are about to move the following content item(s):',
@@ -128,4 +129,5 @@ export const resources = {
     ARE_YOU_SURE_YOU_WANT_TO_COPY: 'You are about to copy the following content item(s):',
     MOVETO_BUTTON: 'Move content here',
     COPYTO_BUTTON: 'Copy content here',
+    NEW_FOLDER: 'New folder',
 }
