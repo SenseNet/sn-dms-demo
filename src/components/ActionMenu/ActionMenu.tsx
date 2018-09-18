@@ -252,6 +252,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                             dialogComponent={<MoveToConfirmDialog />}
                             dialogTitle={resources.MOVE}
                             dialogCallback={Actions.moveBatch} />,
+                        'move',
                         this.props.closePicker)
                     break
                 case 'CopyTo':
@@ -265,6 +266,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                             dialogComponent={<CopyToConfirmDialog />}
                             dialogTitle={resources.COPY}
                             dialogCallback={Actions.copyBatch} />,
+                        'copy',
                         this.props.closePicker)
                     break
                 case 'MoveBatch':
@@ -277,6 +279,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                             dialogComponent={<MoveToConfirmDialog />}
                             dialogTitle={resources.MOVE}
                             dialogCallback={Actions.moveBatch} />,
+                            'move',
                         this.props.closePicker)
                     break
                 default:

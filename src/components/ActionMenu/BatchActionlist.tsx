@@ -166,6 +166,7 @@ class BatchActionlist extends React.Component<BatchActionListProps & ReturnType<
                         dialogComponent={<MoveToConfirmDialog />}
                         dialogTitle={resources.MOVE}
                         dialogCallback={Actions.moveBatch} />,
+                        'move',
                     this.props.closePicker)
                 break
             case 'CopyBatch':
@@ -178,6 +179,7 @@ class BatchActionlist extends React.Component<BatchActionListProps & ReturnType<
                         dialogComponent={<CopyToConfirmDialog />}
                         dialogTitle={resources.COPY}
                         dialogCallback={Actions.copyBatch} />,
+                        'copy',
                     this.props.closePicker)
                 break
             default:

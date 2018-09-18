@@ -71,6 +71,15 @@ export const pickerSelected: Reducer<GenericContent[]> = (state: GenericContent[
     }
 }
 
+export const pickerMode: Reducer<string> = (state: string = 'move', action: AnyAction) => {
+    switch (action.type) {
+        case 'OPEN_PICKER':
+            return action.mode
+        default:
+            return state
+    }
+}
+
 export const closestWorkspace: Reducer<string | null> = (state: string = null, action: AnyAction) => {
     switch (action.type) {
         case 'SET_PICKER_PARENT':
@@ -101,4 +110,5 @@ export const picker = combineReducers({
     selected: pickerSelected,
     closestWorkspace,
     backLink,
+    mode: pickerMode,
 })
