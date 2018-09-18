@@ -139,17 +139,20 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
     }
 
     public handleAddEntry(ev: React.KeyboardEvent<HTMLInputElement>) {
-        if (ev.key === 'Enter' && (ev.target as HTMLInputElement).form.reportValidity()) {
+        const target: HTMLInputElement = ev.target as any
+        if (ev.key === 'Enter' && target.form.reportValidity()) {
             ev.preventDefault()
             ev.stopPropagation()
-            ev.currentTarget.value = '' // .reset()
-            this.setState({
-                addValue: '',
-                sharedWithValues: [
-                    ...this.state.sharedWithValues.filter((val) => val.value !== this.state.addValue),
-                    { type: this.state.addType, value: this.state.addValue },
-                ],
-            })
+            if (target.value && target.value.length) {
+                target.value = ''
+                this.setState({
+                    addValue: '',
+                    sharedWithValues: [
+                        ...this.state.sharedWithValues.filter((val) => val.value !== this.state.addValue),
+                        { type: this.state.addType, value: this.state.addValue },
+                    ],
+                })
+            }
         }
     }
 
