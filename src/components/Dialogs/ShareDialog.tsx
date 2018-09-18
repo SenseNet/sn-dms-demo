@@ -204,10 +204,16 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
                             <DialogInfo currentContent={currentContent} hideVersionInfo={true} />
                             <Divider />
                             {matches ? null : <Typography variant="body1" style={{ paddingTop: '1em' }}><strong>Share with</strong></Typography>}
-                            <div style={{ display: 'flex', margin: '10px 0', flexDirection: matches ? undefined : 'column' }}>
+                            <div style={{
+                                display: 'flex',
+                                margin: '10px 0',
+                                flexDirection: matches ? undefined : 'column',
+                                justifyContent: matches ? undefined : 'space-evenly',
+                                height: matches ? undefined : '120px',
+                            }}>
                                 <Input
                                     defaultValue={this.state.addValue}
-                                    style={{ flexGrow: 1 }}
+                                    style={{ flexGrow: matches ? 1 : undefined }}
                                     type="email"
                                     onChange={this.handleAddValueChange}
                                     placeholder={resources.SHARE_EMAIL_INPUT_PLACEHOLDER}
@@ -215,7 +221,7 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
                                 />
 
                                 {matches ? null : <div style={{ marginTop: '6px' }}>
-                                    {this.state.sharedWithValues.length ? <div style={{ margin: '0.3em 0px .3em', padding: '1em' }}>
+                                    {this.state.sharedWithValues.length ? <div style={{ margin: '0.3em 0px .3em', padding: '1em 0' }}>
                                         <strong>{resources.SHARED_WITH} </strong>
                                         {this.state.sharedWithValues.map((v) => v.value).join(', ')}
                                         < Divider />
