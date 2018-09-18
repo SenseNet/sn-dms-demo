@@ -4,6 +4,7 @@ import { PathHelper } from '@sensenet/client-utils'
 import { GenericContent } from '@sensenet/default-content-types'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import MediaQuery from 'react-responsive'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
@@ -28,7 +29,6 @@ const styles = {
         marginLeft: 'auto',
     },
     inner: {
-        minWidth: 550,
         fontFamily: 'Raleway Medium',
         fontSize: 14,
         margin: '20px 0',
@@ -139,17 +139,20 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
     }
 
     public handleAddEntry(ev: React.KeyboardEvent<HTMLInputElement>) {
-        if (ev.key === 'Enter' && (ev.target as HTMLInputElement).form.reportValidity()) {
+        const target: HTMLInputElement = ev.target as any
+        if (ev.key === 'Enter' && target.form.reportValidity()) {
             ev.preventDefault()
             ev.stopPropagation()
-            ev.currentTarget.value = '' // .reset()
-            this.setState({
-                addValue: '',
-                sharedWithValues: [
-                    ...this.state.sharedWithValues.filter((val) => val.value !== this.state.addValue),
-                    { type: this.state.addType, value: this.state.addValue },
-                ],
-            })
+            if (target.value && target.value.length) {
+                target.value = ''
+                this.setState({
+                    addValue: '',
+                    sharedWithValues: [
+                        ...this.state.sharedWithValues.filter((val) => val.value !== this.state.addValue),
+                        { type: this.state.addType, value: this.state.addValue },
+                    ],
+                })
+            }
         }
     }
 
@@ -188,84 +191,112 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
     public render() {
         const { currentContent } = this.props
         return (
-            <form onSubmit={this.submitCallback}>
-                <Typography variant="headline" gutterBottom>
-                    {resources.SHARE}
-                </Typography>
-                <div style={styles.inner}>
-                    <DialogInfo currentContent={currentContent} hideVersionInfo={true} />
-                    <Divider />
-                    <div style={{ display: 'flex', margin: '10px 0' }}>
-                        <Input
-                            defaultValue={this.state.addValue}
-                            style={{ flexGrow: 1 }}
-                            type="email"
-                            onChange={this.handleAddValueChange}
-                            placeholder={resources.SHARE_EMAIL_INPUT_PLACEHOLDER}
-                            onKeyPress={this.handleAddEntry as any}
-                        />
-                        <Select
-                            onChange={this.handleAddTypeChange}
-                            value={this.state.addType}
-                            inputProps={{
-                                name: 'addType',
-                            }}>
-                            <MenuItem value="see">{resources.SHARE_PERMISSION_VIEW}</MenuItem>
-                            <MenuItem value="edit">{resources.SHARE_PERMISSION_EDIT}</MenuItem>
-                        </Select>
-                    </div>
-                    {this.state.sharedWithValues.length ?
-                        <div>
-                            <div style={{ fontSize: '.85em', margin: '.3em 0 1.5em 0' }}>
-                                <strong>{resources.SHARED_WITH} </strong>
-                                {this.state.sharedWithValues.map((v) => v.value).join(', ')}
-                            </div>
+            <MediaQuery minWidth={700}>
+                {(matches) => (
+                    <form onSubmit={this.submitCallback}>
+                        {matches ?
+                            <Typography variant="headline" gutterBottom>
+                                {resources.SHARE}
+                            </Typography> : null}
+                        <div style={{
+                            ...styles.inner, ...{
+                                minWidth: matches ? '550px' : 0,
+                                margin: matches ? undefined : '0 0 20px 0px',
+                            },
+                        }}>
+                            <DialogInfo currentContent={currentContent} hideVersionInfo={true} />
                             <Divider />
-                        </div>
-                        : null}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '1em 0' }}>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            {this.state.linkSharingType !== 'off' ?
-                                <span>{resources.SHARE_LINK_PREFIX} </span> : null}
-                            <strong>&nbsp;{this.getLinkSharingTypePostfix()}</strong>
+                            {matches ? null : <Typography variant="body1" style={{ paddingTop: '1em' }}><strong>Share with</strong></Typography>}
+                            <div style={{
+                                display: 'flex',
+                                margin: '10px 0',
+                                flexDirection: matches ? undefined : 'column',
+                                justifyContent: matches ? undefined : 'space-evenly',
+                                height: matches ? undefined : '120px',
+                            }}>
+                                <Input
+                                    defaultValue={this.state.addValue}
+                                    style={{ flexGrow: matches ? 1 : undefined }}
+                                    type="email"
+                                    onChange={this.handleAddValueChange}
+                                    placeholder={resources.SHARE_EMAIL_INPUT_PLACEHOLDER}
+                                    onKeyPress={this.handleAddEntry as any}
+                                />
 
-                            <Button style={{ ...styles.link, display: 'inline-flex', margin: '0 7px', fontSize: '18px' }}
-                                aria-owns={this.state.anchorEl ? 'simple-menu' : null}
-                                aria-haspopup="true"
-                                onClick={this.handleOpenLinkSharingMenu}
-                            >
-                                <ArrowDropDown fontSize="inherit" />
-                                <Edit fontSize="inherit" />
-                            </Button>
-                            <Menu
-                                id="simple-menu"
-                                anchorEl={this.state.anchorEl}
-                                open={Boolean(this.state.anchorEl)}
-                                onClose={this.handleCloseLinkSharingMenu}
-                            >
-                                <MenuItem onClick={(ev) => this.handleCloseLinkSharingMenu(ev, 'off')}>{resources.SHARE_LINK_POSTFIX_OFF}</MenuItem>
-                                <MenuItem onClick={(ev) => this.handleCloseLinkSharingMenu(ev, 'see')}>{resources.SHARE_LINK_POSTFIX_VIEW}</MenuItem>
-                                <MenuItem onClick={(ev) => this.handleCloseLinkSharingMenu(ev, 'edit')}>{resources.SHARE_LINK_POSTFIX_EDIT}</MenuItem>
-                            </Menu>
+                                {matches ? null : <div style={{ marginTop: '6px' }}>
+                                    {this.state.sharedWithValues.length ? <div style={{ margin: '0.3em 0px .3em', padding: '1em 0' }}>
+                                        <strong>{resources.SHARED_WITH} </strong>
+                                        {this.state.sharedWithValues.map((v) => v.value).join(', ')}
+                                        < Divider />
+                                    </div> : null}
+                                </div>}
 
-                        </div>
-                        <Button style={{ ...styles.link, fontSize: '12px' }} onClick={this.copyUrl}>
-                            <Link /> &nbsp;
+                                <Select
+                                    onChange={this.handleAddTypeChange}
+                                    value={this.state.addType}
+                                    inputProps={{
+                                        name: 'addType',
+                                    }}>
+                                    <MenuItem value="see">{resources.SHARE_PERMISSION_VIEW}</MenuItem>
+                                    <MenuItem value="edit">{resources.SHARE_PERMISSION_EDIT}</MenuItem>
+                                </Select>
+                            </div>
+                            {matches && this.state.sharedWithValues.length ?
+                                <div>
+                                    <div style={{ fontSize: '.85em', margin: '.3em 0 1.5em 0' }}>
+                                        <strong>{resources.SHARED_WITH} </strong>
+                                        {this.state.sharedWithValues.map((v) => v.value).join(', ')}
+                                    </div>
+                                    <Divider />
+                                </div>
+                                : null}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '1em 0' }}>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    {this.state.linkSharingType !== 'off' ?
+                                        <span>{resources.SHARE_LINK_PREFIX} </span> : null}
+                                    <strong>&nbsp;{this.getLinkSharingTypePostfix()}</strong>
+
+                                    <Button style={{ ...styles.link, display: 'inline-flex', margin: '0 7px', fontSize: '18px' }}
+                                        aria-owns={this.state.anchorEl ? 'simple-menu' : null}
+                                        aria-haspopup="true"
+                                        onClick={this.handleOpenLinkSharingMenu}
+                                    >
+                                        <ArrowDropDown fontSize="inherit" />
+                                        <Edit fontSize="inherit" />
+                                    </Button>
+                                    <Menu
+                                        id="simple-menu"
+                                        anchorEl={this.state.anchorEl}
+                                        open={Boolean(this.state.anchorEl)}
+                                        onClose={this.handleCloseLinkSharingMenu}
+                                    >
+                                        <MenuItem onClick={(ev) => this.handleCloseLinkSharingMenu(ev, 'off')}>{resources.SHARE_LINK_POSTFIX_OFF}</MenuItem>
+                                        <MenuItem onClick={(ev) => this.handleCloseLinkSharingMenu(ev, 'see')}>{resources.SHARE_LINK_POSTFIX_VIEW}</MenuItem>
+                                        <MenuItem onClick={(ev) => this.handleCloseLinkSharingMenu(ev, 'edit')}>{resources.SHARE_LINK_POSTFIX_EDIT}</MenuItem>
+                                    </Menu>
+
+                                </div>
+                                <Button style={{ ...styles.link, fontSize: '12px' }} onClick={this.copyUrl}>
+                                    <Link /> &nbsp;
                             {resources.SHARE_COPY_LINK}
-                        </Button>
-                    </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Button style={styles.link} >
-                        {resources.MORE_SHARE_OPTIONS}
-                    </Button>
-                    <div>
-                        <Button style={styles.actionButton} onClick={this.handleCancel}>{resources.CANCEL}</Button>
-                        <Button style={styles.actionButton} variant="contained" color="secondary" type="submit">{resources.OK}</Button>
-                    </div>
-                </div>
+                                </Button>
+                            </div>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: matches ? 'space-between' : 'flex-end' }}>
+                            {matches ? <Button style={styles.link} >
+                                {resources.MORE_SHARE_OPTIONS}
+                            </Button> : null}
+                            <div>
+                                {matches ? <Button style={styles.actionButton} onClick={this.handleCancel}>{resources.CANCEL}</Button> : null}
 
-            </form >
+                                <Button style={styles.actionButton} variant="contained" color="secondary" type="submit">{resources.OK}</Button>
+                            </div>
+                        </div>
+
+                    </form >
+                )}
+            </MediaQuery>
+
         )
     }
 }
