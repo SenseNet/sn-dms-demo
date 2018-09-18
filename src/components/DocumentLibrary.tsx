@@ -1,7 +1,7 @@
 import { MuiThemeProvider } from '@material-ui/core'
 import { ConstantContent } from '@sensenet/client-core'
 import { GenericContent, IActionModel } from '@sensenet/default-content-types'
-import { ContentList, DisplayNameCell } from '@sensenet/list-controls-react'
+import { ContentList } from '@sensenet/list-controls-react'
 import { updateContent, uploadRequest } from '@sensenet/redux/dist/Actions'
 import { compile } from 'path-to-regexp'
 import * as React from 'react'
@@ -14,6 +14,7 @@ import { icons } from '../assets/icons'
 import { customSchema } from '../assets/schema'
 import { loadMore, loadParent, select, setActive, updateChildrenOptions } from '../store/documentlibrary/actions'
 import ActionMenu from './ActionMenu/ActionMenu'
+import { DisplayNameMobileCell } from './ContentList/CellTemplates/DisplayNameMobileCell'
 import LockedCell from './ContentList/CellTemplates/LockedCell'
 import { RenameCell } from './ContentList/CellTemplates/RenameCell'
 import { FetchError } from './FetchError'
@@ -162,7 +163,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                         selected={this.props.selected}
                         active={this.props.active}
                         items={this.props.items.d.results}
-                        fieldsToDisplay={matchesDesktop ? ['DisplayName', 'Locked', 'ModificationDate', 'Owner', 'Actions'] : ['DisplayName', 'Locked', 'Actions']}
+                        fieldsToDisplay={matchesDesktop ? ['DisplayName', 'Locked', 'ModificationDate', 'Owner', 'Actions'] : ['DisplayName', 'Actions']}
                         orderBy={this.props.childrenOptions.orderby[0][0] as any}
                         orderDirection={this.props.childrenOptions.orderby[0][1] as any}
                         onRequestSelectionChange={(newSelection) => this.props.select(newSelection)}
@@ -214,10 +215,12 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                                         />)
                                     }
                                     if (!matchesDesktop) {
-                                        return (<DisplayNameCell
+                                        return (<DisplayNameMobileCell
                                             content={props.content}
                                             isSelected={props.isSelected}
-                                            icons={icons} />)
+                                            hasSelected={props.selected.length > 0}
+                                            icons={icons}
+                                            onActivate={(ev, content) => this.handleRowDoubleClick(ev, content)} />)
                                     }
                                 default:
                                     return null

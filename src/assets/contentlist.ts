@@ -45,6 +45,12 @@ export const contentListTheme = createMuiTheme({
                     color: '#016D9E',
                 },
             },
+            root: {
+                '&.active': {
+                    fontWeight: 'bolder',
+                    color: '#016D9E',
+                },
+            },
         },
         MuiTableCell: {
             body: {

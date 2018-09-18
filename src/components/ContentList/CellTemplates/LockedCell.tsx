@@ -25,7 +25,7 @@ const styles = {
     },
 }
 
-enum DocumentState {
+export enum DocumentState {
     Default = 0,
     CheckedOut = 1,
     Approvable = 2,
