@@ -12,7 +12,7 @@ import './Sensenet.css'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import { IOauthProvider } from '@sensenet/authentication-jwt'
 import { rootStateType } from '.'
-import theme from './assets/theme'
+import { dmsTheme } from './assets/dmstheme'
 import { AuthorizedRoute } from './components/AuthorizedRoute'
 
 const mapStateToProps = (state: rootStateType) => {
@@ -47,7 +47,7 @@ class Sensenet extends React.Component<SensenetProps & ReturnType<typeof mapStat
     //   return null
     // }
     return (
-      <MuiThemeProvider theme={theme}>
+      <MuiThemeProvider theme={dmsTheme}>
         <div className="root" style={{ height: window.innerHeight }}>
           <HashRouter>
             <Switch>

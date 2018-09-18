@@ -43,6 +43,11 @@ export const pickerTheme = createMuiTheme({
                 },
             },
             body1: {
+                '&.picker-item': {
+                    [theme.breakpoints.down('md')]: {
+                        fontSize: 14,
+                    },
+                },
                 '&.picker-item-selected': {
                     color: '#fff',
                 },
@@ -98,10 +103,41 @@ export const pickerTheme = createMuiTheme({
         },
         MuiDialogActions: {
             root: {
-                margin: '6px 10px 6px 0px',
+                'margin': '6px 10px 6px 0px',
+                '&.mobile-picker-buttonRow': {
+                    boxShadow: '0px -5px 10px 0px rgba(204,204,204,1)',
+                    margin: 0,
+                    padding: '5px 10px',
+                    display: 'flex',
+                    color: '#016D9E',
+                },
             },
             action: {
                 margin: 0,
+            },
+        },
+        MuiButton: {
+            raised: {
+                background: '#fff',
+                color: '#016D9E',
+                boxShadow: 'none',
+            },
+            contained: {
+                background: '#fff',
+                color: '#016D9E',
+                boxShadow: 'none',
+            },
+            disabled: {
+                'background': '#fff',
+                'color': '#016D9E',
+                'boxShadow': 'none',
+                '&.disabled-mobile-button': {
+                    [theme.breakpoints.down('md')]: {
+                        background: '#fff',
+                        color: '#016D9E',
+                        opacity: .25,
+                    },
+                },
             },
         },
     },

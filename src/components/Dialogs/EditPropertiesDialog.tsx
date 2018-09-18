@@ -7,6 +7,7 @@ import { GenericContent } from '@sensenet/default-content-types'
 import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import MediaQuery from 'react-responsive'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { resources } from '../../assets/resources'
@@ -69,21 +70,25 @@ class EditPropertiesDialog extends React.Component<EditPropertiesDialogProps & R
         const { contentTypeName, editContent, content } = this.props
         const { editedcontent } = this.state
         return (
-            <div style={{ width: 550 }}>
-                <Typography variant="headline" gutterBottom>
-                    {resources.EDIT_PROPERTIES}
-                </Typography>
-                <DialogInfo currentContent={editedcontent ? editedcontent : content} />
-                {editedcontent ?
-                    <EditView
-                        content={editedcontent}
-                        repository={repository}
-                        contentTypeName={contentTypeName}
-                        onSubmit={editContent}
-                        handleCancel={() => this.handleCancel()}
-                        submitCallback={this.submitCallback} />
-                    : <CircularProgress size={50} />}
-            </div>
+            <MediaQuery minDeviceWidth={700}>
+                {(matches) =>
+                    <div style={matches ? { width: 550 } : null}>
+                        <Typography variant="headline" gutterBottom>
+                            {resources.EDIT_PROPERTIES}
+                        </Typography>
+                        <DialogInfo currentContent={editedcontent ? editedcontent : content} />
+                        {editedcontent ?
+                            <EditView
+                                content={editedcontent}
+                                repository={repository}
+                                contentTypeName={contentTypeName}
+                                onSubmit={editContent}
+                                handleCancel={() => this.handleCancel()}
+                                submitCallback={this.submitCallback} />
+                            : <CircularProgress size={50} />}
+                    </div>
+                }
+            </MediaQuery>
         )
     }
 }

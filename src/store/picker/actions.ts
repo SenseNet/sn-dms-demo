@@ -15,10 +15,11 @@ const pickerItemOptions: IODataParams<any> = {
     metadata: 'no',
 }
 
-export const openPicker = (content: any = '', onClose?: () => void) => ({
+export const openPicker = (content: any = '', mode: string = 'move', onClose?: () => void) => ({
     type: 'OPEN_PICKER',
     content,
     onClose: onClose || null,
+    mode,
 })
 
 export const closePicker = () => ({

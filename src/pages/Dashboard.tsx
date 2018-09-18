@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, Drawer, IconButton } from '@material-ui/core'
+import { Button, Dialog, DialogContent, Drawer, IconButton } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { LoginState } from '@sensenet/client-core'
 import { PathHelper } from '@sensenet/client-utils'
@@ -55,6 +55,14 @@ const styles = {
     dialogClose: {
         position: 'absolute',
         right: 0,
+    },
+    dialogCloseMobile: {
+        position: 'absolute',
+        right: 0,
+        top: '15px',
+        fontFamily: 'Raleway Medium',
+        color: '#016D9E',
+        fontSize: '14px',
     },
     progress: {
         width: '100%',
@@ -251,6 +259,9 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                         </Dialog> :
                             <Drawer open={isDialogOpen} anchor="bottom" onClose={closeDialog}>
                                 <DialogContent children={dialogContent} />
+                                <Button onClick={closeDialog} style={styles.dialogCloseMobile as any}>
+                                    Cancel
+                                </Button>
                             </Drawer>
                         }
                         <Picker />
