@@ -171,13 +171,13 @@ class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof map
                     {(matches) =>
                         <DialogActions className="mobile-picker-buttonRow">
                             <IconButton onClick={() => this.handleAddNewClick()}>
-                                <NewFolderIcon style={{color: '#016D9E'}} />
+                                <NewFolderIcon style={{ color: '#016D9E' }} />
                             </IconButton>
                             <Typography style={{ flexGrow: 1, color: '#016D9E', fontFamily: 'Raleway Medium', fontSize: 14 }} onClick={() => this.handleAddNewClick()}>
                                 {matches ? null : resources.NEW_FOLDER}
                             </Typography>
                             {matches ? <Button color="default" style={{ marginRight: 20 }} onClick={() => this.handleClose()}>{resources.CANCEL}</Button> : null}
-                            <Button onClick={() => this.handleSubmit()} variant="raised" className="disabled-mobile-button" disabled={selectedTarget.length > 0 ? false : true} color={ matches ? 'primary' : 'default'}>{resources[`${this.props.mode.toUpperCase()}_BUTTON`]}</Button>
+                            <Button onClick={() => this.handleSubmit()} variant="raised" className={matches ? null : 'disabled-mobile-button'} disabled={selectedTarget.length > 0 ? false : true} color={matches ? 'primary' : 'default'}>{resources[`${this.props.mode.toUpperCase()}_BUTTON`]}</Button>
                         </DialogActions>
                     }
                 </MediaQuery>

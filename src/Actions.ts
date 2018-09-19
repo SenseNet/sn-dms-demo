@@ -283,8 +283,8 @@ export const loadVersions = (id: number) => ({
     type: 'LOAD_VERSIONS',
     payload: (repository: Repository) => repository.versioning.getVersions<GenericContent>(
         id, {
-            select: ['Version', 'ModificationDate', 'CheckInComments', 'RejectReason', 'ModifiedBy/FullName' as any],
-            expand: 'ModifiedBy',
+            select: ['Version', 'VersionModificationDate', 'CheckInComments', 'RejectReason', 'VersionModifiedBy/FullName' as any],
+            expand: 'VersionModifiedBy' as any,
             metadata: 'no',
         },
     ),
