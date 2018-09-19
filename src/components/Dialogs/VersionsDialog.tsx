@@ -1,9 +1,15 @@
-import { IconButton, Table, TableBody, TableCell, TableHead, TableRow, Tooltip, Typography, withStyles } from '@material-ui/core'
+import { IconButton, List, ListItem, ListItemText, Paper, Table, TableBody, TableCell, TableHead, TableRow, Tooltip, Typography, withStyles } from '@material-ui/core'
+import ExpansionPanel from '@material-ui/core/ExpansionPanel'
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import RestoreIcon from '@material-ui/icons/Restore'
 import { GenericContent } from '@sensenet/default-content-types'
+import * as moment from 'moment'
 import * as React from 'react'
 import Moment from 'react-moment'
 import { connect } from 'react-redux'
+import MediaQuery from 'react-responsive'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { versionName } from '../../assets/helpers'
@@ -30,6 +36,15 @@ const styles = {
         fontFamily: 'Raleway Medium',
         fontSize: 14,
         margin: '20px 0',
+    },
+    innerMobile: {
+        fontFamily: 'Raleway Medium',
+        fontSize: 14,
+    },
+    innerMobileList: {
+        margin: 0,
+        border: 0,
+        boxShadow: 'none',
     },
     uploadVersionButton: {
         marginRight: 20,
@@ -81,6 +96,29 @@ const styles = {
         overflowY: 'auto',
         padding: 5,
     },
+    mobileTitle: {
+        fontFamily: 'Raleway Semibold',
+        fontSize: 14,
+    },
+    mobileVersionsTitle: {
+        padding: 20,
+        borderBottom: 'solid 1px #E0E0E0',
+        fontFamily: 'Raleway ExtraBold',
+        fontSize: 12,
+        opacity: .54,
+    },
+    heading: {
+        fontFamily: 'Raleway SemiBold',
+        fontSize: 14,
+        color: '#016D9E',
+        flexGrow: 1,
+    },
+    mobileVersionListItem: {
+        padding: '0 0 10px',
+    },
+    restoreButtonMobile: {
+        height: 24,
+    },
 }
 
 interface VersionsDialogProps {
@@ -102,16 +140,19 @@ const mapDispatchToProps = {
 
 interface VersionsDialogState {
     versions: GenericContent[],
+    expanded: string,
 }
 
 class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, VersionsDialogState> {
     public state: VersionsDialogState = {
         versions: [],
+        expanded: 'panel0',
     }
     constructor(props: VersionsDialog['props']) {
         super(props)
         this.props.getVersionList(this.props.currentContent.Id)
         this.handleRestoreButtonClick = this.handleRestoreButtonClick.bind(this)
+        this.handleExpandButtonClick = this.handleExpandButtonClick.bind(this)
     }
     public static getDerivedStateFromProps(newProps: VersionsDialog['props'], lastState: VersionsDialogState) {
         if (newProps.versions && newProps.versions.length !== lastState.versions.length) {
@@ -139,61 +180,123 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
         this.props.closeDialog()
         this.props.openDialog(<RestoreVersionsDialog id={id} version={version} fileName={name} />)
     }
+    public handleExpandButtonClick = (panel) => {
+        this.setState({
+            expanded: this.state.expanded ? panel : false,
+        })
+    }
     public render() {
         const { classes, currentContent, versions } = this.props
+        const { expanded } = this.state
         return (
-            <div>
-                <Typography variant="headline" gutterBottom>
-                    {resources.VERSIONS}
-                </Typography>
-                <div style={styles.inner}>
-                    <DialogInfo currentContent={currentContent} />
-                    <div style={versions.length > 3 ? styles.tableContainerScroll : styles.tableContainer}>
-                        <Table className={classes.table}>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.VERSION}</TableCell>
-                                    <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.MODIFIED}</TableCell>
-                                    <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.COMMENT}</TableCell>
-                                    <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.REJECT_REASON}</TableCell>
-                                    <TableCell padding="none" className={classes.versionTableHead}></TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {versions.map((version, index) =>
-                                    <TableRow key={index}>
-                                        <TableCell padding="checkbox" className={classes.versionNumber}>{this.formatVersionNumber(version.Version)}</TableCell>
-                                        <TableCell padding="checkbox" className={classes.versionTableCell}>
-                                            <Moment fromNow>{version.ModificationDate}</Moment>
-                                            {
-                                                // tslint:disable-next-line:no-string-literal
-                                                ` (${version.ModifiedBy['FullName']})`
-                                            }
-                                        </TableCell>
-                                        <TableCell
-                                            padding="checkbox"
-                                            className={classes.versionTableCell}>
-                                            <Tooltip disableFocusListener title={version.CheckInComments ? version.CheckInComments : ''}>
-                                                <span>{version.CheckInComments ? version.CheckInComments : ''}</span>
-                                            </Tooltip>
-                                        </TableCell>
-                                        <TableCell padding="checkbox" className={classes.versionTableCell}>
-                                            <Tooltip disableFocusListener title={version.RejectReason ? version.RejectReason : ''}>
-                                                <span>{version.RejectReason ? version.RejectReason : ''}</span>
-                                            </Tooltip>
-                                        </TableCell>
-                                        <TableCell padding="none" style={{ width: '5%' }}>
-                                            {index !== versions.length - 1 ? <IconButton
-                                                title={resources.RESTORE_VERSION}
-                                                onClick={() => this.handleRestoreButtonClick(currentContent.Id, version.Version, version.Name)}><RestoreIcon color="error" /></IconButton> : null}
-                                        </TableCell>
-                                    </TableRow>,
-                                )}
-                            </TableBody>
-                        </Table>
+            <MediaQuery minDeviceWidth={700}>
+                {(matches) => {
+                    return <div>
+                        <Typography variant="headline" gutterBottom>
+                            {resources.VERSIONS}
+                        </Typography>
+                        <div style={matches ? styles.inner : styles.innerMobile}>
+                            <DialogInfo currentContent={currentContent} />
+                            {matches ?
+                                <div style={versions.length > 3 ? styles.tableContainerScroll : styles.tableContainer}>
+                                    <Table className={classes.table}>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.VERSION}</TableCell>
+                                                <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.MODIFIED}</TableCell>
+                                                <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.COMMENT}</TableCell>
+                                                <TableCell padding="checkbox" className={classes.versionTableHead}>{resources.REJECT_REASON}</TableCell>
+                                                <TableCell padding="none" className={classes.versionTableHead}></TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {versions.map((version, index) =>
+                                                <TableRow key={index}>
+                                                    <TableCell padding="checkbox" className={classes.versionNumber}>{this.formatVersionNumber(version.Version)}</TableCell>
+                                                    <TableCell padding="checkbox" className={classes.versionTableCell}>
+                                                        <Moment fromNow>{version.ModificationDate}</Moment>
+                                                        {
+                                                            // tslint:disable-next-line:no-string-literal
+                                                            ` (${version.ModifiedBy['FullName']})`
+                                                        }
+                                                    </TableCell>
+                                                    <TableCell
+                                                        padding="checkbox"
+                                                        className={classes.versionTableCell}>
+                                                        <Tooltip disableFocusListener title={version.CheckInComments ? version.CheckInComments : ''}>
+                                                            <span>{version.CheckInComments ? version.CheckInComments : ''}</span>
+                                                        </Tooltip>
+                                                    </TableCell>
+                                                    <TableCell padding="checkbox" className={classes.versionTableCell}>
+                                                        <Tooltip disableFocusListener title={version.RejectReason ? version.RejectReason : ''}>
+                                                            <span>{version.RejectReason ? version.RejectReason : ''}</span>
+                                                        </Tooltip>
+                                                    </TableCell>
+                                                    <TableCell padding="none" style={{ width: '5%' }}>
+                                                        {index !== versions.length - 1 ? <IconButton
+                                                            title={resources.RESTORE_VERSION}
+                                                            onClick={() => this.handleRestoreButtonClick(currentContent.Id, version.Version, version.Name)}><RestoreIcon color="error" /></IconButton> : null}
+                                                    </TableCell>
+                                                </TableRow>,
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                </div> :
+                                <Paper>
+                                    <Typography style={styles.mobileVersionsTitle}>{resources.VERSIONS}</Typography>
+                                    {versions.map((version, index) =>
+                                        <ExpansionPanel
+                                            style={styles.innerMobileList}
+                                            key={`panel${index}`}
+                                            expanded={expanded === `panel${index}`} onChange={() => this.handleExpandButtonClick(`panel${index}`)}>
+                                            <ExpansionPanelSummary expandIcon={versions.length > 1 ? <ExpandMoreIcon /> : false}>
+                                                <div style={{ flexGrow: 1, display: 'flex' }}>
+                                                    <Typography style={styles.heading}>{this.formatVersionNumber(version.Version)}</Typography>
+                                                    {index !== versions.length - 1 ?
+                                                        <IconButton
+                                                            style={styles.restoreButtonMobile}
+                                                            title={resources.RESTORE_VERSION}
+                                                            onClick={() => this.handleRestoreButtonClick(currentContent.Id, version.Version, version.Name)}>
+                                                            <RestoreIcon color="error" />
+                                                        </IconButton> : null}
+                                                </div>
+                                            </ExpansionPanelSummary>
+                                            <ExpansionPanelDetails>
+                                                <List dense={false}>
+                                                    <ListItem style={styles.mobileVersionListItem}>
+                                                        <ListItemText
+                                                            primary={resources.MODIFIED}
+                                                            secondary={
+                                                                // tslint:disable-next-line:no-string-literal
+                                                                `${moment(version.ModificationDate).fromNow()} (${version.ModifiedBy['FullName']})`
+                                                            }
+                                                        />
+                                                    </ListItem>
+                                                    {version.CheckInComments ?
+                                                        <ListItem style={styles.mobileVersionListItem}>
+                                                            <ListItemText
+                                                                primary={resources.COMMENT}
+                                                                secondary={version.CheckInComments}
+                                                            />
+                                                        </ListItem> : null}
+                                                    {version.RejectReason ?
+                                                        <ListItem style={styles.mobileVersionListItem}>
+                                                            <ListItemText
+                                                                primary={resources.REJECT_REASON}
+                                                                secondary={version.RejectReason}
+                                                            />
+                                                        </ListItem> : null
+                                                    }
+                                                </List>
+                                            </ExpansionPanelDetails>
+                                        </ExpansionPanel>)
+                                    }
+                                </Paper>
+                            }
+                        </div>
                     </div>
-                </div>
-            </div >
+                }}
+            </MediaQuery>
         )
     }
 }

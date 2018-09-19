@@ -5,6 +5,7 @@ import TextField from '@material-ui/core/TextField'
 import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import MediaQuery from 'react-responsive'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { resources } from '../../assets/resources'
@@ -13,6 +14,14 @@ const styles = {
     buttonContainer: {
         display: 'flex',
         height: 32,
+    },
+    buttonContainerMobile: {
+        display: 'flex',
+        height: 32,
+        boxShadow: '0px -5px 10px 0px rgba(204,204,204,1)',
+        margin: '0 -24px -10px',
+        padding: '10px 10px 5px',
+        color: '#016D9E',
     },
     containerChild: {
         flexGrow: 1,
@@ -25,6 +34,11 @@ const styles = {
     },
     inner: {
         minWidth: 550,
+        fontFamily: 'Raleway Medium',
+        fontSize: 14,
+        margin: '20px 0',
+    },
+    innerMobile: {
         fontFamily: 'Raleway Medium',
         fontSize: 14,
         margin: '20px 0',
@@ -44,6 +58,11 @@ const styles = {
     },
     label: {
         fontSize: 14,
+    },
+    buttonsMobile: {
+        flexGrow: 1,
+        marginLeft: 'auto',
+        display: 'flex',
     },
 }
 
@@ -88,9 +107,9 @@ class RestoreVersionDialog extends React.Component<{ classes } & ApproveorReject
         isRejected ?
             closeDialog() &&
             rejectContent(id, rejectReason)
-        : this.setState({
-            isRejected: true,
-        })
+            : this.setState({
+                isRejected: true,
+            })
     }
     public handleChange = (e) => {
         this.setState({
@@ -101,36 +120,41 @@ class RestoreVersionDialog extends React.Component<{ classes } & ApproveorReject
         const { fileName } = this.props
         const { isRejected } = this.state
         return (
-            <div>
-                <Typography variant="headline" gutterBottom>
-                    {resources.APPROVE_OR_REJECT}
-                </Typography>
-                <div style={styles.inner}>
+
+            <MediaQuery minDeviceWidth={700}>
+                {(matches) =>
                     <div>
-                        {resources.YOU_ARE_ABOUT_TO_APPROVE_OR_REJECT}
-                        <strong style={{ fontFamily: 'Raleway Semibold' }}> {fileName}</strong>?
+                        <Typography variant="headline" gutterBottom>
+                            {resources.APPROVE_OR_REJECT}
+                        </Typography>
+                        <div style={matches ? styles.inner : styles.innerMobile}>
+                            <div>
+                                {resources.YOU_ARE_ABOUT_TO_APPROVE_OR_REJECT}
+                                <strong style={{ fontFamily: 'Raleway Semibold' }}> {fileName}</strong>?
                     </div>
-                </div>
-                <Fade in={isRejected}>
-                    <TextField
-                        label={resources.REJECT_REASON_PLACEHOLDER}
-                        multiline
-                        rowsMax="4"
-                        value={this.state.rejectReason}
-                        onChange={(e) => this.handleChange(e)}
-                        margin="normal"
-                        fullWidth
-                        style={{ marginBottom: 30, marginTop: 0 }}
-                    />
-                </Fade>
-                <div style={styles.buttonContainer}>
-                    <div style={styles.rightColumn as any}>
-                        <Button color="default" style={{ marginRight: 20 }} onClick={() => this.handleCancel()}>{resources.CANCEL}</Button>
-                        <Button onClick={() => this.approveCallback()} variant="raised" color="secondary" style={{ marginRight: 20 }}>{resources.APPROVE}</Button>
-                        <Button onClick={() => this.rejectCallback()} variant="contained" color="primary">{resources.REJECT}</Button>
-                    </div>
-                </div>
-            </div >
+                        </div>
+                        <Fade in={isRejected}>
+                            <TextField
+                                label={resources.REJECT_REASON_PLACEHOLDER}
+                                multiline
+                                rowsMax="4"
+                                value={this.state.rejectReason}
+                                onChange={(e) => this.handleChange(e)}
+                                margin="normal"
+                                fullWidth
+                                style={{ marginBottom: 30, marginTop: 0 }}
+                            />
+                        </Fade>
+                        <div style={matches ? styles.buttonContainer : styles.buttonContainerMobile}>
+                            <div style={matches ? styles.rightColumn as any : styles.buttonsMobile}>
+                                {matches ? <Button color="default" style={{ marginRight: 20 }} onClick={() => this.handleCancel()}>{resources.CANCEL}</Button> : null}
+                                <Button onClick={() => this.approveCallback()} variant="raised" color="secondary" style={matches ? { marginRight: 20 } : { marginRight: 20, flexGrow: 1 }}>{resources.APPROVE}</Button>
+                                <Button onClick={() => this.rejectCallback()} variant="contained" color="primary" style={matches ? null : { flexGrow: 1 }}>{resources.REJECT}</Button>
+                            </div>
+                        </div>
+                    </div >
+                }
+            </MediaQuery>
         )
     }
 }
