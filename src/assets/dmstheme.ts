@@ -47,5 +47,26 @@ export const dmsTheme = createMuiTheme({
                 padding: '0 24px 10px',
             },
         },
+        MuiSnackbarContent: {
+            message: {
+                [theme.breakpoints.down('md')]: {
+                    width: '80%',
+                },
+            },
+        },
+        MuiInput: {
+            inputMultiline: {
+                [theme.breakpoints.down('md')]: {
+                    fontSize: 13,
+                },
+            },
+        },
+        MuiInputLabel: {
+            root: {
+                [theme.breakpoints.down('md')]: {
+                    fontSize: 14,
+                },
+            },
+        },
     },
 })
