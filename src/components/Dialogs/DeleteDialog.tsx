@@ -5,6 +5,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import MediaQuery from 'react-responsive'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { resources } from '../../assets/resources'
@@ -54,7 +55,6 @@ const styles = {
 }
 
 interface DeleteDialogProps {
-    selected: number[],
     permanent?: boolean,
 }
 
@@ -64,6 +64,7 @@ interface DeleteDialogState {
 
 const mapStateToProps = (state: rootStateType) => {
     return {
+        selected: state.dms.documentLibrary.selected,
         currentitems: state.sensenet.currentitems.entities,
         closeCallback: state.dms.dialog.onClose,
     }
@@ -89,50 +90,55 @@ class DeleteDialog extends React.Component<{ classes } & DeleteDialogProps & Ret
     }
     public submitCallback = () => {
         const permanently = this.state.checked ? true : false
-        this.props.deleteContent(this.props.selected, permanently)
+        const selectedIds = this.props.selected.map((content) => content.Id)
+        this.props.deleteContent(selectedIds, permanently)
         this.props.closeDialog()
         this.props.closeCallback()
     }
     public render() {
-        const { classes, currentitems, selected } = this.props
+        const { classes, selected } = this.props
         return (
-            <div>
-                <Typography variant="headline" gutterBottom>
-                    {resources.DELETE}
-                </Typography>
-                <div style={styles.inner}>
-                    <div style={{ opacity: .54 }}>{resources.ARE_YOU_SURE_YOU_WANT_TO_DELETE}</div>
-                    <div style={selected.length > 3 ? styles.longList : styles.normalList }>
-                        <ul style={styles.list}>
-                            {selected.map((id) => <li
-                                key={id}
-                                style={styles.listItem}>
-                                {currentitems.map((item) => id === item.Id ? item.DisplayName : null)}
-                            </li>,
-                            )}
-                        </ul>
-                    </div>
-                </div>
-                <div style={styles.buttonContainer}>
-                    <div style={styles.containerChild}>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={this.state.checked}
-                                    onChange={() => this.handleCheckboxClick()}
-                                    value="checked"
-                                    color="primary"
+            <MediaQuery minDeviceWidth={700}>
+                {(matches) =>
+                    <div>
+                        <Typography variant="headline" gutterBottom>
+                            {resources.DELETE}
+                        </Typography>
+                        <div style={styles.inner}>
+                            <div style={{ opacity: .54 }}>{resources.ARE_YOU_SURE_YOU_WANT_TO_DELETE}</div>
+                            <div style={selected.length > 3 ? styles.longList : styles.normalList}>
+                                <ul style={styles.list}>
+                                    {selected.map((content) => <li
+                                        key={content.Id}
+                                        style={styles.listItem}>
+                                        {content.DisplayName}
+                                    </li>,
+                                    )}
+                                </ul>
+                            </div>
+                        </div>
+                        <div style={styles.buttonContainer}>
+                            <div style={styles.containerChild}>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={this.state.checked}
+                                            onChange={() => this.handleCheckboxClick()}
+                                            value="checked"
+                                            color="primary"
+                                        />
+                                    }
+                                    label={<span className={classes.label}>{resources.DELETE_PERMANENTLY}</span>}
                                 />
-                            }
-                            label={<span className={classes.label}>{resources.DELETE_PERMANENTLY}</span>}
-                        />
-                    </div>
-                    <div style={styles.rightColumn as any}>
-                        <Button color="default" style={{ marginRight: 20 }} onClick={() => this.handleCancel()}>{resources.CANCEL}</Button>
-                        <Button onClick={() => this.submitCallback()} variant="raised" color="secondary" style={styles.deleteButton}>{resources.DELETE}</Button>
-                    </div>
-                </div>
-            </div >
+                            </div>
+                            <div style={styles.rightColumn as any}>
+                                {matches ? <Button color="default" style={{ marginRight: 20 }} onClick={() => this.handleCancel()}>{resources.CANCEL}</Button> : null}
+                                <Button onClick={() => this.submitCallback()} variant="raised" color="secondary" style={styles.deleteButton}>{resources.DELETE}</Button>
+                            </div>
+                        </div>
+                    </div >
+                }
+            </MediaQuery>
         )
     }
 }
