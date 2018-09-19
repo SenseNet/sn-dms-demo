@@ -19,5 +19,20 @@ export const dmsTheme = createMuiTheme({
                 marginBottom: 0,
             },
         },
+        MuiListItemText: {
+            primary: {
+                [theme.breakpoints.down('md')]: {
+                    fontSize: 12,
+                    fontFamily: 'Raleway SemiBold',
+                    opacity: .54,
+                },
+            },
+            secondary: {
+                [theme.breakpoints.down('md')]: {
+                    fontSize: 13,
+                    fontFamily: 'Raleway Medium',
+                },
+            },
+        },
     },
 })

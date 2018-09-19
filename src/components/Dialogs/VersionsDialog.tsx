@@ -40,7 +40,11 @@ const styles = {
     innerMobile: {
         fontFamily: 'Raleway Medium',
         fontSize: 14,
-        margin: '20px 0',
+    },
+    innerMobileList: {
+        margin: 0,
+        border: 0,
+        boxShadow: 'none',
     },
     uploadVersionButton: {
         marginRight: 20,
@@ -95,6 +99,21 @@ const styles = {
     mobileTitle: {
         fontFamily: 'Raleway Semibold',
         fontSize: 14,
+    },
+    mobileVersionsTitle: {
+        padding: 20,
+        borderBottom: 'solid 1px #E0E0E0',
+        fontFamily: 'Raleway ExtraBold',
+        fontSize: 12,
+        opacity: .54,
+    },
+    heading: {
+        fontFamily: 'Raleway SemiBold',
+        fontSize: 14,
+        color: '#016D9E',
+    },
+    mobileVersionListItem: {
+        padding: 0,
     },
 }
 
@@ -219,17 +238,18 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                                     </Table>
                                 </div> :
                                 <Paper>
-                                    <Typography>{resources.VERSIONS}</Typography>
-                                    { versions.map((version, index) =>
+                                    <Typography style={styles.mobileVersionsTitle}>{resources.VERSIONS}</Typography>
+                                    {versions.map((version, index) =>
                                         <ExpansionPanel
+                                            style={styles.innerMobileList}
                                             key={`panel${index}`}
                                             expanded={expanded === `panel${index}`} onChange={() => this.handleChange(`panel${index}`)}>
                                             <ExpansionPanelSummary expandIcon={versions.length > 1 ? <ExpandMoreIcon /> : false}>
-                                                <Typography className={classes.heading}>{this.formatVersionNumber(version.Version)}</Typography>
+                                                <Typography style={styles.heading}>{this.formatVersionNumber(version.Version)}</Typography>
                                             </ExpansionPanelSummary>
                                             <ExpansionPanelDetails>
                                                 <List dense={false}>
-                                                    <ListItem>
+                                                    <ListItem style={styles.mobileVersionListItem}>
                                                         <ListItemText
                                                             primary={resources.MODIFIED}
                                                             secondary={
@@ -238,14 +258,15 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                                                             }
                                                         />
                                                     </ListItem>
-                                                    {version.CheckInComments ? <ListItem>
-                                                        <ListItemText
-                                                            primary={resources.COMMENT}
-                                                            secondary={version.CheckInComments}
-                                                        />
-                                                    </ListItem> : null}
+                                                    {version.CheckInComments ?
+                                                        <ListItem style={styles.mobileVersionListItem}>
+                                                            <ListItemText
+                                                                primary={resources.COMMENT}
+                                                                secondary={version.CheckInComments}
+                                                            />
+                                                        </ListItem> : null}
                                                     {version.RejectReason ?
-                                                        <ListItem>
+                                                        <ListItem style={styles.mobileVersionListItem}>
                                                             <ListItemText
                                                                 primary={resources.REJECT_REASON}
                                                                 secondary={version.RejectReason}
