@@ -111,9 +111,13 @@ const styles = {
         fontFamily: 'Raleway SemiBold',
         fontSize: 14,
         color: '#016D9E',
+        flexGrow: 1,
     },
     mobileVersionListItem: {
         padding: '0 0 10px',
+    },
+    restoreButtonMobile: {
+        height: 24,
     },
 }
 
@@ -246,7 +250,16 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                                             key={`panel${index}`}
                                             expanded={expanded === `panel${index}`} onChange={() => this.handleExpandButtonClick(`panel${index}`)}>
                                             <ExpansionPanelSummary expandIcon={versions.length > 1 ? <ExpandMoreIcon /> : false}>
-                                                <Typography style={styles.heading}>{this.formatVersionNumber(version.Version)}</Typography>
+                                                <div style={{ flexGrow: 1, display: 'flex' }}>
+                                                    <Typography style={styles.heading}>{this.formatVersionNumber(version.Version)}</Typography>
+                                                    {index !== versions.length - 1 ?
+                                                        <IconButton
+                                                            style={styles.restoreButtonMobile}
+                                                            title={resources.RESTORE_VERSION}
+                                                            onClick={() => this.handleRestoreButtonClick(currentContent.Id, version.Version, version.Name)}>
+                                                            <RestoreIcon color="error" />
+                                                        </IconButton> : null}
+                                                </div>
                                             </ExpansionPanelSummary>
                                             <ExpansionPanelDetails>
                                                 <List dense={false}>
