@@ -113,7 +113,7 @@ const styles = {
         color: '#016D9E',
     },
     mobileVersionListItem: {
-        padding: 0,
+        padding: '0 0 10px',
     },
 }
 
@@ -148,6 +148,7 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
         super(props)
         this.props.getVersionList(this.props.currentContent.Id)
         this.handleRestoreButtonClick = this.handleRestoreButtonClick.bind(this)
+        this.handleExpandButtonClick = this.handleExpandButtonClick.bind(this)
     }
     public static getDerivedStateFromProps(newProps: VersionsDialog['props'], lastState: VersionsDialogState) {
         if (newProps.versions && newProps.versions.length !== lastState.versions.length) {
@@ -175,9 +176,9 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
         this.props.closeDialog()
         this.props.openDialog(<RestoreVersionsDialog id={id} version={version} fileName={name} />)
     }
-    public handleChange = (panel) => (event, expanded) => {
+    public handleExpandButtonClick = (panel) => {
         this.setState({
-            expanded: expanded ? panel : false,
+            expanded: this.state.expanded ? panel : false,
         })
     }
     public render() {
@@ -243,7 +244,7 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                                         <ExpansionPanel
                                             style={styles.innerMobileList}
                                             key={`panel${index}`}
-                                            expanded={expanded === `panel${index}`} onChange={() => this.handleChange(`panel${index}`)}>
+                                            expanded={expanded === `panel${index}`} onChange={() => this.handleExpandButtonClick(`panel${index}`)}>
                                             <ExpansionPanelSummary expandIcon={versions.length > 1 ? <ExpandMoreIcon /> : false}>
                                                 <Typography style={styles.heading}>{this.formatVersionNumber(version.Version)}</Typography>
                                             </ExpansionPanelSummary>
