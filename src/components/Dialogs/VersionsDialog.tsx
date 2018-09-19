@@ -214,10 +214,15 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                                                 <TableRow key={index}>
                                                     <TableCell padding="checkbox" className={classes.versionNumber}>{this.formatVersionNumber(version.Version)}</TableCell>
                                                     <TableCell padding="checkbox" className={classes.versionTableCell}>
-                                                        <Moment fromNow>{version.ModificationDate}</Moment>
+                                                        <Moment fromNow>
+                                                            {
+                                                                // tslint:disable-next-line:no-string-literal
+                                                                version['VersionModificationDate']
+                                                            }
+                                                        </Moment>
                                                         {
                                                             // tslint:disable-next-line:no-string-literal
-                                                            ` (${version.ModifiedBy['FullName']})`
+                                                            ` (${version['VersionModifiedBy']['FullName']})`
                                                         }
                                                     </TableCell>
                                                     <TableCell
