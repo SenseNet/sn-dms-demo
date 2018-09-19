@@ -58,7 +58,7 @@ const styles = {
 const mapStateToProps = (state: rootStateType) => {
     return {
         isLoading: state.dms.isLoading,
-        actions: state.dms.actionmenu.breadcrumb,
+        actions: state.dms.actionmenu.breadcrumb.actions,
     }
 }
 
@@ -73,28 +73,19 @@ interface BreadCrumbProps extends RouteComponentProps<any> {
     currentContent: GenericContent,
 }
 
-interface BreadCrumbState {
-    currentContent: GenericContent,
-}
-
-class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToProps & ReturnType<typeof mapStateToProps>, BreadCrumbState> {
-    public state ={
-        currentContent: this.props.currentContent,
-    }
+class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToProps & ReturnType<typeof mapStateToProps>> {
+    public state = {}
     constructor(props: BreadCrumb['props']) {
         super(props)
         this.handleClick = this.handleClick.bind(this)
         this.handleActionMenuClick = this.handleActionMenuClick.bind(this)
     }
+
     public static getDerivedStateFromProps(newProps: BreadCrumb['props'], lastState: BreadCrumb['state']) {
-        if (newProps.currentContent && lastState.currentContent && newProps.currentContent.Id !== lastState.currentContent.Id || newProps.currentContent && lastState.currentContent && newProps.actions.length === 0) {
-            newProps.getActions(newProps.currentContent.Id)
-        }
-        return {
-            currentContent: newProps.currentContent,
-            ...lastState,
-        } as BreadCrumb['state']
+        newProps.currentContent && newProps.getActions(newProps.currentContent.Id)
+        return {}
     }
+
     public handleClick(e, content: GenericContent) {
         const newPath = compile(this.props.match.path)({ folderPath: btoa(content.Path) })
         this.props.history.push(newPath)
@@ -105,7 +96,6 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
         const left = e.pageX - e.currentTarget.offsetLeft
         this.props.closeActionMenu()
         this.props.openActionMenu(this.props.actions, content, content.DisplayName, e.currentTarget, { top: top + 30, left })
-        // this.setState({ anchorTop: top, anchorLeft: left })
     }
     public render() {
         const ancestors = this.props.ancestors

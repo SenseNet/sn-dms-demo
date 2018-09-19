@@ -12,6 +12,7 @@ import * as DMSActions from '../Actions'
 import { contentListTheme } from '../assets/contentlist'
 import { icons } from '../assets/icons'
 import { customSchema } from '../assets/schema'
+import { ListToolbar } from '../components/ListToolbar'
 import { loadMore, loadParent, select, setActive, updateChildrenOptions } from '../store/documentlibrary/actions'
 import ActionMenu from './ActionMenu/ActionMenu'
 import { DisplayNameMobileCell } from './ContentList/CellTemplates/DisplayNameMobileCell'
@@ -40,6 +41,7 @@ const mapStateToProps = (state: rootStateType) => {
         currentUser: state.sensenet.session.user,
         selected: state.dms.documentLibrary.selected,
         active: state.dms.documentLibrary.active,
+        ancestors: state.dms.documentLibrary.ancestors,
         childrenOptions: state.dms.documentLibrary.childrenOptions,
     }
 }
@@ -155,6 +157,11 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
         const { matchesDesktop } = this.props
         return this.props.currentUser.content.Id !== ConstantContent.VISITOR_USER.Id ?
             <div onDragOver={(ev) => ev.preventDefault()} onDrop={this.handleFileDrop}>
+                <ListToolbar
+                    currentContent={this.props.parent}
+                    selected={this.props.selected}
+                    ancestors={this.props.ancestors}
+                />
                 <ConnectedUploadBar />
                 <MuiThemeProvider theme={contentListTheme}>
                     <ContentList
