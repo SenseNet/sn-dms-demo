@@ -1,19 +1,19 @@
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
+import { IOauthProvider } from '@sensenet/authentication-jwt'
 import { LoginState } from '@sensenet/client-core'
 import * as React from 'react'
+import * as Loadable from 'react-loadable'
 import { connect } from 'react-redux'
 import { HashRouter, Redirect, Route, Switch } from 'react-router-dom'
 import 'typeface-roboto'
+import { rootStateType } from '.'
 import * as DMSActions from './Actions'
-import Dashboard from './pages/Dashboard'
+import { dmsTheme } from './assets/dmstheme'
+import { AuthorizedRoute } from './components/AuthorizedRoute'
+import { FullScreenLoader } from './components/FullScreenLoader'
 import Login from './pages/Login'
 import Registration from './pages/Registration'
 import './Sensenet.css'
-
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
-import { IOauthProvider } from '@sensenet/authentication-jwt'
-import { rootStateType } from '.'
-import { dmsTheme } from './assets/dmstheme'
-import { AuthorizedRoute } from './components/AuthorizedRoute'
 
 const mapStateToProps = (state: rootStateType) => {
   return {
@@ -63,7 +63,11 @@ class Sensenet extends React.Component<SensenetProps & ReturnType<typeof mapStat
               {/* {this.props.loginState === LoginState.Authenticated ? <Redirect path="*" to="/" /> : null} */}
 
               <AuthorizedRoute path="/" authorize={() => this.props.loginState !== LoginState.Unauthenticated} redirectOnUnauthorized="/" render={(routerProps) => {
-                return <Dashboard {...routerProps} />
+                const LoadableDashboard = Loadable({
+                  loader: () => import(/* webpackChunkName: "dashboard" */ './pages/Dashboard'),
+                  loading: FullScreenLoader as any,
+                })
+                return <LoadableDashboard {...routerProps} />
               }}>
               </AuthorizedRoute>
 
