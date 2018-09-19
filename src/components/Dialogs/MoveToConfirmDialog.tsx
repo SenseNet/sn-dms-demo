@@ -3,6 +3,7 @@ import Button from '@material-ui/core/Button'
 import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import MediaQuery from 'react-responsive'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { resources } from '../../assets/resources'
@@ -10,6 +11,11 @@ import { resources } from '../../assets/resources'
 const styles = {
     inner: {
         minWidth: 550,
+        fontFamily: 'Raleway Medium',
+        fontSize: 14,
+        margin: '20px 0',
+    },
+    innerMobile: {
         fontFamily: 'Raleway Medium',
         fontSize: 14,
         margin: '20px 0',
@@ -64,32 +70,34 @@ class MoveToConfirmDialog extends React.Component<ReturnType<typeof mapStateToPr
     }
     public render() {
         return (
-            <div>
-                <Typography variant="headline" gutterBottom>
-                    {resources.MOVE}
-                </Typography>
-                <div style={styles.inner}>
-                    <div style={{ opacity: .54 }}>{resources.ARE_YOU_SURE_YOU_WANT_TO_MOVE}</div>
-                    <div style={this.props.selected.length > 3 ? styles.longList : styles.normalList}>
-                        <ul style={styles.list}>
-                            {this.props.selected.map((content) => <li
-                                key={content.Id}
-                                style={styles.listItem}>
-                                {content.DisplayName}
-                            </li>,
-                            )}
-                        </ul>
+            <MediaQuery minDeviceWidth={700}>{(matches) =>
+                <div>
+                    <Typography variant="headline" gutterBottom>
+                        {resources.MOVE}
+                    </Typography>
+                    <div style={matches ? styles.inner : styles.innerMobile}>
+                        <div style={{ opacity: .54 }}>{resources.ARE_YOU_SURE_YOU_WANT_TO_MOVE}</div>
+                        <div style={this.props.selected.length > 3 ? styles.longList : styles.normalList}>
+                            <ul style={styles.list}>
+                                {this.props.selected.map((content) => <li
+                                    key={content.Id}
+                                    style={styles.listItem}>
+                                    {content.DisplayName}
+                                </li>,
+                                )}
+                            </ul>
+                        </div>
+                        <div style={{ opacity: .54, margin: '10px 0' }}>{resources.TO}</div>
+                        <div style={{ wordWrap: 'break-word' }}>{this.props.target[0].Path}</div>
                     </div>
-                    <div style={{ opacity: .54, margin: '10px 0' }}>{resources.TO}</div>
-                    <div>{this.props.target[0].Path}</div>
-                </div>
-                <div style={styles.buttonContainer}>
-                    <div style={styles.rightColumn as any}>
-                        <Button color="default" style={{ marginRight: 20 }} onClick={() => this.handleCancel()}>{resources.CANCEL}</Button>
-                        <Button onClick={() => this.submitCallback()} variant="raised" color="secondary">{resources.MOVE}</Button>
+                    <div style={styles.buttonContainer}>
+                        <div style={styles.rightColumn as any}>
+                            { matches ? <Button color="default" style={{ marginRight: 20 }} onClick={() => this.handleCancel()}>{resources.CANCEL}</Button> : null }
+                            <Button onClick={() => this.submitCallback()} variant="raised" color="secondary">{resources.MOVE}</Button>
+                        </div>
                     </div>
-                </div>
-            </div >
+                </div >
+            }</MediaQuery>
         )
     }
 }
