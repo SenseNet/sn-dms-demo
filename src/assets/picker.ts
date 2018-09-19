@@ -118,14 +118,18 @@ export const pickerTheme = createMuiTheme({
         },
         MuiButton: {
             raised: {
-                background: '#fff',
-                color: '#016D9E',
-                boxShadow: 'none',
+                [theme.breakpoints.down('md')]: {
+                    background: '#fff',
+                    color: '#016D9E',
+                    boxShadow: 'none',
+                },
             },
             contained: {
-                background: '#fff',
-                color: '#016D9E',
-                boxShadow: 'none',
+                [theme.breakpoints.down('md')]: {
+                    background: '#fff',
+                    color: '#016D9E',
+                    boxShadow: 'none',
+                },
             },
             disabled: {
                 'background': '#fff',
