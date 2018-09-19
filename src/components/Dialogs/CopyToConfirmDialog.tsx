@@ -74,7 +74,7 @@ class CopyToConfirmDialog extends React.Component<ReturnType<typeof mapStateToPr
             <MediaQuery minDeviceWidth={700}>{(matches) =>
                 <div>
                     <Typography variant="headline" gutterBottom>
-                        {resources.MOVE}
+                        {resources.COPY}
                     </Typography>
                     <div style={matches ? styles.inner : styles.innerMobile}>
                         <div style={{ opacity: .54 }}>{resources.ARE_YOU_SURE_YOU_WANT_TO_COPY}</div>
