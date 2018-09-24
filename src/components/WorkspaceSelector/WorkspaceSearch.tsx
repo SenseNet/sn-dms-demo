@@ -1,7 +1,8 @@
-import { Icon, InputAdornment, WithStyles, withStyles } from '@material-ui/core'
+import { InputAdornment, WithStyles, withStyles } from '@material-ui/core'
 import FormControl from '@material-ui/core/FormControl'
 import TextField from '@material-ui/core/TextField'
 import SearchIcon from '@material-ui/icons/Search'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 
 const styles = (theme) => ({
@@ -81,7 +82,11 @@ class WorkspaceSearch extends React.Component<{ classes, handleKeyup: (e) => voi
                         }}
                     />
                 </FormControl>
-                {matches ? null : <Icon className={classes.closeIcon} onClick={() => this.closeDropdown()}>close</Icon>}
+                {matches ? null : <Icon
+                    className={classes.closeIcon}
+                    onClick={() => this.closeDropdown()}
+                    type={iconType.materialui}
+                    iconName="close" />}
             </div>
         )
     }

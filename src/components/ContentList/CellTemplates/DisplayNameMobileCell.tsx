@@ -1,5 +1,6 @@
-import { Checkbox, Icon, TableCell, Tooltip } from '@material-ui/core'
+import { Checkbox, TableCell, Tooltip } from '@material-ui/core'
 import { GenericContent } from '@sensenet/default-content-types'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '../../..'
@@ -114,7 +115,11 @@ class DisplayNameMobileCell extends React.Component<DisplayNameMobilCellProps & 
 
                     <span>
                         {icon ?
-                            <Icon style={{ marginRight: '.5em' }} onClick={this.handleContentSelection}>{icon}</Icon>
+                            <Icon
+                                style={{ marginRight: '.5em' }}
+                                onClick={this.handleContentSelection}
+                                type={iconType.materialui}
+                                iconName={icon} />
                             : null}
                     </span>
                 }
@@ -124,14 +129,23 @@ class DisplayNameMobileCell extends React.Component<DisplayNameMobilCellProps & 
                         <Tooltip title={`${resources.CHECKED_OUT_BY}${checkedOutBy}`}>
                             <div style={styles.lockedCellContainer as any}>
                                 {/*<span style={styles.userName}>{checkedOutBy}</span> */}
-                                <span style={styles.icon}><Icon style={{ fontSize: 20 }}>lock</Icon></span>
+                                <span style={styles.icon}>
+                                    <Icon
+                                        style={{ fontSize: 20 }}
+                                        type={iconType.materialui}
+                                        iconName="lock" />
+                                </span>
                             </div>
                         </Tooltip> :
                         null :
                     this.state.status === DocumentState.Approvable ?
                         <Tooltip title={resources.APPROVABLE}>
                             <div style={styles.lockedCellContainer as any}>
-                                <span style={styles.icon}><Icon>access_time</Icon></span>
+                                <span style={styles.icon}>
+                                    <Icon
+                                        style={{ fontSize: 20 }}
+                                        type={iconType.materialui}
+                                        iconName="access_time" /></span>
                             </div>
                         </Tooltip> :
                         null

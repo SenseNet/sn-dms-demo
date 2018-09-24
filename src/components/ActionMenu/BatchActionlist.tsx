@@ -1,4 +1,4 @@
-import Icon from '@material-ui/core/Icon'
+import {Icon, iconType} from '@sensenet/icons-react'
 import IconButton from '@material-ui/core/IconButton'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import { GenericContent, IActionModel } from '@sensenet/default-content-types'
@@ -200,7 +200,7 @@ class BatchActionlist extends React.Component<BatchActionListProps & ReturnType<
                             <li key={action.Name} style={styles.icon} aria-label={action.DisplayName} title={action.DisplayName}>
                                 <IconButton aria-label={action.DisplayName} disableRipple={true}
                                     onClick={() => this.handleMenuItemClick(action.Name)}>
-                                    <Icon color="primary" style={styles.icon} >{icons[action.Icon.toLowerCase()]}</Icon>
+                                    <Icon type={iconType.materialui} color="primary" style={styles.icon} iconName={icons[action.Icon.toLowerCase()]} />
                                 </IconButton>
                             </li>
                             : null

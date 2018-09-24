@@ -1,6 +1,6 @@
 import Button from '@material-ui/core/Button'
-import Icon from '@material-ui/core/Icon'
 import { GenericContent } from '@sensenet/default-content-types'
+import { Icon, iconType } from '@sensenet/icons-react'
 import { compile } from 'path-to-regexp'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -78,7 +78,7 @@ interface BreadCrumbState {
 }
 
 class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToProps & ReturnType<typeof mapStateToProps>, BreadCrumbState> {
-    public state ={
+    public state = {
         currentContent: this.props.currentContent,
     }
     constructor(props: BreadCrumb['props']) {
@@ -130,10 +130,18 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
                                         {ancestor.DisplayName}
                                         {!isLast ?
                                             '' :
-                                            <Icon style={styles.breadCrumbIconLast} onClick={(e) => this.handleActionMenuClick(e, ancestor)}>{icons.arrowDropDown}</Icon>}
+                                            <Icon
+                                                style={styles.breadCrumbIconLast}
+                                                onClick={(e) => this.handleActionMenuClick(e, ancestor)}
+                                                type={iconType.materialui}
+                                                iconName={icons.arrowDropDown}></Icon>}
                                     </Button>
                                     {!isLast ?
-                                        <Icon style={styles.breadCrumbIcon}>{icons.arrowRight}</Icon> : ''}
+                                        <Icon
+                                            style={styles.breadCrumbIcon}
+                                            onClick={(e) => this.handleActionMenuClick(e, ancestor)}
+                                            type={iconType.materialui}
+                                            iconName={icons.arrowRight} /> : ''}
                                 </div>
                             } else if (!matches && isLast) {
                                 return <div style={styles.item} key={i}>

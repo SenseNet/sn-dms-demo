@@ -1,6 +1,7 @@
-import { Icon, IconButton, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText } from '@material-ui/core'
+import { IconButton, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText } from '@material-ui/core'
 import { CheckCircle, Close, Error } from '@material-ui/icons'
 import { IUploadProgressInfo } from '@sensenet/client-core'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { ExtendedUploadProgressInfo } from '../../Actions'
 import { icons } from '../../assets/icons'
@@ -49,7 +50,10 @@ export class UploadBarItem extends React.Component<UploadBarItemProps, UploadBar
         return (
             <ListItem style={{ padding: this.props.isMobile ? undefined : '.3em', opacity: this.state.isLoading ? 0.65 : 1, boxShadow: '0px -2px 0px #ddd' }}>
                 <ListItemIcon style={{ marginRight: '-.5em' }}>
-                    <Icon style={{ color: theme.palette.secondary.main }}>{this.state.icon}</Icon>
+                    <Icon
+                        type={iconType.materialui}
+                        style={{ color: theme.palette.secondary.main }}
+                        iconName={this.state.icon} />
                 </ListItemIcon>
                 <ListItemText primary={
                     <div style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>

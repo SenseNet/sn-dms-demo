@@ -1,6 +1,5 @@
 import Drawer from '@material-ui/core/Drawer'
 import Fade from '@material-ui/core/Fade'
-import Icon from '@material-ui/core/Icon'
 import List from '@material-ui/core/List'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import Menu from '@material-ui/core/Menu'
@@ -8,6 +7,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import { Folder, Forward, InsertDriveFile, ModeEdit, Warning } from '@material-ui/icons'
 import { IActionModel } from '@sensenet/default-content-types'
 import { pollDocumentData } from '@sensenet/document-viewer-react'
+import { Icon, iconType } from '@sensenet/icons-react'
 import { Actions } from '@sensenet/redux'
 import { compile } from 'path-to-regexp'
 import * as React from 'react'
@@ -282,7 +282,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                             dialogComponent={<MoveToConfirmDialog />}
                             dialogTitle={resources.MOVE}
                             dialogCallback={Actions.moveBatch} />,
-                            'move',
+                        'move',
                         this.props.closePicker)
                     break
                 default:
@@ -320,6 +320,18 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                 >
                     {
                         actions.map((action, index) => {
+                            let iconFileType
+                            switch (action.Icon) {
+                                case 'word':
+                                case 'excel':
+                                case 'acrobat':
+                                case 'powerpoint':
+                                    iconFileType = iconType.flaticon
+                                    break
+                                default:
+                                    iconFileType = iconType.materialui
+                                    break
+                            }
                             return <MenuItem
                                 key={index}
                                 onClick={(event) => this.handleMenuItemClick(event, action)}
@@ -335,11 +347,11 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                                 style={styles.menuItem}
                                 title={action.DisplayName}>
                                 <ListItemIcon style={styles.actionIcon}>
-                                    <Icon color="primary">{
+                                    <Icon type={iconFileType} color="primary" iconName={
                                         action.Icon === 'Application' ?
                                             icons[action.Name.toLowerCase() as keyof typeof icons] :
                                             icons[action.Icon.toLowerCase() as keyof typeof icons]
-                                    }
+                                    }>
                                         {
                                             action.Name === 'MoveTo' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.3em', width: '0.5em', color: 'white' }} /> : null
                                         }
@@ -411,7 +423,18 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                                         />
                                     </label>
                                 }
-
+                                let iconFileType
+                                switch (action.Icon) {
+                                    case 'word':
+                                    case 'excel':
+                                    case 'acrobat':
+                                    case 'powerpoint':
+                                        iconFileType = iconType.flaticon
+                                        break
+                                    default:
+                                        iconFileType = iconType.materialui
+                                        break
+                                }
                                 return <MenuItem
                                     key={index}
                                     onClick={(event) => this.handleMenuItemClick(event, action)}
@@ -427,11 +450,16 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                                     style={styles.menuItemMobile}
                                     title={action.DisplayName}>
                                     <ListItemIcon style={styles.actionIcon}>
-                                        <Icon color="primary">{
-                                            action.Icon === 'Application' ?
-                                                icons[action.Name.toLowerCase() as keyof typeof icons] :
-                                                icons[action.Icon.toLowerCase() as keyof typeof icons]
-                                        }
+                                        <Icon
+                                            type={iconFileType} color="primary" iconName={
+                                                action.Icon === 'Application' ?
+                                                    icons[action.Name.toLowerCase() as keyof typeof icons] :
+                                                    icons[action.Icon.toLowerCase() as keyof typeof icons]
+                                            }>{
+                                                action.Icon === 'Application' ?
+                                                    icons[action.Name.toLowerCase() as keyof typeof icons] :
+                                                    icons[action.Icon.toLowerCase() as keyof typeof icons]
+                                            }
                                             {
                                                 action.Name === 'MoveTo' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.3em', width: '0.5em', color: 'white' }} /> : null
                                             }
@@ -446,6 +474,12 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                                             }
                                             {
                                                 action.Name === 'uploadFolder' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.42em', width: '0.5em', color: 'white', transform: 'rotate(-90deg)' }} /> : null
+                                            }
+                                            {
+                                                action.Icon === 'word' ? 'aaa' : null
+                                            }
+                                            {
+                                                action.Icon === 'excel' ? 'bbb' : null
                                             }
                                         </Icon>
                                     </ListItemIcon>

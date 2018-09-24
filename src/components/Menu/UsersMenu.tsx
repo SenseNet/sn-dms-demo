@@ -1,4 +1,5 @@
-import { Divider, Icon, ListItemText, MenuItem, StyleRulesCallback, withStyles } from '@material-ui/core'
+import { Divider, ListItemText, MenuItem, StyleRulesCallback, withStyles } from '@material-ui/core'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { AddNewButton } from './AddNewButton'
@@ -96,9 +97,11 @@ class UsersMenu extends React.Component<UsersMenuProps, {}> {
                     selected={active}
                     classes={matches ? { root: classes.root, selected: classes.selected } : { root: classes.rootMobile, selected: classes.selectedMobile }}
                     onClick={(e) => this.handleMenuItemClick('users')}>
-                    <Icon className={matches ? active ? classes.iconWhiteActive : classes.iconWhite : active ? classes.iconWhiteActive : classes.iconWhiteMobile} color="primary">
-                        {item.icon}
-                    </Icon>
+                    <Icon
+                        className={active ? classes.iconWhiteActive : classes.iconWhite}
+                        color="primary"
+                        type={iconType.materialui}
+                        iconName={item.icon} />
                     <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={item.title} />
                 </MenuItem>
                 <div className={active ? classes.open : classes.closed}>
