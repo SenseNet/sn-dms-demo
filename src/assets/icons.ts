@@ -1,9 +1,14 @@
+
+import './css/flaticon.css'
+import './css/font-awesome.min.css'
+
 export const icons = {
     file: 'insert_drive_file',
-    word: 'insert_drive_file',
-    powerpoint: 'insert_drive_file',
+    word: 'microsoft-word-logo',
+    powerpoint: 'google-drive-presentation',
+    acrobat: 'google-drive-pdf-file',
     document: 'insert_drive_file',
-    excel: 'insert_drive_file',
+    excel: 'microsoft-excel-logo',
     folder: 'folder',
     smartfolder: 'folder_shared',
     image: 'photo',
