@@ -1,7 +1,3 @@
-
-import './css/flaticon.css'
-import './css/font-awesome.min.css'
-
 export const icons = {
     file: 'insert_drive_file',
     word: 'microsoft-word-logo',
