@@ -1,5 +1,5 @@
 import { Button, ListItemIcon, ListItemText, Menu, MenuItem } from '@material-ui/core'
-import { FileUpload, Folder, Forward, InsertDriveFile } from '@material-ui/icons'
+import { CloudUpload, Folder, Forward, InsertDriveFile } from '@material-ui/icons'
 import * as React from 'react'
 import { v1 } from 'uuid'
 import { resources } from '../../assets/resources'
@@ -85,7 +85,7 @@ export class UploadButton extends React.Component<UploadButtonProps, UploadButto
                     letterSpacing: 1,
                 }}
                 onClick={(ev) => this.toggleOpen(ev)}>
-                <FileUpload style={{ fontSize: 20, marginRight: 5 }} />
+                <CloudUpload style={{ fontSize: 20, marginRight: 5 }} />
                 {resources.UPLOAD_BUTTON_TITLE}
             </Button>
             <Menu

@@ -5,7 +5,7 @@ import List from '@material-ui/core/List'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import { Folder, Forward, InsertDriveFile, ModeEdit, Warning } from '@material-ui/icons'
+import { Edit, Folder, Forward, InsertDriveFile, Warning } from '@material-ui/icons'
 import { IActionModel } from '@sensenet/default-content-types'
 import { Actions } from '@sensenet/redux'
 import { compile } from 'path-to-regexp'
@@ -340,7 +340,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                                             action.Name === 'MoveTo' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.3em', width: '0.5em', color: 'white' }} /> : null
                                         }
                                         {
-                                            action.Name === 'Rename' ? <ModeEdit style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
+                                            action.Name === 'Rename' ? <Edit style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
                                         }
                                         {
                                             action.Name === 'ForceUndoCheckOut' ? <Warning style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
@@ -432,7 +432,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                                                 action.Name === 'MoveTo' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.3em', width: '0.5em', color: 'white' }} /> : null
                                             }
                                             {
-                                                action.Name === 'Rename' ? <ModeEdit style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
+                                                action.Name === 'Rename' ? <Edit style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
                                             }
                                             {
                                                 action.Name === 'ForceUndoCheckOut' ? <Warning style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
