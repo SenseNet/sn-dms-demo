@@ -9,7 +9,7 @@ import { rootStateType } from '.'
 import { updateChildrenOptions } from './store/documentlibrary/actions'
 
 // tslint:disable-next-line:no-var-requires
-const debounce = require('lodash.debounce')
+import * as debounce from 'lodash.debounce'
 
 export enum MessageMode { error = 'error', warning = 'warning', info = 'info' }
 
