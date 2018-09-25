@@ -9,7 +9,7 @@ import { Actions } from '@sensenet/redux'
 import { compile } from 'path-to-regexp'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { RouteComponentProps, withRouter } from 'react-router'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { rootStateType } from '../..'
 import { followWorkspace, unfollowWorkspace } from '../../store/workspaces/actions'
 

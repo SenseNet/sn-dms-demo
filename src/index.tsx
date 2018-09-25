@@ -1,7 +1,7 @@
 import { addGoogleAuth } from '@sensenet/authentication-google'
 import { JwtService } from '@sensenet/authentication-jwt'
 import { Repository } from '@sensenet/client-core'
-import { sensenetDocumentViewerReducer } from '@sensenet/document-viewer-react'
+import { sensenetDocumentViewerReducer } from '@sensenet/document-viewer-react/dist/store'
 import { Reducers, Store } from '@sensenet/redux'
 import { EventHub } from '@sensenet/repository-events'
 import * as React from 'react'
