@@ -3,16 +3,17 @@ import CloseIcon from '@material-ui/icons/Close'
 import { LoginState } from '@sensenet/client-core'
 import { PathHelper } from '@sensenet/client-utils'
 import * as React from 'react'
+import * as Loadable from 'react-loadable'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
-import { Route, RouteComponentProps, Switch } from 'react-router'
+import { Route, RouteComponentProps, Switch } from 'react-router-dom'
 import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
 import { ContentTemplates } from '../components/ContentTemplates'
 import { ContentTypes } from '../components/ContentTypes'
 import DashboardDrawer from '../components/DashboardDrawer'
-import { DmsViewer } from '../components/DmsViewer'
 import DocumentLibrary from '../components/DocumentLibrary'
+import { FullScreenLoader } from '../components/FullScreenLoader'
 import { Groups } from '../components/Groups'
 import Header from '../components/Header'
 import MessageBar from '../components/MessageBar'
@@ -94,7 +95,7 @@ export interface DashboardState {
     currentUserName: string
 }
 
-class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DashboardState> {
+class DashboardComponent extends React.Component<DashboardProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DashboardState> {
 
     public state = {
         currentFolderId: undefined,
@@ -104,11 +105,11 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
         currentScope: 'documents',
     }
 
-    constructor(props: Dashboard['props']) {
+    constructor(props: DashboardComponent['props']) {
         super(props)
     }
 
-    public static getDerivedStateFromProps(newProps: Dashboard['props'], lastState: Dashboard['state']) {
+    public static getDerivedStateFromProps(newProps: DashboardComponent['props'], lastState: DashboardComponent['state']) {
         const currentSelection = newProps.match.params.selection && decodeURIComponent(newProps.match.params.selection) || []
         const currentViewName = newProps.match.params.action
 
@@ -231,9 +232,13 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                     <MessageBar />
                                 </div>}
                         </div>
-                        <Route exact path="/:prefix*/preview/:documentId" component={() =>
-                            <DmsViewer />
-                        } />
+                        <Route exact path="/:prefix*/preview/:documentId" component={() => {
+                        const LoadableDmsViewer = Loadable({
+                            loader: async () => (await import(/* webpackChunkName: "viewer" */ '../components/DmsViewer')).DmsViewer,
+                            loading: () => <FullScreenLoader />,
+                            })
+                        return <LoadableDmsViewer />
+                        }} />
                         {matches ? <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth="md">
                             <DialogContent children={dialogContent} />
                             <IconButton onClick={closeDialog} style={styles.dialogClose as any}>
@@ -254,5 +259,6 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
         )
     }
 }
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(DashboardComponent)
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
+export default connectedComponent
