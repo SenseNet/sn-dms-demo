@@ -1,4 +1,4 @@
-import { Button } from '@material-ui/core'
+import Button from '@material-ui/core/Button'
 import { Add } from '@material-ui/icons'
 import * as React from 'react'
 import { resources } from '../../assets/resources'

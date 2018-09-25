@@ -1,4 +1,9 @@
-import { Button, ListItemIcon, ListItemText, Menu, MenuItem } from '@material-ui/core'
+import Button from '@material-ui/core/Button'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+
 import { CloudUpload, Folder, Forward, InsertDriveFile } from '@material-ui/icons'
 import * as React from 'react'
 import { v1 } from 'uuid'

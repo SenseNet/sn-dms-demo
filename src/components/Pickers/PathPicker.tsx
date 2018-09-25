@@ -1,4 +1,12 @@
-import { Button, DialogActions, DialogContent, List, ListItemIcon, ListItemText, MenuItem, Typography } from '@material-ui/core'
+import Button from '@material-ui/core/Button'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import List from '@material-ui/core/List'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import MenuItem from '@material-ui/core/MenuItem'
+import Typography from '@material-ui/core/Typography'
+
 import IconButton from '@material-ui/core/IconButton'
 import NewFolderIcon from '@material-ui/icons/CreateNewFolder'
 import FolderIcon from '@material-ui/icons/Folder'

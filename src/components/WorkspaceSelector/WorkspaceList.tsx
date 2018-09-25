@@ -1,5 +1,5 @@
-import { withStyles } from '@material-ui/core'
 import MenuList from '@material-ui/core/MenuList'
+import withStyles from '@material-ui/core/styles/withStyles'
 import { Workspace } from '@sensenet/default-content-types'
 import * as React from 'react'
 import { Scrollbars } from 'react-custom-scrollbars'

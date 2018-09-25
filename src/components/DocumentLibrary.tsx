@@ -1,4 +1,4 @@
-import { MuiThemeProvider } from '@material-ui/core'
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import { ConstantContent } from '@sensenet/client-core'
 import { GenericContent, IActionModel } from '@sensenet/default-content-types'
 import { ContentList } from '@sensenet/list-controls-react'

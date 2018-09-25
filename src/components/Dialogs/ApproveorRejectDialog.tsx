@@ -1,4 +1,6 @@
-import { Typography, withStyles } from '@material-ui/core'
+import withStyles from '@material-ui/core/styles/withStyles'
+import Typography from '@material-ui/core/Typography'
+
 import Button from '@material-ui/core/Button'
 import Fade from '@material-ui/core/Fade'
 import TextField from '@material-ui/core/TextField'

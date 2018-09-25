@@ -1,6 +1,6 @@
-import { withStyles } from '@material-ui/core'
 import IconButton from '@material-ui/core/IconButton'
 import Snackbar from '@material-ui/core/Snackbar'
+import withStyles from '@material-ui/core/styles/withStyles'
 import CloseIcon from '@material-ui/icons/Close'
 import { ExtendedError, isExtendedError } from '@sensenet/client-core/dist/Repository/Repository'
 import * as React from 'react'

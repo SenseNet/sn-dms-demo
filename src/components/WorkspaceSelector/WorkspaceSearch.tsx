@@ -1,5 +1,7 @@
-import { Icon, InputAdornment, WithStyles, withStyles } from '@material-ui/core'
 import FormControl from '@material-ui/core/FormControl'
+import Icon from '@material-ui/core/Icon'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles'
 import TextField from '@material-ui/core/TextField'
 import SearchIcon from '@material-ui/icons/Search'
 import * as React from 'react'

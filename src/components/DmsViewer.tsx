@@ -1,4 +1,7 @@
-import { IconButton, MuiThemeProvider, Typography } from '@material-ui/core'
+import IconButton from '@material-ui/core/IconButton'
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
+import Typography from '@material-ui/core/Typography'
+
 import { Search } from '@material-ui/icons'
 import { DocumentTitlePager, DocumentViewer, Download, LayoutAppBar, Print, RotateActivePages, SearchBar, Share, ToggleThumbnailsWidget, ZoomInOutWidget } from '@sensenet/document-viewer-react/dist/components'
 import { exampleTheme } from '@sensenet/document-viewer-react/dist/ExampleAppLayout'

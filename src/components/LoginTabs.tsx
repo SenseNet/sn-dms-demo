@@ -1,6 +1,6 @@
-import { withStyles } from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
 import createStyles from '@material-ui/core/styles/createStyles'
+import withStyles from '@material-ui/core/styles/withStyles'
 import Tab from '@material-ui/core/Tab'
 import Tabs from '@material-ui/core/Tabs'
 import * as React from 'react'

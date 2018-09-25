@@ -1,4 +1,7 @@
-import { ClickAwayListener, Icon, TableCell } from '@material-ui/core'
+import ClickAwayListener from '@material-ui/core/ClickAwayListener'
+import Icon from '@material-ui/core/Icon'
+import TableCell from '@material-ui/core/TableCell'
+
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '../../..'

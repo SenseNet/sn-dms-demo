@@ -1,4 +1,12 @@
-import { Button, Divider, Input, Menu, MenuItem, Select, Typography, withStyles } from '@material-ui/core'
+import Button from '@material-ui/core/Button'
+import Divider from '@material-ui/core/Divider'
+import Input from '@material-ui/core/Input'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import Select from '@material-ui/core/Select'
+import withStyles from '@material-ui/core/styles/withStyles'
+import Typography from '@material-ui/core/Typography'
+
 import { ArrowDropDown, Edit, Link } from '@material-ui/icons'
 import { PathHelper } from '@sensenet/client-utils'
 import { GenericContent } from '@sensenet/default-content-types'

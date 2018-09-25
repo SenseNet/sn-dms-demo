@@ -1,4 +1,11 @@
-import { Drawer, IconButton, LinearProgress, List, ListSubheader, Paper, Snackbar } from '@material-ui/core'
+import Drawer from '@material-ui/core/Drawer'
+import IconButton from '@material-ui/core/IconButton'
+import LinearProgress from '@material-ui/core/LinearProgress'
+import List from '@material-ui/core/List'
+import ListSubheader from '@material-ui/core/ListSubheader'
+import Paper from '@material-ui/core/Paper'
+import Snackbar from '@material-ui/core/Snackbar'
+
 import { Close } from '@material-ui/icons'
 import { IUploadProgressInfo } from '@sensenet/client-core'
 import * as React from 'react'

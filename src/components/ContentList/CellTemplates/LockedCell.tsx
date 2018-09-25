@@ -1,4 +1,6 @@
-import { Icon, TableCell } from '@material-ui/core'
+import Icon from '@material-ui/core/Icon'
+import TableCell from '@material-ui/core/TableCell'
+
 import Tooltip from '@material-ui/core/Tooltip'
 import { GenericContent } from '@sensenet/default-content-types'
 import * as React from 'react'

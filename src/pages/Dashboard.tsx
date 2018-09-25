@@ -1,4 +1,9 @@
-import { Button, Dialog, DialogContent, Drawer, IconButton } from '@material-ui/core'
+import Button from '@material-ui/core/Button'
+import Dialog from '@material-ui/core/Dialog'
+import DialogContent from '@material-ui/core/DialogContent'
+import Drawer from '@material-ui/core/Drawer'
+import IconButton from '@material-ui/core/IconButton'
+
 import CloseIcon from '@material-ui/icons/Close'
 import { LoginState } from '@sensenet/client-core'
 import { PathHelper } from '@sensenet/client-utils'

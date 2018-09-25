@@ -1,4 +1,9 @@
-import { Icon, ListItemText, MenuItem, StyleRulesCallback, withStyles } from '@material-ui/core'
+import Icon from '@material-ui/core/Icon'
+import ListItemText from '@material-ui/core/ListItemText'
+import MenuItem from '@material-ui/core/MenuItem'
+import { StyleRulesCallback } from '@material-ui/core/styles/withStyles'
+import withStyles from '@material-ui/core/styles/withStyles'
+
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
