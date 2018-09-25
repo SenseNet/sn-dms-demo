@@ -65,7 +65,7 @@ class Sensenet extends React.Component<SensenetProps & ReturnType<typeof mapStat
               <AuthorizedRoute path="/" authorize={() => this.props.loginState !== LoginState.Unauthenticated} redirectOnUnauthorized="/" render={(routerProps) => {
                 const LoadableDashboard = Loadable({
                   loader: () => import(/* webpackChunkName: "dashboard" */ './pages/Dashboard'),
-                  loading: FullScreenLoader as any,
+                  loading: () => <FullScreenLoader />,
                 })
                 return <LoadableDashboard {...routerProps} />
               }}>
