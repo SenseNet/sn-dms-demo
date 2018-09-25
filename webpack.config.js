@@ -20,7 +20,7 @@ module.exports = {
             chunks: 'all',
             cacheGroups: {
                 commons: {
-                    test: /[\\/]node_modules[\\/]/,
+                    minChunks: 2,
                     name: 'vendors',
                     chunks: 'all',
                 },
@@ -42,7 +42,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './public/index.html'
         }),
-        // new BundleAnalyzerPlugin()
+        new BundleAnalyzerPlugin()
     ],
     module: {
         rules: [

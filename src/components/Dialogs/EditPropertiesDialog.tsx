@@ -1,11 +1,10 @@
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Typography from '@material-ui/core/Typography'
 import { IODataParams } from '@sensenet/client-core'
-import { reactControlMapper } from '@sensenet/controls-react'
-import { EditView } from '@sensenet/controls-react'
 import { GenericContent } from '@sensenet/default-content-types'
 import { Actions } from '@sensenet/redux'
 import * as React from 'react'
+import * as Loadable from 'react-loadable'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { rootStateType } from '../..'
@@ -13,6 +12,7 @@ import * as DMSActions from '../../Actions'
 import { resources } from '../../assets/resources'
 import { repository } from '../../index'
 import { loadEditedContent } from '../../store/edited/actions'
+import { FullScreenLoader } from '../FullScreenLoader'
 import DialogInfo from './DialogInfo'
 
 interface EditPropertiesDialogProps {
@@ -40,15 +40,24 @@ interface EditPropertiesDialogState {
     editedcontent: GenericContent,
 }
 
+const LoadableEditView = Loadable({
+    loader: async () => {
+        const module = await import(/* webpackChunkName: "controls-react" */ '@sensenet/controls-react/dist/viewcontrols/EditView')
+        return module.EditView
+    },
+    loading: () => <FullScreenLoader />,
+})
+
 class EditPropertiesDialog extends React.Component<EditPropertiesDialogProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, EditPropertiesDialogState> {
     public state = {
         editedcontent: this.props.editedcontent,
     }
     public static getDerivedStateFromProps(newProps: EditPropertiesDialog['props'], lastState: EditPropertiesDialog['state']) {
         if (lastState.editedcontent === null || lastState.editedcontent.Id !== newProps.content.Id) {
-            const controlMapper = reactControlMapper(repository)
-            const schema = controlMapper.getFullSchemaForContentType(newProps.contentTypeName, 'edit')
-            const editableFields = schema.fieldMappings.map((fieldMapping) => fieldMapping.clientSettings.name)
+            const schema = repository.schemas.getSchemaByName(newProps.contentTypeName)
+            const editableFields = schema.FieldSettings
+                .filter((field) => field.VisibleEdit)
+                .map((field) => field.Name)
             editableFields.push('Icon')
             const options = {
                 select: editableFields,
@@ -69,6 +78,7 @@ class EditPropertiesDialog extends React.Component<EditPropertiesDialogProps & R
     public render() {
         const { contentTypeName, editContent, content } = this.props
         const { editedcontent } = this.state
+
         return (
             <MediaQuery minDeviceWidth={700}>
                 {(matches) =>
@@ -78,7 +88,7 @@ class EditPropertiesDialog extends React.Component<EditPropertiesDialogProps & R
                         </Typography>
                         <DialogInfo currentContent={editedcontent ? editedcontent : content} />
                         {editedcontent ?
-                            <EditView
+                            <LoadableEditView
                                 content={editedcontent}
                                 repository={repository}
                                 contentTypeName={contentTypeName}
