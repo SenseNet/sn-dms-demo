@@ -1,7 +1,6 @@
 import { InputAdornment, WithStyles, withStyles } from '@material-ui/core'
 import FormControl from '@material-ui/core/FormControl'
 import TextField from '@material-ui/core/TextField'
-import SearchIcon from '@material-ui/icons/Search'
 import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 
@@ -77,7 +76,10 @@ class WorkspaceSearch extends React.Component<{ classes, handleKeyup: (e) => voi
                                 root: classes.wsSearchContainer,
                             },
                             startAdornment: <InputAdornment position="start" className={classes.startAdornment}>
-                                <SearchIcon className={classes.icon} />
+                                <Icon
+                                    type={iconType.materialui}
+                                    iconName="search"
+                                    className={classes.icon} />
                             </InputAdornment>,
                         }}
                     />

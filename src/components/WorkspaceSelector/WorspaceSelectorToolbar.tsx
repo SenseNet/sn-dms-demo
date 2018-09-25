@@ -5,10 +5,9 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import Toolbar from '@material-ui/core/Toolbar'
-import CloseIcon from '@material-ui/icons/Close'
-import LocationCityIcon from '@material-ui/icons/LocationCity'
 import { ConstantContent } from '@sensenet/client-core'
 import { PathHelper } from '@sensenet/client-utils'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '../..'
@@ -108,7 +107,9 @@ class WorkspaceSelectorToolbar extends React.Component<{ classes } & ReturnType<
                         <ListItemIcon className={classes.icon}>
                             <IconButton
                                 className={classes.leftIcon}>
-                                <LocationCityIcon />
+                                <Icon
+                                    type={iconType.materialui}
+                                    iconName="location_city" />
                             </IconButton>
                         </ListItemIcon>
                         <ListItemText
@@ -121,7 +122,9 @@ class WorkspaceSelectorToolbar extends React.Component<{ classes } & ReturnType<
                     disableFocusRipple={true}
                     className={classes.button}
                     onClick={() => this.handleClick()}>
-                    <CloseIcon />
+                    <Icon
+                        type={iconType.materialui}
+                        iconName="close" />
                 </Button>
             </Toolbar>
         )

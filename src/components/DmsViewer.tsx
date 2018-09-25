@@ -1,6 +1,6 @@
 import { IconButton, MuiThemeProvider, Typography } from '@material-ui/core'
-import { Search } from '@material-ui/icons'
 import { DocumentTitlePager, DocumentViewer, Download, exampleTheme, LayoutAppBar, pollDocumentData, Print, RotateActivePages, SearchBar, Share, ToggleThumbnailsWidget, ZoomInOutWidget } from '@sensenet/document-viewer-react'
+import { Icon, iconType } from '@sensenet/icons-react'
 import { compile } from 'path-to-regexp'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -108,48 +108,48 @@ export class DmsViewerComponent extends React.Component<DmsViewerProps & ReturnT
                                 hostName={this.props.hostName}
                                 loaderImage={loaderImage}
                             >
-                                    <MediaQuery minDeviceWidth={700}>
+                                <MediaQuery minDeviceWidth={700}>
                                     {(matches) => matches ? (<div>
                                         <LayoutAppBar>
                                             <div style={{ flexShrink: 0 }}>
-                                            <ToggleThumbnailsWidget />
-                                            <Download download={(doc) => {
-                                                // tslint:disable-next-line:no-console
-                                                console.log('Download triggered', doc)
-                                            }} />
-                                            <Print print={(doc) => {
-                                                // tslint:disable-next-line:no-console
-                                                console.log('Print triggered', doc)
-                                            }} />
-                                            <Share share={(doc) => {
-                                                // tslint:disable-next-line:no-console
-                                                // console.log('Share triggered', doc)
-                                                this.props.openDialog((<ShareDialog currentContent={this.props.currentContent} />))
-                                            }} />
-                                            <ZoomInOutWidget />
-                                            <RotateActivePages />
-                                        </div>
-                                        <DocumentTitlePager />
-                                        <div style={{ flexShrink: 0 }}>
-                                            <SearchBar />
-                                        </div>
+                                                <ToggleThumbnailsWidget />
+                                                <Download download={(doc) => {
+                                                    // tslint:disable-next-line:no-console
+                                                    console.log('Download triggered', doc)
+                                                }} />
+                                                <Print print={(doc) => {
+                                                    // tslint:disable-next-line:no-console
+                                                    console.log('Print triggered', doc)
+                                                }} />
+                                                <Share share={(doc) => {
+                                                    // tslint:disable-next-line:no-console
+                                                    // console.log('Share triggered', doc)
+                                                    this.props.openDialog((<ShareDialog currentContent={this.props.currentContent} />))
+                                                }} />
+                                                <ZoomInOutWidget />
+                                                <RotateActivePages />
+                                            </div>
+                                            <DocumentTitlePager />
+                                            <div style={{ flexShrink: 0 }}>
+                                                <SearchBar />
+                                            </div>
                                         </LayoutAppBar>
                                     </div>) : <div>
-                                    <LayoutAppBar>
-                                        <Typography variant="title" color="inherit">{this.props.documentName}</Typography>
-                                        <div>
-                                        <Share share={(doc) => {
-                                                // tslint:disable-next-line:no-console
-                                                this.props.openDialog((<ShareDialog currentContent={this.props.currentContent} />))
-                                            }} />
-                                            <IconButton color="inherit">
-                                                <Search />
-                                            </IconButton>
+                                            <LayoutAppBar>
+                                                <Typography variant="title" color="inherit">{this.props.documentName}</Typography>
+                                                <div>
+                                                    <Share share={(doc) => {
+                                                        // tslint:disable-next-line:no-console
+                                                        this.props.openDialog((<ShareDialog currentContent={this.props.currentContent} />))
+                                                    }} />
+                                                    <IconButton color="inherit">
+                                                        <Icon type={iconType.materialui} iconName="search" />
+                                                    </IconButton>
+                                                </div>
+                                            </LayoutAppBar>
                                         </div>
-                                    </LayoutAppBar>
-                                    </div>
                                     }
-                                    </MediaQuery>
+                                </MediaQuery>
                             </DocumentViewer>
                         </MuiThemeProvider>
                     </div>

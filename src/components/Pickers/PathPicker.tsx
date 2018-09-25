@@ -1,9 +1,7 @@
 import { Button, DialogActions, DialogContent, List, ListItemIcon, ListItemText, MenuItem, Typography } from '@material-ui/core'
 import IconButton from '@material-ui/core/IconButton'
-import NewFolderIcon from '@material-ui/icons/CreateNewFolder'
-import FolderIcon from '@material-ui/icons/Folder'
-import OpenIcon from '@material-ui/icons/KeyboardArrowRight'
 import { GenericContent } from '@sensenet/default-content-types'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { Scrollbars } from 'react-custom-scrollbars'
 import { connect } from 'react-redux'
@@ -146,7 +144,7 @@ class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof map
                                     onMouseLeave={() => this.handleMouseOut()}
                                     selected={this.isSelected(item.Id)}>
                                     <ListItemIcon style={this.isSelected(item.Id) ? styles.iconsSelected : null}>
-                                        <FolderIcon />
+                                        <Icon type={iconType.materialui} iconName="folder" />
                                     </ListItemIcon>
                                     <ListItemText
                                         primary={
@@ -155,7 +153,9 @@ class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof map
                                                 {item.DisplayName}
                                             </Typography>} />
                                     {
-                                        this.hasChildren(item.Id) ? <OpenIcon
+                                        this.hasChildren(item.Id) ? <Icon
+                                            type={iconType.materialui}
+                                            iconName="keyboard_arrow_right"
                                             style={this.isHovered ? styles.openIcon : { display: 'none' }}
                                             onClick={(e) => this.handleClick(e, item)} /> :
                                             null
@@ -171,13 +171,13 @@ class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof map
                     {(matches) =>
                         <DialogActions className="mobile-picker-buttonRow">
                             <IconButton onClick={() => this.handleAddNewClick()}>
-                                <NewFolderIcon style={{color: '#016D9E'}} />
+                                <Icon type={iconType.materialui} iconName="create_new_folder" style={{ color: '#016D9E' }} />
                             </IconButton>
                             <Typography style={{ flexGrow: 1, color: '#016D9E', fontFamily: 'Raleway Medium', fontSize: 14 }} onClick={() => this.handleAddNewClick()}>
                                 {matches ? null : resources.NEW_FOLDER}
                             </Typography>
                             {matches ? <Button color="default" style={{ marginRight: 20 }} onClick={() => this.handleClose()}>{resources.CANCEL}</Button> : null}
-                            <Button onClick={() => this.handleSubmit()} variant="raised" className="disabled-mobile-button" disabled={selectedTarget.length > 0 ? false : true} color={ matches ? 'primary' : 'default'}>{resources[`${this.props.mode.toUpperCase()}_BUTTON`]}</Button>
+                            <Button onClick={() => this.handleSubmit()} variant="raised" className="disabled-mobile-button" disabled={selectedTarget.length > 0 ? false : true} color={matches ? 'primary' : 'default'}>{resources[`${this.props.mode.toUpperCase()}_BUTTON`]}</Button>
                         </DialogActions>
                     }
                 </MediaQuery>

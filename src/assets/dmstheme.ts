@@ -68,5 +68,12 @@ export const dmsTheme = createMuiTheme({
                 },
             },
         },
+        MuiIcon: {
+            root: {
+                '&.flaticon-upload-button:before': {
+                    fontSize: 16,
+                },
+            },
+        },
     },
 })

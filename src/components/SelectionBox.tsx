@@ -1,7 +1,7 @@
 import IconButton from '@material-ui/core/IconButton'
 import Snackbar from '@material-ui/core/Snackbar'
 import SnackbarContent from '@material-ui/core/SnackbarContent'
-import MoreVert from '@material-ui/icons/MoreVert'
+import { Icon, iconType } from '@sensenet/icons-react'
 import { Reducers } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -62,7 +62,7 @@ class SelectionBox extends React.Component<SelectionBoxProps, {}> {
                         onClick={(event) => this.handleClick(event)}
                         color="inherit"
                     >
-                        <MoreVert />
+                        <Icon type={iconType.materialui} iconName="more_vert" />
                     </IconButton>
                 }
             />

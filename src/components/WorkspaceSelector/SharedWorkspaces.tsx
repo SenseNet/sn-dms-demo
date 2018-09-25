@@ -1,7 +1,7 @@
 import { WithStyles, withStyles } from '@material-ui/core'
 import Badge from '@material-ui/core/Badge'
 import Button from '@material-ui/core/Button'
-import UsersIcon from '@material-ui/icons/SupervisorAccount'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 
 import { resources } from '../../assets/resources'
@@ -41,7 +41,10 @@ class SharedWorkspaces extends React.Component<{ classes } & WithStyles<C>, {}> 
         return (
             <Badge color="error" badgeContent={3} classes={{ badge: classes.badge }}>
                 <Button disableRipple={true} disableFocusRipple={true} className={classes.button}>
-                    <UsersIcon className={classes.leftIcon} />
+                    <Icon
+                        type={iconType.materialui}
+                        iconName="supervisor_account"
+                        className={classes.leftIcon} />
                     {resources.SHARED_WITH_ME}
                 </Button>
             </Badge>)

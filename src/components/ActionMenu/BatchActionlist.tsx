@@ -1,7 +1,6 @@
-import {Icon, iconType} from '@sensenet/icons-react'
 import IconButton from '@material-ui/core/IconButton'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
 import { GenericContent, IActionModel } from '@sensenet/default-content-types'
+import { Icon, iconType } from '@sensenet/icons-react'
 import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -166,7 +165,7 @@ class BatchActionlist extends React.Component<BatchActionListProps & ReturnType<
                         dialogComponent={<MoveToConfirmDialog />}
                         dialogTitle={resources.MOVE}
                         dialogCallback={Actions.moveBatch} />,
-                        'move',
+                    'move',
                     this.props.closePicker)
                 break
             case 'CopyBatch':
@@ -179,7 +178,7 @@ class BatchActionlist extends React.Component<BatchActionListProps & ReturnType<
                         dialogComponent={<CopyToConfirmDialog />}
                         dialogTitle={resources.COPY}
                         dialogCallback={Actions.copyBatch} />,
-                        'copy',
+                    'copy',
                     this.props.closePicker)
                 break
             default:
@@ -213,7 +212,7 @@ class BatchActionlist extends React.Component<BatchActionListProps & ReturnType<
                             onClick={(e) => this.handleClick(e)}
                             style={{ position: 'relative' }}
                         >
-                            <MoreVertIcon color="primary" />
+                            <Icon color="primary" type={iconType.materialui} iconName="more_vert" />
                         </IconButton>
                     </li>
                 </ul> :
@@ -224,7 +223,7 @@ class BatchActionlist extends React.Component<BatchActionListProps & ReturnType<
                         onClick={(e) => this.handleClickMobile(e)}
                         style={{ height: 36 }}
                     >
-                        <MoreVertIcon style={styles.menuIcon} />
+                        <Icon style={styles.menuIcon} type={iconType.materialui} iconName="more_vert" />
                     </IconButton>
             }}
         </MediaQuery>

@@ -1,5 +1,4 @@
 import { IconButton, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText } from '@material-ui/core'
-import { CheckCircle, Close, Error } from '@material-ui/icons'
 import { IUploadProgressInfo } from '@sensenet/client-core'
 import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
@@ -73,12 +72,14 @@ export class UploadBarItem extends React.Component<UploadBarItemProps, UploadBar
                                 color="inherit"
                                 onClick={() => this.onRemoveItem()}
                             >
-                                <Close style={{ width: '15px', height: '15px' }} color="primary" />
+                                <Icon type={iconType.materialui}
+                                    iconName="close"
+                                    style={{ width: '15px', height: '15px' }} color="primary" />
                             </IconButton>
                         </div>
                         : null}
-                    {this.props.item.error ? <Error color="error" style={{ verticalAlign: 'middle' }} /> : null}
-                    {!this.state.isLoading && !this.props.item.error ? <CheckCircle color="secondary" style={{ verticalAlign: 'middle' }} /> : null}
+                    {this.props.item.error ? <Icon type={iconType.materialui} iconName="error" color="error" style={{ verticalAlign: 'middle' }} /> : null}
+                    {!this.state.isLoading && !this.props.item.error ? <Icon type={iconType.materialui} iconName="check_circle" color="secondary" style={{ verticalAlign: 'middle' }} /> : null}
                 </ListItemSecondaryAction>
             </ListItem>)
     }

@@ -4,7 +4,6 @@ import List from '@material-ui/core/List'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import { Folder, Forward, InsertDriveFile, ModeEdit, Warning } from '@material-ui/icons'
 import { IActionModel } from '@sensenet/default-content-types'
 import { pollDocumentData } from '@sensenet/document-viewer-react'
 import { Icon, iconType } from '@sensenet/icons-react'
@@ -353,13 +352,16 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                                             icons[action.Icon.toLowerCase() as keyof typeof icons]
                                     }>
                                         {
-                                            action.Name === 'MoveTo' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.3em', width: '0.5em', color: 'white' }} /> : null
+                                            action.Name === 'MoveTo' ?
+                                                <Icon iconName="forward" type={iconType.materialui} style={{ position: 'absolute', left: '1.8em', top: '1.1em', color: '#fff', fontSize: 12 }} /> : null
                                         }
                                         {
-                                            action.Name === 'Rename' ? <ModeEdit style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
+                                            action.Name === 'Rename' ?
+                                                <Icon iconName="mode_edit" type={iconType.materialui} style={{ position: 'absolute', left: '1.87em', top: '1.38em', color: '#fff', fontSize: 11 }} /> : null
                                         }
                                         {
-                                            action.Name === 'ForceUndoCheckOut' ? <Warning style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
+                                            action.Name === 'ForceUndoCheckOut' ?
+                                                <Icon  iconName="warning" type={iconType.materialui} style={{ position: 'absolute', left: '1.87em', top: '1.38em', color: '#fff', fontSize: 11 }} /> : null
                                         }
                                     </Icon>
                                 </ListItemIcon>
@@ -381,8 +383,8 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                                         <MenuItem style={styles.menuItem}>
                                             <ListItemIcon style={styles.actionIcon}>
                                                 <div>
-                                                    <InsertDriveFile />
-                                                    <Forward style={{ position: 'absolute', left: '0.86em', top: '0.28em', width: '0.5em', color: 'white', transform: 'rotate(-90deg)' }} />
+                                                    <Icon  iconName="insert_drive_file" type={iconType.materialui} />
+                                                    <Icon iconName="forward" type={iconType.materialui} style={{ color: '#fff', position: 'absolute', left: '1.75em', top: '1em', fontSize: 12, transform: 'rotate(-90deg)' }} />
                                                 </div>
                                             </ListItemIcon>
                                             {resources.UPLOAD_BUTTON_UPLOAD_FILE_TITLE}
@@ -403,8 +405,8 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                                         <MenuItem style={styles.menuItem}>
                                             <ListItemIcon style={styles.actionIcon}>
                                                 <div>
-                                                    <Folder />
-                                                    <Forward style={{ position: 'absolute', left: '0.87em', top: '0.22em', width: '0.5em', color: 'white', transform: 'rotate(-90deg)' }} />
+                                                    <Icon iconName="folder" type={iconType.materialui} />
+                                                    <Icon iconName="forward" type={iconType.materialui} style={{ color: '#fff', position: 'absolute', left: '1.75em', top: '0.85em', fontSize: 12, transform: 'rotate(-90deg)' }} />
                                                 </div>
                                             </ListItemIcon>
                                             {resources.UPLOAD_BUTTON_UPLOAD_FOLDER_TITLE}
@@ -461,25 +463,19 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                                                     icons[action.Icon.toLowerCase() as keyof typeof icons]
                                             }
                                             {
-                                                action.Name === 'MoveTo' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.3em', width: '0.5em', color: 'white' }} /> : null
+                                                action.Name === 'MoveTo' ? <Icon iconName="forward" type={iconType.materialui} style={{ color: '#fff', position: 'absolute', left: '1.75em', top: '1.4em', fontSize: 12 }} /> : null
                                             }
                                             {
-                                                action.Name === 'Rename' ? <ModeEdit style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
+                                                action.Name === 'Rename' ? <Icon iconName="mode_edit" type={iconType.materialui} style={{ color: '#fff', position: 'absolute', left: '1.87em', top: '1.78em', fontSize: 11 }} /> : null
                                             }
                                             {
-                                                action.Name === 'ForceUndoCheckOut' ? <Warning style={{ position: 'absolute', left: '0.87em', top: '0.38em', width: '0.5em', color: 'white' }} /> : null
+                                                action.Name === 'ForceUndoCheckOut' ? <Icon iconName="warning" type={iconType.materialui} style={{ color: '#fff', position: 'absolute', left: '1.87em', top: '1.38em', fontSize: 11 }} /> : null
                                             }
                                             {
-                                                action.Name === 'uploadFile' ? <Forward style={{ position: 'absolute', left: '0.86em', top: '0.48em', width: '0.5em', color: 'white', transform: 'rotate(-90deg)' }} /> : null
+                                                action.Name === 'uploadFile' ? <Icon iconName="forward" type={iconType.materialui} style={{ color: '#fff', position: 'absolute', left: '0.86em', top: '0.48em', fontSize: 11, transform: 'rotate(-90deg)' }} /> : null
                                             }
                                             {
-                                                action.Name === 'uploadFolder' ? <Forward style={{ position: 'absolute', left: '0.87em', top: '0.42em', width: '0.5em', color: 'white', transform: 'rotate(-90deg)' }} /> : null
-                                            }
-                                            {
-                                                action.Icon === 'word' ? 'aaa' : null
-                                            }
-                                            {
-                                                action.Icon === 'excel' ? 'bbb' : null
+                                                action.Name === 'uploadFolder' ? <Icon iconName="forward" type={iconType.materialui} style={{ color: '#fff', position: 'absolute', left: '0.87em', top: '0.42em', fontSize: 11, transform: 'rotate(-90deg)' }} /> : null
                                             }
                                         </Icon>
                                     </ListItemIcon>

@@ -102,7 +102,18 @@ class DisplayNameMobileCell extends React.Component<DisplayNameMobilCellProps & 
         const icon = this.props.content.Icon && this.props.icons[this.props.content.Icon.toLowerCase() as any]
         const { content } = this.props
         const checkedOutBy = content.CheckedOutTo ? this.lockedByName(content) : null
-
+        let typeOfIcon
+        switch (this.props.content.Icon) {
+            case 'word':
+            case 'excel':
+            case 'acrobat':
+            case 'powerpoint':
+                typeOfIcon = iconType.flaticon
+                break
+            default:
+                typeOfIcon = iconType.materialui
+                break
+        }
         return (<TableCell className="display-name" padding="checkbox" onClick={this.handleOnClick}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 {this.props.hasSelected ?
@@ -118,7 +129,7 @@ class DisplayNameMobileCell extends React.Component<DisplayNameMobilCellProps & 
                             <Icon
                                 style={{ marginRight: '.5em' }}
                                 onClick={this.handleContentSelection}
-                                type={iconType.materialui}
+                                type={typeOfIcon}
                                 iconName={icon} />
                             : null}
                     </span>

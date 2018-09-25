@@ -1,6 +1,6 @@
 import { Drawer, IconButton, LinearProgress, List, ListSubheader, Paper, Snackbar } from '@material-ui/core'
-import { Close } from '@material-ui/icons'
 import { IUploadProgressInfo } from '@sensenet/client-core'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import MediaQuery from 'react-responsive'
 import { ExtendedUploadProgressInfo } from '../../Actions'
@@ -78,7 +78,7 @@ export class UploadBar extends React.Component<UploadBarProps, UploadBarState> {
                                 color="inherit"
                                 onClick={() => this.onClose()}
                             >
-                                <Close style={{ width: '25px', height: '24px' }} />
+                                <Icon type={iconType.materialui} iconName="close" style={{ width: '25px', height: '24px' }} />
                             </IconButton>
                         </div>
                         {this.state.isUploadInProgress ?
