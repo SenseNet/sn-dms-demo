@@ -1,9 +1,8 @@
 import Checkbox from '@material-ui/core/Checkbox'
-import Icon from '@material-ui/core/Icon'
 import TableCell from '@material-ui/core/TableCell'
 import Tooltip from '@material-ui/core/Tooltip'
-
 import { GenericContent } from '@sensenet/default-content-types'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '../../..'
@@ -105,7 +104,18 @@ class DisplayNameMobileCell extends React.Component<DisplayNameMobilCellProps & 
         const icon = this.props.content.Icon && this.props.icons[this.props.content.Icon.toLowerCase() as any]
         const { content } = this.props
         const checkedOutBy = content.CheckedOutTo ? this.lockedByName(content) : null
-
+        let typeOfIcon
+        switch (this.props.content.Icon) {
+            case 'word':
+            case 'excel':
+            case 'acrobat':
+            case 'powerpoint':
+                typeOfIcon = iconType.flaticon
+                break
+            default:
+                typeOfIcon = iconType.materialui
+                break
+        }
         return (<TableCell className="display-name" padding="checkbox" onClick={this.handleOnClick}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 {this.props.hasSelected ?
@@ -118,7 +128,11 @@ class DisplayNameMobileCell extends React.Component<DisplayNameMobilCellProps & 
 
                     <span>
                         {icon ?
-                            <Icon style={{ marginRight: '.5em' }} onClick={this.handleContentSelection}>{icon}</Icon>
+                            <Icon
+                                style={{ marginRight: '.5em' }}
+                                onClick={this.handleContentSelection}
+                                type={typeOfIcon}
+                                iconName={icon} />
                             : null}
                     </span>
                 }
@@ -128,14 +142,23 @@ class DisplayNameMobileCell extends React.Component<DisplayNameMobilCellProps & 
                         <Tooltip title={`${resources.CHECKED_OUT_BY}${checkedOutBy}`}>
                             <div style={styles.lockedCellContainer as any}>
                                 {/*<span style={styles.userName}>{checkedOutBy}</span> */}
-                                <span style={styles.icon}><Icon style={{ fontSize: 20 }}>lock</Icon></span>
+                                <span style={styles.icon}>
+                                    <Icon
+                                        style={{ fontSize: 20 }}
+                                        type={iconType.materialui}
+                                        iconName="lock" />
+                                </span>
                             </div>
                         </Tooltip> :
                         null :
                     this.state.status === DocumentState.Approvable ?
                         <Tooltip title={resources.APPROVABLE}>
                             <div style={styles.lockedCellContainer as any}>
-                                <span style={styles.icon}><Icon>access_time</Icon></span>
+                                <span style={styles.icon}>
+                                    <Icon
+                                        style={{ fontSize: 20 }}
+                                        type={iconType.materialui}
+                                        iconName="access_time" /></span>
                             </div>
                         </Tooltip> :
                         null

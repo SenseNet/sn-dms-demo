@@ -7,9 +7,9 @@ import Select from '@material-ui/core/Select'
 import withStyles from '@material-ui/core/styles/withStyles'
 import Typography from '@material-ui/core/Typography'
 
-import { ArrowDropDown, Edit, Link } from '@material-ui/icons'
 import { PathHelper } from '@sensenet/client-utils'
 import { GenericContent } from '@sensenet/default-content-types'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -269,8 +269,8 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
                                         aria-haspopup="true"
                                         onClick={this.handleOpenLinkSharingMenu}
                                     >
-                                        <ArrowDropDown fontSize="inherit" />
-                                        <Edit fontSize="inherit" />
+                                        <Icon fontSize="inherit" type={iconType.materialui} iconName="arrow_drop_down" />
+                                        <Icon fontSize="inherit" type={iconType.materialui} iconName="edit" />
                                     </Button>
                                     <Menu
                                         id="simple-menu"
@@ -285,7 +285,7 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
 
                                 </div>
                                 <Button style={{ ...styles.link, fontSize: '12px' }} onClick={this.copyUrl}>
-                                    <Link /> &nbsp;
+                                <Icon type={iconType.materialui} iconName="link" /> &nbsp;
                             {resources.SHARE_COPY_LINK}
                                 </Button>
                             </div>

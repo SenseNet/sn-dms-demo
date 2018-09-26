@@ -1,8 +1,8 @@
 import IconButton from '@material-ui/core/IconButton'
 import Snackbar from '@material-ui/core/Snackbar'
 import withStyles from '@material-ui/core/styles/withStyles'
-import CloseIcon from '@material-ui/icons/Close'
 import { ExtendedError, isExtendedError } from '@sensenet/client-core/dist/Repository/Repository'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -151,7 +151,7 @@ class MessageBar extends React.Component<{ classes } & ReturnType<typeof mapStat
                                 color={matches ? 'inherit' : 'primary'}
                                 onClick={() => this.closeMessageBar()}
                             >
-                                <CloseIcon />
+                                <Icon type={iconType.materialui} iconName="close" />
                             </IconButton>,
                         ]}
                     />

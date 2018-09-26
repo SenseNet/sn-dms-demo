@@ -1,7 +1,6 @@
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
-import Icon from '@material-ui/core/Icon'
 import TableCell from '@material-ui/core/TableCell'
-
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '../../..'
@@ -75,7 +74,9 @@ class RenameCell extends React.Component<RenameCellProps & ReturnType<typeof map
             <TableCell padding="checkbox" className="DisplayName display-name">
                 <form onSubmit={this.handleSubmit} style={{ display: 'flex', alignItems: 'center' }}>
                     {icon ?
-                        <Icon style={{ marginRight: '.5em' }}>{icon}</Icon>
+                        <Icon
+                            type={iconType.materialui}
+                            iconName={icon} style={{ marginRight: '.5em' }} />
                         : null}
 
                     <ClickAwayListener onClickAway={this.handleDismiss}>

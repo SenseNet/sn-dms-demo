@@ -66,14 +66,6 @@ module.exports = {
             { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
 
 
-            {
-                test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/, /\.svg$/, /\.eot$/, /\.woff$/, /\.woff2$/, /\.ttf$/],
-                loader: require.resolve('url-loader'),
-                options: {
-                    limit: 10000,
-                    name: 'static/media/[name].[hash:8].[ext]',
-                },
-            },
 
             {
                 test: /\.css$/,
@@ -106,7 +98,16 @@ module.exports = {
                         },
                     },
                 ],
+            },
+            {
+                test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/, /\.svg$/, /\.eot$/, /\.woff$/, /\.woff2$/, /\.ttf$/],
+                loader: require.resolve('url-loader'),
+                options: {
+                    limit: 10000,
+                    name: 'static/media/[name].[hash:8].[ext]',
+                },
             }
+
         ]
     },
 

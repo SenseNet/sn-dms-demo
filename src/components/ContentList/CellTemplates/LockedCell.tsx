@@ -1,8 +1,7 @@
-import Icon from '@material-ui/core/Icon'
 import TableCell from '@material-ui/core/TableCell'
-
 import Tooltip from '@material-ui/core/Tooltip'
 import { GenericContent } from '@sensenet/default-content-types'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '../../..'
@@ -81,14 +80,23 @@ class LockedCell extends React.Component<LockedCellProps & ReturnType<typeof map
                         <Tooltip title={`${resources.CHECKED_OUT_BY}${checkedOutBy}`}>
                             <div style={styles.lockedCellContainer as any}>
                                 <span style={styles.userName}>{checkedOutBy}</span>
-                                <span style={styles.icon}><Icon style={{ fontSize: 20 }}>lock</Icon></span>
+                                <span style={styles.icon}>
+                                    <Icon
+                                        style={{ fontSize: 20 }}
+                                        iconName="lock"
+                                        type={iconType.materialui} />
+                                </span>
                             </div>
                         </Tooltip> :
                         null :
                     this.state.status === DocumentState.Approvable ?
                         <Tooltip title={resources.APPROVABLE}>
                             <div style={styles.lockedCellContainer as any}>
-                                <span style={styles.icon}><Icon>access_time</Icon></span>
+                                <span style={styles.icon}>
+                                    <Icon
+                                        style={{ fontSize: 20 }}
+                                        iconName="access_time"
+                                        type={iconType.materialui} /></span>
                             </div>
                         </Tooltip> :
                         null

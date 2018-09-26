@@ -1,9 +1,8 @@
-import Icon from '@material-ui/core/Icon'
 import ListItemText from '@material-ui/core/ListItemText'
 import MenuItem from '@material-ui/core/MenuItem'
 import { StyleRulesCallback } from '@material-ui/core/styles/withStyles'
 import withStyles from '@material-ui/core/styles/withStyles'
-
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
@@ -130,9 +129,11 @@ class ContentTemplatesMenu extends React.Component<ContentTemplatesMenuProps, {}
                     selected={active}
                     classes={{ root: classes.root, selected: classes.selected }}
                     onClick={(e) => this.handleMenuItemClick('contenttemplates')}>
-                    <Icon className={active ? classes.iconWhiteActive : classes.iconWhite} color="primary">
-                        {item.icon}
-                    </Icon>
+                    <Icon
+                        className={active ? classes.iconWhiteActive : classes.iconWhite}
+                        color="primary"
+                        type={iconType.materialui}
+                        iconName={item.icon}/>
                     <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={item.title} />
                 </MenuItem>
                 {/* <div className={active ? classes.open : classes.closed}>

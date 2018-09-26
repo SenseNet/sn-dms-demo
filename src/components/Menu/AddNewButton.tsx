@@ -1,5 +1,5 @@
 import Button from '@material-ui/core/Button'
-import { Add } from '@material-ui/icons'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { resources } from '../../assets/resources'
 
@@ -31,7 +31,7 @@ export class AddNewButton extends React.Component<{ contentType, onClick }, {}> 
                     boxShadow: '0px 1px 3px 0px rgba(0, 0, 0, 0.2),0px 1px 1px 0px rgba(0, 0, 0, 0.14),0px 2px 1px -1px rgba(0, 0, 0, 0.12)',
                 }}
                 onClick={(ev) => this.handleButtonClick(ev)}>
-                <Add style={{ fontSize: 20, marginRight: 5 }} />
+                <Icon type={iconType.materialui} iconName="add" style={{ fontSize: 20, marginRight: 5, color: '#fff' }} />
                 {this.props.contentType ? resources.ADD_NEW + ' ' + resources[this.props.contentType.toUpperCase()] : resources.ADD_NEW}
             </Button>
         )

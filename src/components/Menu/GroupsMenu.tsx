@@ -1,9 +1,8 @@
 import Divider from '@material-ui/core/Divider'
-import Icon from '@material-ui/core/Icon'
 import ListItemText from '@material-ui/core/ListItemText'
 import MenuItem from '@material-ui/core/MenuItem'
 import withStyles, { StyleRulesCallback } from '@material-ui/core/styles/withStyles'
-
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { AddNewButton } from './AddNewButton'
@@ -95,9 +94,11 @@ class GroupsMenu extends React.Component<GroupsMenuProps, {}> {
                     selected={active}
                     classes={matches ? { root: classes.root, selected: classes.selected } : { root: classes.rootMobile, selected: classes.selectedMobile }}
                     onClick={(e) => this.handleMenuItemClick('groups')}>
-                    <Icon className={matches ? active ? classes.iconActive : classes.icon : active ? classes.iconActive : classes.iconMobile} color="primary">
-                        {item.icon}
-                    </Icon>
+                    <Icon
+                        className={active ? classes.iconWhiteActive : classes.iconWhite}
+                        color="primary"
+                        type={iconType.materialui}
+                        iconName={item.icon} />
                     <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={item.title} />
                 </MenuItem>
                 <div className={active ? classes.open : classes.closed}>

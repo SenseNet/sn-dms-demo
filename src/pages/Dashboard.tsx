@@ -3,10 +3,9 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
 import Drawer from '@material-ui/core/Drawer'
 import IconButton from '@material-ui/core/IconButton'
-
-import CloseIcon from '@material-ui/icons/Close'
 import { LoginState } from '@sensenet/client-core'
 import { PathHelper } from '@sensenet/client-utils'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import * as Loadable from 'react-loadable'
 import { connect } from 'react-redux'
@@ -247,7 +246,9 @@ class DashboardComponent extends React.Component<DashboardProps & ReturnType<typ
                         {matches ? <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth="md">
                             <DialogContent children={dialogContent} />
                             <IconButton onClick={closeDialog} style={styles.dialogClose as any}>
-                                <CloseIcon />
+                                <Icon
+                                    type={iconType.materialui}
+                                    iconName="close" />
                             </IconButton>
                         </Dialog> :
                             <Drawer open={isDialogOpen} anchor="bottom" onClose={closeDialog}>

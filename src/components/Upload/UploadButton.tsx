@@ -3,8 +3,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-
-import { CloudUpload, Folder, Forward, InsertDriveFile } from '@material-ui/icons'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { v1 } from 'uuid'
 import { resources } from '../../assets/resources'
@@ -90,7 +89,10 @@ export class UploadButton extends React.Component<UploadButtonProps, UploadButto
                     letterSpacing: 1,
                 }}
                 onClick={(ev) => this.toggleOpen(ev)}>
-                <CloudUpload style={{ fontSize: 20, marginRight: 5 }} />
+                <Icon
+                    type={iconType.flaticon}
+                    iconName="upload-button"
+                    style={{ marginRight: 5, color: '#fff', textAlign: 'center' }} />
                 {resources.UPLOAD_BUTTON_TITLE}
             </Button>
             <Menu
@@ -111,8 +113,14 @@ export class UploadButton extends React.Component<UploadButtonProps, UploadButto
                     <MenuItem style={styles.menuItem}>
                         <ListItemIcon style={styles.icon}>
                             <div>
-                                <InsertDriveFile style={{ color: theme.palette.primary.main }} />
-                                <Forward style={{ position: 'absolute', left: '0.86em', top: '0.28em', width: '0.5em', color: 'white', transform: 'rotate(-90deg)' }} />
+                                <Icon
+                                    type={iconType.materialui}
+                                    iconName="insert_drive_file"
+                                    style={{ color: theme.palette.primary.main }} />
+                                <Icon
+                                    type={iconType.materialui}
+                                    iconName="forward"
+                                    style={{ position: 'absolute', left: '0.86em', top: '0.28em', width: '0.5em', color: 'white', transform: 'rotate(-90deg)' }} />
                             </div>
                         </ListItemIcon>
                         <ListItemText style={styles.text} primary={resources.UPLOAD_BUTTON_UPLOAD_FILE_TITLE} disableTypography />
@@ -122,8 +130,14 @@ export class UploadButton extends React.Component<UploadButtonProps, UploadButto
                     <MenuItem style={styles.menuItem}>
                         <ListItemIcon style={styles.icon}>
                             <div>
-                                <Folder style={{ color: theme.palette.primary.main }} />
-                                <Forward style={{ position: 'absolute', left: '0.87em', top: '0.22em', width: '0.5em', color: 'white', transform: 'rotate(-90deg)' }} />
+                                <Icon
+                                    type={iconType.materialui}
+                                    iconName="folder"
+                                    style={{ color: theme.palette.primary.main }} />
+                                <Icon
+                                    type={iconType.materialui}
+                                    iconName="forward"
+                                    style={{ position: 'absolute', left: '0.87em', top: '0.22em', width: '0.5em', color: 'white', transform: 'rotate(-90deg)' }} />
                             </div>
                         </ListItemIcon>
                         <ListItemText style={styles.text} primary={resources.UPLOAD_BUTTON_UPLOAD_FOLDER_TITLE} disableTypography />

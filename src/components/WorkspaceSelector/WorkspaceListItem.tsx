@@ -3,8 +3,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import MenuItem from '@material-ui/core/MenuItem'
 import withStyles from '@material-ui/core/styles/withStyles'
-import StarIcon from '@material-ui/icons/Star'
 import { Workspace } from '@sensenet/default-content-types'
+import { Icon, iconType } from '@sensenet/icons-react'
 import { Actions } from '@sensenet/redux'
 import { compile } from 'path-to-regexp'
 import * as React from 'react'
@@ -114,7 +114,10 @@ class WorkspaceListItem extends React.Component<{ classes } & ReturnType<typeof 
                     <IconButton
                         className={followed ? classes.followedIconButton : classes.iconButton}
                         onClick={() => this.startButtonClick(workspace.Id)}>
-                        <StarIcon />
+                        <Icon
+                            className={followed ? classes.followedIconButton : classes.iconButton}
+                            type={iconType.materialui}
+                            iconName="star" />
                     </IconButton>
                 </ListItemIcon>
                 <ListItemText

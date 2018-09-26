@@ -1,11 +1,10 @@
-import Icon from '@material-ui/core/Icon'
 import IconButton from '@material-ui/core/IconButton'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
-import { CheckCircle, Close, Error } from '@material-ui/icons'
 import { IUploadProgressInfo } from '@sensenet/client-core'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { ExtendedUploadProgressInfo } from '../../Actions'
 import { icons } from '../../assets/icons'
@@ -54,7 +53,10 @@ export class UploadBarItem extends React.Component<UploadBarItemProps, UploadBar
         return (
             <ListItem style={{ padding: this.props.isMobile ? undefined : '.3em', opacity: this.state.isLoading ? 0.65 : 1, boxShadow: '0px -2px 0px #ddd' }}>
                 <ListItemIcon style={{ marginRight: '-.5em' }}>
-                    <Icon style={{ color: theme.palette.secondary.main }}>{this.state.icon}</Icon>
+                    <Icon
+                        type={iconType.materialui}
+                        style={{ color: theme.palette.secondary.main }}
+                        iconName={this.state.icon} />
                 </ListItemIcon>
                 <ListItemText primary={
                     <div style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
@@ -74,12 +76,14 @@ export class UploadBarItem extends React.Component<UploadBarItemProps, UploadBar
                                 color="inherit"
                                 onClick={() => this.onRemoveItem()}
                             >
-                                <Close style={{ width: '15px', height: '15px' }} color="primary" />
+                                <Icon type={iconType.materialui}
+                                    iconName="close"
+                                    style={{ width: '15px', height: '15px' }} color="primary" />
                             </IconButton>
                         </div>
                         : null}
-                    {this.props.item.error ? <Error color="error" style={{ verticalAlign: 'middle' }} /> : null}
-                    {!this.state.isLoading && !this.props.item.error ? <CheckCircle color="secondary" style={{ verticalAlign: 'middle' }} /> : null}
+                    {this.props.item.error ? <Icon type={iconType.materialui} iconName="error" color="error" style={{ verticalAlign: 'middle' }} /> : null}
+                    {!this.state.isLoading && !this.props.item.error ? <Icon type={iconType.materialui} iconName="check_circle" color="secondary" style={{ verticalAlign: 'middle' }} /> : null}
                 </ListItemSecondaryAction>
             </ListItem>)
     }

@@ -1,10 +1,9 @@
 import Divider from '@material-ui/core/Divider'
-import Icon from '@material-ui/core/Icon'
 import ListItemText from '@material-ui/core/ListItemText'
 import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
 import withStyles, {StyleRulesCallback} from '@material-ui/core/styles/withStyles'
-
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
@@ -135,9 +134,11 @@ class ContentTypesMenu extends React.Component<ContentTypesMenuProps, {}> {
                     selected={active}
                     classes={{ root: classes.root, selected: classes.selected }}
                     onClick={(e) => this.handleMenuItemClick('contenttypes')}>
-                    <Icon className={active ? classes.iconWhiteActive : classes.iconWhite} color="primary">
-                        {item.icon}
-                    </Icon>
+                    <Icon
+                        className={active ? classes.iconWhiteActive : classes.iconWhite}
+                        color="primary"
+                        type={iconType.materialui}
+                        iconName={item.icon} />
                     <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={item.title} />
                 </MenuItem>
                 <div className={active ? classes.open : classes.closed}>
@@ -147,9 +148,10 @@ class ContentTypesMenu extends React.Component<ContentTypesMenuProps, {}> {
                         {subMenu.map((menuitem, index) => {
                             return (<MenuItem className={classes.submenuItem} key={index}
                                 onClick={(e) => this.handleSubmenuItemClick(menuitem.name)}>
-                                <Icon className={subactive === menuitem.name ? classes.submenuIconActive : classes.submenuIcon}>
-                                    {menuitem.icon}
-                                </Icon>
+                                <Icon
+                                    className={subactive === menuitem.name ? classes.submenuIconActive : classes.submenuIcon}
+                                    type={iconType.materialui}
+                                    iconName={menuitem.icon} />
                                 <ListItemText classes={{ primary: subactive === menuitem.name ? classes.primarySubActive : classes.primarySub }} inset primary={menuitem.title} />
                             </MenuItem>)
                         })}
