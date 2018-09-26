@@ -23,7 +23,7 @@ const actionmenu = DMSReducers.actions
 const myReducer = combineReducers({ sensenet, actionmenu, dms }) as any
 
 const repository = new Repository({
-    repositoryUrl: process.env.REACT_APP_SERVICE_URL || 'https://dmsservice.demo.sensenet.com',
+    repositoryUrl: process.env.REACT_APP_SERVICE_URL,
     requiredSelect: ['Id', 'Path', 'Name', 'Type', 'ParentId'] as any,
 })
 

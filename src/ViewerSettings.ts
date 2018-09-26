@@ -1,6 +1,6 @@
 import { Repository } from '@sensenet/client-core'
 import { File as SnFile } from '@sensenet/default-content-types'
-import { Annotation, DocumentViewerSettings, Highlight, PreviewImageData, Redaction, Shape } from '@sensenet/document-viewer-react'
+import { Annotation, DocumentViewerSettings, Highlight, PreviewImageData, Redaction, Shape } from '@sensenet/document-viewer-react/dist/models'
 import { v1 } from 'uuid'
 
 /**

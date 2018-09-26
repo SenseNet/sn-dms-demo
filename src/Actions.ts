@@ -4,10 +4,12 @@ import { File as SnFile, GenericContent } from '@sensenet/default-content-types'
 import { IActionModel } from '@sensenet/default-content-types/dist/IActionModel'
 import { Action, AnyAction, Dispatch } from 'redux'
 
-import { debounce } from 'lodash'
 import { InjectableAction } from 'redux-di-middleware'
 import { rootStateType } from '.'
 import { updateChildrenOptions } from './store/documentlibrary/actions'
+
+// tslint:disable-next-line:no-var-requires
+import * as debounce from 'lodash.debounce'
 
 export enum MessageMode { error = 'error', warning = 'warning', info = 'info' }
 

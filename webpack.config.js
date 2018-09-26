@@ -20,7 +20,7 @@ module.exports = {
             chunks: 'all',
             cacheGroups: {
                 commons: {
-                    test: /[\\/]node_modules[\\/]/,
+                    minChunks: 2,
                     name: 'vendors',
                     chunks: 'all',
                 },
@@ -42,13 +42,26 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './public/index.html'
         }),
+        new webpack.EnvironmentPlugin({
+            NODE_ENV: 'development',
+            DEBUG: true,
+            REACT_APP_SERVICE_URL: 'https://dmsservice.demo.sensenet.com',
+            REACT_APP_RECAPTCHA_KEY: '6LcRiy4UAAAAANJjCL8H5c4WG2YeejRuA35e1gcU',
+        }),
         // new BundleAnalyzerPlugin()
     ],
     module: {
         rules: [
             // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
-            { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
-
+            { 
+                test: /\.tsx?$/,
+                options: {
+                    useTranspileModule: true,
+                    forceIsolatedModules: true,
+                    useCache: true
+                },
+                loader: "awesome-typescript-loader"
+            },
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
             { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
 

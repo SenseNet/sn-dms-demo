@@ -1,12 +1,13 @@
 import CircularProgress from '@material-ui/core/CircularProgress'
-import { NewView } from '@sensenet/controls-react'
 import { Actions, Reducers } from '@sensenet/redux'
 import * as React from 'react'
+import * as Loadable from 'react-loadable'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { repository } from '../../index'
+import { FullScreenLoader } from '../FullScreenLoader'
 
 interface AddNewDialogProps {
     parentPath: string,
@@ -32,6 +33,11 @@ const mapDispatchToProps = {
     getSchema: Actions.getSchema,
 }
 
+const LoadableNewView = Loadable({
+    loader: async () => (await import(/* webpackChunkName: "controls-react" */ '@sensenet/controls-react/dist/viewcontrols/NewView')).NewView,
+    loading: () => <FullScreenLoader />,
+})
+
 class AddNewDialog extends React.Component<AddNewDialogProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, AddNewDialogState> {
     public state = {
         ctype: '',
@@ -53,12 +59,13 @@ class AddNewDialog extends React.Component<AddNewDialogProps & ReturnType<typeof
     }
     public render() {
         const { parentPath, contentTypeName, createContent, schema, title, extension } = this.props
+
         return (
             <MediaQuery minDeviceWidth={700}>
                 {(matches) =>
                     <div style={matches ? { width: 500 } : null}>
                         {schema ?
-                            <NewView
+                            <LoadableNewView
                                 schema={schema}
                                 path={parentPath}
                                 repository={repository}

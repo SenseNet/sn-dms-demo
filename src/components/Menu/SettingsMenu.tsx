@@ -1,8 +1,11 @@
-import { ListItemText, MenuItem, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
+import ListItemText from '@material-ui/core/ListItemText'
+import MenuItem from '@material-ui/core/MenuItem'
+import MenuList from '@material-ui/core/MenuList'
+import withStyles, { StyleRulesCallback } from '@material-ui/core/styles/withStyles'
 import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { RouteComponentProps, withRouter } from 'react-router'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { resources } from '../../assets/resources'
 
 const subMenu = [

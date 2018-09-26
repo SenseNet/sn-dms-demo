@@ -1,7 +1,10 @@
-import { Divider, ListItemText, MenuItem, StyleRulesCallback, withStyles } from '@material-ui/core'
+import Divider from '@material-ui/core/Divider'
+import ListItemText from '@material-ui/core/ListItemText'
+import MenuItem from '@material-ui/core/MenuItem'
+import withStyles, { StyleRulesCallback } from '@material-ui/core/styles/withStyles'
 import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
-import { RouteComponentProps, withRouter } from 'react-router'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { AddNewButton } from './AddNewButton'
 
 const styles: StyleRulesCallback = (theme) => ({

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import { MemoryRouter } from 'react-router'
+import { MemoryRouter } from 'react-router-dom'
 import { withStore } from '../../__tests__/TestHelper'
 import FloatingActionButton from '../FloatingActionButton'
 

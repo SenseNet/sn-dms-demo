@@ -1,4 +1,10 @@
-import { Table, TableBody, TableCell, TableHead, TableRow, withStyles } from '@material-ui/core'
+import withStyles from '@material-ui/core/styles/withStyles'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+
 import { GenericContent } from '@sensenet/default-content-types'
 import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'

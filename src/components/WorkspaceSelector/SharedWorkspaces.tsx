@@ -1,6 +1,6 @@
-import { WithStyles, withStyles } from '@material-ui/core'
 import Badge from '@material-ui/core/Badge'
 import Button from '@material-ui/core/Button'
+import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles'
 import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 
