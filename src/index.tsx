@@ -17,7 +17,7 @@ import Sensenet from './Sensenet'
 import { MessageBoxHandler } from './utils/MessageBoxHandler'
 import { getViewerSettings } from './ViewerSettings'
 export const repository = new Repository({
-  repositoryUrl: process.env.REACT_APP_SERVICE_URL || 'https://dmsservice.demo.sensenet.com',
+  repositoryUrl: process.env.REACT_APP_SERVICE_URL,
   requiredSelect: ['Id', 'Path', 'Name', 'Type', 'ParentId', 'Actions', 'Avatar', 'Owner', 'DisplayName', 'Locked', 'CheckedOutTo', 'Approvable'] as any,
   defaultExpand: ['Actions', 'Owner', 'CheckedOutTo'] as any,
   schemas: customSchema,
