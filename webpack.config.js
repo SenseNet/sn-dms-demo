@@ -1,6 +1,6 @@
 var path = require("path");
 const webpack = require('webpack');
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const autoprefixer = require('autoprefixer');
@@ -10,12 +10,14 @@ module.exports = {
     mode: 'development',
     entry: "./src/index.tsx",
     output: {
-        filename: "bundle.js",
+        filename: "[name].bundle.js",
+        chunkFilename: '[name].bundle.js',
         publicPath: "/",
         path: path.resolve(__dirname + "/build")
     },
     optimization: {
         splitChunks: {
+            chunks: 'all',
             cacheGroups: {
                 commons: {
                     test: /[\\/]node_modules[\\/]/,
@@ -39,7 +41,8 @@ module.exports = {
         }]),
         new HtmlWebpackPlugin({
             template: './public/index.html'
-        })
+        }),
+        // new BundleAnalyzerPlugin()
     ],
     module: {
         rules: [

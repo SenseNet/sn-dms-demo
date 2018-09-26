@@ -51,7 +51,6 @@ const mapDispatchToProps = {
     clearSelection: Actions.clearSelection,
     deleteBatch: Actions.deleteBatch,
     closeActionMenu: DMSActions.closeActionMenu,
-    pollDocumentData,
     openViewer: DMSActions.openViewer,
     logout: Actions.userLogout,
     openDialog: DMSActions.openDialog,
@@ -177,8 +176,6 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     break
                 case 'Preview':
                     this.handleClose()
-                    // this.props.openViewer(this.props.currentContent.Id)
-                    // this.props.pollDocumentData(this.props.hostName, this.props.currentContent.Id)
                     const newPath = compile(this.props.match.path)({ folderPath: this.props.match.params.folderPath || btoa(this.props.id as any), otherActions: ['preview', btoa(content.Id as any)] })
                     this.props.history.push(newPath)
                     break

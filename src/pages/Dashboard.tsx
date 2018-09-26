@@ -15,7 +15,6 @@ import { DmsViewer } from '../components/DmsViewer'
 import DocumentLibrary from '../components/DocumentLibrary'
 import { Groups } from '../components/Groups'
 import Header from '../components/Header'
-import { ListToolbar } from '../components/ListToolbar'
 import MessageBar from '../components/MessageBar'
 import MobileHeader from '../components/Mobile/Header'
 import Picker from '../components/Pickers/PickerBase'
@@ -74,14 +73,8 @@ const mapStateToProps = (state: rootStateType) => {
     return {
         loggedinUserName: state.sensenet.session.user.userName,
         loginState: state.sensenet.session.loginState,
-        isViewerOpened: state.dms.viewer.isOpened,
         isDialogOpen: state.dms.dialog.isOpened,
-        dialogOnClose: state.dms.dialog.onClose,
         dialogContent: state.dms.dialog.content,
-        dialogTitle: state.dms.dialog.title,
-        docLibParent: state.dms.documentLibrary.parent,
-        docLibSelection: state.dms.documentLibrary.selected,
-        ancestors: state.dms.documentLibrary.ancestors,
     }
 }
 
@@ -165,11 +158,6 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                                     </Route>
                                                     <Route path={'/' + PathHelper.joinPaths(props.match.url, '/:folderPath?/:otherActions*')} exact component={() => (
                                                         <div>
-                                                            <ListToolbar
-                                                                currentContent={this.props.docLibParent}
-                                                                selected={this.props.docLibSelection}
-                                                                ancestors={this.props.ancestors}
-                                                            />
                                                             <DocumentLibrary matchesDesktop={matches} />
                                                         </div>
                                                     )}>
@@ -215,11 +203,6 @@ class Dashboard extends React.Component<DashboardProps & ReturnType<typeof mapSt
                                                 </Route>
                                                 <Route path={'/' + PathHelper.joinPaths(props.match.url, '/:folderPath?/:otherActions*')} exact component={() => (
                                                     <div>
-                                                        <ListToolbar
-                                                            currentContent={this.props.docLibParent}
-                                                            selected={this.props.docLibSelection}
-                                                            ancestors={this.props.ancestors}
-                                                        />
                                                         <DocumentLibrary matchesDesktop={matches} />
                                                     </div>
                                                 )}>

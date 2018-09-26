@@ -297,8 +297,15 @@ export const handleDrawerMenu = (open: boolean) => ({
 
 export const loadBreadcrumbActions = (idOrPath: number | string) => ({
     type: 'LOAD_BREADCRUMB_ACTIONS',
-    async payload(repository: Repository) {
-        const data: { d: { Actions: IActionModel[] } } = await repository.getActions({ idOrPath, scenario: 'DMSBreadcrumb' }) as any
-        return data
+    inject: async (options) => {
+        if (idOrPath === options.getState().dms.actionmenu.breadcrumb.idOrPath) {
+            return
+        }
+        const repository = options.getInjectable(Repository)
+        const actions: { d: { Actions: IActionModel[] } } = await repository.getActions({ idOrPath, scenario: 'DMSBreadcrumb' }) as any
+        options.dispatch({
+            type: 'LOAD_BREADCRUMB_ACTIONS_SUCCESS',
+            result: { idOrPath, actions: actions.d.Actions },
+        })
     },
-})
+} as InjectableAction<rootStateType, AnyAction>)
