@@ -1,5 +1,5 @@
 import IconButton from '@material-ui/core/IconButton'
-import SearchIcon from '@material-ui/icons/Search'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import MediaQuery from 'react-responsive'
 import QuickSearchBox from './QuickSearchInput'
@@ -30,13 +30,15 @@ export class QuickSearch extends React.Component<{}, { isOpen }> {
             <MediaQuery minDeviceWidth={700}>
                 {(matches) => {
                     if (matches) {
-                    return <div style={matches ? null : styles.searchContainerMobile}>
-                        <QuickSearchBox {...this.props}
-                            isOpen={matches ? this.state.isOpen : true}
-                            onClick={this.onClick} />
-                    </div>
+                        return <div style={matches ? null : styles.searchContainerMobile}>
+                            <QuickSearchBox {...this.props}
+                                isOpen={matches ? this.state.isOpen : true}
+                                onClick={this.onClick} />
+                        </div>
                     } else {
-                        return <IconButton style={styles.searchButton}><SearchIcon /></IconButton>
+                        return <IconButton style={styles.searchButton}>
+                            <Icon type={iconType.materialui} iconName="search" style={{ color: '#fff' }} />
+                        </IconButton>
                     }
                 }}
             </MediaQuery>

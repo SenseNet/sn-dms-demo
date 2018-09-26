@@ -1,5 +1,6 @@
-import { Divider, Icon, ListItemText, MenuItem, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
+import { Divider, ListItemText, MenuItem, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
 import { IContent, IUploadProgressInfo } from '@sensenet/client-core'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -153,9 +154,11 @@ class DocumentsMenu extends React.Component<DocumentMenuProps & ReturnType<typeo
                         selected={active}
                         classes={matches ? { root: classes.root, selected: classes.selected } : { root: classes.rootMobile, selected: classes.selectedMobile }}
                         onClick={(e) => this.handleMenuItemClick('documents')}>
-                        <Icon className={active ? classes.iconWhiteActive : classes.iconWhite} color="primary">
-                            {item.icon}
-                        </Icon>
+                        <Icon
+                            className={active ? classes.iconWhiteActive : classes.iconWhite}
+                            color="primary"
+                            type={iconType.materialui}
+                            iconName={item.icon} />
                         <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={item.title} />
                     </MenuItem>
                     <div className={active ? classes.open : classes.closed}>
@@ -183,9 +186,10 @@ class DocumentsMenu extends React.Component<DocumentMenuProps & ReturnType<typeo
                             {subMenu.map((menuitem, index) => {
                                 return (<MenuItem className={matches ? classes.submenuItem : classes.submenuItemMobile} key={index}
                                     onClick={(e) => this.handleSubmenuItemClick(menuitem.name)}>
-                                    <Icon className={subactive === menuitem.name ? classes.submenuIconActive : classes.submenuIcon}>
-                                        {menuitem.icon}
-                                    </Icon>
+                                    <Icon
+                                        className={subactive === menuitem.name ? classes.submenuIconActive : classes.submenuIcon}
+                                        type={iconType.materialui}
+                                        iconName={menuitem.icon} />
                                     <ListItemText
                                         classes={{ primary: subactive === menuitem.name ? classes.primarySubActive : classes.primarySub }}
                                         inset primary={menuitem.title} />

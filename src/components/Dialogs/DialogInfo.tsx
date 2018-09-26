@@ -1,5 +1,6 @@
-import { Icon, Table, TableBody, TableCell, TableHead, TableRow, withStyles } from '@material-ui/core'
+import { Table, TableBody, TableCell, TableHead, TableRow, withStyles } from '@material-ui/core'
 import { GenericContent } from '@sensenet/default-content-types'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import MediaQuery from 'react-responsive'
 import { icons } from '../../assets/icons'
@@ -80,7 +81,11 @@ class DialogInfo extends React.Component<{ classes } & DialogInfoProps, {}> {
                 {(matches) =>
                     <div style={styles.inner}>
                         <div style={styles.contentName}>
-                            <Icon color="primary" style={styles.icon}>{icons[icon.toLowerCase()]}</Icon>
+                            <Icon
+                                color="primary"
+                                style={styles.icon}
+                                iconName={icons[icon.toLowerCase()]}
+                                type={iconType.materialui} />
                             <span className={matches ? classes.displayName : classes.displayNameMobile}>
                                 {currentContent.DisplayName}
                             </span>

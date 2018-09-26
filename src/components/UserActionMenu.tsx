@@ -1,4 +1,4 @@
-import ArrowDropDown from '@material-ui/icons/ArrowDropDown'
+import { Icon, iconType } from '@sensenet/icons-react'
 import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -86,7 +86,9 @@ class UserActionMenu extends React.Component<ReturnType<typeof mapStateToProps> 
                         aria-owns="actionmenu"
                         onClick={(e) => this.handleClick(e)}>
                         <UserPanel user={this.props.loggedinUser} style={styles.avatar} />
-                        <ArrowDropDown
+                        <Icon
+                            type={iconType.materialui}
+                            iconName="arrow_drop_down"
                             style={matches ? styles.menuIcon : { ...styles.menuIcon, ...styles.menuIconMobile }} />
                     </div>
                 }}

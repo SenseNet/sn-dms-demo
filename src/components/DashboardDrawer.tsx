@@ -1,4 +1,5 @@
-import { Divider, Drawer, Icon, ListItemText, MenuItem, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
+import { Divider, Drawer, ListItemText, MenuItem, MenuList, StyleRulesCallback, withStyles } from '@material-ui/core'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -210,9 +211,12 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<t
                                 <MenuItem
                                     selected={active}
                                     classes={matches ? { root: classes.root, selected: classes.selected } : { root: classes.rootMobile, selected: classes.selectedMobile }}
-                                    >
-                                    <Icon className={matches ? active ? classes.iconWhiteActive : classes.iconWhite : active ? classes.iconWhiteActive : classes.iconWhiteMobile} color="primary">
-                                        {icons[action.Icon]}
+                                >
+                                    <Icon
+                                        type={iconType.materialui}
+                                        iconName={icons[action.Icon]}
+                                        className={matches ? active ? classes.iconWhiteActive : classes.iconWhite : active ? classes.iconWhiteActive : classes.iconWhiteMobile}
+                                        color="primary">
                                     </Icon>
                                     <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={action.DisplayName} />
                                 </MenuItem>

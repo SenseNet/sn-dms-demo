@@ -1,11 +1,10 @@
 import Button from '@material-ui/core/Button'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
-import * as FontAwesome from 'react-fontawesome'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { rootStateType } from '../..'
-import '../../assets/css/font-awesome.min.css'
 import WorkspaceDropDown from './WorkspaceDropDown'
 
 const styles = {
@@ -61,7 +60,7 @@ class WorkspaceSelector extends React.Component<ReturnType<typeof mapStateToProp
                         <Button
                             style={iconStyle}
                             onClick={() => this.handleButtonClick(this.state.open)}>
-                            <FontAwesome name="sitemap" />
+                            <Icon fontSize="default" type={iconType.fontawesome} iconName="sitemap" style={{ fontSize: 18, color: '#fff' }}></Icon>
                         </Button>
                         <WorkspaceDropDown matches={matches} open={this.state.open} closeDropDown={this.handleButtonClick} />
                     </div>

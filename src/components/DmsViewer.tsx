@@ -1,6 +1,6 @@
 import { IconButton, MuiThemeProvider, Typography } from '@material-ui/core'
-import { Search } from '@material-ui/icons'
 import { DocumentTitlePager, DocumentViewer, Download, exampleTheme, LayoutAppBar, Print, RotateActivePages, SearchBar, Share, ToggleThumbnailsWidget, ZoomInOutWidget } from '@sensenet/document-viewer-react'
+import { Icon, iconType } from '@sensenet/icons-react'
 import { compile } from 'path-to-regexp'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -130,7 +130,7 @@ export class DmsViewerComponent extends React.Component<DmsViewerProps & ReturnT
                                                     this.props.openDialog((<ShareDialog currentContent={this.props.currentContent} />))
                                                 }} />
                                                 <IconButton color="inherit">
-                                                    <Search />
+                                                    <Icon iconName="search" type={iconType.materialui} />
                                                 </IconButton>
                                             </div>
                                         </LayoutAppBar>

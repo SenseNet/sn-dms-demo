@@ -2,9 +2,8 @@ import { IconButton, List, ListItem, ListItemText, Paper, Table, TableBody, Tabl
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import RestoreIcon from '@material-ui/icons/Restore'
 import { GenericContent } from '@sensenet/default-content-types'
+import { Icon, iconType } from '@sensenet/icons-react'
 import * as moment from 'moment'
 import * as React from 'react'
 import Moment from 'react-moment'
@@ -240,7 +239,9 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                                                     <TableCell padding="none" style={{ width: '5%' }}>
                                                         {index !== versions.length - 1 ? <IconButton
                                                             title={resources.RESTORE_VERSION}
-                                                            onClick={() => this.handleRestoreButtonClick(currentContent.Id, version.Version, version.Name)}><RestoreIcon color="error" /></IconButton> : null}
+                                                            onClick={() => this.handleRestoreButtonClick(currentContent.Id, version.Version, version.Name)}>
+                                                            <Icon type={iconType.materialui} iconName="restore" color="error" />
+                                                        </IconButton> : null}
                                                     </TableCell>
                                                 </TableRow>,
                                             )}
@@ -254,7 +255,7 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                                             style={styles.innerMobileList}
                                             key={`panel${index}`}
                                             expanded={expanded === `panel${index}`} onChange={() => this.handleExpandButtonClick(`panel${index}`)}>
-                                            <ExpansionPanelSummary expandIcon={versions.length > 1 ? <ExpandMoreIcon /> : false}>
+                                            <ExpansionPanelSummary expandIcon={versions.length > 1 ? <Icon type={iconType.materialui} iconName="expand_more" /> : false}>
                                                 <div style={{ flexGrow: 1, display: 'flex' }}>
                                                     <Typography style={styles.heading}>{this.formatVersionNumber(version.Version)}</Typography>
                                                     {index !== versions.length - 1 ?
@@ -262,7 +263,7 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                                                             style={styles.restoreButtonMobile}
                                                             title={resources.RESTORE_VERSION}
                                                             onClick={() => this.handleRestoreButtonClick(currentContent.Id, version.Version, version.Name)}>
-                                                            <RestoreIcon color="error" />
+                                                            <Icon type={iconType.materialui} iconName="restore" color="error" />
                                                         </IconButton> : null}
                                                 </div>
                                             </ExpansionPanelSummary>
