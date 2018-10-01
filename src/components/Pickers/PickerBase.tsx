@@ -88,6 +88,7 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps> & typeof
     }
     public handleClose = () => {
         this.props.onClose()
+        this.props.setBackLink(true)
     }
     public isLastItem = () => {
         const { parent, closestWs } = this.props
@@ -138,7 +139,7 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps> & typeof
                                     <Typography variant="title" color="inherit">
                                         {parent ? parent.DisplayName : 'Move content'}
                                     </Typography>
-                                    <IconButton color="inherit" onClick={this.handleClose}>
+                                    <IconButton color="inherit" onClick={() => this.handleClose()}>
                                         <Icon type={iconType.materialui} iconName="close" style={{ color: '#fff' }} />
                                     </IconButton>
                                 </Toolbar>
@@ -152,7 +153,7 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps> & typeof
                                 <DialogTitle>
                                     <Toolbar style={{ ...styles.mobileToolbar, ...styles.mobilePickerHeader }}>
                                         <Typography style={styles.mobilePickerTitle}>{resources[`${this.props.pickerMode.toUpperCase()}_HERE`]}</Typography>
-                                        <Button color="inherit" onClick={this.handleClose} style={styles.mobilePickerClose}>
+                                        <Button color="inherit" onClick={() => this.handleClose()} style={styles.mobilePickerClose}>
                                             {resources.CANCEL}
                                         </Button>
                                     </Toolbar>

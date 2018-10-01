@@ -9,7 +9,7 @@ import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { icons } from '../../assets/icons'
 import { resources } from '../../assets/resources'
-import { closePicker, loadPickerItems, openPicker, setPickerParent } from '../../store/picker/actions'
+import { closePicker, loadPickerItems, openPicker, setBackLink, setPickerParent } from '../../store/picker/actions'
 import CopyToConfirmDialog from '../Dialogs/CopyToConfirmDialog'
 import DeleteDialog from '../Dialogs/DeleteDialog'
 import MoveToConfirmDialog from '../Dialogs/MoveToConfirmDialog'
@@ -77,6 +77,7 @@ const mapDispatchToProps = {
     loadPickerItems,
     openPicker,
     closePicker,
+    setBackLink,
 }
 
 export interface BatchActionlistState {
@@ -166,7 +167,7 @@ class BatchActionlist extends React.Component<BatchActionListProps & ReturnType<
                         dialogTitle={resources.MOVE}
                         dialogCallback={Actions.moveBatch} />,
                     'move',
-                    this.props.closePicker)
+                    () => this.props.closePicker() && this.props.setBackLink(true))
                 break
             case 'CopyBatch':
                 this.handleClose()
@@ -179,7 +180,7 @@ class BatchActionlist extends React.Component<BatchActionListProps & ReturnType<
                         dialogTitle={resources.COPY}
                         dialogCallback={Actions.copyBatch} />,
                     'copy',
-                    this.props.closePicker)
+                    () => this.props.closePicker() && this.props.setBackLink(true))
                 break
             default:
                 console.log(`${actionName} is clicked`)
