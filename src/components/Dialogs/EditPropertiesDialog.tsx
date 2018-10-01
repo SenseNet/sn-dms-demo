@@ -66,7 +66,7 @@ class EditPropertiesDialog extends React.Component<EditPropertiesDialogProps & R
             newProps.loadEditedContent(newProps.content.Id, options)
         }
         return {
-            editedcontent: newProps.editedcontent,
+            editedcontent: newProps.content,
         }
     }
     public handleCancel = () => {
