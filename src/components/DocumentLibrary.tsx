@@ -15,6 +15,7 @@ import { customSchema } from '../assets/schema'
 import { ListToolbar } from '../components/ListToolbar'
 import { loadMore, loadParent, select, setActive, updateChildrenOptions } from '../store/documentlibrary/actions'
 import ActionMenu from './ActionMenu/ActionMenu'
+import { DisplayNameCell } from './ContentList/CellTemplates/DisplayNameCell'
 import { DisplayNameMobileCell } from './ContentList/CellTemplates/DisplayNameMobileCell'
 import LockedCell from './ContentList/CellTemplates/LockedCell'
 import { RenameCell } from './ContentList/CellTemplates/RenameCell'
@@ -43,6 +44,7 @@ const mapStateToProps = (state: rootStateType) => {
         active: state.dms.documentLibrary.active,
         ancestors: state.dms.documentLibrary.ancestors,
         childrenOptions: state.dms.documentLibrary.childrenOptions,
+        hostName: state.sensenet.session.repository.repositoryUrl,
     }
 }
 
@@ -220,6 +222,12 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                                             displayName={props.content.DisplayName}
                                             onFinish={(newName) => this.props.updateContent<GenericContent>(props.content.Id, { DisplayName: newName })}
                                         />)
+                                    } else {
+                                        return (<DisplayNameCell
+                                            content={props.content}
+                                            isSelected={props.isSelected}
+                                            icons={icons}
+                                            hostName={this.props.hostName} />)
                                     }
                                     if (!matchesDesktop) {
                                         return (<DisplayNameMobileCell
