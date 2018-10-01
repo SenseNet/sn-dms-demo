@@ -4,10 +4,14 @@ import { Action, AnyAction, combineReducers, Reducer } from 'redux'
 import { closeMessageBar, ExtendedUploadProgressInfo, loadListActions, loadTypesToAddNewList, loadUserActions, loadVersions, setListActions } from './Actions'
 import { resources } from './assets/resources'
 
+import { IODataBatchResponse, IODataResponse } from '@sensenet/client-core'
+import { ExtendedError } from '@sensenet/client-core/dist/Repository/Repository'
 import { documentLibrary } from './store/documentlibrary/reducers'
 import { editedContent } from './store/edited/reducers'
 import { picker } from './store/picker/reducers'
 import { workspaces } from './store/workspaces/reducers'
+
+import { logReducer } from './store/actionlog/reducers'
 
 enum MessageMode { error, warning, info }
 
@@ -282,7 +286,7 @@ export const actionmenu = combineReducers({
     breadcrumb: breadcrumbActions,
 })
 
-export const messagebarmode: Reducer<MessageMode, Action & { mode?: MessageMode }> = (state = MessageMode.info, action) => {
+export const messagebarmode: Reducer<MessageMode, Action & { mode: MessageMode }> = (state = MessageMode.info, action) => {
     switch (action.type) {
         case 'SET_MESSAGEBAR':
             return action.mode || state
@@ -333,7 +337,7 @@ export const messagebarmode: Reducer<MessageMode, Action & { mode?: MessageMode 
     }
 }
 
-export const messagebarcontent: Reducer<object> = (state = [], action) => {
+export const messagebarcontent: Reducer<IODataResponse<GenericContent> | IODataBatchResponse<GenericContent> | ExtendedError | undefined> = (state, action) => {
     switch (action.type) {
         case 'SET_MESSAGEBAR':
             return action.content
@@ -768,4 +772,5 @@ export const dms = combineReducers({
     picker,
     edited: editedContent,
     menuOpen,
+    log: logReducer,
 })
