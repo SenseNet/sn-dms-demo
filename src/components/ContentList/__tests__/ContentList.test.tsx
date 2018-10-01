@@ -56,25 +56,6 @@ const options = {
             currentworkspace: null,
             currentitems: {
                 isFetching: false,
-                entities: {
-                    4466: {
-                        Id: 4466,
-                        Type: 'Folder',
-                    },
-                    4467: {
-                        Id: 4467,
-                        Type: 'Folder',
-                    },
-                    123: {
-                        Id: 123,
-                        Type: 'File',
-                    },
-                },
-                ids: [4466, 4467, 123],
-                actions: null,
-                error: null,
-                isOpened: false,
-                options: null,
             },
         },
         dms: {
