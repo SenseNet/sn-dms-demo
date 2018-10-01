@@ -19,7 +19,7 @@ import { downloadFile } from '../../assets/helpers'
 import { icons } from '../../assets/icons'
 import { resources } from '../../assets/resources'
 import { select } from '../../store/documentlibrary/actions'
-import { closePicker, loadPickerItems, openPicker, setPickerParent } from '../../store/picker/actions'
+import { closePicker, loadPickerItems, openPicker, setBackLink, setPickerParent } from '../../store/picker/actions'
 import ApproveorRejectDialog from '../Dialogs/ApproveorRejectDialog'
 import CopyToConfirmDialog from '../Dialogs/CopyToConfirmDialog'
 import DeleteDialog from '../Dialogs/DeleteDialog'
@@ -56,6 +56,7 @@ const mapDispatchToProps = {
     closeDialog: DMSActions.closeDialog,
     openPicker,
     closePicker,
+    setBackLink,
     loadContent: Actions.loadContent,
     fetchContent: Actions.requestContent,
     checkoutContent: Actions.checkOut,
@@ -251,7 +252,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                             dialogTitle={resources.MOVE}
                             dialogCallback={Actions.moveBatch} />,
                         'move',
-                        this.props.closePicker)
+                        () => { this.props.closePicker() && this.props.setBackLink(true) })
                     break
                 case 'CopyTo':
                     this.handleClose()
@@ -265,7 +266,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                             dialogTitle={resources.COPY}
                             dialogCallback={Actions.copyBatch} />,
                         'copy',
-                        this.props.closePicker)
+                        () => this.props.closePicker() && this.props.setBackLink(true))
                     break
                 case 'MoveBatch':
                     this.handleClose()
@@ -278,7 +279,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                             dialogTitle={resources.MOVE}
                             dialogCallback={Actions.moveBatch} />,
                         'move',
-                        this.props.closePicker)
+                        () => this.props.closePicker() && this.props.setBackLink(true))
                     break
                 default:
                     console.log(`${action.Name} is clicked`)

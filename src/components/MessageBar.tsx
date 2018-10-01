@@ -151,7 +151,8 @@ class MessageBar extends React.Component<{ classes } & ReturnType<typeof mapStat
                                 color={matches ? 'inherit' : 'primary'}
                                 onClick={() => this.closeMessageBar()}
                             >
-                                <Icon type={iconType.materialui} iconName="close" />
+                                <Icon type={iconType.materialui} iconName="close"
+                                style={{ color: '#fff' }} />
                             </IconButton>,
                         ]}
                     />

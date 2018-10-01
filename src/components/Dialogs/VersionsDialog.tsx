@@ -287,7 +287,7 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                                                             primary={resources.MODIFIED}
                                                             secondary={
                                                                 // tslint:disable-next-line:no-string-literal
-                                                                `${moment(version.ModificationDate).fromNow()} (${version.ModifiedBy['FullName']})`
+                                                                `${moment(version['VersionModificationDate']).fromNow()} (${version['VersionModifiedBy']['FullName']})`
                                                             }
                                                         />
                                                     </ListItem>
