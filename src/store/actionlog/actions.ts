@@ -1,8 +1,11 @@
 import { Repository } from '@sensenet/client-core'
+import { isExtendedError } from '@sensenet/client-core/dist/Repository/Repository'
 import { EventHub } from '@sensenet/repository-events'
 import { InjectableAction } from 'redux-di-middleware'
 import { rootStateType } from '../..'
 import { resources } from '../../assets/resources'
+
+export const logActions: string[] = ['CheckIn', 'Checkout', 'UndoCheckOut', 'Approve', 'Reject', 'Publish']
 
 export interface MessageEntry {
     verbosity: 'info' | 'error'
@@ -16,6 +19,7 @@ export interface AddLogEntry {
 }
 
 export interface LogEntry extends AddLogEntry {
+    uuid: string
     created: Date
     unread: boolean
 }
@@ -69,7 +73,7 @@ export const initLog: () => InjectableAction<rootStateType, ReturnType<typeof ad
             options.dispatch(addLogEntry({
                 dump: ev,
                 messageEntry: {
-                    message: `${ev.content.Name} ${resources.COPY_BATCH_FAILURE_MESSAGE}`,
+                    message: ev.error.message.value, // `${ev.content.Name} ${resources.COPY_BATCH_FAILURE_MESSAGE}`,
                     bulkMessage: `{0} ${resources.ITEMS} ${resources.COPY_BATCH_FAILURE_MESSAGE}`,
                     verbosity: 'error',
                 },
@@ -116,24 +120,33 @@ export const initLog: () => InjectableAction<rootStateType, ReturnType<typeof ad
             }))
         })
         eventHub.onCustomActionExecuted.subscribe((ev) => {
-            options.dispatch(addLogEntry({
-                dump: ev,
-                messageEntry: {
-                    message: resources[`${(ev.actionOptions.name).toUpperCase()}_SUCCESS_MESSAGE`],
-                    bulkMessage: `{0} ${resources.ITEMS} ${resources.DELETE_BATCH_SUCCESS_MULTIPLE_MESSAGE}`,
-                    verbosity: 'info',
-                },
-            }))
+            if (logActions.indexOf(ev.actionOptions.name) > -1) {
+
+                const message = (resources[`${(ev.actionOptions.name).toUpperCase()}_SUCCESS_MESSAGE`] as string)
+                    .replace('{contentName}', ev.result.d.Name)
+
+                options.dispatch(addLogEntry({
+                    dump: ev,
+                    messageEntry: {
+                        message,
+                        bulkMessage: `{0} ${resources[`${(ev.actionOptions.name).toUpperCase()}_SUCCESS_MULTIPLE_MESSAGE`]}`,
+                        verbosity: 'info',
+                    },
+                }))
+            }
         })
         eventHub.onCustomActionFailed.subscribe((ev) => {
-            options.dispatch(addLogEntry({
-                dump: ev,
-                messageEntry: {
-                    message: resources[`${(ev.actionOptions.name).toUpperCase()}_FAILURE_MESSAGE`],
-                    bulkMessage: `{0} ${resources[`${(ev.actionOptions.name).toUpperCase()}_FAILURE_MULTIPLE_MESSAGE`]}`,
-                    verbosity: 'info',
-                },
-            }))
+            if (logActions.indexOf(ev.actionOptions.name) > -1) {
+
+                options.dispatch(addLogEntry({
+                    dump: ev,
+                    messageEntry: {
+                        message: isExtendedError(ev.error) ? ev.error.toString() : ev.error.message.value || (resources[`${(ev.actionOptions.name).toUpperCase()}_FAILURE_MESSAGE`] as string),
+                        bulkMessage: `{0} ${resources[`${(ev.actionOptions.name).toUpperCase()}_FAILURE_MULTIPLE_MESSAGE`]}`,
+                        verbosity: 'info',
+                    },
+                }))
+            }
         })
     },
 })

@@ -11,6 +11,7 @@ import * as DMSActions from './Actions'
 import { dmsTheme } from './assets/dmstheme'
 import { AuthorizedRoute } from './components/AuthorizedRoute'
 import { FullScreenLoader } from './components/FullScreenLoader'
+import MessageBar from './components/MessageBar'
 import Login from './pages/Login'
 import Registration from './pages/Registration'
 import './Sensenet.css'
@@ -78,6 +79,7 @@ class Sensenet extends React.Component<SensenetProps & ReturnType<typeof mapStat
             </Switch>
           </HashRouter>
         </div>
+        <MessageBar />
       </MuiThemeProvider>
     )
   }

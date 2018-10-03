@@ -1,5 +1,6 @@
 import { Reducer } from 'redux'
-import { addLogEntry, LogEntry, readLogEntries} from './actions'
+import { v1 } from 'uuid'
+import { addLogEntry, LogEntry, readLogEntries } from './actions'
 
 export interface LogStateType {
     isInitialized: boolean
@@ -19,11 +20,12 @@ export const defaultLogState: LogStateType = {
                 message: 'Log initialized',
                 verbosity: 'info',
             },
+            uuid: v1(),
         },
     ],
 }
 
-export const logReducer: Reducer<LogStateType> = (state= defaultLogState, action) => {
+export const logReducer: Reducer<LogStateType> = (state = defaultLogState, action) => {
     switch (action.type) {
         case 'SN_DMS_INIT_LOG':
             return {
@@ -39,6 +41,7 @@ export const logReducer: Reducer<LogStateType> = (state= defaultLogState, action
                         ...(action as ReturnType<typeof addLogEntry>).entry,
                         created: new Date(),
                         unread: true,
+                        uuid: v1(),
                     },
                 ],
             }
@@ -47,7 +50,7 @@ export const logReducer: Reducer<LogStateType> = (state= defaultLogState, action
                 ...state,
                 entries: state.entries.map((e) => {
                     const a = action as ReturnType<typeof readLogEntries>
-                    if (a.entries.indexOf(e) !== -1) {
+                    if (a.entries.find((actionEntry) => actionEntry.uuid === e.uuid)) {
                         return {
                             ...e,
                             unread: false,

@@ -1,4 +1,4 @@
-export const resources = {
+const resources = {
     EMAIL_IS_NOT_VALID_MESSAGE: 'Please provide a valid e-mail address!',
     PASSWORD_IS_NOT_VALID_MESSAGE: 'Please provide a password!',
     WRONG_USERNAME_OR_PASSWORD: 'Wrong user name or password',
@@ -97,12 +97,12 @@ export const resources = {
     COPY_BATCH_SUCCESS_MULTIPLE_MESSAGE: 'successfully copied',
     EDIT_PROPERTIES: 'Edit properties',
     UPDATE_CONTENT_SUCCESS_MESSAGE: 'is successfully updated',
-    CHECKOUT_CONTENT_SUCCESS_MESSAGE: 'is successfully checked-out',
-    CHECKIN_CONTENT_SUCCESS_MESSAGE: 'is successfully checked-in',
-    PUBLISH_CONTENT_SUCCESS_MESSAGE: 'is successfully published',
-    UNDOCHECKOUT_CONTENT_SUCCESS_MESSAGE: 'is reverted to the status before checking out',
-    FORCE_UNDOCHECKOUT_CONTENT_SUCCESS_MESSAGE: 'is reverted by force to the status before checking out',
-    REJECT_CONTENT_SUCCESS_MESSAGE: 'is rejected successfully',
+    CHECKOUT_SUCCESS_MESSAGE: '{contentName} is successfully checked-out',
+    CHECKIN_SUCCESS_MESSAGE: '{contentName} is successfully checked-in',
+    PUBLISH_SUCCESS_MESSAGE: '{contentName} is successfully published',
+    UNDOCHECKOUT_SUCCESS_MESSAGE: '{contentName} is reverted to the status before checking out',
+    FORCEUNDOCHECKOUT_SUCCESS_MESSAGE: '{contentName} is reverted by force to the status before checking out',
+    REJECT_SUCCESS_MESSAGE: '{contentName} is rejected successfully',
     MOVE_BATCH_SUCCESS_MESSAGE: 'is moved successfully',
     COPY_BATCH_SUCCESS_MESSAGE: 'is copied successfully',
     COPY_BATCH_FAILURE_MESSAGE: 'cannot be copied',
@@ -112,8 +112,8 @@ export const resources = {
     APPROVE: 'Approve',
     REJECT: 'Reject',
     REJECT_REASON_PLACEHOLDER: 'Please provide a reason for rejecting the content',
-    APPROVE_CONTENT_SUCCESS_MESSAGE: 'is successfully approved',
-    APPROVE_FAILURE_MESSAGE: 'cannot be approved',
+    APPROVE_SUCCESS_MESSAGE: '{contentName} is successfully approved',
+    APPROVE_FAILURE_MESSAGE: '{contentName} cannot be approved',
     CONTENT: 'Content',
     REJECT_FAILURE_MESSAGE: 'cannot be rejected',
     CHECKOUT_FAILURE_MESSAGE: 'cannot be checked-out',
@@ -135,3 +135,13 @@ export const resources = {
     COPYTO_BUTTON: 'Copy content here',
     NEW_FOLDER: 'New folder',
 }
+
+const resourceHandler: ProxyHandler<typeof resources> = {
+    get: (target, name) => {
+        return name in target ? target[name] : `!!${name.toString()}!!`
+    },
+}
+
+const proxy = new Proxy(resources, resourceHandler)
+
+export { proxy as resources }
