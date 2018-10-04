@@ -222,6 +222,13 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                                             displayName={props.content.DisplayName}
                                             onFinish={(newName) => this.props.updateContent<GenericContent>(props.content.Id, { DisplayName: newName })}
                                         />)
+                                    } else if (!matchesDesktop) {
+                                        return (<DisplayNameMobileCell
+                                            content={props.content}
+                                            isSelected={props.isSelected}
+                                            hasSelected={props.selected.length > 0}
+                                            icons={icons}
+                                            onActivate={(ev, content) => this.handleRowDoubleClick(ev, content)} />)
                                     } else {
                                         return (<DisplayNameCell
                                             content={props.content}
@@ -229,14 +236,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                                             icons={icons}
                                             hostName={this.props.hostName} />)
                                     }
-                                    if (!matchesDesktop) {
-                                        return (<DisplayNameMobileCell
-                                            content={props.content}
-                                            isSelected={props.isSelected}
-                                            hasSelected={props.selected.length > 0}
-                                            icons={icons}
-                                            onActivate={(ev, content) => this.handleRowDoubleClick(ev, content)} />)
-                                    }
+
                                 default:
                                     return null
                             }
