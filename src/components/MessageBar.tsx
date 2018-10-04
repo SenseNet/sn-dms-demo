@@ -102,7 +102,7 @@ class MessageBar extends React.Component<{ classes } & ReturnType<typeof mapStat
                 } else {
                     newSegment = {
                         logEntries: groupedEntries,
-                        message: type.replace('{0}', unreadEntries.length.toString()),
+                        message: type.replace('{count}', unreadEntries.length.toString()),
                         visible: unreadEntries.length > 0,
                         verbosity,
                         key: type,
