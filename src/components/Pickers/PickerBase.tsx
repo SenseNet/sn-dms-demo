@@ -160,7 +160,7 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps> & typeof
                                     <Toolbar style={styles.mobileToolbar}>
                                         {backLink ?
                                             <IconButton color="inherit" onClick={() => this.handleClickBack()}>
-                                                <Icon type={iconType.materialui} iconName="arrow_back" style={{ color: '#fff' }} />
+                                                <Icon type={iconType.materialui} iconName="arrow_back" />
                                             </IconButton> :
                                             <div style={styles.snButton}>
                                                 <img src={sensenetLogo} alt="sensenet" aria-label="sensenet" style={styles.snLogo} />
