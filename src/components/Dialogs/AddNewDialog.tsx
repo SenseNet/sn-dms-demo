@@ -54,8 +54,8 @@ class AddNewDialog extends React.Component<AddNewDialogProps & ReturnType<typeof
         this.props.closeDialog()
     }
     public submitCallback = () => {
-        this.props.closeDialog()
         this.props.closeCallback()
+        this.props.closeDialog()
     }
     public render() {
         const { parentPath, contentTypeName, createContent, schema, title, extension } = this.props
