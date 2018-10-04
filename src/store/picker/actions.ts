@@ -13,6 +13,7 @@ const pickerItemOptions: IODataParams<any> = {
     // tslint:disable-next-line:quotemark
     filter: "isOf('Folder')",
     metadata: 'no',
+    orderby: 'DisplayName',
 }
 
 export const openPicker = (content: any = '', mode: string = 'move', onClose?: () => void) => ({
