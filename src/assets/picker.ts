@@ -25,11 +25,11 @@ export const pickerTheme = createMuiTheme({
             },
         },
         MuiTypography: {
-            root: {
-                '&.selected, &.active, &:hover, &.active:hover': {
-                    color: '#fff !important',
-                },
-            },
+            // root: {
+            //     '&.selected, &.active, &:hover, &.active:hover': {
+            //         color: '#fff !important',
+            //     },
+            // },
             title: {
                 fontFamily: 'Raleway Semibold',
                 fontSize: 18,
