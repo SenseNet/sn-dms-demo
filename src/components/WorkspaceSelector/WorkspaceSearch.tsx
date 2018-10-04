@@ -46,6 +46,7 @@ const styles = (theme) => ({
     closeIcon: {
         marginLeft: 12,
         marginTop: 6,
+        color: '#fff',
     },
 })
 

@@ -6,6 +6,7 @@ import MenuList from '@material-ui/core/MenuList'
 import withStyles, { StyleRulesCallback } from '@material-ui/core/styles/withStyles'
 
 import { Icon, iconType } from '@sensenet/icons-react'
+import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -155,6 +156,7 @@ const mapDispatchToProps = {
     chooseMenuItem: DMSActions.chooseMenuItem,
     chooseSubmenuItem: DMSActions.chooseSubmenuItem,
     handleDrawerMenu: DMSActions.handleDrawerMenu,
+    logout: Actions.userLogout,
 }
 
 class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, {}> {
@@ -163,6 +165,20 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<t
     }
     public toggleDrawer = () => {
         this.props.handleDrawerMenu(false)
+    }
+    public handleMenuItemClick = (e, action) => {
+        if ((action as any).Action) {
+            (action as any).Action()
+        } else {
+            switch (action.Name) {
+                case 'Logout':
+                    this.props.logout()
+                    break
+                default:
+                    console.log(`${action.Name} is clicked`)
+                    break
+            }
+        }
     }
     public render() {
         const { classes, activeItem, chooseMenuItem, chooseSubmenuItem, userActions } = this.props
@@ -217,6 +233,7 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<t
                                 <MenuItem
                                     selected={active}
                                     classes={matches ? { root: classes.root, selected: classes.selected } : { root: classes.rootMobile, selected: classes.selectedMobile }}
+                                    onClick={(event) => this.handleMenuItemClick(event, action)}
                                 >
                                     <Icon
                                         type={iconType.materialui}
