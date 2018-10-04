@@ -45,7 +45,7 @@ export const initLog: () => InjectableAction<rootStateType, ReturnType<typeof ad
                 messageEntry: {
                     verbosity: 'info',
                     message: `${ev.content.Name} ${resources.CREATE_CONTENT_SUCCESS_MESSAGE}`,
-                    bulkMessage: `{0} ${resources.ITEMS_ARE} ${resources.CREATE_CONTENT_SUCCESS_MULTIPLE_MESSAGE}`,
+                    bulkMessage: `{count} ${resources.ITEMS_ARE} ${resources.CREATE_CONTENT_SUCCESS_MULTIPLE_MESSAGE}`,
                 },
             }))
         })
@@ -54,7 +54,7 @@ export const initLog: () => InjectableAction<rootStateType, ReturnType<typeof ad
                 dump: ev,
                 messageEntry: {
                     message: ev.error.message.value,
-                    bulkMessage: `{0} ${resources.ITEMS} ${resources.CREATE_CONTENT_FAILURE_MESSAGE}`,
+                    bulkMessage: `{count} ${resources.ITEMS} ${resources.CREATE_CONTENT_FAILURE_MESSAGE}`,
                     verbosity: 'error',
                 },
             }))
@@ -64,7 +64,7 @@ export const initLog: () => InjectableAction<rootStateType, ReturnType<typeof ad
                 dump: ev,
                 messageEntry: {
                     message: `${ev.content.Name} ${resources.COPY_BATCH_SUCCESS_MESSAGE}`,
-                    bulkMessage: `{0} ${resources.ITEMS} ${resources.COPY_BATCH_SUCCESS_MULTIPLE_MESSAGE}`,
+                    bulkMessage: `{count} ${resources.ITEMS} ${resources.COPY_BATCH_SUCCESS_MULTIPLE_MESSAGE}`,
                     verbosity: 'info',
                 },
             }))
@@ -74,7 +74,7 @@ export const initLog: () => InjectableAction<rootStateType, ReturnType<typeof ad
                 dump: ev,
                 messageEntry: {
                     message: ev.error.message.value, // `${ev.content.Name} ${resources.COPY_BATCH_FAILURE_MESSAGE}`,
-                    bulkMessage: `{0} ${resources.ITEMS} ${resources.COPY_BATCH_FAILURE_MESSAGE}`,
+                    bulkMessage: `{count} ${resources.ITEMS} ${resources.COPY_BATCH_FAILURE_MESSAGE}`,
                     verbosity: 'error',
                 },
             }))
@@ -84,7 +84,7 @@ export const initLog: () => InjectableAction<rootStateType, ReturnType<typeof ad
                 dump: ev,
                 messageEntry: {
                     message: `${ev.content.Name} ${resources.MOVE_BATCH_SUCCESS_MESSAGE}`,
-                    bulkMessage: `{0} ${resources.ITEMS} ${resources.MOVE_BATCH_SUCCESS_MULTIPLE_MESSAGE}`,
+                    bulkMessage: `{count} ${resources.ITEMS} ${resources.MOVE_BATCH_SUCCESS_MULTIPLE_MESSAGE}`,
                     verbosity: 'info',
                 },
             }))
@@ -94,7 +94,7 @@ export const initLog: () => InjectableAction<rootStateType, ReturnType<typeof ad
                 dump: ev,
                 messageEntry: {
                     message: ev.error.message.value,
-                    bulkMessage: `{0} ${resources.ITEMS} ${resources.MOVE_BATCH_FAILURE_MESSAGE}`,
+                    bulkMessage: `{count} ${resources.ITEMS} ${resources.MOVE_BATCH_FAILURE_MESSAGE}`,
                     verbosity: 'error',
                 },
             }))
@@ -104,7 +104,7 @@ export const initLog: () => InjectableAction<rootStateType, ReturnType<typeof ad
                 dump: ev,
                 messageEntry: {
                     message: `${ev.contentData.Name} ${resources.DELETE_BATCH_SUCCESS_MESSAGE}`,
-                    bulkMessage: `{0} ${resources.ITEMS} ${resources.DELETE_BATCH_SUCCESS_MULTIPLE_MESSAGE}`,
+                    bulkMessage: `{count} ${resources.ITEMS} ${resources.DELETE_BATCH_SUCCESS_MULTIPLE_MESSAGE}`,
                     verbosity: 'info',
                 },
             }))
@@ -114,7 +114,7 @@ export const initLog: () => InjectableAction<rootStateType, ReturnType<typeof ad
                 dump: ev,
                 messageEntry: {
                     message: ev.error.message.value,
-                    bulkMessage: `{0} ${resources.ITEMS} ${resources.DELETE_BATCH_SUCCESS_FAILED_MESSAGE}`,
+                    bulkMessage: resources.DELETE_BATCH_SUCCESS_FAILED_MESSAGE,
                     verbosity: 'error',
                 },
             }))
@@ -129,7 +129,7 @@ export const initLog: () => InjectableAction<rootStateType, ReturnType<typeof ad
                     dump: ev,
                     messageEntry: {
                         message,
-                        bulkMessage: `{0} ${resources[`${(ev.actionOptions.name).toUpperCase()}_SUCCESS_MULTIPLE_MESSAGE`]}`,
+                        bulkMessage: resources[`${(ev.actionOptions.name).toUpperCase()}_SUCCESS_MULTIPLE_MESSAGE`],
                         verbosity: 'info',
                     },
                 }))
@@ -137,7 +137,6 @@ export const initLog: () => InjectableAction<rootStateType, ReturnType<typeof ad
         })
         eventHub.onCustomActionFailed.subscribe((ev) => {
             if (logActions.indexOf(ev.actionOptions.name) > -1) {
-
                 options.dispatch(addLogEntry({
                     dump: ev,
                     messageEntry: {
