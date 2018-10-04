@@ -61,20 +61,6 @@ export const setEditedFirst = (edited: boolean) => ({
     type: 'SET_EDITED_FIRST',
     edited,
 })
-export const openMessageBar = () => ({
-    type: 'OPEN_MESSAGEBAR',
-})
-export const closeMessageBar = () => ({
-    type: 'CLOSE_MESSAGEBAR',
-})
-export const setMessageBar = (mode: MessageMode, content: any, close?: () => void, exited?: () => void, hideDuration?: number) => ({
-    type: 'SET_MESSAGEBAR',
-    mode,
-    content,
-    close,
-    exited,
-    hideDuration,
-})
 
 export const getListActions = (idOrPath: number | string, scenario?: string, customActions?: IActionModel[]) => ({
     type: 'GET_LIST_ACTIONS',

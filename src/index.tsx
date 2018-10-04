@@ -14,7 +14,7 @@ import './index.css'
 import * as DMSReducers from './Reducers'
 import registerServiceWorker from './registerServiceWorker'
 import Sensenet from './Sensenet'
-import { MessageBoxHandler } from './utils/MessageBoxHandler'
+import { initLog } from './store/actionlog/actions'
 import { getViewerSettings } from './ViewerSettings'
 export const repository = new Repository({
   repositoryUrl: process.env.REACT_APP_SERVICE_URL,
@@ -53,9 +53,9 @@ const options = {
 } as Store.CreateStoreOptions<any>
 const store = Store.createSensenetStore(options)
 
-export type rootStateType = ReturnType<typeof myReducer>
+store.dispatch(initLog())
 
-export const handler = new MessageBoxHandler(repository, store)
+export type rootStateType = ReturnType<typeof myReducer>
 
 ReactDOM.render(
   <Provider store={store}>
