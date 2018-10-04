@@ -20,7 +20,6 @@ import DocumentLibrary from '../components/DocumentLibrary'
 import { FullScreenLoader } from '../components/FullScreenLoader'
 import { Groups } from '../components/Groups'
 import Header from '../components/Header'
-import MessageBar from '../components/MessageBar'
 import MobileHeader from '../components/Mobile/Header'
 import Picker from '../components/Pickers/PickerBase'
 import { SavedQueries } from '../components/SavedQueries'
@@ -188,7 +187,6 @@ class DashboardComponent extends React.Component<DashboardProps & ReturnType<typ
 
                                             {/* <Redirect to="/documents" /> */}
                                         </Switch>
-                                        <MessageBar />
                                     </div>
                                 </div>
                                 :
@@ -233,15 +231,14 @@ class DashboardComponent extends React.Component<DashboardProps & ReturnType<typ
 
                                         {/* <Redirect to="/documents" /> */}
                                     </Switch>
-                                    <MessageBar />
                                 </div>}
                         </div>
                         <Route exact path="/:prefix*/preview/:documentId" component={() => {
-                        const LoadableDmsViewer = Loadable({
-                            loader: async () => (await import(/* webpackChunkName: "viewer" */ '../components/DmsViewer')).DmsViewer,
-                            loading: () => <FullScreenLoader />,
+                            const LoadableDmsViewer = Loadable({
+                                loader: async () => (await import(/* webpackChunkName: "viewer" */ '../components/DmsViewer')).DmsViewer,
+                                loading: () => <FullScreenLoader />,
                             })
-                        return <LoadableDmsViewer />
+                            return <LoadableDmsViewer />
                         }} />
                         {matches ? <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth="md">
                             <DialogContent children={dialogContent} />
