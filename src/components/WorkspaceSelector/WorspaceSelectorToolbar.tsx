@@ -123,6 +123,7 @@ class WorkspaceSelectorToolbar extends React.Component<{ classes } & ReturnType<
                     className={classes.button}
                     onClick={() => this.handleClick()}>
                     <Icon
+                        color="inherit"
                         type={iconType.materialui}
                         iconName="close" />
                 </Button>
