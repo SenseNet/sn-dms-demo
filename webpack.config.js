@@ -4,6 +4,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const autoprefixer = require('autoprefixer');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
     context: __dirname,
@@ -16,6 +17,14 @@ module.exports = {
         path: path.resolve(__dirname + "/build")
     },
     optimization: {
+        minimizer: [
+            new UglifyJsPlugin({
+                sourceMap: true,    // optional
+                uglifyOptions: {
+                    keep_fnames: true   // don't minify names
+                }
+             })
+        ],
         splitChunks: {
             chunks: 'all',
             cacheGroups: {
@@ -48,7 +57,7 @@ module.exports = {
             REACT_APP_SERVICE_URL: 'https://dmsservice.demo.sensenet.com',
             REACT_APP_RECAPTCHA_KEY: '6LcRiy4UAAAAANJjCL8H5c4WG2YeejRuA35e1gcU',
         }),
-        // new BundleAnalyzerPlugin()
+        new BundleAnalyzerPlugin()
     ],
     module: {
         rules: [
@@ -100,24 +109,42 @@ module.exports = {
                 ],
             },
             {
-                test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/, /\.svg$/, /\.eot$/, /\.woff$/, /\.woff2$/, /\.ttf$/],
+                test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/,],
                 loader: require.resolve('url-loader'),
                 options: {
                     limit: 10000,
-                    name: 'static/media/[name].[hash:8].[ext]',
+                    name: 'static/media/images/[name].[hash:8].[ext]',
                 },
-            }
+            },
+            {
+                test: [/\.eot$/, /\.woff$/, /\.woff2$/, /\.ttf$/],
+                loader: require.resolve('url-loader'),
+                options: {
+                    limit: 10000,
+                    name: 'static/media/fonts/[name].[hash:8].[ext]',
+                },
+            },
+            {
+                test: /\.(ico)$/,
+                loader: 'file-loader',
+                options: {
+                  name: '[name].[ext]'
+                }
+              },
+              {
+                test: [/\.svg$/],
+                loader: 'svg-url-loader',
+                options: {
+                  // Images larger than 10 KB won’t be inlined
+                  limit: 10 * 1024,
+                  name: 'static/media/images/[name].[hash:8].[ext]',
+                  // Remove quotes around the encoded URL –
+                  // they’re rarely useful
+                  noquotes: true
+                }
+              },
 
         ]
     },
-
-    // When importing a module whose path matches one of the following, just
-    // assume a corresponding global variable exists and use that instead.
-    // This is important because it allows us to avoid bundling all of our
-    // dependencies, which allows browsers to cache those libraries between builds.
-    // externals: {
-    //    "react": "React",
-    //    "react-dom": "ReactDOM"
-    // },
 };
 
