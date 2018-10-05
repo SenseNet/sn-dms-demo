@@ -57,7 +57,7 @@ module.exports = {
             REACT_APP_SERVICE_URL: 'https://dmsservice.demo.sensenet.com',
             REACT_APP_RECAPTCHA_KEY: '6LcRiy4UAAAAANJjCL8H5c4WG2YeejRuA35e1gcU',
         }),
-        new BundleAnalyzerPlugin()
+        // new BundleAnalyzerPlugin()
     ],
     module: {
         rules: [
