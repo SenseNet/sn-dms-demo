@@ -75,7 +75,7 @@ const styles = {
 
 const mapStateToProps = (state: rootStateType) => {
     return {
-        loggedinUserName: state.sensenet.session.user.userName,
+        loggedinUser: state.sensenet.session.user,
         loginState: state.sensenet.session.loginState,
         isDialogOpen: state.dms.dialog.isOpened,
         dialogContent: state.dms.dialog.content,
@@ -116,8 +116,8 @@ class DashboardComponent extends React.Component<DashboardProps & ReturnType<typ
         const currentSelection = newProps.match.params.selection && decodeURIComponent(newProps.match.params.selection) || []
         const currentViewName = newProps.match.params.action
 
-        if (newProps.loggedinUserName !== lastState.currentUserName) {
-            newProps.loadUserActions(`/Root/IMS/Public/${newProps.loggedinUserName}`, 'DMSUserActions')
+        if (newProps.loggedinUser.userName !== lastState.currentUserName) {
+            newProps.loadUserActions(newProps.loggedinUser.content.Path, 'DMSUserActions')
         }
 
         return {
@@ -125,13 +125,13 @@ class DashboardComponent extends React.Component<DashboardProps & ReturnType<typ
             currentSelection,
             currentViewName,
             currentScope: newProps.match.params.scope || 'documents',
-            currentUserName: newProps.loggedinUserName,
+            currentUserName: newProps.loggedinUser.userName,
         }
     }
     public render() {
         const { closeDialog, isDialogOpen, dialogContent } = this.props
 
-        if (this.props.loginState !== LoginState.Unauthenticated && this.props.loggedinUserName === 'Visitor') {
+        if (this.props.loginState !== LoginState.Unauthenticated && this.props.loggedinUser.userName === 'Visitor') {
             return null
         }
 
