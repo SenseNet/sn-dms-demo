@@ -3,6 +3,7 @@ import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
+import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
 import UserPanel from './UserPanel'
 
@@ -34,7 +35,7 @@ interface UserActionMenuState {
     selectedIndex: number,
 }
 
-const mapStateToProps = (state, match) => {
+const mapStateToProps = (state: rootStateType, match) => {
     return {
         loggedinUser: state.sensenet.session.user,
         actions: state.dms.actionmenu.userActions,
@@ -59,16 +60,16 @@ class UserActionMenu extends React.Component<ReturnType<typeof mapStateToProps> 
         this.handleClick = this.handleClick.bind(this)
         this.handleRequestClose = this.handleRequestClose.bind(this)
     }
-    public componentWillReceiveProps(nextProps) {
+    public componentWillReceiveProps(nextProps: UserActionMenu['props']) {
         const { loggedinUser, loadUserActions } = this.props
         if (loggedinUser.userName !== nextProps.loggedinUser.userName && nextProps.loggedinUser.userName !== 'Visitor') {
-            loadUserActions(`/Root/IMS/Public/${nextProps.loggedinUser.userName}`, 'DMSUserActions')
+            loadUserActions(nextProps.loggedinUser.content.Path, 'DMSUserActions')
         }
     }
     public handleClick = (e) => {
         const { actions, loggedinUser } = this.props
         this.props.closeActionMenu()
-        this.props.openActionMenu(actions, loggedinUser.userName, loggedinUser.fullName, e.currentTarget, {
+        this.props.openActionMenu(actions, loggedinUser.content, loggedinUser.fullName, e.currentTarget, {
             top: e.currentTarget.offsetTop + 40,
             left: e.currentTarget.offsetLeft,
         })
