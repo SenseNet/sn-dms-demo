@@ -35,7 +35,7 @@ export const setWorkspaces = (workspaces: Workspace[]) => ({
 export const loadFavoriteWorkspaces = (userName: string) => ({
     type: 'LOAD_FAVORITE_WORKSPACES',
     inject: async (options) => {
-        if (options.getState().dms.workspaces.favorites === null) {
+        if (options.getState().dms.workspaces.favorites === null || options.getState().dms.workspaces.favorites.length === 0) {
             const repository = options.getInjectable(Repository)
             const favorites = await repository.load<User>({
                 idOrPath: `/Root/IMS/Public/${userName}`,

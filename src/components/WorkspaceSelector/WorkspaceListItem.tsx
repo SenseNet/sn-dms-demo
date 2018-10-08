@@ -112,12 +112,13 @@ class WorkspaceListItem extends React.Component<{ classes } & ReturnType<typeof 
                 style={styles.listItem}>
                 <ListItemIcon className={classes.icon}>
                     <IconButton
-                        className={followed ? classes.followedIconButton : classes.iconButton}
-                        onClick={() => this.startButtonClick(workspace.Id)}>
+                        className={followed ? classes.followedIconButton : classes.iconButton}>
                         <Icon
                             className={followed ? classes.followedIconButton : classes.iconButton}
                             type={iconType.materialui}
-                            iconName="star" />
+                            iconName="star"
+                            style={followed ? { color: '#ffeb3b', margin: '0 10px' } : { color: '#fff', margin: '0 10px' }}
+                            onClick={() => this.startButtonClick(workspace.Id)} />
                     </IconButton>
                 </ListItemIcon>
                 <ListItemText
