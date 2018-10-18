@@ -110,7 +110,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --port 3000 --display-error-details",
-    "build": "rimraf build && webpack -p",
+    "build": "rimraf build && webpack",
     "test": "node scripts/test.js --env=jsdom --setupTestFrameworkScriptFile=raf/polyfill",
     "check-coverage": "npm test --env=jsdom --setupTestFrameworkScriptFile=raf/polyfill -- --coverage",
     "lint": "node tslint --project ./tsconfig.json",
