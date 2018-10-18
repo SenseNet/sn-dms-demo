@@ -99,6 +99,31 @@ export const initLog: () => InjectableAction<rootStateType, ReturnType<typeof ad
                 },
             }))
         })
+
+        eventHub.onContentModified.subscribe((ev) => {
+            const msg = resources.EDIT_PROPERTIES_SUCCESS_MESSAGE.replace('{contentName}', ev.content.Name)
+            options.dispatch(addLogEntry({
+                dump: ev,
+                messageEntry: {
+                    message: msg,
+                    bulkMessage: msg,
+                    verbosity: 'info',
+                },
+            }))
+        })
+
+        eventHub.onContentModificationFailed.subscribe((ev) => {
+            const msg = resources.EDIT_PROPERTIES_FAILURE_MESSAGE.replace('{contentName}', ev.content.Name)
+            options.dispatch(addLogEntry({
+                dump: ev,
+                messageEntry: {
+                    message: msg,
+                    bulkMessage: msg,
+                    verbosity: 'info',
+                },
+            }))
+        })
+
         eventHub.onContentDeleted.subscribe((ev) => {
             options.dispatch(addLogEntry({
                 dump: ev,
