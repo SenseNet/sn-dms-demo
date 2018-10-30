@@ -6,7 +6,7 @@ import * as content from '../assets/privacy-policy.md'
 import '../assets/privacyPolicy.css'
 
 const privacyPolicy = () => {
-    return <div>
+    return <div className="privacypolicyContainer">
         <ReactMarkdown source={content.default} />
     </div>
 }
