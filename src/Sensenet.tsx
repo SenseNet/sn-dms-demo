@@ -13,6 +13,7 @@ import { dmsTheme } from './assets/dmstheme'
 import { AuthorizedRoute } from './components/AuthorizedRoute'
 import { FullScreenLoader } from './components/FullScreenLoader'
 import MessageBar from './components/MessageBar'
+import QuestionSlider from './components/QuestionSlider'
 import Login from './pages/Login'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import Registration from './pages/Registration'
@@ -104,6 +105,7 @@ class Sensenet extends React.Component<SensenetProps & ReturnType<typeof mapStat
           </HashRouter>
         </div>
         <MessageBar />
+        <QuestionSlider />
         <CookieConsent
           location="bottom"
           buttonText="I accept cookies"
