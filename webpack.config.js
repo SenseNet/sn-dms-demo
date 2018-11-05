@@ -23,7 +23,7 @@ module.exports = {
                 uglifyOptions: {
                     keep_fnames: true   // don't minify names
                 }
-             })
+            })
         ],
         splitChunks: {
             chunks: 'all',
@@ -62,7 +62,7 @@ module.exports = {
     module: {
         rules: [
             // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
-            { 
+            {
                 test: /\.tsx?$/,
                 options: {
                     useTranspileModule: true,
@@ -128,22 +128,25 @@ module.exports = {
                 test: /\.(ico)$/,
                 loader: 'file-loader',
                 options: {
-                  name: '[name].[ext]'
+                    name: '[name].[ext]'
                 }
-              },
-              {
+            },
+            {
                 test: [/\.svg$/],
                 loader: 'svg-url-loader',
                 options: {
-                  // Images larger than 10 KB won’t be inlined
-                  limit: 10 * 1024,
-                  name: 'static/media/images/[name].[hash:8].[ext]',
-                  // Remove quotes around the encoded URL –
-                  // they’re rarely useful
-                  noquotes: true
+                    // Images larger than 10 KB won’t be inlined
+                    limit: 10 * 1024,
+                    name: 'static/media/images/[name].[hash:8].[ext]',
+                    // Remove quotes around the encoded URL –
+                    // they’re rarely useful
+                    noquotes: true
                 }
-              },
-
+            },
+            {
+                test: /\.md$/,
+                use: 'raw-loader'
+            },
         ]
     },
 };
