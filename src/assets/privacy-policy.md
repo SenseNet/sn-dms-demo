@@ -1,5 +1,5 @@
 # PRIVACY POLICY
-The website of www.community.sensenet.com (hereinafter referred to as the “Website”) is operated by Sense/Net Zrt. (Infopark Sétány 1/I., Budapest, 1117, Hungary; e-mail: sales@sensenet.com) hereby informs visitors about the data processing on the website in accordance with Regulation (EU) 2016/679 of The European Parliament And Of The Council on General Data Protection Regulation (hereinafter referred to as: GDPR).
+The website of dms.demo.sensenet.com (hereinafter referred to as the “Website”) is operated by Sense/Net Zrt. (Infopark Sétány 1/I., Budapest, 1117, Hungary; e-mail: sales@sensenet.com) hereby informs visitors about the data processing on the website in accordance with Regulation (EU) 2016/679 of The European Parliament And Of The Council on General Data Protection Regulation (hereinafter referred to as: GDPR).
 
 Regarding the data processing of this website, Sense/Net Zrt. is the data processor.
 
@@ -35,8 +35,6 @@ Sense/Net Zrt. as data controller may use data processors for technical operatio
 | ------------------------------------ | ------------------------ | --------------------- |
 | Google Analytics (Google Ireland Limited) | Gordon House, Barrow Street, Dublin 4, Ireland | independent measuring and auditing of our website’s visits |
 | Hotjar Ltd. | registry number: C 65490;  registered seat: Level 2, St Julian’s Business Centre, 3, Elia Zammit | recording user behavior and habits, also monitoring the browsing of our pages, to measure and survey the visits of our website |
-| Linkedin Corporation (LinkedIn Ireland Unlimited Company) | LinkedIn Ireland Unlimited Company  Wilton Plaza  Wilton Place, Dublin 2  Ireland | social media feature, analytical and targeting purpose |
-| YouTube LLC | 901 Cherry Avenue, San Bruno,  CA 94066, United States | YouTube video embed and statistics
 | (eucookie.eu) Altamira Softworks | Altamira Softworks, s. r. o.  Jaskový rad 187  831 01 Bratislava  Slovakia    ID No.: 44880774    VAT ID: SK2022861368 | cookie consent management |
 
 ### 5) Managing cookies
