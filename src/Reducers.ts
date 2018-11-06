@@ -7,6 +7,7 @@ import { resources } from './assets/resources'
 import { documentLibrary } from './store/documentlibrary/reducers'
 import { editedContent } from './store/edited/reducers'
 import { picker } from './store/picker/reducers'
+import { usersAndGroups } from './store/usersandgroups/reducers'
 import { workspaces } from './store/workspaces/reducers'
 
 import { logReducer } from './store/actionlog/reducers'
@@ -490,4 +491,5 @@ export const dms = combineReducers({
     edited: editedContent,
     menuOpen,
     log: logReducer,
+    usersAndGroups,
 })
