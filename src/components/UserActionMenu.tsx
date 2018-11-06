@@ -1,5 +1,4 @@
 import { Icon, iconType } from '@sensenet/icons-react'
-import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -43,7 +42,6 @@ const mapStateToProps = (state: rootStateType, match) => {
 }
 
 const mapDispatchToProps = {
-    logout: Actions.userLogout,
     loadUserActions: DMSActions.loadUserActions,
     openActionMenu: DMSActions.openActionMenu,
     closeActionMenu: DMSActions.closeActionMenu,

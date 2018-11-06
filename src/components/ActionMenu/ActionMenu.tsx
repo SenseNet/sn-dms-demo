@@ -200,9 +200,8 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     break
                 case 'Profile':
                     this.handleClose()
-                    const doclibPath = `/Root/Profiles/Public/${this.props.userName}/Document_Library`
-                    this.props.loadContent(doclibPath)
-                    this.props.fetchContent(doclibPath, this.props.queryOptions)
+                    const userPath = compile('/users/:otherActions*')({ folderPath: btoa(content.Id as any), otherActions: ['profile', btoa(content.Id as any)] })
+                    this.props.history.push(userPath)
                     break
                 case 'Edit':
                     this.handleClose()
@@ -358,7 +357,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                                         }
                                         {
                                             action.Name === 'ForceUndoCheckOut' ?
-                                                <Icon  iconName="warning" type={iconType.materialui} style={{ position: 'absolute', left: '1.87em', top: '1.38em', color: '#fff', fontSize: 11 }} /> : null
+                                                <Icon iconName="warning" type={iconType.materialui} style={{ position: 'absolute', left: '1.87em', top: '1.38em', color: '#fff', fontSize: 11 }} /> : null
                                         }
                                     </Icon>
                                 </ListItemIcon>
@@ -380,7 +379,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                                         <MenuItem style={styles.menuItem}>
                                             <ListItemIcon style={styles.actionIcon}>
                                                 <div>
-                                                    <Icon  iconName="insert_drive_file" type={iconType.materialui} />
+                                                    <Icon iconName="insert_drive_file" type={iconType.materialui} />
                                                     <Icon iconName="forward" type={iconType.materialui} style={{ color: '#fff', position: 'absolute', left: '1.75em', top: '1em', fontSize: 12, transform: 'rotate(-90deg)' }} />
                                                 </div>
                                             </ListItemIcon>
