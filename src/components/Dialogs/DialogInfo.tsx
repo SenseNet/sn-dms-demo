@@ -81,7 +81,7 @@ interface DialogInfoProps {
 class DialogInfo extends React.Component<{ classes } & DialogInfoProps, {}> {
     public render() {
         const { classes, currentContent } = this.props
-        const icon = currentContent.Icon
+        const icon = currentContent.Icon || currentContent.Type
         return (
             <MediaQuery minDeviceWidth={700}>
                 {(matches) =>
