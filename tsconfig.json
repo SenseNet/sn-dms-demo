@@ -30,5 +30,8 @@
     "acceptance-tests",
     "webpack",
     "jest"
+  ],
+  "typeRoots": [
+    "node_modules/@types","./typings.d.ts"
   ]
 }

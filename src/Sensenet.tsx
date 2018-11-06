@@ -13,6 +13,7 @@ import { AuthorizedRoute } from './components/AuthorizedRoute'
 import { FullScreenLoader } from './components/FullScreenLoader'
 import MessageBar from './components/MessageBar'
 import Login from './pages/Login'
+import PrivacyPolicy from './pages/PrivacyPolicy'
 import Registration from './pages/Registration'
 import './Sensenet.css'
 
@@ -57,6 +58,10 @@ class Sensenet extends React.Component<SensenetProps & ReturnType<typeof mapStat
               </AuthorizedRoute>
               <AuthorizedRoute exact path="/registration" authorize={() => this.props.loginState !== LoginState.Authenticated} redirectOnUnauthorized="/">
                 <Registration oAuthProvider={this.props.oAuthProvider} verify={this.props.recaptchaCallback} />
+              </AuthorizedRoute>
+
+              <AuthorizedRoute exact path="/privacypolicy" authorize={() => this.props.loginState !== LoginState.Authenticated} redirectOnUnauthorized="/">
+                <PrivacyPolicy />
               </AuthorizedRoute>
 
               {/* Empty path, default routes per login state */}
