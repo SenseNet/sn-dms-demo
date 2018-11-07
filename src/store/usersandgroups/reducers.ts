@@ -1,5 +1,5 @@
 import { IODataCollectionResponse } from '@sensenet/client-core'
-import { Group, User } from '@sensenet/default-content-types'
+import { GenericContent, Group, User } from '@sensenet/default-content-types'
 import { AnyAction, combineReducers, Reducer } from 'redux'
 
 export const currentUser: Reducer<User | null> = (state: User = null, action: AnyAction) => {
@@ -48,12 +48,20 @@ export const isAdmin: Reducer<boolean> = (state: boolean = false, action: AnyAct
     }
 }
 
+export const ancestors: Reducer<GenericContent[]> = (state: GenericContent[] = [], action: AnyAction) => {
+    switch (action.type) {
+        default:
+            return state
+    }
+}
+
 export const user = combineReducers({
     currentUser,
     isAdmin,
     memberships,
     error,
     isLoading,
+    ancestors,
 })
 
 export const usersAndGroups = combineReducers({
