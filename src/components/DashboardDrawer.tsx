@@ -192,11 +192,17 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<t
                     }}
                     style={matches ? { paddingTop: '48px' } : {}}
                     onClose={matches ? null : () => this.toggleDrawer()}
+                    PaperProps={{
+                        style: {
+                            border: 'none',
+                        },
+                    }}
                 >
                     <MenuList>
                         {menu.map((item, index) => {
                             return matches ? (
                                 <div key={index}>
+                                    {index ? <Divider light /> : null}
                                     {
                                         React.createElement(
                                             item.component,
@@ -208,7 +214,6 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<t
                                                 matches,
                                             })
                                     }
-                                    <Divider light />
                                 </div>
                             ) :
                                 item.mobile ? <div key={index}>
@@ -247,8 +252,9 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<t
                         })}
                     </MenuList>
                 </Drawer>
-            }}
-        </MediaQuery>
+            }
+            }
+        </MediaQuery >
     }
 }
 

@@ -2,7 +2,7 @@ import Divider from '@material-ui/core/Divider'
 import ListItemText from '@material-ui/core/ListItemText'
 import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
-import withStyles, {StyleRulesCallback} from '@material-ui/core/styles/withStyles'
+import withStyles, { StyleRulesCallback } from '@material-ui/core/styles/withStyles'
 import { IContent, IUploadProgressInfo } from '@sensenet/client-core'
 import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
@@ -81,7 +81,6 @@ const styles: StyleRulesCallback = () => ({
     submenuItem: {
         paddingLeft: 0,
         paddingRight: 0,
-        borderTop: 'solid 1px rgba(0, 0, 0, 0.08)',
     },
     submenuIcon: {
         color: '#666',

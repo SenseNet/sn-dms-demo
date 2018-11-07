@@ -142,6 +142,8 @@ const resources = {
     MOVETO_BUTTON: 'Move content here',
     COPYTO_BUTTON: 'Copy content here',
     NEW_FOLDER: 'New folder',
+    SEARCH_PLACEHOLDER: 'Search',
+    SEARCH_OPTIONS_TITLE: 'Search options',
 }
 
 const resourceHandler: ProxyHandler<typeof resources> = {

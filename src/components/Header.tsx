@@ -23,7 +23,7 @@ class Header extends React.Component<{}, {}> {
                         width: '196px',
                         flexGrow: 0,
                         flexShrink: 0,
-                        fontSize: '1.4em',
+                        fontSize: '1.33em',
                     }} />
                     <QuickSearch style={{
                         flexGrow: 1,

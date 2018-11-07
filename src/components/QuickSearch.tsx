@@ -4,6 +4,7 @@ import Typography from '@material-ui/core/Typography'
 import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import MediaQuery from 'react-responsive'
+import { resources } from '../assets/resources'
 import QuickSearchBox from './QuickSearchInput'
 
 const styles = {
@@ -46,6 +47,7 @@ export class QuickSearch extends React.Component<{ style?: React.CSSProperties }
                                     style: {
                                         width: '100%',
                                     },
+                                    placeholder: resources.SEARCH_PLACEHOLDER,
                                 }}
                                 containerProps={{
                                     style: {
@@ -68,7 +70,9 @@ export class QuickSearch extends React.Component<{ style?: React.CSSProperties }
                                     },
                                 }}
                             >
-                                <Typography variant="title">Alma</Typography>
+                                <div style={{ margin: '1em' }}>
+                                    <Typography variant="title">{resources.SEARCH_OPTIONS_TITLE}</Typography>
+                                </div>
                             </Popover>
                         </div>
                     } else {

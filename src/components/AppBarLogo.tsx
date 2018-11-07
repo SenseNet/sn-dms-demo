@@ -50,7 +50,7 @@ const sensenetLogo = require('../assets/logo.png')
 const appBarLogo = (props: { style?: React.CSSProperties }) => (
     <MediaQuery minDeviceWidth={700}>
         {(matches) => {
-            return <Link to="/" style={{ ...matches ? styles.logo : styles.logoMobile as any, ...props.style }} >
+            return <Link to="/documents" style={{ ...matches ? styles.logo : styles.logoMobile as any, ...props.style }} >
                 <img src={sensenetLogo} alt="sensenet" aria-label="sensenet" style={matches ? styles.logoImg : styles.logoImgMobile} />
                 <span style={matches ? styles.logoText : styles.logoTextMobile}>
                     <span style={styles.logoSpan}>sense</span>net

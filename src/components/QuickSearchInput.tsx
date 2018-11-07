@@ -54,7 +54,6 @@ const quickSearchBox = (props: {
                             name="search"
                             style={{ ...styles.textStyle, ...(props.inputProps && props.inputProps.style) }}
                             disableUnderline={true}
-                            placeholder="search"
                             startAdornment={
                                 <InputAdornment position="start">
                                     <IconButton buttonRef={props.startAdornmentRef}
