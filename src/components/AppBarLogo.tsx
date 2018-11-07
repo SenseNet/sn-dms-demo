@@ -6,9 +6,9 @@ import {
 
 const styles = {
     logo: {
-        flex: 1,
-        color: '#fff',
-        width: 40,
+        display: 'flex',
+        alignItems: 'center',
+        color: '#000',
         textDecoration: 'none' as any,
         fontFamily: 'Raleway Regular',
     },
@@ -45,12 +45,12 @@ const styles = {
 }
 
 // tslint:disable-next-line:no-var-requires
-const sensenetLogo = require('../assets/sensenet_white.png')
+const sensenetLogo = require('../assets/logo.png')
 
-const appBarLogo = () => (
+const appBarLogo = (props: { style?: React.CSSProperties }) => (
     <MediaQuery minDeviceWidth={700}>
         {(matches) => {
-            return <Link to="/" style={matches ? styles.logo : styles.logoMobile as any} >
+            return <Link to="/" style={{ ...matches ? styles.logo : styles.logoMobile as any, ...props.style }} >
                 <img src={sensenetLogo} alt="sensenet" aria-label="sensenet" style={matches ? styles.logoImg : styles.logoImgMobile} />
                 <span style={matches ? styles.logoText : styles.logoTextMobile}>
                     <span style={styles.logoSpan}>sense</span>net

@@ -7,8 +7,7 @@ import UserActionMenu from './UserActionMenu'
 
 const styles = {
     appBar: {
-        background: '#4cc9f2',
-        borderBottom: 'solid 1px #f5f5f5',
+        background: '#f3f3f3',
         zIndex: 1210,
         height: 48,
     },
@@ -17,11 +16,20 @@ const styles = {
 class Header extends React.Component<{}, {}> {
     public render() {
         return (
-            <AppBar position="absolute" style={styles.appBar}>
-                <Toolbar style={{ minHeight: 48, padding: '0px 10px' }}>
-                    <AppBarLogo />
-                    <QuickSearch />
-                    <UserActionMenu />
+            <AppBar position="absolute" style={{ ...styles.appBar, boxShadow: 'none' }}>
+                <Toolbar style={{ minHeight: 48, padding: '0px 10px', display: 'flex' }}>
+                    <AppBarLogo style={{
+                        width: '196px',
+                        flexGrow: 0,
+                        flexShrink: 0,
+                        fontSize: '1.4em',
+                    }} />
+                    <QuickSearch style={{
+                        flexGrow: 1,
+                    }} />
+                    <UserActionMenu style={{
+                        flexGrow: 0,
+                    }} />
                 </Toolbar>
             </AppBar>
         )
