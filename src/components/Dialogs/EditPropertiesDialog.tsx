@@ -25,6 +25,7 @@ const mapStateToProps = (state: rootStateType) => {
         schemas: state.sensenet.session.repository.schemas,
         editedcontent: state.dms.edited,
         items: state.dms.documentLibrary.items,
+        repositoryUrl: state.sensenet.session.repository.repositoryUrl,
     }
 }
 
@@ -76,7 +77,7 @@ class EditPropertiesDialog extends React.Component<EditPropertiesDialogProps & R
         this.props.closeDialog()
     }
     public render() {
-        const { contentTypeName, editContent, content } = this.props
+        const { contentTypeName, editContent, content, repositoryUrl } = this.props
         const { editedcontent } = this.state
 
         return (
@@ -86,7 +87,7 @@ class EditPropertiesDialog extends React.Component<EditPropertiesDialogProps & R
                         <Typography variant="headline" gutterBottom>
                             {resources.EDIT_PROPERTIES}
                         </Typography>
-                        <DialogInfo currentContent={editedcontent ? editedcontent : content} />
+                        <DialogInfo currentContent={editedcontent ? editedcontent : content} repositoryUrl={repositoryUrl} />
                         {editedcontent ?
                             <LoadableEditView
                                 content={editedcontent}

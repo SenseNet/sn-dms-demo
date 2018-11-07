@@ -141,6 +141,7 @@ interface VersionsDialogProps {
 const mapStateToProps = (state: rootStateType, props: VersionsDialogProps) => {
     return {
         versions: state.dms.versions,
+        repositoryUrl: state.sensenet.session.repository.repositoryUrl,
     }
 }
 
@@ -198,7 +199,7 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
         })
     }
     public render() {
-        const { classes, currentContent, versions } = this.props
+        const { classes, currentContent, repositoryUrl, versions } = this.props
         const { expanded } = this.state
         return (
             <MediaQuery minDeviceWidth={700}>
@@ -208,7 +209,7 @@ class VersionsDialog extends React.Component<{ classes } & VersionsDialogProps &
                             {resources.VERSIONS}
                         </Typography>
                         <div style={matches ? styles.inner : styles.innerMobile}>
-                            <DialogInfo currentContent={currentContent} />
+                            <DialogInfo currentContent={currentContent} repositoryUrl={repositoryUrl} />
                             {matches ?
                                 <div style={versions.length > 3 ? styles.tableContainerScroll : styles.tableContainer}>
                                     <Table className={classes.table}>

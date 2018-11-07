@@ -68,7 +68,7 @@ interface ShareDialogProps extends RouteComponentProps<any> {
 
 const mapStateToProps = (state: rootStateType, props: ShareDialogProps) => {
     return {
-        //
+        repositoryUrl: state.sensenet.session.repository.repositoryUrl,
     }
 }
 
@@ -197,7 +197,7 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
     }
 
     public render() {
-        const { currentContent } = this.props
+        const { currentContent, repositoryUrl } = this.props
         return (
             <MediaQuery minWidth={700}>
                 {(matches) => (
@@ -212,7 +212,7 @@ class ShareDialog extends React.Component<{ classes } & ShareDialogProps & Retur
                                 margin: matches ? undefined : '0 0 20px 0px',
                             },
                         }}>
-                            <DialogInfo currentContent={currentContent} hideVersionInfo={true} />
+                            <DialogInfo currentContent={currentContent} hideVersionInfo={true} repositoryUrl={repositoryUrl} />
                             <Divider />
                             {matches ? null : <Typography variant="body1" style={{ paddingTop: '1em' }}><strong>Share with</strong></Typography>}
                             <div style={{
