@@ -39,8 +39,18 @@ export const isLoading: Reducer<boolean> = (state: boolean = false, action: AnyA
     }
 }
 
+export const isAdmin: Reducer<boolean> = (state: boolean = false, action: AnyAction) => {
+    switch (action.type) {
+        case 'DMS_USER_ISADMIN':
+            return action.admin
+        default:
+            return state
+    }
+}
+
 export const user = combineReducers({
     currentUser,
+    isAdmin,
     memberships,
     error,
     isLoading,

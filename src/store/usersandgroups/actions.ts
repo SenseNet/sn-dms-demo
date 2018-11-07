@@ -1,8 +1,8 @@
 import { IODataCollectionResponse, IODataParams, Repository } from '@sensenet/client-core'
 import { ValueObserver } from '@sensenet/client-utils'
-import { GenericContent, User } from '@sensenet/default-content-types'
+import { GenericContent, Group, User } from '@sensenet/default-content-types'
 import { EventHub } from '@sensenet/repository-events'
-import { Action } from 'redux'
+import { Action, AnyAction } from 'redux'
 import { InjectableAction } from 'redux-di-middleware'
 import { rootStateType } from '../..'
 import { changedContent, debounceReloadOnProgress } from '../../Actions'
@@ -121,4 +121,26 @@ export const finishLoading = () => ({
 export const setGroupOptions = <T extends GenericContent>(odataOptions: IODataParams<T>) => ({
     type: 'DMS_USERSANDGROUPS_SET_GROUP_OPTIONS',
     odataOptions,
+})
+
+export const userIsAdmin = (userName: string) => ({
+    type: 'DMS_USER_ISADMIN',
+    inject: async (options) => {
+            const repository = options.getInjectable(Repository)
+            const payload = await repository.load<Group>({
+                idOrPath: '/Root/IMS/Public/DMSAdmins',
+                oDataOptions: {
+                    select: ['Members'] as any,
+                    expand: 'Members',
+                },
+            })
+            const group = payload.d.Members as User[]
+            const admin = group.find((user) => user.Name === userName)
+            options.dispatch(isAdmin(admin ? true : false))
+    },
+} as InjectableAction<rootStateType, AnyAction>)
+
+export const isAdmin = (admin: boolean = false) => ({
+    type: 'DMS_USER_ISADMIN',
+    admin,
 })

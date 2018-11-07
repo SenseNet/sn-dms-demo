@@ -14,6 +14,7 @@ import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
 import { icons } from '../assets/icons'
 import { resources } from '../assets/resources'
+import { userIsAdmin } from '../store/usersandgroups/actions'
 import ContentTemplatesMenu from './Menu/ContentTemplatesMenu'
 import ContentTypesMenu from './Menu/ContentTypesMenu'
 import DocumentsMenu from './Menu/DocumentsMenu'
@@ -21,7 +22,7 @@ import GroupsMenu from './Menu/GroupsMenu'
 import SettingsMenu from './Menu/SettingsMenu'
 import UsersMenu from './Menu/UsersMenu'
 
-const menu: Array<{ title: string, name: string, icon: string, component: any, routeName: string, mobile: boolean }> = [
+const menu: Array<{ title: string, name: string, icon: string, component: any, routeName: string, mobile: boolean, adminOnly: boolean }> = [
     {
         title: resources.DOCUMENTS,
         name: 'documents',
@@ -29,6 +30,7 @@ const menu: Array<{ title: string, name: string, icon: string, component: any, r
         component: DocumentsMenu,
         routeName: '/documents',
         mobile: true,
+        adminOnly: false,
     },
     {
         title: resources.USERS,
@@ -37,6 +39,7 @@ const menu: Array<{ title: string, name: string, icon: string, component: any, r
         component: UsersMenu,
         routeName: '/users',
         mobile: true,
+        adminOnly: true,
     },
     {
         title: resources.GROUPS,
@@ -45,6 +48,7 @@ const menu: Array<{ title: string, name: string, icon: string, component: any, r
         component: GroupsMenu,
         routeName: '/groups',
         mobile: true,
+        adminOnly: true,
     },
     {
         title: resources.CONTENT_TYPES,
@@ -53,6 +57,7 @@ const menu: Array<{ title: string, name: string, icon: string, component: any, r
         component: ContentTypesMenu,
         routeName: '/contenttypes',
         mobile: false,
+        adminOnly: false,
     },
     {
         title: resources.CONTENT_TEMPLATES,
@@ -61,6 +66,7 @@ const menu: Array<{ title: string, name: string, icon: string, component: any, r
         component: ContentTemplatesMenu,
         routeName: '/contenttemplates',
         mobile: false,
+        adminOnly: false,
     },
     {
         title: resources.SETTINGS,
@@ -69,6 +75,7 @@ const menu: Array<{ title: string, name: string, icon: string, component: any, r
         component: SettingsMenu,
         routeName: '/settings',
         mobile: false,
+        adminOnly: false,
     },
 ]
 
@@ -137,7 +144,7 @@ const styles: StyleRulesCallback = (theme) => ({
     },
 })
 
-interface DashboarDrawerProps {
+interface DashboardDrawerProps {
     classes,
     chooseMenuItem,
     chooseSubmenuItem,
@@ -149,6 +156,8 @@ const mapStateToProps = (state: rootStateType) => {
         activeItem: state.dms.menu.active,
         menuIsOpen: state.dms.menuOpen,
         userActions: state.dms.actionmenu.userActions,
+        currentUser: state.sensenet.session.user.userName,
+        isAdmin: state.dms.usersAndGroups.user.isAdmin,
     }
 }
 
@@ -157,14 +166,29 @@ const mapDispatchToProps = {
     chooseSubmenuItem: DMSActions.chooseSubmenuItem,
     handleDrawerMenu: DMSActions.handleDrawerMenu,
     logout: Actions.userLogout,
+    userIsAdmin,
 }
 
-class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, {}> {
+class DashboardDrawer extends React.Component<DashboardDrawerProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, { currentUser }> {
+    constructor(props: DashboardDrawer['props']) {
+        super(props)
+        this.state = {
+            currentUser: '',
+        }
+    }
     public handleClick = (name) => {
         this.props.chooseMenuItem(name)
     }
     public toggleDrawer = () => {
         this.props.handleDrawerMenu(false)
+    }
+    public static getDerivedStateFromProps(newProps: DashboardDrawer['props'], lastState: DashboardDrawer['state']) {
+        if (newProps.currentUser !== lastState.currentUser) {
+            newProps.userIsAdmin(newProps.currentUser)
+        }
+        return {
+            ...lastState,
+        } as DashboardDrawer['state']
     }
     public handleMenuItemClick = (e, action) => {
         if ((action as any).Action) {
@@ -181,7 +205,7 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<t
         }
     }
     public render() {
-        const { classes, activeItem, chooseMenuItem, chooseSubmenuItem, userActions } = this.props
+        const { classes, activeItem, chooseMenuItem, chooseSubmenuItem, userActions, isAdmin } = this.props
         return <MediaQuery minDeviceWidth={700}>
             {(matches) => {
                 return <Drawer
@@ -197,7 +221,7 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<t
                     <MenuList>
                         {menu.map((item, index) => {
                             return matches ? (
-                                <div key={index}>
+                                !item.adminOnly ? <div key={index}>
                                     {
                                         React.createElement(
                                             item.component,
@@ -210,7 +234,22 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<t
                                             })
                                     }
                                     <Divider light />
-                                </div>
+                                </div> :
+                                    isAdmin ?
+                                        <div key={index}>
+                                            {
+                                                React.createElement(
+                                                    item.component,
+                                                    {
+                                                        active: activeItem === item.name,
+                                                        item,
+                                                        chooseMenuItem,
+                                                        chooseSubmenuItem,
+                                                        matches,
+                                                    })
+                                            }
+                                            <Divider light />
+                                        </div> : null
                             ) :
                                 item.mobile ? <div key={index}>
                                     {
