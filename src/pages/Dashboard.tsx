@@ -51,7 +51,6 @@ const styles = {
     },
     main: {
         flexGrow: 1,
-        backgroundColor: '#eee',
         padding: '0 10px 10px',
         minWidth: 0,
     },

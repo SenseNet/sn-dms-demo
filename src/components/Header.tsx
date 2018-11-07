@@ -7,9 +7,10 @@ import UserActionMenu from './UserActionMenu'
 
 const styles = {
     appBar: {
-        background: '#f3f3f3',
+        background: 'transparent',
         zIndex: 1210,
         height: 48,
+        borderBottom: '1px solid #ddd',
     },
 }
 

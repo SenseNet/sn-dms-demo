@@ -15,7 +15,8 @@ export interface ListToolbarProps {
 
 const styles = {
     appBar: {
-        background: '#fff',
+        background: 'transparent',
+        boxShadow: 'none',
     },
     appBarMobile: {
         background: '#4cc9f2',

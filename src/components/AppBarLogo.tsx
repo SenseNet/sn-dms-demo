@@ -24,14 +24,14 @@ const styles = {
         textAlign: 'center',
     },
     logoImg: {
-        maxWidth: 25,
-        maxHeight: 25,
+        maxWidth: 32,
+        maxHeight: 32,
         verticalAlign: 'middle' as any,
         marginRight: 5,
     },
     logoImgMobile: {
-        maxWidth: 20,
-        maxHeight: 20,
+        maxWidth: 25,
+        maxHeight: 25,
         verticalAlign: 'middle' as any,
         marginRight: 5,
     },

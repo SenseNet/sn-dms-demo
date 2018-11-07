@@ -190,10 +190,9 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<t
                     classes={{
                         paper: matches ? classes.drawerPaper : null,
                     }}
+                    style={matches ? { paddingTop: '48px' } : {}}
                     onClose={matches ? null : () => this.toggleDrawer()}
                 >
-                    {matches ? <div style={{ height: 48 }}></div> : null}
-
                     <MenuList>
                         {menu.map((item, index) => {
                             return matches ? (
