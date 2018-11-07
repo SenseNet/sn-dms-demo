@@ -1,10 +1,10 @@
+import Avatar from '@material-ui/core/Avatar'
 import withStyles from '@material-ui/core/styles/withStyles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-
 import { GenericContent } from '@sensenet/default-content-types'
 import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
@@ -19,6 +19,10 @@ const styles = {
         marginBottom: 15,
     },
     icon: {
+        flexShrink: 0,
+        marginRight: 5,
+    },
+    avatar: {
         flexShrink: 0,
         marginRight: 5,
     },
@@ -75,23 +79,29 @@ const styles = {
 
 interface DialogInfoProps {
     currentContent: GenericContent
-    hideVersionInfo?: boolean
+    hideVersionInfo?: boolean,
+    repositoryUrl: string,
 }
 
 class DialogInfo extends React.Component<{ classes } & DialogInfoProps, {}> {
     public render() {
-        const { classes, currentContent } = this.props
+        const { classes, currentContent, repositoryUrl } = this.props
         const icon = currentContent.Icon || currentContent.Type
         return (
             <MediaQuery minDeviceWidth={700}>
                 {(matches) =>
                     <div style={styles.inner}>
                         <div style={styles.contentName}>
-                            <Icon
-                                color="primary"
-                                style={styles.icon}
-                                iconName={icons[icon.toLowerCase()]}
-                                type={iconType.materialui} />
+                            { // tslint:disable-next-line:no-string-literal
+                                currentContent.Type === 'User' ?
+                                // tslint:disable-next-line:no-string-literal
+                                <Avatar src={`${repositoryUrl}${currentContent['Avatar']['_deferred']}`} style={styles.avatar} /> :
+                                    <Icon
+                                        color="primary"
+                                        style={styles.icon}
+                                        iconName={icons[icon.toLowerCase()]}
+                                        type={iconType.materialui} />
+                            }
                             <span className={matches ? classes.displayName : classes.displayNameMobile}>
                                 {currentContent.DisplayName}
                             </span>
