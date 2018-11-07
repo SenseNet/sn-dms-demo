@@ -25,6 +25,7 @@ const styles = {
         display: 'flex',
         flexDirection: 'row',
         padding: '0 12px',
+        minHeight: '68px',
     },
     toolbarMobile: {
         padding: '0',

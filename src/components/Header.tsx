@@ -20,7 +20,7 @@ class Header extends React.Component<{}, {}> {
             <AppBar position="absolute" style={{ ...styles.appBar, boxShadow: 'none' }}>
                 <Toolbar style={{ minHeight: 48, padding: '0px 10px', display: 'flex' }}>
                     <AppBarLogo style={{
-                        width: '196px',
+                        width: '216px',
                         flexGrow: 0,
                         flexShrink: 0,
                         fontSize: '1.33em',
@@ -30,6 +30,7 @@ class Header extends React.Component<{}, {}> {
                     }} />
                     <UserActionMenu style={{
                         flexGrow: 0,
+                        flexShrink: 0,
                     }} />
                 </Toolbar>
             </AppBar>

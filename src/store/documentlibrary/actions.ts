@@ -18,8 +18,8 @@ export const startLoading = (idOrPath: number | string) => ({
 export const finishLoading = () => ({
     type: 'DMS_DOCLIB_FINISH_LOADING',
 })
-export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: string | number, options?: IODataParams<T>) => InjectableAction<rootStateType, Action>
-    = <T extends GenericContent = GenericContent>(idOrPath: number | string) => ({
+export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: string | number, loadParentOptions?: IODataParams<T>, loadChildrenOptions?: IODataParams<T>) => InjectableAction<rootStateType, Action>
+    = <T extends GenericContent = GenericContent>(idOrPath: number | string, loadParentOptions?: IODataParams<T>, loadChildrenOptions?: IODataParams<T>) => ({
         type: 'DMS_DOCLIB_LOAD_PARENT',
         inject: async (options) => {
 
@@ -38,7 +38,10 @@ export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: s
                 const repository = options.getInjectable(Repository)
                 const newParent = await repository.load<T>({
                     idOrPath,
-                    oDataOptions: prevState.parentOptions,
+                    oDataOptions: {
+                        ...prevState.parentOptions,
+                        ...loadParentOptions,
+                    },
                 })
                 options.dispatch(setParent(newParent.d))
                 const emitChange = (content: GenericContent) => {
@@ -89,7 +92,10 @@ export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: s
                 (async () => {
                     const items = await repository.loadCollection({
                         path: newParent.d.Path,
-                        oDataOptions: prevState.childrenOptions,
+                        oDataOptions: {
+                            ...prevState.childrenOptions,
+                            ...loadChildrenOptions,
+                        },
                     })
                     options.dispatch(setItems(items))
                 })(),
