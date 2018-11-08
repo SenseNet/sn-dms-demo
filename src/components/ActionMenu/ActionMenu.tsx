@@ -68,6 +68,7 @@ const mapDispatchToProps = {
     loadPickerItems,
     select,
     uploadFileList: DMSActions.uploadFileList,
+    chooseMenuItem: DMSActions.chooseMenuItem,
 }
 
 const styles = {
@@ -202,6 +203,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     this.handleClose()
                     const userPath = compile('/users/:otherActions*')({ folderPath: btoa(content.Id as any), otherActions: ['profile', btoa(content.Id as any)] })
                     this.props.history.push(userPath)
+                    this.props.chooseMenuItem('profile')
                     break
                 case 'Edit':
                     this.handleClose()

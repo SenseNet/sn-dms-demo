@@ -363,7 +363,7 @@ export const uploads: Reducer<{ uploads: ExtendedUploadProgressInfo[], showProgr
         return state
     }
 
-export const activeMenuItem: Reducer<string, Action & { itemName?: string }> = (state = 'documents', action) => {
+export const activeMenuItem: Reducer<string, Action & { itemName?: string }> = (state = '', action) => {
     switch (action.type) {
         case 'CHOOSE_MENUITEM':
             return action.itemName || state

@@ -184,7 +184,7 @@ class DashboardDrawer extends React.Component<DashboardDrawerProps & ReturnType<
     }
     public static getDerivedStateFromProps(newProps: DashboardDrawer['props'], lastState: DashboardDrawer['state']) {
         if (newProps.currentUser !== lastState.currentUser) {
-            newProps.userIsAdmin(newProps.currentUser)
+            newProps.userIsAdmin(`/Root/IMS/Public/${newProps.currentUser}`)
         }
         return {
             ...lastState,

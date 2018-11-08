@@ -32,6 +32,7 @@ interface UserActionMenuState {
     anchorEl,
     open: boolean,
     selectedIndex: number,
+    userName: string,
 }
 
 const mapStateToProps = (state: rootStateType, match) => {
@@ -52,17 +53,21 @@ class UserActionMenu extends React.Component<ReturnType<typeof mapStateToProps> 
         anchorEl: null,
         open: false,
         selectedIndex: 1,
+        userName: '',
     }
     constructor(props) {
         super(props)
         this.handleClick = this.handleClick.bind(this)
         this.handleRequestClose = this.handleRequestClose.bind(this)
     }
-    public componentWillReceiveProps(nextProps: UserActionMenu['props']) {
-        const { loggedinUser, loadUserActions } = this.props
-        if (loggedinUser.userName !== nextProps.loggedinUser.userName && nextProps.loggedinUser.userName !== 'Visitor') {
-            loadUserActions(nextProps.loggedinUser.content.Path, 'DMSUserActions')
+    public static getDerivedStateFromProps(newProps: UserActionMenu['props'], lastState: UserActionMenu['state']) {
+        if (lastState.userName !== newProps.loggedinUser.userName && newProps.loggedinUser.userName !== 'Visitor') {
+            newProps.loadUserActions(newProps.loggedinUser.content.Path, 'DMSUserActions')
         }
+        return {
+            ...lastState,
+            userName: newProps.loggedinUser.userName,
+        } as UserActionMenu['state']
     }
     public handleClick = (e) => {
         const { actions, loggedinUser } = this.props
