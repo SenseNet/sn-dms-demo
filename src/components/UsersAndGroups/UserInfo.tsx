@@ -84,7 +84,6 @@ const mapDispatchToProps = {
 
 class UserInfo extends React.Component<UserInfoProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, {}> {
     public handleEditClick = () => {
-        console.log(this.props.user)
         this.props.openDialog(
             <EditPropertiesDialog
                 content={this.props.user}

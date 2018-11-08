@@ -1,5 +1,5 @@
-import { IODataCollectionResponse } from '@sensenet/client-core'
-import { GenericContent, Group, User } from '@sensenet/default-content-types'
+import { IODataCollectionResponse, IODataParams } from '@sensenet/client-core'
+import { GenericContent, User } from '@sensenet/default-content-types'
 import { AnyAction, combineReducers, Reducer } from 'redux'
 
 export const currentUser: Reducer<User | null> = (state: User = null, action: AnyAction) => {
@@ -11,10 +11,10 @@ export const currentUser: Reducer<User | null> = (state: User = null, action: An
     }
 }
 
-export const memberships: Reducer<IODataCollectionResponse<Group>> = (state: IODataCollectionResponse<Group> = { d: { __count: 0, results: [] } }, action: AnyAction) => {
+export const memberships: Reducer<IODataCollectionResponse<GenericContent>> = (state: IODataCollectionResponse<GenericContent> = { d: { __count: 0, results: [] } }, action: AnyAction) => {
     switch (action.type) {
-        case 'DMS_USERSANDGROUPS_SET_MEMBERSHIPS_SUCCESS':
-            return action.state
+        case 'DMS_USERSANDGROUPS_SET_MEMBERSHIPS':
+            return action.items
         default:
             return state
     }
@@ -50,6 +50,46 @@ export const isAdmin: Reducer<boolean> = (state: boolean = false, action: AnyAct
 
 export const ancestors: Reducer<GenericContent[]> = (state: GenericContent[] = [], action: AnyAction) => {
     switch (action.type) {
+        case 'DMS_USERSANDGROUPS_SET_ANCESTORS':
+            return action.ancestors
+        default:
+            return state
+    }
+}
+
+export const selected: Reducer<GenericContent[]> = (state: GenericContent[] = [], action: AnyAction) => {
+    switch (action.type) {
+        case 'DMS_USERSANDGROUPS_SET_ANCESTORS':
+            return action.ancestors
+        default:
+            return state
+    }
+}
+
+export const loadChunkSize = 25
+
+const defaultOptions = {
+    select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner', 'VersioningMode', 'ParentId', 'CheckedOutTo', 'Approvable'],
+    expand: ['Actions', 'Owner', 'CheckedOutTo'],
+    orderby: [['IsFolder', 'desc'], ['DisplayName', 'asc']],
+    filter: 'ContentType ne \'SystemFolder\'',
+    scenario: 'DMSListItem',
+    top: loadChunkSize,
+} as IODataParams<GenericContent>
+
+export const grouplistOptions: Reducer<IODataParams<GenericContent>> = (state: IODataParams<GenericContent> = defaultOptions, action: AnyAction) => {
+    switch (action.type) {
+        case 'DMS_USERSANDGROUPS_SET_CHILDREN_OPTIONS':
+            return action.odataOptions
+        default:
+            return state
+    }
+}
+
+export const active: Reducer<GenericContent|null> = (state: GenericContent = null, action: AnyAction) => {
+    switch (action.type) {
+        case 'DMS_USERSANDGROUPS_SET_ACTIVE':
+            return action.active
         default:
             return state
     }
@@ -62,6 +102,9 @@ export const user = combineReducers({
     error,
     isLoading,
     ancestors,
+    selected,
+    grouplistOptions,
+    active,
 })
 
 export const usersAndGroups = combineReducers({

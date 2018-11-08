@@ -49,19 +49,6 @@ export const loadUser: <T extends User = User>(idOrPath: string | number, userOp
                     }) as any,
                     eventHub.onContentCreated.subscribe((value) => emitChange(value.content)) as any,
                     eventHub.onContentModified.subscribe((value) => emitChange(value.content)) as any,
-                    eventHub.onContentDeleted.subscribe((value) => {
-                        const currentItems = options.getState().dms.usersAndGroups.user.memberships
-                        const filtered = currentItems.d.results.filter((item) => item.Id !== value.contentData.Id)
-                        options.dispatch(setMemberships(
-                            {
-                                ...currentItems,
-                                d: {
-                                    __count: filtered.length,
-                                    results: filtered,
-                                },
-                            },
-                        ))
-                    }) as any,
                     eventHub.onContentMoved.subscribe((value) => emitChange(value.content)) as any,
                 )
 
@@ -75,12 +62,16 @@ export const loadUser: <T extends User = User>(idOrPath: string | number, userOp
                     options.dispatch(setAncestors([...ancestors.d.results, newUser.d]))
                 })(),
                 (async () => {
-                    const items = await repository.executeAction({
-                        name: 'GetParentGroups', idOrPath, body: {
-                            directOnly: false,
-                        }, method: 'GET',
+                    const memberships = await repository.security.getParentGroups({
+                        contentIdOrPath: idOrPath,
+                        directOnly: false,
+                        oDataOptions: {
+                            select: ['Workspace', 'DisplayName', 'Type', 'Id', 'Path', 'Actions', 'Icon'],
+                            expand: ['Workspace', 'Actions'],
+                            filter: `isOf('Group')`,
+                        },
                     })
-                    options.dispatch(setMemberships(items as any))
+                    options.dispatch(setMemberships(memberships))
                 })(),
                 ])
 
@@ -98,11 +89,10 @@ export const setUser: <T extends User = User>(content: T) => Action & { content:
     content,
 })
 
-export const setMemberships: <T extends GenericContent = GenericContent>(items: IODataCollectionResponse<T>) => Action & { items: IODataCollectionResponse<T> }
-    = <T>(items: IODataCollectionResponse<T>) => ({
-        type: 'DMS_USERSANDGROUPS_SET_MEMBERSHIPS',
-        items,
-    })
+export const setMemberships = <T extends GenericContent>(items: IODataCollectionResponse<GenericContent>) => ({
+    type: 'DMS_USERSANDGROUPS_SET_MEMBERSHIPS',
+    items,
+})
 
 export const setAncestors = <T extends GenericContent>(ancestors: T[]) => ({
     type: 'DMS_USERSANDGROUPS_SET_ANCESTORS',
@@ -123,24 +113,66 @@ export const setGroupOptions = <T extends GenericContent>(odataOptions: IODataPa
     odataOptions,
 })
 
-export const userIsAdmin = (userName: string) => ({
+export const userIsAdmin = (userPath: string) => ({
     type: 'DMS_USER_ISADMIN',
     inject: async (options) => {
-            const repository = options.getInjectable(Repository)
-            const payload = await repository.load<Group>({
-                idOrPath: '/Root/IMS/Public/DMSAdmins',
-                oDataOptions: {
-                    select: ['Members'] as any,
-                    expand: 'Members',
-                },
-            })
-            const group = payload.d.Members as User[]
-            const admin = group.find((user) => user.Name === userName)
-            options.dispatch(isAdmin(admin ? true : false))
+        const repository = options.getInjectable(Repository)
+        const payload = await repository.security.getParentGroups({
+            contentIdOrPath: userPath,
+            directOnly: false,
+            oDataOptions: {
+                select: 'Name',
+            },
+        })
+        const groups = payload.d.results as Group[]
+        const admin = groups.find((group) => group.Name === 'DMSAdmin')
+        options.dispatch(isAdmin(admin ? true : false))
     },
 } as InjectableAction<rootStateType, AnyAction>)
 
 export const isAdmin = (admin: boolean = false) => ({
     type: 'DMS_USER_ISADMIN',
     admin,
+})
+
+export const select = <T extends GenericContent>(selected: T[]) => ({
+    type: 'DMS_USERSANDGROUPS_SELECT',
+    selected,
+})
+
+export const setActive = <T extends GenericContent>(active?: T) => ({
+    type: 'DMS_USERSANDGROUPS_SET_ACTIVE',
+    active,
+})
+
+export const updateChildrenOptions = <T extends GenericContent>(odataOptions: IODataParams<T>) => ({
+    type: 'DMS_USERSANDGROUPS_UPDATE_CHILDREN_OPTIONS',
+    inject: async (options) => {
+        const currentState = options.getState()
+        const parentPath = currentState.dms.usersAndGroups.user.currentUser.Path
+        const repository = options.getInjectable(Repository)
+        options.dispatch(startLoading(currentState.dms.usersAndGroups.user.currentUser.Id))
+        try {
+            const items = await repository.loadCollection({
+                path: parentPath,
+                oDataOptions: {
+                    ...options.getState().dms.usersAndGroups.user.grouplistOptions,
+                    ...odataOptions,
+                },
+            })
+            options.dispatch(setMemberships(items))
+        } catch (error) {
+            options.dispatch(setError(error))
+        } finally {
+            options.dispatch(finishLoading())
+            options.dispatch(setChildrenOptions(odataOptions))
+        }
+
+        /** */
+    },
+} as InjectableAction<rootStateType, Action> & { odataOptions: IODataParams<GenericContent> })
+
+export const setChildrenOptions = <T extends GenericContent>(odataOptions: IODataParams<T>) => ({
+    type: 'DMS_USERSANDGROUPS_SET_CHILDREN_OPTIONS',
+    odataOptions,
 })
