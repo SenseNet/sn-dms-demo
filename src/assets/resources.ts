@@ -142,6 +142,7 @@ const resources = {
     MOVETO_BUTTON: 'Move content here',
     COPYTO_BUTTON: 'Copy content here',
     NEW_FOLDER: 'New folder',
+    DELETE_FROM_GROUP: 'Delete from group',
 }
 
 const resourceHandler: ProxyHandler<typeof resources> = {
