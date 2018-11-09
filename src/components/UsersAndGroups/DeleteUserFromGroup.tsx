@@ -5,7 +5,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '../..'
 import { resources } from '../../assets/resources'
-import { removeMembersFromGroup } from '../../store/usersandgroups/actions'
+import * as Actions from '../../store/usersandgroups/actions'
 
 const styles = {
     cell: {
@@ -32,14 +32,18 @@ const mapStateToProps = (state: rootStateType) => {
 }
 
 const mapDispatchToProps = {
-    removeMembersFromGroup,
+    removeMembersFromGroup: Actions.removeMemberFromGroup,
 }
 
 class DeleteUserFromGroup extends React.Component<DeleteUserFromGroupProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DeleteUserFromGroupState> {
+    public handleClick = () => {
+        const { user, group, removeMembersFromGroup } = this.props
+        removeMembersFromGroup([user.Id], group.Id)
+    }
     public render() {
         return (
             <TableCell padding="checkbox" style={styles.cell as any}>
-                <Button style={styles.button}>
+                <Button style={styles.button} onClick={() => this.handleClick()}>
                     <Icon iconName="delete" style={{ fontSize: 19, marginRight: 10 }} />
                     {resources.DELETE_FROM_GROUP}
                 </Button>

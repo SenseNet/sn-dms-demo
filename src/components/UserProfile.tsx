@@ -122,6 +122,11 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
         return !editAction.Forbidden
     }
 
+    public isExplicitMember = (content) => {
+        const user = content.Members.filter((member) => member.Id === this.props.user.Id)[0]
+        return user !== undefined
+    }
+
     public render() {
         const { matchesDesktop } = this.props
         return <MediaQuery minDeviceWidth={700}>
@@ -200,7 +205,8 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
                                                     hostName={this.props.hostName} />)
                                             }
                                         case 'Actions':
-                                            if (this.isGroupAdmin(props.content.Actions)) {
+                                            // tslint:disable-next-line:no-string-literal
+                                            if (this.isGroupAdmin(props.content.Actions) && this.isExplicitMember(props.content)) {
                                                 return <DeleteUserFromGroup user={this.props.user} group={props.content} />
                                             } else {
                                                 return <TableCell></TableCell>

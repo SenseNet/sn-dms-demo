@@ -66,8 +66,8 @@ export const loadUser: <T extends User = User>(idOrPath: string | number, userOp
                         contentIdOrPath: idOrPath,
                         directOnly: false,
                         oDataOptions: {
-                            select: ['Workspace', 'DisplayName', 'Type', 'Id', 'Path', 'Actions', 'Icon'],
-                            expand: ['Workspace', 'Actions'],
+                            select: ['Workspace', 'DisplayName', 'Type', 'Id', 'Path', 'Actions', 'Icon', 'Members'],
+                            expand: ['Workspace', 'Actions', 'Members'],
                             filter: `isOf('Group')`,
                         },
                     })
@@ -175,4 +175,21 @@ export const updateChildrenOptions = <T extends GenericContent>(odataOptions: IO
 export const setChildrenOptions = <T extends GenericContent>(odataOptions: IODataParams<T>) => ({
     type: 'DMS_USERSANDGROUPS_SET_CHILDREN_OPTIONS',
     odataOptions,
+})
+
+export const removeMemberFromGroup = (contentIds: number[], groupId: number) => ({
+    type: 'DMS_USERSANDGROUPS_REMOVE_MEMBER',
+    inject: async (options) => {
+        const currentState = options.getState()
+        const repository = options.getInjectable(Repository)
+        options.dispatch(startLoading(currentState.dms.usersAndGroups.user.currentUser.Id))
+        try {
+            await repository.security.removeMembers(groupId, contentIds)
+        } catch (error) {
+            options.dispatch(setError(error))
+        } finally {
+            options.dispatch(loadUser(contentIds[0]))
+            options.dispatch(finishLoading())
+        }
+    },
 })
