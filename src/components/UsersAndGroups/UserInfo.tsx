@@ -19,7 +19,8 @@ const styles = {
         display: 'flex',
         flexDirection: 'row',
         padding: 12,
-        margin: '10px 0',
+        margin: '10px 0 0',
+        boxShadow: 'none',
     },
     leftColumn: {
         flex: '0 0 0%',

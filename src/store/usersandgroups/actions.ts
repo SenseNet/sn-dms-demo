@@ -58,6 +58,9 @@ export const loadUser: <T extends User = User>(idOrPath: string | number, userOp
                         method: 'GET',
                         name: 'Ancestors',
                         body: undefined,
+                        oDataOptions: {
+                            orderby: [['Path', 'asc']],
+                        },
                     })
                     options.dispatch(setAncestors([...ancestors.d.results, newUser.d]))
                 })(),
@@ -125,7 +128,7 @@ export const userIsAdmin = (userPath: string) => ({
             },
         })
         const groups = payload.d.results as Group[]
-        const admin = groups.find((group) => group.Name === 'DMSAdmin')
+        const admin = groups.find((group) => group.Name === 'DMSAdmins')
         options.dispatch(isAdmin(admin ? true : false))
     },
 } as InjectableAction<rootStateType, AnyAction>)
