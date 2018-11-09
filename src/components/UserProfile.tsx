@@ -21,6 +21,7 @@ import BreadCrumb from './BreadCrumb'
 import { DisplayNameCell } from './ContentList/CellTemplates/DisplayNameCell'
 import { DisplayNameMobileCell } from './ContentList/CellTemplates/DisplayNameMobileCell'
 import DeleteUserFromGroup from './UsersAndGroups/DeleteUserFromGroup'
+import GroupListToolbar from './UsersAndGroups/GroupListToolbar'
 import UserInfo from './UsersAndGroups/UserInfo'
 
 const styles = {
@@ -137,11 +138,15 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
                             <Toolbar style={matches ? styles.toolbar as any : styles.toolbarMobile as any}>
                                 <div style={{ flex: 1, display: 'flex' }}>
                                     <WorkspaceSelector />
-                                    <BreadCrumb ancestors={this.props.ancestors} currentContent={this.props.user} />
+                                    <BreadCrumb
+                                        ancestors={this.props.ancestors}
+                                        currentContent={this.props.user}
+                                        typeFilter={['OrganizationalUnit', 'Folder', 'Domain']} />
                                 </div>
                             </Toolbar>
                         </AppBar> : null}
                         <UserInfo />
+                        <GroupListToolbar />
                         <MuiThemeProvider theme={contentListTheme}>
                             <ContentList
                                 displayRowCheckbox={matches ? true : false}

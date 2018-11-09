@@ -71,6 +71,7 @@ const mapDispatchToProps = {
 interface BreadCrumbProps extends RouteComponentProps<any> {
     ancestors: GenericContent[]
     currentContent: GenericContent,
+    typeFilter: string[],
 }
 
 interface BreadCrumbState {
@@ -105,7 +106,7 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
     }
     public render() {
         const ancestors = this.props.ancestors
-            .filter((a) => a.Type === 'DocumentLibrary' || a.Type === 'Folder' || a.Id === this.props.currentContent.Id)
+            .filter((a) => this.props.typeFilter.indexOf(a.Type) > -1 || a.Id === this.props.currentContent.Id)
         return <MediaQuery minDeviceWidth={700}>
             {(matches) => {
                 return <div style={matches ? styles.breadCrumb : styles.breadCrumbMobile}>
@@ -124,7 +125,7 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
                                         key={ancestor.Id}
                                         style={isLast ? { ...styles.breadCrumbItem, ...styles.breadCrumbItemLast } : styles.breadCrumbItem as any}>
                                         {ancestor.DisplayName}
-                                        {!isLast ?
+                                        {!isLast || this.props.actions.length === 0 ?
                                             '' :
                                             <Icon
                                                 style={styles.breadCrumbIconLast}
