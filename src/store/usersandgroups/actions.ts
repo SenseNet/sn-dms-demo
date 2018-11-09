@@ -196,3 +196,46 @@ export const removeMemberFromGroup = (contentIds: number[], groupId: number) => 
         }
     },
 })
+
+export const selectGroup = <T extends GenericContent>(group: GenericContent) => ({
+    type: 'DMS_USERSANDGROUPS_SELECT_GROUP',
+    group,
+})
+
+export const deselectGroup = <T extends GenericContent>(group: GenericContent) => ({
+    type: 'DMS_USERSANDGROUPS_DESELECT_GROUP',
+    group,
+})
+
+export const getGroups = () => ({
+    type: 'DMS_USERSANDGROUPS_GET_GROUPS',
+    inject: async (options) => {
+        const currentState = options.getState()
+        const repository = options.getInjectable(Repository)
+        options.dispatch(startLoading(currentState.dms.usersAndGroups.user.currentUser.Id))
+        try {
+            const groups = await repository.loadCollection({
+                path: '/Root',
+                oDataOptions: {
+                    query: '+TypeIs:Group',
+                    select: ['DisplayName', 'Path'],
+                },
+            })
+            options.dispatch(setGroups(groups))
+        } catch (error) {
+            options.dispatch(setError(error))
+        } finally {
+            options.dispatch(finishLoading())
+        }
+    },
+})
+
+export const setGroups = (groups: Group[]) => ({
+    type: 'DMS_USERSANDGROUPS_SET_GROUPS',
+    groups,
+})
+
+export const searchGroups = (text: string) => ({
+    type: 'DMS_USERSANDGROUPS_SEARCH_GROUPS',
+    text,
+})

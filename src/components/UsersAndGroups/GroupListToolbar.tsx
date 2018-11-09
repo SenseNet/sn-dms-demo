@@ -7,6 +7,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '../..'
 import { resources } from '../../assets/resources'
+import GroupSelector from './GroupSelector/GroupSelector'
 
 const styles = {
     appbar: {
@@ -64,10 +65,7 @@ class GroupListToolbar extends React.Component<ReturnType<typeof mapStateToProps
                         {resources.GROUPS}
                     </Typography>
                     {this.props.isAdmin ? <div>
-                        <Button variant="raised" color="primary" style={{ ...styles.button, ...styles.buttonRaised }}>
-                            <Icon iconName="add" style={{ ...styles.icon, ...{ color: '#fff' } }} />
-                            {resources.ADD_TO_GROUP}
-                        </Button>
+                        <GroupSelector />
                         <Button color="primary" style={styles.button}>
                             <Icon iconName="delete" style={styles.icon} />
                             {resources.REMOVE_FROM_SELECTED_GROUPS}

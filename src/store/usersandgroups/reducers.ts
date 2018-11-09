@@ -86,7 +86,7 @@ export const grouplistOptions: Reducer<IODataParams<GenericContent>> = (state: I
     }
 }
 
-export const active: Reducer<GenericContent|null> = (state: GenericContent = null, action: AnyAction) => {
+export const active: Reducer<GenericContent | null> = (state: GenericContent = null, action: AnyAction) => {
     switch (action.type) {
         case 'DMS_USERSANDGROUPS_SET_ACTIVE':
             return action.active
@@ -107,6 +107,45 @@ export const user = combineReducers({
     active,
 })
 
+export const selectedGroups: Reducer<GenericContent[]> = (state: GenericContent[] = [], action: AnyAction) => {
+    switch (action.type) {
+        case 'DMS_USERSANDGROUPS_SELECT_GROUP':
+            return {
+                ...state,
+                selected: action.group,
+            }
+        case 'DMS_USERSANDGROUPS_DESELECT_GROUP':
+            return state.filter((o) => o.Id === action.group.Id)
+        default:
+            return state
+    }
+}
+
+export const all: Reducer<GenericContent[]> = (state: GenericContent[] = [], action: AnyAction) => {
+    switch (action.type) {
+        case 'DMS_USERSANDGROUPS_SET_GROUPS':
+            return action.groups.d.results
+        default:
+            return state
+    }
+}
+
+export const searchTerm: Reducer<string> = (state: string = '', action: AnyAction) => {
+    switch (action.type) {
+        case 'DMS_USERSANDGROUPS_SEARCH_GROUPS':
+            return action.text
+        default:
+            return state
+    }
+}
+
+export const group = combineReducers({
+    selected: selectedGroups,
+    all,
+    searchTerm,
+})
+
 export const usersAndGroups = combineReducers({
     user,
+    group,
 })
