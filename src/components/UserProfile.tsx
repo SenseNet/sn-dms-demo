@@ -1,5 +1,6 @@
 import AppBar from '@material-ui/core/AppBar'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
+import TableCell from '@material-ui/core/TableCell'
 import Toolbar from '@material-ui/core/Toolbar'
 import { ConstantContent } from '@sensenet/client-core'
 import { GenericContent, IActionModel } from '@sensenet/default-content-types'
@@ -19,7 +20,7 @@ import { loadUser, select, updateChildrenOptions } from '../store/usersandgroups
 import BreadCrumb from './BreadCrumb'
 import { DisplayNameCell } from './ContentList/CellTemplates/DisplayNameCell'
 import { DisplayNameMobileCell } from './ContentList/CellTemplates/DisplayNameMobileCell'
-import {DeleteUserFromGroup} from './UsersAndGroups/DeleteUserFromGroup'
+import DeleteUserFromGroup from './UsersAndGroups/DeleteUserFromGroup'
 import UserInfo from './UsersAndGroups/UserInfo'
 
 const styles = {
@@ -116,6 +117,10 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
             this.props.history.push(newPath)
         }
     }
+    public isGroupAdmin = (actions) => {
+        const editAction = actions.find((action) => action.Name === 'Edit')
+        return !editAction.Forbidden
+    }
 
     public render() {
         const { matchesDesktop } = this.props
@@ -195,7 +200,11 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
                                                     hostName={this.props.hostName} />)
                                             }
                                         case 'Actions':
-                                            return <DeleteUserFromGroup />
+                                            if (this.isGroupAdmin(props.content.Actions)) {
+                                                return <DeleteUserFromGroup user={this.props.user} group={props.content} />
+                                            } else {
+                                                return <TableCell></TableCell>
+                                            }
                                         default:
                                             return null
                                     }
