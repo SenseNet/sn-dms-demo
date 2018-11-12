@@ -42,6 +42,7 @@ const styles = {
         overflow: 'hidden' as any,
         position: 'relative' as any,
         display: 'flex' as any,
+        height: window.innerHeight,
     },
     rootMobile: {
         flexGrow: 1,
