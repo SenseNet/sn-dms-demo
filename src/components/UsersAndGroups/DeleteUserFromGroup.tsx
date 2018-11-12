@@ -4,8 +4,9 @@ import { Icon } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '../..'
+import * as DMSActions from '../../Actions'
 import { resources } from '../../assets/resources'
-import * as Actions from '../../store/usersandgroups/actions'
+import RemoveUserFromGroupDialog from '../Dialogs/RemoveUserFromGroupDialog'
 
 const styles = {
     cell: {
@@ -32,13 +33,15 @@ const mapStateToProps = (state: rootStateType) => {
 }
 
 const mapDispatchToProps = {
-    removeMembersFromGroup: Actions.removeMemberFromGroup,
+    openDialog: DMSActions.openDialog,
+    closeDialog: DMSActions.closeDialog,
 }
 
 class DeleteUserFromGroup extends React.Component<DeleteUserFromGroupProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DeleteUserFromGroupState> {
     public handleClick = () => {
-        const { user, group, removeMembersFromGroup } = this.props
-        removeMembersFromGroup([user.Id], group.Id)
+        this.props.openDialog(
+            <RemoveUserFromGroupDialog user={this.props.user} groups={[this.props.group]} />,
+            resources.DELETE, this.props.closeDialog)
     }
     public render() {
         return (

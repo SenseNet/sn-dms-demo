@@ -239,3 +239,7 @@ export const searchGroups = (text: string) => ({
     type: 'DMS_USERSANDGROUPS_SEARCH_GROUPS',
     text,
 })
+
+export const clearSelection = () => ({
+    type: 'DMS_USERSANDGROUPS_CLEAR_SELECTION',
+})

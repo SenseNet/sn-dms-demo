@@ -114,6 +114,8 @@ export const selectedGroups: Reducer<GenericContent[]> = (state: GenericContent[
                 ...state,
                 selected: action.group,
             }
+        case 'DMS_USERSANDGROUPS_SEARCH_GROUPS':
+            return []
         case 'DMS_USERSANDGROUPS_DESELECT_GROUP':
             return state.filter((o) => o.Id === action.group.Id)
         default:
