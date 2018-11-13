@@ -1,7 +1,7 @@
 import { IODataCollectionResponse, IODataParams } from '@sensenet/client-core'
 import { GenericContent } from '@sensenet/default-content-types'
 import { Reducer } from 'redux'
-import { select, setActive, setAncestors, setError, setItems, setParent, startLoading, updateChildrenOptions } from './actions'
+import { select, setActive, setAncestors, setError, setItems, setParent, startLoading, updateChildrenOptions, updateSearchValues } from './actions'
 
 export interface DocumentLibraryState {
     parent?: GenericContent
@@ -14,6 +14,16 @@ export interface DocumentLibraryState {
     active?: GenericContent
     parentOptions: IODataParams<GenericContent>
     childrenOptions: IODataParams<GenericContent>
+    searchState: {
+        searchString: string,
+        type: string,
+        owner: string,
+        sharedWith: string,
+        itemName: string,
+        dateModified: string,
+        contains: string,
+        rootPath: string,
+    }
 }
 
 export const loadChunkSize = 25
@@ -37,6 +47,16 @@ export const defaultState: DocumentLibraryState = {
         filter: 'ContentType ne \'SystemFolder\'',
         scenario: 'DMSListItem',
         top: loadChunkSize,
+    },
+    searchState: {
+        contains: '',
+        dateModified: '',
+        itemName: '',
+        owner: '',
+        rootPath: '',
+        searchString: '',
+        sharedWith: '',
+        type: '',
     },
 }
 
@@ -90,6 +110,14 @@ export const documentLibrary: Reducer<DocumentLibraryState> = (state = defaultSt
                 childrenOptions: {
                     ...state.childrenOptions,
                     ...(action as ReturnType<typeof updateChildrenOptions>).odataOptions,
+                },
+            }
+        case 'DMS_DOCLIB_UPDATE_SEARCH_STATE':
+            return {
+                ...state,
+                searchState: {
+                    ...state.searchState,
+                    ...(action as ReturnType<typeof updateSearchValues>).value,
                 },
             }
 

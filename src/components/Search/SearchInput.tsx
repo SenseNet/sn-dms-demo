@@ -10,12 +10,8 @@ import MediaQuery from 'react-responsive'
 
 const styles = {
     textStyle: {
-        // width: 300,
         background: 'rgba(0,0,0,.10)',
         color: 'black',
-        // borderRadius: 2,
-        // borderBottom: 0,
-        // boxShadow: '0px 2px 2px #3c9fbf',
     },
     openMobile: {
         width: '100%',

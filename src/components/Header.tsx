@@ -2,7 +2,7 @@ import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import * as React from 'react'
 import AppBarLogo from './AppBarLogo'
-import { QuickSearch } from './QuickSearch'
+import { Search } from './Search/Search'
 import UserActionMenu from './UserActionMenu'
 
 const styles = {
@@ -25,7 +25,7 @@ class Header extends React.Component<{}, {}> {
                         flexShrink: 0,
                         fontSize: '1.33em',
                     }} />
-                    <QuickSearch style={{
+                    <Search style={{
                         flexGrow: 1,
                     }} />
                     <UserActionMenu style={{

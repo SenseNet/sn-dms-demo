@@ -6,7 +6,7 @@ import { Action } from 'redux'
 import { InjectableAction } from 'redux-di-middleware'
 import { rootStateType } from '../..'
 import { changedContent, debounceReloadOnProgress } from '../../Actions'
-import { loadChunkSize } from './reducers'
+import { DocumentLibraryState, loadChunkSize } from './reducers'
 
 const eventObservables: Array<ValueObserver<any>> = []
 
@@ -199,6 +199,11 @@ export const updateChildrenOptions = <T extends GenericContent>(odataOptions: IO
         /** */
     },
 } as InjectableAction<rootStateType, Action> & { odataOptions: IODataParams<GenericContent> })
+
+export const updateSearchValues = (value: Partial<DocumentLibraryState['searchState']>) => ({
+    type: 'DMS_DOCLIB_UPDATE_SEARCH_STATE',
+    value,
+})
 
 export const setChildrenOptions = <T extends GenericContent>(odataOptions: IODataParams<T>) => ({
     type: 'DMS_DOCLIB_SET_CHILDREN_OPTIONS',

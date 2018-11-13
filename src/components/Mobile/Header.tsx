@@ -11,7 +11,7 @@ import * as DMSActions from '../../Actions'
 import { getContentTypeFromUrl, getExtensionFromUrl } from '../../assets/helpers'
 import AppBarLogo from '../AppBarLogo'
 import AddNewDialog from '../Dialogs/AddNewDialog'
-import { QuickSearch } from '../QuickSearch'
+import { Search } from '../Search/Search'
 
 const styles = {
     appBar: {
@@ -143,7 +143,7 @@ class MobileHeader extends React.Component<MobileHeaderProps & ReturnType<typeof
                     </IconButton>
                     <AppBarLogo />
                     <div>
-                        <QuickSearch />
+                        <Search />
                         <IconButton onClick={(e) => this.handleAddNewClick(e)} style={styles.plusButton} color="inherit" aria-label="Add new">
                             <Icon type={iconType.materialui} iconName="add" style={{ color: '#fff' }} />
                         </IconButton>

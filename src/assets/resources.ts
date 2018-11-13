@@ -142,8 +142,14 @@ const resources = {
     MOVETO_BUTTON: 'Move content here',
     COPYTO_BUTTON: 'Copy content here',
     NEW_FOLDER: 'New folder',
-    SEARCH_PLACEHOLDER: 'Search',
+    SEARCH_DOCUMENTS_PLACEHOLDER: 'Search documents',
+    SEARCH_USERS_PLACEHOLDER: 'Search users',
+    SEARCH_GROUPS_PLACEHOLDER: 'Search groups',
     SEARCH_OPTIONS_TITLE: 'Search options',
+    SEARCH_OWNER_PLACEHOLDER: 'Enter a name or email address',
+    SEARCH_SHAREDWITH_PLACEHOLDER: 'Enter a name or email address',
+    SEARCH_ITEMNAME_PLACEHOLDER: 'Enter a term that matches part of the file or folder name',
+    SEARCH_CONTAINS_PLACEHOLDER: 'Enter words found in the file',
 }
 
 const resourceHandler: ProxyHandler<typeof resources> = {
