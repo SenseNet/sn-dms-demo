@@ -137,6 +137,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                 />
                                 <Popover
                                     BackdropProps={{ style: { backgroundColor: 'rgba(0,0,0,.1)' } }}
+                                    disablePortal
                                     onBackdropClick={() => this.setState({ isOpen: false })}
                                     open={this.state.isOpen}
                                     anchorEl={this.elementRef}
