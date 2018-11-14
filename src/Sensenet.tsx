@@ -50,7 +50,7 @@ class Sensenet extends React.Component<SensenetProps & ReturnType<typeof mapStat
     // }
     return (
       <MuiThemeProvider theme={dmsTheme}>
-        <div className="root" style={{ height: window.innerHeight }}>
+        <div className="root" style={{ minHeight: window.innerHeight >= document.documentElement.offsetHeight ? window.innerHeight : 'auto' }}>
           <HashRouter>
             <Switch>
               <AuthorizedRoute exact path="/login" authorize={() => this.props.loginState !== LoginState.Authenticated} redirectOnUnauthorized="/">
