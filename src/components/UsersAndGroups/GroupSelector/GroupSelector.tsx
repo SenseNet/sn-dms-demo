@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { rootStateType } from '../../..'
 import { resources } from '../../../assets/resources'
+import { clearSelection } from '../../../store/usersandgroups/actions'
 import GroupDropDown from './GroupDropDown'
 
 const styles = {
@@ -35,28 +36,37 @@ const mapStateToProps = (state: rootStateType) => {
     }
 }
 
-class GroupSelector extends React.Component<ReturnType<typeof mapStateToProps>, GroupSelectorState> {
+const mapDispatchToProps = {
+    clearSelection,
+}
+
+class GroupSelector extends React.Component<ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, GroupSelectorState> {
     public state = {
         open: false,
     }
-    public handleButtonClick = (open) => {
+    constructor(props: GroupSelector['props']) {
+        super(props)
+        this.handleButtonClick = this.handleButtonClick.bind(this)
+    }
+    public handleButtonClick = (open, away) => {
+        if (!away) { this.props.clearSelection() }
         this.setState({
-            open: open ? false : !this.state.open,
+            open: away ? false : open ? false : !this.state.open,
         })
     }
     public render() {
         const { open } = this.state
         return <MediaQuery minDeviceWidth={700}>
             {(matches) => {
-                return <ClickAwayListener onClickAway={this.handleButtonClick}>
+                return <ClickAwayListener onClickAway={() => this.handleButtonClick(false, true)}>
                     <div style={{ display: 'inline' }}>
                         <Button
                             variant="raised" color="primary" style={{ ...styles.button, ...styles.buttonRaised }}
-                            onClick={() => this.handleButtonClick(open)}>
+                            onClick={() => this.handleButtonClick(open, false)}>
                             <Icon iconName="add" style={{ ...styles.icon, ...{ color: '#fff' } }} />
                             {resources.ADD_TO_GROUP}
                         </Button>
-                        <GroupDropDown matches={matches} open={open} closeDropDown={this.handleButtonClick} />
+                        <GroupDropDown matches={matches} open={open} closeDropDown={() => this.handleButtonClick(false, false)} />
                     </div>
                 </ClickAwayListener>
             }}
@@ -65,4 +75,4 @@ class GroupSelector extends React.Component<ReturnType<typeof mapStateToProps>, 
 
 }
 
-export default connect(mapStateToProps, {})(GroupSelector)
+export default connect(mapStateToProps, mapDispatchToProps)(GroupSelector)

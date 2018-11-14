@@ -110,14 +110,11 @@ export const user = combineReducers({
 export const selectedGroups: Reducer<GenericContent[]> = (state: GenericContent[] = [], action: AnyAction) => {
     switch (action.type) {
         case 'DMS_USERSANDGROUPS_SELECT_GROUP':
-            return {
-                ...state,
-                selected: action.group,
-            }
+            return [
+            ...action.groups]
+        case 'DMS_USERSANDGROUPS_CLEAR_SELECTION':
         case 'DMS_USERSANDGROUPS_SEARCH_GROUPS':
             return []
-        case 'DMS_USERSANDGROUPS_DESELECT_GROUP':
-            return state.filter((o) => o.Id === action.group.Id)
         default:
             return state
     }

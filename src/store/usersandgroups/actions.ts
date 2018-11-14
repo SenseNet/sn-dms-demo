@@ -138,11 +138,6 @@ export const isAdmin = (admin: boolean = false) => ({
     admin,
 })
 
-export const select = <T extends GenericContent>(selected: T[]) => ({
-    type: 'DMS_USERSANDGROUPS_SELECT',
-    selected,
-})
-
 export const setActive = <T extends GenericContent>(active?: T) => ({
     type: 'DMS_USERSANDGROUPS_SET_ACTIVE',
     active,
@@ -197,14 +192,14 @@ export const removeMemberFromGroup = (contentIds: number[], groupId: number) => 
     },
 })
 
-export const selectGroup = <T extends GenericContent>(group: GenericContent) => ({
+export const selectGroup = <T extends GenericContent[] | GenericContent>(groups: GenericContent[] | GenericContent) => ({
     type: 'DMS_USERSANDGROUPS_SELECT_GROUP',
-    group,
+    groups,
 })
 
-export const deselectGroup = <T extends GenericContent>(group: GenericContent) => ({
+export const deselectGroup = <T extends GenericContent[] | GenericContent>(groups: GenericContent[] | GenericContent) => ({
     type: 'DMS_USERSANDGROUPS_DESELECT_GROUP',
-    group,
+    groups,
 })
 
 export const getGroups = () => ({

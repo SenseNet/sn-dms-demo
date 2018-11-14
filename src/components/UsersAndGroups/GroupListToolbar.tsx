@@ -6,7 +6,9 @@ import { Icon } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { rootStateType } from '../..'
+import * as DMSActions from '../../Actions'
 import { resources } from '../../assets/resources'
+import RemoveUserFromGroupDialog from '../Dialogs/RemoveUserFromGroupDialog'
 import GroupSelector from './GroupSelector/GroupSelector'
 
 const styles = {
@@ -50,13 +52,22 @@ const styles = {
 const mapStateToProps = (state: rootStateType) => {
     return {
         isAdmin: state.dms.usersAndGroups.user.isAdmin,
+        groups: state.dms.usersAndGroups.group.selected,
+        user: state.dms.usersAndGroups.user.currentUser,
     }
 }
 
 const mapDispatchToProps = {
+    openDialog: DMSActions.openDialog,
+    closeDialog: DMSActions.closeDialog,
 }
 
 class GroupListToolbar extends React.Component<ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, {}> {
+    public handleClick = () => {
+        this.props.openDialog(
+            <RemoveUserFromGroupDialog user={this.props.user} groups={this.props.groups} />,
+            resources.DELETE, this.props.closeDialog)
+    }
     public render() {
         return (
             <AppBar position="static" style={styles.appbar}>
@@ -66,7 +77,7 @@ class GroupListToolbar extends React.Component<ReturnType<typeof mapStateToProps
                     </Typography>
                     {this.props.isAdmin ? <div>
                         <GroupSelector />
-                        <Button color="primary" style={styles.button}>
+                        <Button color="primary" style={styles.button} onClick={() => this.handleClick()}>
                             <Icon iconName="delete" style={styles.icon} />
                             {resources.REMOVE_FROM_SELECTED_GROUPS}
                         </Button>

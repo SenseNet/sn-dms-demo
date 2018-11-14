@@ -42,7 +42,7 @@ const styles = {
         overflow: 'hidden' as any,
         position: 'relative' as any,
         display: 'flex' as any,
-        height: window.innerHeight,
+        minHeight: window.innerHeight >= document.documentElement.offsetHeight ? window.innerHeight : 'auto',
     },
     rootMobile: {
         flexGrow: 1,

@@ -1,4 +1,5 @@
 import AppBar from '@material-ui/core/AppBar'
+import Checkbox from '@material-ui/core/Checkbox'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import TableCell from '@material-ui/core/TableCell'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -16,7 +17,7 @@ import { contentListTheme } from '../assets/contentlist'
 import { icons } from '../assets/icons'
 import { customSchema } from '../assets/schema'
 import WorkspaceSelector from '../components/WorkspaceSelector/WorkspaceSelector'
-import { loadUser, select, updateChildrenOptions } from '../store/usersandgroups/actions'
+import { loadUser, selectGroup, updateChildrenOptions } from '../store/usersandgroups/actions'
 import BreadCrumb from './BreadCrumb'
 import { DisplayNameCell } from './ContentList/CellTemplates/DisplayNameCell'
 import { DisplayNameMobileCell } from './ContentList/CellTemplates/DisplayNameMobileCell'
@@ -55,7 +56,7 @@ const mapStateToProps = (state: rootStateType) => {
         user: state.dms.usersAndGroups.user.currentUser,
         isAdmin: state.dms.usersAndGroups.user.isAdmin,
         childrenOptions: state.dms.usersAndGroups.user.grouplistOptions,
-        selected: state.dms.usersAndGroups.user.selected,
+        selected: state.dms.usersAndGroups.group.selected,
         active: state.dms.usersAndGroups.user.active,
         hostName: state.sensenet.session.repository.repositoryUrl,
     }
@@ -65,7 +66,7 @@ const mapDispatchToProps = {
     loadUser,
     openActionMenu,
     closeActionMenu,
-    select,
+    selectGroup,
     updateChildrenOptions,
 }
 
@@ -127,6 +128,9 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
         const user = content.Members.filter((member) => member.Id === this.props.user.Id)[0]
         return user !== undefined
     }
+    public handleContentSelection = (content) => {
+        console.log('aaa')
+    }
 
     public render() {
         const { matchesDesktop } = this.props
@@ -157,7 +161,7 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
                                 icons={icons}
                                 orderBy={this.props.childrenOptions.orderby[0][0] as any}
                                 orderDirection={this.props.childrenOptions.orderby[0][1] as any}
-                                onRequestSelectionChange={(newSelection) => this.props.select(newSelection)}
+                                onRequestSelectionChange={(newSelection) => this.props.selectGroup(newSelection)}
                                 onRequestActionsMenu={(ev, content) => {
                                     ev.preventDefault()
                                     this.props.closeActionMenu()
@@ -177,17 +181,17 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
                                 onItemClick={(ev, content) => {
                                     if (ev.ctrlKey) {
                                         if (this.props.selected.find((s) => s.Id === content.Id)) {
-                                            this.props.select(this.props.selected.filter((s) => s.Id !== content.Id))
+                                            this.props.selectGroup(this.props.selected.filter((s) => s.Id !== content.Id))
                                         } else {
-                                            this.props.select([...this.props.selected, content])
+                                            this.props.selectGroup([...this.props.selected, content])
                                         }
                                     } else if (ev.shiftKey) {
                                         const activeIndex = this.props.items.d.results.findIndex((s) => s.Id === this.props.active.Id)
                                         const clickedIndex = this.props.items.d.results.findIndex((s) => s.Id === content.Id)
                                         const newSelection = Array.from(new Set([...this.props.selected, ...[...this.props.items.d.results].slice(Math.min(activeIndex, clickedIndex), Math.max(activeIndex, clickedIndex) + 1)]))
-                                        this.props.select(newSelection)
+                                        this.props.selectGroup(newSelection)
                                     } else if (!this.props.selected.length || this.props.selected.length === 1 && this.props.selected[0].Id !== content.Id) {
-                                        this.props.select([content])
+                                        this.props.selectGroup([content])
                                     }
                                 }}
                                 selected={this.props.selected}
@@ -221,6 +225,14 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
                                     }
                                 }
                                 }
+                                getSelectionControl={(selected, content) => {
+                                    return <Checkbox
+                                        checked={this.props.selected.find((i) => i.Id === content.Id) ? true : false}
+                                        onChange={() => this.handleContentSelection(content)}
+                                        disabled={this.isGroupAdmin(content.Actions) && this.isExplicitMember(content) ? false : true}
+                                        style={this.isGroupAdmin(content.Actions) && this.isExplicitMember(content) ? {cursor: 'normal'} : null}
+                                    />
+                                }}
                             />
                         </MuiThemeProvider>
                     </div>
