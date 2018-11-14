@@ -37,6 +37,7 @@ const mapStateToProps = (state: rootStateType) => {
         groups: state.dms.usersAndGroups.group.all,
         selected: state.dms.usersAndGroups.group.selected,
         term: state.dms.usersAndGroups.group.searchTerm,
+        memberships: state.dms.usersAndGroups.user.memberships,
     }
 }
 
@@ -69,7 +70,7 @@ class GroupList extends React.Component<{ classes } & GroupListProps & ReturnTyp
     }
     public static getDerivedStateFromProps(newProps: GroupList['props'], lastState: GroupList['state']) {
         if (newProps.groups.length !== lastState.groups.length || lastState.groups.length === 0) {
-            newProps.getGroups()
+            newProps.getGroups(newProps.memberships as any)
         }
         return {
             ...lastState,

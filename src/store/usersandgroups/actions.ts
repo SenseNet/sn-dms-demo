@@ -6,6 +6,7 @@ import { Action, AnyAction } from 'redux'
 import { InjectableAction } from 'redux-di-middleware'
 import { rootStateType } from '../..'
 import { changedContent, debounceReloadOnProgress } from '../../Actions'
+import { arrayComparer } from '../../assets/helpers'
 
 const eventObservables: Array<ValueObserver<any>> = []
 
@@ -202,7 +203,7 @@ export const deselectGroup = <T extends GenericContent[] | GenericContent>(group
     groups,
 })
 
-export const getGroups = () => ({
+export const getGroups = (memberships: IODataCollectionResponse<Group>) => ({
     type: 'DMS_USERSANDGROUPS_GET_GROUPS',
     inject: async (options) => {
         const currentState = options.getState()
@@ -216,7 +217,9 @@ export const getGroups = () => ({
                     select: ['DisplayName', 'Path'],
                 },
             })
-            options.dispatch(setGroups(groups))
+            const comparedList = arrayComparer(groups.d.results, memberships.d.results)
+            const newGroups = { d: { __count: comparedList.length, results: comparedList } }
+            options.dispatch(setGroups(newGroups))
         } catch (error) {
             options.dispatch(setError(error))
         } finally {
@@ -225,7 +228,7 @@ export const getGroups = () => ({
     },
 })
 
-export const setGroups = (groups: Group[]) => ({
+export const setGroups = (groups: IODataCollectionResponse<Group>) => ({
     type: 'DMS_USERSANDGROUPS_SET_GROUPS',
     groups,
 })
