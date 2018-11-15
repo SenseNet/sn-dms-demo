@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography'
 import { File as SnFile, Folder, GenericContent } from '@sensenet/default-content-types'
 import { Icon, iconType } from '@sensenet/icons-react'
 import { Query } from '@sensenet/query'
-import { AdvancedSearch, PresetField, TextField } from '@sensenet/search-react'
+import { AdvancedSearch, AdvancedSearchOptions, PresetField, TextField } from '@sensenet/search-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -15,6 +15,8 @@ import { repository, rootStateType } from '../..'
 import { resources } from '../../assets/resources'
 import { loadParent, setChildrenOptions, updateSearchValues } from '../../store/documentlibrary/actions'
 import { DocumentLibraryState } from '../../store/documentlibrary/reducers'
+import { closePicker, openPicker, setPickerParent } from '../../store/picker/actions'
+import PathPicker from '../Pickers/PathPicker'
 import QuickSearchBox from './SearchInput'
 
 const styles = {
@@ -29,27 +31,40 @@ const styles = {
 }
 
 const mapStateToProps = (state: rootStateType) => ({
+    ancestors: state.dms.documentLibrary.ancestors,
     query: state.dms.documentLibrary.childrenOptions.query,
     parent: state.dms.documentLibrary.parent,
     searchState: state.dms.documentLibrary.searchState,
+    selectedTypeRoot: state.dms.picker.selected,
 })
 
 const mapDispatchToProps = {
     setChildrenOptions,
     loadParent,
     updateSearchValues,
+    setPickerParent,
+    openPicker,
+    closePicker,
 }
 
-class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & { style?: React.CSSProperties }, { isOpen: boolean, query: string }> {
+interface SearchDocumentsState {
+    parent: GenericContent
+    isOpen: boolean, query: string
+}
+
+class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & { style?: React.CSSProperties }, SearchDocumentsState> {
     constructor(props) {
         super(props)
         this.state = {
+            parent: this.props.parent,
             isOpen: false,
             query: this.props.query,
         }
         this.handleOnSubmit = this.handleOnSubmit.bind(this)
         this.handleQueryChanged = this.handleQueryChanged.bind(this)
         this.handleFieldQueryChanged = this.handleFieldQueryChanged.bind(this)
+        this.handlePickLocation = this.handlePickLocation.bind(this)
+        this.handleSelectTypeRoot = this.handleSelectTypeRoot.bind(this)
     }
     public onClick = () => {
         this.setState({ isOpen: !this.state.isOpen })
@@ -65,12 +80,10 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                             .type(Folder),
                     )
                         .and
-                        .inTree(this.props.parent.Path)
-                        .and
                         .query(innerQuery),
-
                 ).toString(),
             })
+
         } else {
             this.setState({ query: '' })
         }
@@ -88,11 +101,38 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
         /** */
         if (this.state.query !== this.props.query) {
             this.props.setChildrenOptions({
+                // path: this.props.searchState.rootPath,
                 query: this.state.query.toString(),
             })
-            this.props.loadParent(this.props.parent.Id)
+            this.props.loadParent(this.state.parent ? this.state.parent.Id : this.props.parent.Id)
             this.setState({ isOpen: false })
         }
+    }
+
+    private handlePickLocation(ev: React.MouseEvent, options: AdvancedSearchOptions<any>) {
+        this.props.setPickerParent(this.props.parent)
+        this.props.openPicker(
+            <PathPicker
+                showAddFolder={false}
+                mode="SearchRoot"
+                dialogTitle={resources.SEARCH_LOCATION_TITLE}
+                loadOptions={{}}
+                onSelect={(content) => this.handleSelectTypeRoot(content, options)}
+            />,
+            'selectSearchRoot',
+            this.props.closePicker,
+        )
+    }
+
+    private handleSelectTypeRoot(content: GenericContent, options: AdvancedSearchOptions<any>) {
+        this.props.updateSearchValues({
+            rootPath: content.Path,
+        })
+        this.setState({
+            parent: content,
+        })
+        options.updateQuery('InTree', new Query((q) => q.inTree(content.Path)))
+        this.props.closePicker()
     }
 
     private elementRef: HTMLElement | null = null
@@ -168,7 +208,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                         </Grid>
                                         <Grid item xs={contentWidth}>
                                             <PresetField fullWidth fieldName="Type"
-                                                defaultValue={this.props.searchState.type || 'Any'}
+                                                value={this.props.searchState.type || 'Any'}
                                                 presets={[
                                                     { text: 'Any', value: new Query((q) => q) },
                                                     { text: 'Document', value: new Query((q) => q.typeIs(File).and.equals('Icon' as any, 'word')) },
@@ -217,6 +257,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                                 placeholder={resources.SEARCH_ITEMNAME_PLACEHOLDER}
                                                 fieldName={'DisplayName'}
                                                 onQueryChange={(key, query, plainValue) => this.handleFieldQueryChanged('itemName', query, plainValue, options.updateQuery)}
+                                                value={this.props.searchState.itemName}
                                             />
                                         </Grid>
                                         <Grid item xs={titleWidth}>
@@ -232,6 +273,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                                     { text: 'Yesterday', value: new Query((a) => a.term('CreationDate:>@@Yesterday@@').and.term('CreationDate:<@@Today@@')) },
                                                 ]}
                                                 onQueryChange={(key, query, name) => this.handleFieldQueryChanged('dateModified', query, name, options.updateQuery)}
+                                                value={this.props.searchState.dateModified}
                                             />
                                         </Grid>
                                         <Grid item xs={titleWidth}>
@@ -246,10 +288,10 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                             />
                                         </Grid>
                                         <Grid item xs={titleWidth}>
-                                            <Typography style={titleStyles} variant="body1">Location</Typography>
+                                            <Typography style={titleStyles} variant="body1">{resources.SEARCH_LOCATION_BUTTON_TITLE}</Typography>
                                         </Grid>
                                         <Grid item xs={7}>
-                                            Location buttonka
+                                            <Button onClick={(ev) => this.handlePickLocation(ev, options)}>{this.props.selectedTypeRoot[0] ? this.props.selectedTypeRoot[0].DisplayName : resources.SEARCH_LOCATION_ANYWHERE}</Button>
                                         </Grid>
                                         <Grid item xs={3}>
                                             <Button type="submit">Search</Button>

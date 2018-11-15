@@ -18,8 +18,8 @@ export const startLoading = (idOrPath: number | string) => ({
 export const finishLoading = () => ({
     type: 'DMS_DOCLIB_FINISH_LOADING',
 })
-export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: string | number, loadParentOptions?: IODataParams<T>, loadChildrenOptions?: IODataParams<T>) => InjectableAction<rootStateType, Action>
-    = <T extends GenericContent = GenericContent>(idOrPath: number | string, loadParentOptions?: IODataParams<T>, loadChildrenOptions?: IODataParams<T>) => ({
+export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: string | number, loadParentOptions?: IODataParams<T>) => InjectableAction<rootStateType, Action>
+    = <T extends GenericContent = GenericContent>(idOrPath: number | string, loadParentOptions?: IODataParams<T>) => ({
         type: 'DMS_DOCLIB_LOAD_PARENT',
         inject: async (options) => {
 
