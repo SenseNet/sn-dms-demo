@@ -5,7 +5,8 @@ import * as React from 'react'
 import { Scrollbars } from 'react-custom-scrollbars'
 import { connect } from 'react-redux'
 import { rootStateType } from '../../..'
-import { getGroups, searchGroups } from '../../../store/usersandgroups/actions'
+import { addUserToGroups, getGroups, searchGroups } from '../../../store/usersandgroups/actions'
+import { GroupButtonRow } from './GroupButtonRow'
 import GroupListItem from './GroupListItem'
 import GroupSearch from './GroupSearch'
 
@@ -38,12 +39,14 @@ const mapStateToProps = (state: rootStateType) => {
         selected: state.dms.usersAndGroups.group.selected,
         term: state.dms.usersAndGroups.group.searchTerm,
         memberships: state.dms.usersAndGroups.user.memberships,
+        user: state.dms.usersAndGroups.user.currentUser,
     }
 }
 
 const mapDispatchToProps = {
     getGroups,
     searchGroups,
+    addUserToGroups,
 }
 
 interface GroupListState {
@@ -112,6 +115,7 @@ class GroupList extends React.Component<{ classes } & GroupListProps & ReturnTyp
                         />)}
                     </MenuList>
                 </Scrollbars>
+                <GroupButtonRow cancelClick={this.props.closeDropDown} submitClick={this.props.addUserToGroups} groups={this.props.selected} user={this.props.user} />
             </div>
         )
     }

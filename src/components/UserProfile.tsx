@@ -128,9 +128,6 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
         const user = content.Members.filter((member) => member.Id === this.props.user.Id)[0]
         return user !== undefined
     }
-    public handleContentSelection = (content) => {
-        console.log('aaa')
-    }
 
     public render() {
         const { matchesDesktop } = this.props
@@ -179,19 +176,25 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
                                     })
                                 }}
                                 onItemClick={(ev, content) => {
-                                    if (ev.ctrlKey) {
+                                    if (ev.ctrlKey && this.isGroupAdmin(content.Actions) && this.isExplicitMember(content)) {
                                         if (this.props.selected.find((s) => s.Id === content.Id)) {
                                             this.props.selectGroup(this.props.selected.filter((s) => s.Id !== content.Id))
                                         } else {
                                             this.props.selectGroup([...this.props.selected, content])
                                         }
-                                    } else if (ev.shiftKey) {
+                                    } else if (ev.shiftKey && this.isGroupAdmin(content.Actions) && this.isExplicitMember(content)) {
                                         const activeIndex = this.props.items.d.results.findIndex((s) => s.Id === this.props.active.Id)
                                         const clickedIndex = this.props.items.d.results.findIndex((s) => s.Id === content.Id)
                                         const newSelection = Array.from(new Set([...this.props.selected, ...[...this.props.items.d.results].slice(Math.min(activeIndex, clickedIndex), Math.max(activeIndex, clickedIndex) + 1)]))
                                         this.props.selectGroup(newSelection)
-                                    } else if (!this.props.selected.length || this.props.selected.length === 1 && this.props.selected[0].Id !== content.Id) {
-                                        this.props.selectGroup([content])
+                                    } else if ((!this.props.selected.length || this.props.selected.length === 1 && this.props.selected[0].Id !== content.Id) && this.isGroupAdmin(content.Actions) && this.isExplicitMember(content)) {
+                                        this.props.selectGroup([...this.props.selected, content])
+                                    } else if (this.isGroupAdmin(content.Actions) && this.isExplicitMember(content)) {
+                                        if (this.props.selected.find((s) => s.Id === content.Id)) {
+                                            this.props.selectGroup(this.props.selected.filter((s) => s.Id !== content.Id))
+                                        } else {
+                                            this.props.selectGroup([...this.props.selected, content])
+                                        }
                                     }
                                 }}
                                 selected={this.props.selected}
@@ -228,9 +231,8 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
                                 getSelectionControl={(selected, content) => {
                                     return <Checkbox
                                         checked={this.props.selected.find((i) => i.Id === content.Id) ? true : false}
-                                        onChange={() => this.handleContentSelection(content)}
                                         disabled={this.isGroupAdmin(content.Actions) && this.isExplicitMember(content) ? false : true}
-                                        style={this.isGroupAdmin(content.Actions) && this.isExplicitMember(content) ? {cursor: 'normal'} : null}
+                                        style={this.isGroupAdmin(content.Actions) && this.isExplicitMember(content) ? { cursor: 'normal' } : null}
                                     />
                                 }}
                             />

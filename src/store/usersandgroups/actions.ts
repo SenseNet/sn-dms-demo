@@ -193,10 +193,12 @@ export const removeMemberFromGroup = (contentIds: number[], groupId: number) => 
     },
 })
 
-export const selectGroup = <T extends GenericContent[] | GenericContent>(groups: GenericContent[] | GenericContent) => ({
-    type: 'DMS_USERSANDGROUPS_SELECT_GROUP',
-    groups,
-})
+export const selectGroup = <T extends GenericContent[] | GenericContent>(groups: GenericContent[] | GenericContent) => {
+    return ({
+        type: 'DMS_USERSANDGROUPS_SELECT_GROUP',
+        groups,
+    })
+}
 
 export const deselectGroup = (id: number) => ({
     type: 'DMS_USERSANDGROUPS_DESELECT_GROUP',
@@ -241,4 +243,23 @@ export const searchGroups = (text: string) => ({
 
 export const clearSelection = () => ({
     type: 'DMS_USERSANDGROUPS_CLEAR_SELECTION',
+})
+
+export const addUserToGroups = (user: User, groups: Group[]) => ({
+    type: 'DMS_USERSANDGROUPS_ADD_USER_TO_GROUPS',
+    inject: async (options) => {
+        const currentState = options.getState()
+        const repository = options.getInjectable(Repository) as Repository
+        options.dispatch(startLoading(currentState.dms.usersAndGroups.user.memberships))
+        try {
+            await groups.map((group) => {
+                repository.security.addMembers(group.Id, [user.Id])
+            })
+        } catch (error) {
+            options.dispatch(setError(error))
+        } finally {
+            options.dispatch(finishLoading())
+            options.dispatch(loadUser(user.Id))
+        }
+    },
 })

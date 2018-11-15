@@ -69,13 +69,13 @@ const mapStateToProps = (state: rootStateType) => {
     return {
         selected: state.dms.usersAndGroups.user.selected,
         closeCallback: state.dms.dialog.onClose,
-        removeMemberFromGroup,
     }
 }
 
 const mapDispatchToProps = {
     closeDialog: DMSActions.closeDialog,
     deleteContent: Actions.deleteBatch,
+    removeMemberFromGroup,
 }
 
 class RemoveUserFromGroupDialog extends React.Component<{ classes } & RemoveUserFromGroupDialogProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, RemoveUserFromGroupDialogState> {
@@ -97,8 +97,7 @@ class RemoveUserFromGroupDialog extends React.Component<{ classes } & RemoveUser
     }
     public submitCallback = () => {
         const { user, groups } = this.props
-        groups.length === 1 ?
-            removeMemberFromGroup([user.Id], groups[0].Id) : console.log('aaa')
+        this.props.removeMemberFromGroup([user.Id], groups[0].Id)
         this.props.closeDialog()
     }
     public render() {
