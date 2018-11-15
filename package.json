@@ -39,7 +39,7 @@
     "@sensenet/list-controls-react": "^1.0.2",
     "@sensenet/redux": "^5.1.1",
     "@sensenet/repository-events": "^1.2.0",
-    "@sensenet/search-react": "^1.0.0",
+    "@sensenet/search-react": "^1.1.0",
     "autoprefixer": "^9.3.1",
     "css-loader": "^1.0.1",
     "dotenv": "6.0.0",

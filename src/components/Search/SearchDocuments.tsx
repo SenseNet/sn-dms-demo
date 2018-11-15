@@ -14,6 +14,7 @@ import MediaQuery from 'react-responsive'
 import { repository, rootStateType } from '../..'
 import { resources } from '../../assets/resources'
 import { loadParent, setChildrenOptions, updateSearchValues } from '../../store/documentlibrary/actions'
+import { DocumentLibraryState } from '../../store/documentlibrary/reducers'
 import QuickSearchBox from './SearchInput'
 
 const styles = {
@@ -47,9 +48,39 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
             query: this.props.query,
         }
         this.handleOnSubmit = this.handleOnSubmit.bind(this)
+        this.handleQueryChanged = this.handleQueryChanged.bind(this)
+        this.handleFieldQueryChanged = this.handleFieldQueryChanged.bind(this)
     }
     public onClick = () => {
         this.setState({ isOpen: !this.state.isOpen })
+    }
+
+    private handleQueryChanged(innerQuery: Query<any>) {
+        if (innerQuery.toString()) {
+            this.setState({
+                query: new Query((q) =>
+                    q.query((typeQuery) =>
+                        typeQuery.type(SnFile)
+                            .or
+                            .type(Folder),
+                    )
+                        .and
+                        .inTree(this.props.parent.Path)
+                        .and
+                        .query(innerQuery),
+
+                ).toString(),
+            })
+        } else {
+            this.setState({ query: '' })
+        }
+    }
+
+    private handleFieldQueryChanged(key: keyof DocumentLibraryState['searchState'], value: Query<any>, plainValue: string, callback: (key: string, value: Query<any>) => void) {
+        const update = {}
+        update[key] = plainValue
+        this.props.updateSearchValues(update)
+        callback(key, value)
     }
 
     private handleOnSubmit(ev: React.FormEvent) {
@@ -60,6 +91,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                 query: this.state.query.toString(),
             })
             this.props.loadParent(this.props.parent.Id)
+            this.setState({ isOpen: false })
         }
     }
 
@@ -68,40 +100,18 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
 
     public render() {
         const titleWidth = 2
-        const contentWidth = 10
+        const contentWidth = 9
         const containerStyles: React.CSSProperties = {
             padding: '1em',
         }
-        const itemStyles: React.CSSProperties = {
-            // padding: '2em 0 0 2em',
-        }
 
         const titleStyles: React.CSSProperties = {
-            margin: '1em',
+            margin: '1em 0',
         }
         return (
             <AdvancedSearch
                 schema={repository.schemas.getSchema(GenericContent)}
-                onQueryChanged={(innerQuery) => {
-                    if (innerQuery.toString) {
-                        this.setState({
-                            query: new Query((q) =>
-                                q.query((typeQuery) =>
-                                    typeQuery.type(SnFile)
-                                        .or
-                                        .type(Folder),
-                                )
-                                    .and
-                                    .inTree(this.props.parent.Path)
-                                    .and
-                                    .query(innerQuery),
-
-                            ).toString(),
-                        })
-                    } else {
-                        this.setState({ query: '' })
-                    }
-                }}
+                onQueryChanged={this.handleQueryChanged}
                 style={{ width: '100%' }}
                 fields={(options) => <MediaQuery minDeviceWidth={700}>
                     {(matches) => {
@@ -116,16 +126,16 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                         style: {
                                             width: '100%',
                                         },
-                                        defaultValue: this.props.searchState.searchString,
+                                        value: this.props.searchState.searchString,
                                         placeholder: resources.SEARCH_DOCUMENTS_PLACEHOLDER,
                                         onChange: (ev) => {
                                             const term = ev.currentTarget.value
                                             this.props.updateSearchValues({ searchString: term })
-                                            options.updateQuery('quickSearch', new Query((q) => term ? q
+                                            this.handleFieldQueryChanged('searchString', new Query((q) => term ? q
                                                 .equals('Name', `*${term}*`)
                                                 .or
                                                 .equals('DisplayName', `*${term}*`) : q,
-                                            ))
+                                            ), term, options.updateQuery)
                                         },
                                     }}
                                     containerProps={{
@@ -148,26 +158,29 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                     PaperProps={{
                                         style: {
                                             width: this.searchBoxContainerRef && this.searchBoxContainerRef.offsetWidth,
+                                            overflow: 'hidden',
                                         },
                                     }}
                                 >
                                     <Grid container spacing={24} style={containerStyles}>
-                                        <Grid item style={itemStyles} xs={titleWidth}>
+                                        <Grid item xs={titleWidth}>
                                             <Typography style={titleStyles} variant="body1">Type</Typography>
                                         </Grid>
-                                        <Grid item style={itemStyles} xs={contentWidth}>
-                                            <PresetField fullWidth fieldName="Type" presets={[
-                                                { text: 'Any', value: new Query((q) => q) },
-                                                { text: 'Document', value: new Query((q) => q.typeIs(File).and.equals('Icon' as any, 'word')) },
-                                                { text: 'Sheet', value: new Query((q) => q.typeIs(File).and.equals('Icon' as any, 'excel')) },
-                                                { text: 'Text', value: new Query((q) => q.typeIs(File).and.equals('Icon' as any, 'document')) },
-                                                { text: 'Slide', value: new Query((q) => q.typeIs(File).and.equals('Icon' as any, 'word')) },
-                                                { text: 'Folder', value: new Query((q) => q.typeIs(Folder)) },
-                                            ]}
-                                                onQueryChange={options.updateQuery}
+                                        <Grid item xs={contentWidth}>
+                                            <PresetField fullWidth fieldName="Type"
+                                                defaultValue={this.props.searchState.type || 'Any'}
+                                                presets={[
+                                                    { text: 'Any', value: new Query((q) => q) },
+                                                    { text: 'Document', value: new Query((q) => q.typeIs(File).and.equals('Icon' as any, 'word')) },
+                                                    { text: 'Sheet', value: new Query((q) => q.typeIs(File).and.equals('Icon' as any, 'excel')) },
+                                                    { text: 'Text', value: new Query((q) => q.typeIs(File).and.equals('Icon' as any, 'document')) },
+                                                    { text: 'Slide', value: new Query((q) => q.typeIs(File).and.equals('Icon' as any, 'word')) },
+                                                    { text: 'Folder', value: new Query((q) => q.typeIs(Folder)) },
+                                                ]}
+                                                onQueryChange={(key, query, name) => this.handleFieldQueryChanged('type', query, name, options.updateQuery)}
                                             />
                                         </Grid>
-                                        <Grid item style={itemStyles} xs={titleWidth}>
+                                        <Grid item xs={titleWidth}>
                                             <Typography style={titleStyles} variant="body1">Owner</Typography>
                                         </Grid>
                                         <Grid item xs={contentWidth}>
@@ -175,49 +188,53 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                                 fullWidth
                                                 placeholder={resources.SEARCH_OWNER_PLACEHOLDER}
                                                 fieldName={'Owner'}
-                                                onQueryChange={(key, q) => options.updateQuery(key, q)}
+                                                onQueryChange={(key, query, plainValue) => this.handleFieldQueryChanged('owner', query, plainValue, options.updateQuery)}
+                                                value={this.props.searchState.owner}
                                             />
                                         </Grid>
-                                        <Grid item style={itemStyles} xs={titleWidth}>
+                                        <Grid item xs={titleWidth}>
                                             <Typography style={titleStyles} variant="body1">Shared with</Typography>
                                         </Grid>
-                                        <Grid item style={itemStyles} xs={contentWidth}>
+                                        <Grid item xs={contentWidth}>
                                             <TextField
                                                 fullWidth
                                                 placeholder={resources.SEARCH_SHAREDWITH_PLACEHOLDER}
                                                 fieldName={'SharedWith'}
-                                                onQueryChange={(key, q) => options.updateQuery(key, q)}
+                                                onQueryChange={(key, query, plainValue) => this.handleFieldQueryChanged('sharedWith', query, plainValue, options.updateQuery)}
+                                                value={this.props.searchState.sharedWith}
+
                                             />
                                         </Grid>
                                     </Grid>
                                     <Divider />
                                     <Grid container spacing={24} style={containerStyles}>
-                                        <Grid item style={itemStyles} xs={titleWidth}>
+                                        <Grid item xs={titleWidth}>
                                             <Typography style={titleStyles} variant="body1">Item name</Typography>
                                         </Grid>
-                                        <Grid item style={itemStyles} xs={contentWidth}>
+                                        <Grid item xs={contentWidth}>
                                             <TextField
                                                 fullWidth
                                                 placeholder={resources.SEARCH_ITEMNAME_PLACEHOLDER}
                                                 fieldName={'DisplayName'}
-                                                onQueryChange={(key, q) => options.updateQuery(key, q)}
+                                                onQueryChange={(key, query, plainValue) => this.handleFieldQueryChanged('itemName', query, plainValue, options.updateQuery)}
                                             />
                                         </Grid>
-                                        <Grid item style={itemStyles} xs={titleWidth}>
+                                        <Grid item xs={titleWidth}>
                                             <Typography style={titleStyles} variant="body1">Date modified</Typography>
                                         </Grid>
-                                        <Grid item style={itemStyles} xs={contentWidth}>
+                                        <Grid item xs={contentWidth}>
                                             <PresetField
-                                                fieldName="CreationDate"
+                                                fullWidth
+                                                fieldName="ModificationDate"
                                                 presets={[
                                                     { text: '-', value: new Query((a) => a) },
                                                     { text: 'Today', value: new Query((a) => a.term('CreationDate:>@@Today@@')) },
                                                     { text: 'Yesterday', value: new Query((a) => a.term('CreationDate:>@@Yesterday@@').and.term('CreationDate:<@@Today@@')) },
                                                 ]}
-                                                onQueryChange={options.updateQuery}
+                                                onQueryChange={(key, query, name) => this.handleFieldQueryChanged('dateModified', query, name, options.updateQuery)}
                                             />
                                         </Grid>
-                                        <Grid item style={itemStyles} xs={titleWidth}>
+                                        <Grid item xs={titleWidth}>
                                             <Typography style={titleStyles} variant="body1">Contains</Typography>
                                         </Grid>
                                         <Grid item xs={contentWidth}>
@@ -225,16 +242,16 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                                 fullWidth
                                                 placeholder={resources.SEARCH_CONTAINS_PLACEHOLDER}
                                                 fieldName={'_Text'}
-                                                onQueryChange={(key, q) => options.updateQuery(key, q)}
+                                                onQueryChange={(key, query, plainValue) => this.handleFieldQueryChanged('contains', query, plainValue, options.updateQuery)}
                                             />
                                         </Grid>
-                                        <Grid item style={itemStyles} xs={titleWidth}>
+                                        <Grid item xs={titleWidth}>
                                             <Typography style={titleStyles} variant="body1">Location</Typography>
                                         </Grid>
-                                        <Grid item style={itemStyles} xs={7}>
+                                        <Grid item xs={7}>
                                             Location buttonka
                                         </Grid>
-                                        <Grid item style={itemStyles} xs={3}>
+                                        <Grid item xs={3}>
                                             <Button type="submit">Search</Button>
                                         </Grid>
                                     </Grid>

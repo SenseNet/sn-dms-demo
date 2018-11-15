@@ -142,6 +142,7 @@ const resources = {
     MOVETO_BUTTON: 'Move content here',
     COPYTO_BUTTON: 'Copy content here',
     NEW_FOLDER: 'New folder',
+    SEARCH_RESULTS: 'Search results',
     SEARCH_DOCUMENTS_PLACEHOLDER: 'Search documents',
     SEARCH_USERS_PLACEHOLDER: 'Search users',
     SEARCH_GROUPS_PLACEHOLDER: 'Search groups',
