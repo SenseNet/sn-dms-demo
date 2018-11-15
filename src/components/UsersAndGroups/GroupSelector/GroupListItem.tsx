@@ -99,8 +99,8 @@ class GroupListItem extends React.Component<{ classes } & ReturnType<typeof mapS
         this.props.history.push(newPath)
         this.props.closeDropDown(true)
     }
-    public startButtonClick = (workspace) => {
-        this.state.selected ? this.props.deselectGroup(workspace) : this.props.selectGroup(workspace)
+    public checkboxClick = (group) => {
+        this.state.selected ? this.props.deselectGroup(group.Id) : this.props.selectGroup([group])
         this.setState({
             selected: !this.state.selected,
         })
@@ -121,9 +121,9 @@ class GroupListItem extends React.Component<{ classes } & ReturnType<typeof mapS
                         <Icon
                             className={selected ? classes.followedIconButton : classes.iconButton}
                             type={iconType.materialui}
-                            iconName={selected ? 'check_box' : 'checkbox_outline_blank'}
+                            iconName={selected ? 'check_box' : 'check_box_outline_blank'}
                             style={selected ? { color: '#ffeb3b', margin: '0 10px' } : { color: '#fff', margin: '0 10px' }}
-                            onClick={() => this.startButtonClick(group)} />
+                            onClick={() => this.checkboxClick(group)} />
                     </IconButton>
                 </ListItemIcon>
                 <ListItemText

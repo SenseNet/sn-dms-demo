@@ -111,7 +111,11 @@ export const selectedGroups: Reducer<GenericContent[]> = (state: GenericContent[
     switch (action.type) {
         case 'DMS_USERSANDGROUPS_SELECT_GROUP':
             return [
-            ...action.groups]
+                ...state,
+                ...action.groups]
+        case 'DMS_USERSANDGROUPS_DESELECT_GROUP':
+            const index = state.findIndex((data) => data.Id === action.id)
+            return [...state.slice(0, index), ...state.slice(index + 1)]
         case 'DMS_USERSANDGROUPS_CLEAR_SELECTION':
         case 'DMS_USERSANDGROUPS_SEARCH_GROUPS':
             return []

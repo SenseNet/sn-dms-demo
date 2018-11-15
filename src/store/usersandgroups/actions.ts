@@ -198,9 +198,9 @@ export const selectGroup = <T extends GenericContent[] | GenericContent>(groups:
     groups,
 })
 
-export const deselectGroup = <T extends GenericContent[] | GenericContent>(groups: GenericContent[] | GenericContent) => ({
+export const deselectGroup = (id: number) => ({
     type: 'DMS_USERSANDGROUPS_DESELECT_GROUP',
-    groups,
+    id,
 })
 
 export const getGroups = (memberships: IODataCollectionResponse<Group>) => ({
