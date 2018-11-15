@@ -1,4 +1,5 @@
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
+import Typography from '@material-ui/core/Typography'
 import { ConstantContent } from '@sensenet/client-core'
 import { GenericContent, IActionModel } from '@sensenet/default-content-types'
 import { ContentList } from '@sensenet/list-controls-react'
@@ -11,6 +12,7 @@ import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
 import { contentListTheme } from '../assets/contentlist'
 import { icons } from '../assets/icons'
+import { resources } from '../assets/resources'
 import { customSchema } from '../assets/schema'
 import { ListToolbar } from '../components/ListToolbar'
 import { loadMore, loadParent, select, setActive, updateChildrenOptions } from '../store/documentlibrary/actions'
@@ -159,11 +161,16 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
         const { matchesDesktop } = this.props
         return this.props.currentUser.content.Id !== ConstantContent.VISITOR_USER.Id ?
             <div onDragOver={(ev) => ev.preventDefault()} onDrop={this.handleFileDrop}>
-                <ListToolbar
-                    currentContent={this.props.parent}
-                    selected={this.props.selected}
-                    ancestors={this.props.ancestors}
-                />
+                {
+                    this.props.childrenOptions.query ?
+                        <Typography variant="h4" style={{ margin: '.5em' }}>{resources.SEARCH_RESULTS}</Typography>
+                        :
+                        <ListToolbar
+                            currentContent={this.props.parent}
+                            selected={this.props.selected}
+                            ancestors={this.props.ancestors}
+                        />
+                }
                 <ConnectedUploadBar />
                 <MuiThemeProvider theme={contentListTheme}>
                     <ContentList
