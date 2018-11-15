@@ -75,32 +75,17 @@ export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: s
                     }) as any,
                     eventHub.onContentMoved.subscribe((value) => emitChange(value.content)) as any,
                 )
-
-                await Promise.all([(async () => {
-                    const ancestors = await repository.executeAction<undefined, IODataCollectionResponse<GenericContent>>({
-                        idOrPath: newParent.d.Id,
-                        method: 'GET',
-                        name: 'Ancestors',
-                        body: undefined,
-                        oDataOptions: {
-                            ...prevState.childrenOptions,
-                            orderby: [['Path', 'asc']],
-                        },
-                    })
-                    options.dispatch(setAncestors([...ancestors.d.results, newParent.d]))
-                })(),
-                (async () => {
-                    const items = await repository.loadCollection({
-                        path: newParent.d.Path,
-                        oDataOptions: {
-                            ...prevState.childrenOptions,
-                            ...loadChildrenOptions,
-                        },
-                    })
-                    options.dispatch(setItems(items))
-                })(),
-                ])
-
+                const ancestors = await repository.executeAction<undefined, IODataCollectionResponse<GenericContent>>({
+                    idOrPath: newParent.d.Id,
+                    method: 'GET',
+                    name: 'Ancestors',
+                    body: undefined,
+                    oDataOptions: {
+                        ...prevState.childrenOptions,
+                        orderby: [['Path', 'asc']],
+                    },
+                })
+                options.dispatch(setAncestors([...ancestors.d.results, newParent.d]))
             } catch (error) {
                 options.dispatch(setError(error))
             } finally {
@@ -125,6 +110,7 @@ export const loadMore: (count?: number) => InjectableAction<rootStateType, Actio
                 oDataOptions: {
                     ...currentDocLibState.childrenOptions,
                     skip: currentDocLibState.items.d.results.length,
+                    top: count,
                 },
             })
 
