@@ -174,7 +174,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                 <ConnectedUploadBar />
                 <MuiThemeProvider theme={contentListTheme}>
                     <ContentList
-                        displayRowCheckbox={matchesDesktop ? true : false}
+                        displayRowCheckbox={matchesDesktop && !this.props.childrenOptions.query ? true : false}
                         schema={customSchema.find((s) => s.ContentTypeName === 'GenericContent')}
                         selected={this.props.selected}
                         active={this.props.active}
