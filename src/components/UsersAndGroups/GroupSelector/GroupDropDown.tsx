@@ -3,7 +3,6 @@ import Paper from '@material-ui/core/Paper'
 import { withStyles } from '@material-ui/core/styles'
 import * as React from 'react'
 import GroupList from './GroupList'
-import GroupSelectorToolbar from './GroupSelectorToolbar'
 
 const styles = (theme) => ({
     wsSelectorContainer: {
@@ -39,7 +38,6 @@ class GroupDropDown extends React.Component<{ classes } & GroupDropDownProps, {}
         return (
             <Collapse in={open} className={matches ? classes.wsSelectorContainer :  classes.wsSelectorContainerMobile}>
                 <Paper elevation={4} className={classes.wsSelectorPaper}>
-                    <GroupSelectorToolbar closeDropdDown={this.props.closeDropDown} />
                     <div>
                         <div className={classes.wsSelectorInner}>
                             <GroupList matches={matches} closeDropDown={this.props.closeDropDown} />

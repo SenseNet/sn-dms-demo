@@ -52,13 +52,21 @@ const styles = (theme) => ({
 
 type C = 'wsSearchInput'
 
-class GroupSearch extends React.Component<{ classes, handleKeyup: (e) => void, matches, closeDropDown } & WithStyles<C>, {}> {
-    constructor(props) {
+interface GroupSearchProps {
+    classes,
+    handleKeyup: (e) => void,
+    matches,
+    closeDropDown
+}
+
+class GroupSearch extends React.Component<GroupSearchProps & WithStyles<C>, {}> {
+    constructor(props: GroupSearch['props']) {
         super(props)
         this.handleKeyup = this.handleKeyup.bind(this)
     }
-    public handleKeyup = (e) => {
-        this.props.handleKeyup(e.target.value)
+    public handleKeyup = (e: React.KeyboardEvent) => {
+        // tslint:disable-next-line:no-string-literal
+        this.props.handleKeyup(e.target['value'])
     }
     public closeDropdown = () => {
         this.props.closeDropDown(false)

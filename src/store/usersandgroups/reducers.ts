@@ -142,6 +142,7 @@ export const searchTerm: Reducer<string> = (state: string = '', action: AnyActio
     }
 }
 
+
 export const group = combineReducers({
     selected: selectedGroups,
     all,

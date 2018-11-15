@@ -50,6 +50,7 @@ interface GroupListState {
     groups: Group[],
     top: number,
     term: string,
+    filtered: Group[],
 }
 
 interface GroupListProps {
@@ -60,6 +61,7 @@ interface GroupListProps {
 class GroupList extends React.Component<{ classes } & GroupListProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, GroupListState> {
     public state = {
         groups: this.props.groups,
+        filtered: [],
         selected: this.props.selected,
         top: 0,
         term: '',
@@ -72,9 +74,11 @@ class GroupList extends React.Component<{ classes } & GroupListProps & ReturnTyp
         if (newProps.groups.length !== lastState.groups.length || lastState.groups.length === 0) {
             newProps.getGroups(newProps.memberships as any)
         }
+
         return {
             ...lastState,
             groups: newProps.groups,
+            filtered: newProps.term.length > 0 ? newProps.groups.filter((group) => group.Name.indexOf(newProps.term) > -1) : newProps.groups,
             selected: newProps.selected,
             term: newProps.term,
         } as GroupList['state']
@@ -90,7 +94,8 @@ class GroupList extends React.Component<{ classes } & GroupListProps & ReturnTyp
         return selected !== undefined
     }
     public render() {
-        const { classes, matches, groups } = this.props
+        const { classes, matches } = this.props
+        const { filtered } = this.state
         return (
             <div>
                 <GroupSearch matches={matches} handleKeyup={this.handleSearch} closeDropDown={this.props.closeDropDown} />
@@ -99,7 +104,7 @@ class GroupList extends React.Component<{ classes } & GroupListProps & ReturnTyp
                     renderThumbVertical={({ style }) => <div style={{ ...style, borderRadius: 2, backgroundColor: '#fff', width: 10, marginLeft: -2 }}></div>}
                     thumbMinSize={180}>
                     <MenuList className={classes.workspaceList}>
-                        {groups.map((group) => <GroupListItem
+                        {filtered.map((group) => <GroupListItem
                             closeDropDown={this.props.closeDropDown}
                             key={group.Id}
                             group={group}
