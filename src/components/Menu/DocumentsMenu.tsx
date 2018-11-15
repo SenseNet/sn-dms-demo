@@ -11,6 +11,7 @@ import MediaQuery from 'react-responsive'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { rootStateType } from '../..'
 import { removeUploadItem, uploadFileList } from '../../Actions'
+import { updateChildrenOptions } from '../../store/documentlibrary/actions'
 import AddNewMenu from '../ActionMenu/AddNewMenu'
 import { UploadButton } from '../Upload/UploadButton'
 
@@ -135,8 +136,9 @@ const subMenu = [
     },
 ]
 
-class DocumentsMenu extends React.Component<DocumentMenuProps & ReturnType<typeof mapStateToProps>, {}> {
+class DocumentsMenu extends React.Component<DocumentMenuProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, {}> {
     public handleMenuItemClick = (title) => {
+        this.props.updateChildrenOptions({ query: '' })
         if (this.props.currentWorkspace) {
             this.props.history.push(`/documents/${btoa(this.props.currentWorkspace.Path + '/Document_Library')}`)
         } else {
@@ -165,26 +167,29 @@ class DocumentsMenu extends React.Component<DocumentMenuProps & ReturnType<typeo
                         <ListItemText classes={{ primary: active ? classes.primaryActive : classes.primary }} inset primary={item.title} />
                     </MenuItem>
                     <div className={active ? classes.open : classes.closed}>
-                        {matches ? <div><Divider />
-                            <UploadButton
-                                style={{
-                                    width: '100%',
-                                    margin: '10px 0 0 0',
-                                    fontFamily: 'Raleway Bold',
-                                    fontSize: '14px',
-                                }}
-                                multiple={true}
-                                handleUpload={(fileList) => this.props.uploadFileList({
-                                    fileList,
-                                    createFolders: true,
-                                    contentTypeName: 'File',
-                                    binaryPropertyName: 'Binary',
-                                    overwrite: false,
-                                    parentPath: this.props.currentContent.Path,
-                                })}
-                            />
-                            <AddNewMenu currentContent={this.props.currentContent} />
-                        </div> : null}
+                        {matches ?
+                            !this.props.query ?
+                                <div><Divider />
+                                    <UploadButton
+                                        style={{
+                                            width: '100%',
+                                            margin: '10px 0 0 0',
+                                            fontFamily: 'Raleway Bold',
+                                            fontSize: '14px',
+                                        }}
+                                        multiple={true}
+                                        handleUpload={(fileList) => this.props.uploadFileList({
+                                            fileList,
+                                            createFolders: true,
+                                            contentTypeName: 'File',
+                                            binaryPropertyName: 'Binary',
+                                            overwrite: false,
+                                            parentPath: this.props.currentContent.Path,
+                                        })}
+                                    />
+                                    <AddNewMenu currentContent={this.props.currentContent} />
+                                </div> : null
+                            : null}
                         <MenuList className={classes.submenu}>
                             {subMenu.map((menuitem, index) => {
                                 return (<MenuItem className={matches ? classes.submenuItem : classes.submenuItemMobile} key={index}
@@ -211,9 +216,13 @@ const mapStateToProps = (state: rootStateType) => {
         subactive: state.dms.menu.activeSubmenu,
         currentContent: state.dms.documentLibrary.parent,
         currentWorkspace: state.sensenet.currentworkspace,
+        query: state.dms.documentLibrary.childrenOptions.query,
     }
 }
 
-export default withRouter(connect(mapStateToProps, {
+const mapDispatchToProps = {
     uploadFileList,
-})(withStyles(styles)(DocumentsMenu)))
+    updateChildrenOptions,
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(DocumentsMenu)))
