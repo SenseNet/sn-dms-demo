@@ -214,11 +214,12 @@ export const getGroups = (memberships: IODataCollectionResponse<Group>) => ({
                 path: '/Root',
                 oDataOptions: {
                     query: '+TypeIs:Group',
-                    select: ['DisplayName', 'Path'],
+                    select: ['DisplayName', 'Path', 'Actions'],
+                    expand: ['Actions'],
                 },
             })
             const comparedList = arrayComparer(groups.d.results, memberships.d.results)
-            const newGroups = { d: { __count: comparedList.length, results: comparedList } }
+            const newGroups = { d: { __count: comparedList.length, results: comparedList.filter((group) => group.Actions.find((action) => action.Name === 'Edit')) } }
             options.dispatch(setGroups(newGroups))
         } catch (error) {
             options.dispatch(setError(error))
