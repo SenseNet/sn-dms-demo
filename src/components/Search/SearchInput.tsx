@@ -1,3 +1,4 @@
+import CircularProgress from '@material-ui/core/CircularProgress'
 import IconButton from '@material-ui/core/IconButton'
 import Input, { InputProps } from '@material-ui/core/Input'
 import InputAdornment from '@material-ui/core/InputAdornment'
@@ -10,7 +11,8 @@ import MediaQuery from 'react-responsive'
 
 const styles = {
     textStyle: {
-        background: 'rgba(0,0,0,.10)',
+        background: 'rgba(0,0,0,.050)',
+        height: '48px',
         color: 'black',
     },
     openMobile: {
@@ -39,6 +41,7 @@ const quickSearchBox = (props: {
     containerProps?: React.HTMLAttributes<HTMLDivElement>,
     containerRef?: (el: HTMLDivElement) => void,
     startAdornmentRef?: (el: HTMLInputElement | null) => void,
+    isLoading: boolean,
 }) => {
     return (
         <MediaQuery minDeviceWidth={700}>
@@ -50,15 +53,11 @@ const quickSearchBox = (props: {
                             name="search"
                             style={{ ...styles.textStyle, ...(props.inputProps && props.inputProps.style) }}
                             disableUnderline={true}
+                            disabled={props.isLoading}
                             startAdornment={
                                 <InputAdornment position="start">
                                     <IconButton buttonRef={props.startAdornmentRef}
                                         disabled
-                                        style={{
-                                            paddingTop: 0,
-                                            paddingBottom: 0,
-                                            height: '32px',
-                                        }}
                                     >
                                         <Search color="disabled" />
                                     </IconButton>
@@ -67,6 +66,7 @@ const quickSearchBox = (props: {
                             endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton onClick={props.onClick}>
+                                        {props.isLoading ? <CircularProgress size={24} style={{ marginRight: '.5em' }} /> : null}
                                         <Tune />
                                         {props.isOpen ? <ArrowDropUp /> : <ArrowDropDown />}
                                     </IconButton>

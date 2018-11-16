@@ -9,7 +9,7 @@ const styles = {
     appBar: {
         background: 'transparent',
         zIndex: 1210,
-        height: 48,
+        height: 64,
         borderBottom: '1px solid #ddd',
     },
 }
@@ -18,7 +18,7 @@ class Header extends React.Component<{}, {}> {
     public render() {
         return (
             <AppBar position="absolute" style={{ ...styles.appBar, boxShadow: 'none' }}>
-                <Toolbar style={{ minHeight: 48, padding: '0px 10px', display: 'flex' }}>
+                <Toolbar style={{ padding: '0px 10px', display: 'flex' }}>
                     <AppBarLogo style={{
                         width: '216px',
                         flexGrow: 0,

@@ -4,7 +4,7 @@ import QuickSearchInput from '../Search/SearchInput'
 
 it('renders without crashing', () => {
   const div = document.createElement('div')
-  ReactDOM.render(<QuickSearchInput isOpen={false} onClick={() => {
+  ReactDOM.render(<QuickSearchInput isLoading={false} isOpen={false} onClick={() => {
     //
   }} />, div)
 })

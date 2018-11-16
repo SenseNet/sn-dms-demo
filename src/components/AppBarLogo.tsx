@@ -24,8 +24,8 @@ const styles = {
         textAlign: 'center',
     },
     logoImg: {
-        maxWidth: 32,
-        maxHeight: 32,
+        maxWidth: 48,
+        maxHeight: 48,
         verticalAlign: 'middle' as any,
         marginRight: 5,
     },
