@@ -190,7 +190,7 @@ class DashboardDrawer extends React.Component<DashboarDrawerProps & ReturnType<t
                     classes={{
                         paper: matches ? classes.drawerPaper : null,
                     }}
-                    style={matches ? { paddingTop: '48px' } : {}}
+                    style={matches ? { paddingTop: '64px' } : {}}
                     onClose={matches ? null : () => this.toggleDrawer()}
                     PaperProps={{
                         style: {

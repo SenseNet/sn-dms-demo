@@ -1,6 +1,7 @@
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import Typography from '@material-ui/core/Typography'
 import { ConstantContent } from '@sensenet/client-core'
+import { debounce } from '@sensenet/client-utils'
 import { GenericContent, IActionModel } from '@sensenet/default-content-types'
 import { ContentList } from '@sensenet/list-controls-react'
 import { updateContent, uploadRequest } from '@sensenet/redux/dist/Actions'
@@ -22,6 +23,7 @@ import { DisplayNameMobileCell } from './ContentList/CellTemplates/DisplayNameMo
 import LockedCell from './ContentList/CellTemplates/LockedCell'
 import { RenameCell } from './ContentList/CellTemplates/RenameCell'
 import { FetchError } from './FetchError'
+import { GridPlaceholder } from './Loaders/GridPlaceholder'
 import { UploadBar } from './Upload/UploadBar'
 
 // tslint:disable-next-line:variable-name
@@ -38,6 +40,7 @@ const mapStateToProps = (state: rootStateType) => {
         loggedinUser: state.sensenet.session.user,
         items: state.dms.documentLibrary.items,
         errorMessage: state.dms.documentLibrary.error,
+        isLoading: state.dms.documentLibrary.isLoading,
         parent: state.dms.documentLibrary.parent,
         parentIdOrPath: state.dms.documentLibrary.parentIdOrPath,
         editedItemId: state.dms.editedItemId,
@@ -69,6 +72,7 @@ interface DocumentLibraryProps extends RouteComponentProps<any> {
 
 interface DocumentLibraryState {
     droppedFiles,
+    showLoader: boolean
 }
 
 class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DocumentLibraryState> {
@@ -76,6 +80,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
         super(props)
         this.state = {
             droppedFiles: [],
+            showLoader: this.props.isLoading,
         }
 
         this.handleFileDrop = this.handleFileDrop.bind(this)
@@ -147,7 +152,14 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
         removeEventListener('scroll', this.handleScroll)
     }
 
+    private updateLoading = debounce((value: boolean) => {
+        this.setState({
+            showLoader: value && !Boolean(this.props.childrenOptions.skip),
+        })
+    }, 300)
+
     public render() {
+        this.updateLoading(this.props.isLoading)
         if (this.props.errorMessage && this.props.errorMessage.length > 0) {
             return (
                 <FetchError
@@ -172,86 +184,106 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                         />
                 }
                 <ConnectedUploadBar />
-                <MuiThemeProvider theme={contentListTheme}>
-                    <ContentList
-                        displayRowCheckbox={matchesDesktop && !this.props.childrenOptions.query ? true : false}
-                        schema={customSchema.find((s) => s.ContentTypeName === 'GenericContent')}
-                        selected={this.props.selected}
-                        active={this.props.active}
-                        items={this.props.items.d.results}
-                        fieldsToDisplay={matchesDesktop ? ['DisplayName', 'Locked', 'ModificationDate', 'Owner', 'Actions'] : ['DisplayName', 'Actions']}
-                        orderBy={this.props.childrenOptions.orderby[0][0] as any}
-                        orderDirection={this.props.childrenOptions.orderby[0][1] as any}
-                        onRequestSelectionChange={(newSelection) => this.props.select(newSelection)}
-                        onRequestActiveItemChange={(active) => this.props.setActive(active)}
-                        onRequestActionsMenu={(ev, content) => {
-                            ev.preventDefault()
-                            this.props.closeActionMenu()
-                            this.props.openActionMenu(content.Actions as IActionModel[], content, '', ev.currentTarget.parentElement, { top: ev.clientY, left: ev.clientX })
-                        }}
-                        onItemContextMenu={(ev, content) => {
-                            ev.preventDefault()
-                            this.props.closeActionMenu()
-                            this.props.openActionMenu(content.Actions as IActionModel[], content, '', ev.currentTarget.parentElement, { top: ev.clientY, left: ev.clientX })
-                        }}
-                        onRequestOrderChange={(field, direction) => {
-                            this.props.updateChildrenOptions({
-                                ...this.props.childrenOptions,
-                                orderby: [[field, direction]],
-                            })
-                        }}
-                        onItemClick={(ev, content) => {
-                            if (ev.ctrlKey) {
-                                if (this.props.selected.find((s) => s.Id === content.Id)) {
-                                    this.props.select(this.props.selected.filter((s) => s.Id !== content.Id))
-                                } else {
-                                    this.props.select([...this.props.selected, content])
-                                }
-                            } else if (ev.shiftKey) {
-                                const activeIndex = this.props.items.d.results.findIndex((s) => s.Id === this.props.active.Id)
-                                const clickedIndex = this.props.items.d.results.findIndex((s) => s.Id === content.Id)
-                                const newSelection = Array.from(new Set([...this.props.selected, ...[...this.props.items.d.results].slice(Math.min(activeIndex, clickedIndex), Math.max(activeIndex, clickedIndex) + 1)]))
-                                this.props.select(newSelection)
-                            } else if (!this.props.selected.length || this.props.selected.length === 1 && this.props.selected[0].Id !== content.Id) {
-                                this.props.select([content])
-                            }
-                        }}
-                        onItemDoubleClick={this.handleRowDoubleClick}
-                        fieldComponent={(props) => {
-                            switch (props.field) {
-                                case 'Locked':
-                                    return (<LockedCell content={props.content} fieldName={props.field} />)
-                                case 'DisplayName':
-                                    if (this.props.editedItemId === props.content.Id) {
-                                        return (<RenameCell
-                                            icon={props.content.Icon}
-                                            icons={icons}
-                                            displayName={props.content.DisplayName}
-                                            onFinish={(newName) => this.props.updateContent<GenericContent>(props.content.Id, { DisplayName: newName })}
-                                        />)
-                                    } else if (!matchesDesktop) {
-                                        return (<DisplayNameMobileCell
-                                            content={props.content}
-                                            isSelected={props.isSelected}
-                                            hasSelected={props.selected.length > 0}
-                                            icons={icons}
-                                            onActivate={(ev, content) => this.handleRowDoubleClick(ev, content)} />)
+                <GridPlaceholder
+                    columns={5}
+                    rows={3}
+                    style={{
+                        position: 'sticky',
+                        zIndex: this.state.showLoader ? 1 : -1,
+                        height: 0,
+                        opacity: this.state.showLoader ? 1 : 0,
+                        transition: 'opacity 500ms cubic-bezier(0.230, 1.000, 0.320, 1.000)',
+                    }}
+                    columnStyle={{ backgroundColor: 'white' }}
+                />
+                <div
+                    style={{
+                        opacity: !this.state.showLoader ? 1 : 0,
+                        transition: 'opacity 500ms cubic-bezier(0.230, 1.000, 0.320, 1.000)',
+                    }}
+                >
+                    <MuiThemeProvider theme={contentListTheme} >
+                        <ContentList
+                            displayRowCheckbox={matchesDesktop && !this.props.childrenOptions.query ? true : false}
+                            schema={customSchema.find((s) => s.ContentTypeName === 'GenericContent')}
+                            selected={this.props.selected}
+                            active={this.props.active}
+                            items={this.props.items.d.results}
+                            fieldsToDisplay={matchesDesktop ? ['DisplayName', 'Locked', 'ModificationDate', 'Owner', 'Actions'] : ['DisplayName', 'Actions']}
+                            orderBy={this.props.childrenOptions.orderby[0][0] as any}
+                            orderDirection={this.props.childrenOptions.orderby[0][1] as any}
+                            onRequestSelectionChange={(newSelection) => this.props.select(newSelection)}
+                            onRequestActiveItemChange={(active) => this.props.setActive(active)}
+                            onRequestActionsMenu={(ev, content) => {
+                                ev.preventDefault()
+                                this.props.closeActionMenu()
+                                this.props.openActionMenu(content.Actions as IActionModel[], content, '', ev.currentTarget.parentElement, { top: ev.clientY, left: ev.clientX })
+                            }}
+                            onItemContextMenu={(ev, content) => {
+                                ev.preventDefault()
+                                this.props.closeActionMenu()
+                                this.props.openActionMenu(content.Actions as IActionModel[], content, '', ev.currentTarget.parentElement, { top: ev.clientY, left: ev.clientX })
+                            }}
+                            onRequestOrderChange={(field, direction) => {
+                                this.props.updateChildrenOptions({
+                                    ...this.props.childrenOptions,
+                                    orderby: [[field, direction]],
+                                })
+                            }}
+                            onItemClick={(ev, content) => {
+                                if (ev.ctrlKey) {
+                                    if (this.props.selected.find((s) => s.Id === content.Id)) {
+                                        this.props.select(this.props.selected.filter((s) => s.Id !== content.Id))
                                     } else {
-                                        return (<DisplayNameCell
-                                            content={props.content}
-                                            isSelected={props.isSelected}
-                                            icons={icons}
-                                            hostName={this.props.hostName} />)
+                                        this.props.select([...this.props.selected, content])
                                     }
+                                } else if (ev.shiftKey) {
+                                    const activeIndex = this.props.items.d.results.findIndex((s) => s.Id === this.props.active.Id)
+                                    const clickedIndex = this.props.items.d.results.findIndex((s) => s.Id === content.Id)
+                                    const newSelection = Array.from(new Set([...this.props.selected, ...[...this.props.items.d.results].slice(Math.min(activeIndex, clickedIndex), Math.max(activeIndex, clickedIndex) + 1)]))
+                                    this.props.select(newSelection)
+                                } else if (!this.props.selected.length || this.props.selected.length === 1 && this.props.selected[0].Id !== content.Id) {
+                                    this.props.select([content])
+                                }
+                            }}
+                            onItemDoubleClick={this.handleRowDoubleClick}
+                            fieldComponent={(props) => {
+                                switch (props.field) {
+                                    case 'Locked':
+                                        return (<LockedCell content={props.content} fieldName={props.field} />)
+                                    case 'DisplayName':
+                                        if (this.props.editedItemId === props.content.Id) {
+                                            return (<RenameCell
+                                                icon={props.content.Icon}
+                                                icons={icons}
+                                                displayName={props.content.DisplayName}
+                                                onFinish={(newName) => this.props.updateContent<GenericContent>(props.content.Id, { DisplayName: newName })}
+                                            />)
+                                        } else if (!matchesDesktop) {
+                                            return (<DisplayNameMobileCell
+                                                content={props.content}
+                                                isSelected={props.isSelected}
+                                                hasSelected={props.selected.length > 0}
+                                                icons={icons}
+                                                onActivate={(ev, content) => this.handleRowDoubleClick(ev, content)} />)
+                                        } else {
+                                            return (<DisplayNameCell
+                                                content={props.content}
+                                                isSelected={props.isSelected}
+                                                icons={icons}
+                                                hostName={this.props.hostName} />)
+                                        }
 
-                                default:
-                                    return null
-                            }
-                        }}
-                        icons={icons}
-                    />
-                    < ActionMenu id={0} />
-                </MuiThemeProvider>
+                                    default:
+                                        return null
+                                }
+                            }}
+                            icons={icons}
+                        />
+                        < ActionMenu id={0} />
+                    </MuiThemeProvider>
+
+                </div>
             </div>
             : null
 

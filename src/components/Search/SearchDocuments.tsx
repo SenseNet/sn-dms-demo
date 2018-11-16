@@ -36,6 +36,7 @@ const mapStateToProps = (state: rootStateType) => ({
     parent: state.dms.documentLibrary.parent,
     searchState: state.dms.documentLibrary.searchState,
     selectedTypeRoot: state.dms.picker.selected,
+    isLoading: state.dms.documentLibrary.isLoading,
 })
 
 const mapDispatchToProps = {
@@ -158,6 +159,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                         if (matches) {
                             return <form style={{ ...matches ? null : styles.searchContainerMobile, ...this.props.style }} onSubmit={this.handleOnSubmit}>
                                 <QuickSearchBox {...this.props}
+                                    isLoading={this.state.query && this.props.isLoading}
                                     isOpen={matches ? this.state.isOpen : true}
                                     onClick={this.onClick}
                                     startAdornmentRef={(r) => { (this.elementRef = r) }}

@@ -145,7 +145,7 @@ class DashboardComponent extends React.Component<DashboardProps & ReturnType<typ
                                 <div style={{ width: '100%', display: 'flex' }}>
                                     <DashboardDrawer />
                                     <div style={styles.main}>
-                                        <div style={{ height: 48, width: '100%' }}></div>
+                                        <div style={{ height: 64, width: '100%' }}></div>
                                         <Switch>
                                             <Route path="/documents" component={(props: RouteComponentProps<any>) => (
                                                 <Switch>
