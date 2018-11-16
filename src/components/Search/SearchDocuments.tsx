@@ -66,6 +66,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
         this.handleFieldQueryChanged = this.handleFieldQueryChanged.bind(this)
         this.handlePickLocation = this.handlePickLocation.bind(this)
         this.handleSelectTypeRoot = this.handleSelectTypeRoot.bind(this)
+        this.handleClose = this.handleClose.bind(this)
     }
     public onClick = () => {
         this.setState({ isOpen: !this.state.isOpen })
@@ -106,7 +107,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                 query: this.state.query.toString(),
             })
             this.props.loadParent(this.state.parent ? this.state.parent.Id : this.props.parent.Id)
-            this.setState({ isOpen: false })
+            this.handleClose()
         }
     }
 
@@ -136,12 +137,18 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
         this.props.closePicker()
     }
 
+    private handleClose() {
+        this.setState({
+            isOpen: false,
+        })
+    }
+
     private elementRef: HTMLElement | null = null
     private searchBoxContainerRef: HTMLElement | null = null
 
     public render() {
         const titleWidth = 2
-        const contentWidth = 9
+        const contentWidth = 7
         const containerStyles: React.CSSProperties = {
             padding: '1em',
         }
@@ -190,7 +197,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                 <Popover
                                     BackdropProps={{ style: { backgroundColor: 'rgba(0,0,0,.1)' } }}
                                     disablePortal
-                                    onBackdropClick={() => this.setState({ isOpen: false })}
+                                    onBackdropClick={this.handleClose}
                                     open={this.state.isOpen}
                                     anchorEl={this.elementRef}
                                     anchorOrigin={{
@@ -205,7 +212,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                     }}
                                 >
                                     <Grid container spacing={24} style={containerStyles}>
-                                        <Grid item xs={titleWidth}>
+                                        <Grid item xs={titleWidth} >
                                             <Typography style={titleStyles} variant="body1">Type</Typography>
                                         </Grid>
                                         <Grid item xs={contentWidth}>
@@ -216,11 +223,16 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                                     { text: 'Document', value: new Query((q) => q.typeIs(File).and.equals('Icon' as any, 'word')) },
                                                     { text: 'Sheet', value: new Query((q) => q.typeIs(File).and.equals('Icon' as any, 'excel')) },
                                                     { text: 'Text', value: new Query((q) => q.typeIs(File).and.equals('Icon' as any, 'document')) },
-                                                    { text: 'Slide', value: new Query((q) => q.typeIs(File).and.equals('Icon' as any, 'word')) },
+                                                    { text: 'Slide', value: new Query((q) => q.typeIs(File).and.equals('Icon' as any, 'powerpoint')) },
                                                     { text: 'Folder', value: new Query((q) => q.typeIs(Folder)) },
                                                 ]}
                                                 onQueryChange={(key, query, name) => this.handleFieldQueryChanged('type', query, name, options.updateQuery)}
                                             />
+                                        </Grid>
+                                        <Grid xs={3} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start' }}>
+                                            <IconButton onClick={this.handleClose}>
+                                                <Icon iconName="close" />
+                                            </IconButton>
                                         </Grid>
                                         <Grid item xs={titleWidth}>
                                             <Typography style={titleStyles} variant="body1">Owner</Typography>
@@ -234,6 +246,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                                 value={this.props.searchState.owner}
                                             />
                                         </Grid>
+                                        <Grid xs={3} />
                                         <Grid item xs={titleWidth}>
                                             <Typography style={titleStyles} variant="body1">Shared with</Typography>
                                         </Grid>
@@ -262,6 +275,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                                 value={this.props.searchState.itemName}
                                             />
                                         </Grid>
+                                        <Grid xs={3} />
                                         <Grid item xs={titleWidth}>
                                             <Typography style={titleStyles} variant="body1">Date modified</Typography>
                                         </Grid>
@@ -278,6 +292,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                                 value={this.props.searchState.dateModified}
                                             />
                                         </Grid>
+                                        <Grid xs={3} />
                                         <Grid item xs={titleWidth}>
                                             <Typography style={titleStyles} variant="body1">Contains</Typography>
                                         </Grid>
@@ -289,14 +304,15 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                                 onQueryChange={(key, query, plainValue) => this.handleFieldQueryChanged('contains', query, plainValue, options.updateQuery)}
                                             />
                                         </Grid>
+                                        <Grid xs={3} />
                                         <Grid item xs={titleWidth}>
                                             <Typography style={titleStyles} variant="body1">{resources.SEARCH_LOCATION_BUTTON_TITLE}</Typography>
                                         </Grid>
                                         <Grid item xs={7}>
-                                            <Button onClick={(ev) => this.handlePickLocation(ev, options)}>{this.props.selectedTypeRoot[0] ? this.props.selectedTypeRoot[0].DisplayName : resources.SEARCH_LOCATION_ANYWHERE}</Button>
+                                            <Button variant="contained" onClick={(ev) => this.handlePickLocation(ev, options)}>{this.props.selectedTypeRoot[0] ? this.props.selectedTypeRoot[0].DisplayName : resources.SEARCH_LOCATION_ANYWHERE}</Button>
                                         </Grid>
-                                        <Grid item xs={3}>
-                                            <Button type="submit">Search</Button>
+                                        <Grid item xs={3} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start' }}>
+                                            <Button type="submit" variant="contained">Search</Button>
                                         </Grid>
                                     </Grid>
                                 </Popover>

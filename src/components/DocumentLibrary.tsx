@@ -282,7 +282,6 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                         />
                         < ActionMenu id={0} />
                     </MuiThemeProvider>
-
                 </div>
             </div>
             : null
