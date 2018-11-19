@@ -1,5 +1,7 @@
+import IconButton from '@material-ui/core/IconButton'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import Typography from '@material-ui/core/Typography'
+import Close from '@material-ui/icons/Close'
 import { ConstantContent } from '@sensenet/client-core'
 import { debounce } from '@sensenet/client-utils'
 import { GenericContent, IActionModel } from '@sensenet/default-content-types'
@@ -16,7 +18,7 @@ import { icons } from '../assets/icons'
 import { resources } from '../assets/resources'
 import { customSchema } from '../assets/schema'
 import { ListToolbar } from '../components/ListToolbar'
-import { loadMore, loadParent, select, setActive, updateChildrenOptions } from '../store/documentlibrary/actions'
+import { loadMore, loadParent, select, setActive, updateChildrenOptions, updateSearchValues } from '../store/documentlibrary/actions'
 import ActionMenu from './ActionMenu/ActionMenu'
 import { DisplayNameCell } from './ContentList/CellTemplates/DisplayNameCell'
 import { DisplayNameMobileCell } from './ContentList/CellTemplates/DisplayNameMobileCell'
@@ -64,6 +66,7 @@ const mapDispatchToProps = {
     setActive,
     updateChildrenOptions,
     updateContent,
+    updateSearchValues,
 }
 
 interface DocumentLibraryProps extends RouteComponentProps<any> {
@@ -86,6 +89,23 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
         this.handleFileDrop = this.handleFileDrop.bind(this)
         this.handleRowDoubleClick = this.handleRowDoubleClick.bind(this)
         this.handleScroll = this.handleScroll.bind(this)
+        this.handleClearSearchResults = this.handleClearSearchResults.bind(this)
+    }
+
+    private handleClearSearchResults() {
+        this.props.updateChildrenOptions({
+            query: null,
+        })
+        this.props.updateSearchValues({
+            contains: null,
+            dateModified: null,
+            itemName: null,
+            owner: null,
+            rootPath: null,
+            searchString: null,
+            sharedWith: null,
+            type: null,
+        })
     }
 
     private handleScroll() {
@@ -175,7 +195,12 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
             <div onDragOver={(ev) => ev.preventDefault()} onDrop={this.handleFileDrop}>
                 {
                     this.props.childrenOptions.query ?
-                        <Typography variant="h4" style={{ margin: '.5em' }}>{resources.SEARCH_RESULTS}</Typography>
+                        <Typography variant="h4" style={{ margin: '.5em' }}>
+                            {resources.SEARCH_RESULTS}
+                            <IconButton onClick={this.handleClearSearchResults}>
+                                <Close />
+                            </IconButton>
+                        </Typography>
                         :
                         <ListToolbar
                             currentContent={this.props.parent}
