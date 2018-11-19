@@ -246,7 +246,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                                 value={this.props.searchState.owner}
                                             />
                                         </Grid>
-                                        <Grid xs={3} />
+                                        <Grid item xs={3} />
                                         <Grid item xs={titleWidth}>
                                             <Typography style={titleStyles} variant="body1">Shared with</Typography>
                                         </Grid>
@@ -275,7 +275,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                                 value={this.props.searchState.itemName}
                                             />
                                         </Grid>
-                                        <Grid xs={3} />
+                                        <Grid item xs={3} />
                                         <Grid item xs={titleWidth}>
                                             <Typography style={titleStyles} variant="body1">Date modified</Typography>
                                         </Grid>
@@ -292,7 +292,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                                 value={this.props.searchState.dateModified}
                                             />
                                         </Grid>
-                                        <Grid xs={3} />
+                                        <Grid item xs={3} />
                                         <Grid item xs={titleWidth}>
                                             <Typography style={titleStyles} variant="body1">Contains</Typography>
                                         </Grid>
@@ -304,15 +304,15 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                                 onQueryChange={(key, query, plainValue) => this.handleFieldQueryChanged('contains', query, plainValue, options.updateQuery)}
                                             />
                                         </Grid>
-                                        <Grid xs={3} />
+                                        <Grid item xs={3} />
                                         <Grid item xs={titleWidth}>
                                             <Typography style={titleStyles} variant="body1">{resources.SEARCH_LOCATION_BUTTON_TITLE}</Typography>
                                         </Grid>
                                         <Grid item xs={7}>
-                                            <Button variant="contained" onClick={(ev) => this.handlePickLocation(ev, options)}>{this.props.selectedTypeRoot[0] ? this.props.selectedTypeRoot[0].DisplayName : resources.SEARCH_LOCATION_ANYWHERE}</Button>
+                                            <Button style={{ boxShadow: 'none' }} variant="contained" onClick={(ev) => this.handlePickLocation(ev, options)}>{this.props.selectedTypeRoot[0] ? this.props.selectedTypeRoot[0].DisplayName : resources.SEARCH_LOCATION_ANYWHERE}</Button>
                                         </Grid>
                                         <Grid item xs={3} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start' }}>
-                                            <Button type="submit" variant="contained">Search</Button>
+                                            <Button style={{ boxShadow: 'none' }} type="submit" variant="contained">Search</Button>
                                         </Grid>
                                     </Grid>
                                 </Popover>
