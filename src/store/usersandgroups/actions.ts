@@ -1,6 +1,6 @@
 import { IODataCollectionResponse, IODataParams, Repository } from '@sensenet/client-core'
 import { ValueObserver } from '@sensenet/client-utils'
-import { GenericContent, Group, User } from '@sensenet/default-content-types'
+import { GenericContent, Group, IActionModel, User } from '@sensenet/default-content-types'
 import { EventHub } from '@sensenet/repository-events'
 import { Action, AnyAction } from 'redux'
 import { InjectableAction } from 'redux-di-middleware'
@@ -148,9 +148,9 @@ export const updateChildrenOptions = <T extends GenericContent>(odataOptions: IO
     type: 'DMS_USERSANDGROUPS_UPDATE_CHILDREN_OPTIONS',
     inject: async (options) => {
         const currentState = options.getState()
-        const parentPath = currentState.dms.usersAndGroups.user.currentUser.Path
+        const parentPath = currentState.dms.usersAndGroups.user.currentUser ? currentState.dms.usersAndGroups.user.currentUser.Path : ''
         const repository = options.getInjectable(Repository)
-        options.dispatch(startLoading(currentState.dms.usersAndGroups.user.currentUser.Id))
+        options.dispatch(startLoading(currentState.dms.usersAndGroups.user.currentUser ? currentState.dms.usersAndGroups.user.currentUser.Id : ''))
         try {
             const items = await repository.loadCollection({
                 path: parentPath,
@@ -181,7 +181,7 @@ export const removeMemberFromGroup = (contentIds: number[], groupId: number) => 
     inject: async (options) => {
         const currentState = options.getState()
         const repository = options.getInjectable(Repository)
-        options.dispatch(startLoading(currentState.dms.usersAndGroups.user.currentUser.Id))
+        options.dispatch(startLoading(currentState.dms.usersAndGroups.user.currentUser ? currentState.dms.usersAndGroups.user.currentUser.Id : ''))
         try {
             await repository.security.removeMembers(groupId, contentIds)
         } catch (error) {
@@ -191,7 +191,7 @@ export const removeMemberFromGroup = (contentIds: number[], groupId: number) => 
             options.dispatch(finishLoading())
         }
     },
-})
+} as InjectableAction<rootStateType, Action> & { odataOptions: IODataParams<GenericContent> })
 
 export const selectGroup = <T extends GenericContent[] | GenericContent>(groups: GenericContent[] | GenericContent) => {
     return ({
@@ -210,18 +210,26 @@ export const getGroups = (memberships: IODataCollectionResponse<Group>) => ({
     inject: async (options) => {
         const currentState = options.getState()
         const repository = options.getInjectable(Repository)
-        options.dispatch(startLoading(currentState.dms.usersAndGroups.user.currentUser.Id))
+        options.dispatch(startLoading(currentState.dms.usersAndGroups.user.currentUser ? currentState.dms.usersAndGroups.user.currentUser.Id : ''))
         try {
             const groups = await repository.loadCollection({
                 path: '/Root',
                 oDataOptions: {
                     query: '+TypeIs:Group',
-                    select: ['DisplayName', 'Path', 'Actions'],
-                    expand: ['Actions'],
+                    select: ['DisplayName', 'Path', 'Actions'] as any,
+                    expand: ['Actions'] as any,
                 },
             })
-            const comparedList = arrayComparer(groups.d.results, memberships.d.results)
-            const newGroups = { d: { __count: comparedList.length, results: comparedList.filter((group) => group.Actions.find((action) => action.Name === 'Edit')) } }
+            const comparedList: Group[] = arrayComparer(groups.d.results, memberships.d.results)
+            const newGroups = {
+                d: {
+                    __count: comparedList.length,
+                    results: comparedList.filter((group: Group) => {
+                        const actions = group.Actions as IActionModel[]
+                        return actions ? actions.find((action: IActionModel) => action.Name === 'Edit') : []
+                    }),
+                },
+            }
             options.dispatch(setGroups(newGroups))
         } catch (error) {
             options.dispatch(setError(error))
@@ -229,7 +237,7 @@ export const getGroups = (memberships: IODataCollectionResponse<Group>) => ({
             options.dispatch(finishLoading())
         }
     },
-})
+} as InjectableAction<rootStateType, Action> & { odataOptions: IODataParams<GenericContent> })
 
 export const setGroups = (groups: IODataCollectionResponse<Group>) => ({
     type: 'DMS_USERSANDGROUPS_SET_GROUPS',
@@ -250,7 +258,7 @@ export const addUserToGroups = (user: User, groups: Group[]) => ({
     inject: async (options) => {
         const currentState = options.getState()
         const repository = options.getInjectable(Repository) as Repository
-        options.dispatch(startLoading(currentState.dms.usersAndGroups.user.memberships))
+        options.dispatch(startLoading(currentState.dms.usersAndGroups.user.currentUser ? currentState.dms.usersAndGroups.user.currentUser.Id : ''))
         try {
             await groups.map((group) => {
                 repository.security.addMembers(group.Id, [user.Id])
@@ -262,4 +270,4 @@ export const addUserToGroups = (user: User, groups: Group[]) => ({
             options.dispatch(loadUser(user.Id))
         }
     },
-})
+} as InjectableAction<rootStateType, Action> & { odataOptions: IODataParams<GenericContent> })

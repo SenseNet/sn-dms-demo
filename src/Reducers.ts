@@ -12,7 +12,7 @@ import { workspaces } from './store/workspaces/reducers'
 
 import { logReducer } from './store/actionlog/reducers'
 
-export const email: Reducer<string, Action & { email?: string }> = (state = '', action) => {
+export const email: Reducer<string, Action & { email?: string }> = (state = '', action: AnyAction) => {
     switch (action.type) {
         case 'USER_REGISTRATION_REQUEST':
             return action.email || state
@@ -23,7 +23,7 @@ export const email: Reducer<string, Action & { email?: string }> = (state = '', 
             return state
     }
 }
-export const registrationError: Reducer<string | null, Action> = (state = null, action) => {
+export const registrationError: Reducer<string | null, Action> = (state: string | null = null, action: AnyAction) => {
     switch (action.type) {
         case 'USER_REGISTRATION_FAILURE':
             return resources.USER_IS_ALREADY_REGISTERED
@@ -31,7 +31,7 @@ export const registrationError: Reducer<string | null, Action> = (state = null, 
             return state
     }
 }
-export const isRegistering: Reducer<boolean> = (state = false, action) => {
+export const isRegistering: Reducer<boolean> = (state: boolean = false, action: AnyAction) => {
     switch (action.type) {
         case 'USER_REGISTRATION_REQUEST':
             return true
@@ -43,7 +43,7 @@ export const isRegistering: Reducer<boolean> = (state = false, action) => {
     }
 }
 
-export const registrationDone: Reducer<boolean> = (state = false, action) => {
+export const registrationDone: Reducer<boolean> = (state: boolean = false, action: AnyAction) => {
     switch (action.type) {
         case 'USER_REGISTRATION_SUCCESS':
             return true
@@ -56,7 +56,7 @@ export const registrationDone: Reducer<boolean> = (state = false, action) => {
     }
 }
 
-export const captcha: Reducer<boolean> = (state = false, action) => {
+export const captcha: Reducer<boolean> = (state: boolean = false, action: AnyAction) => {
     switch (action.type) {
         case 'VERIFY_CAPTCHA_SUCCESS':
             return true
@@ -73,7 +73,7 @@ export const register = combineReducers({
     captcha,
 })
 
-export const open: Reducer<boolean> = (state = false, action) => {
+export const open: Reducer<boolean> = (state: boolean = false, action: AnyAction) => {
     switch (action.type) {
         case 'OPEN_ACTIONMENU':
             return true
@@ -84,7 +84,7 @@ export const open: Reducer<boolean> = (state = false, action) => {
     }
 }
 
-export const actions: Reducer<IActionModel[]> = (state = [], action) => {
+export const actions: Reducer<IActionModel[]> = (state: IActionModel[] = [], action: AnyAction) => {
     switch (action.type) {
         case 'LOAD_CONTENT_ACTIONS_SUCCESS':
             const result: { d: { Actions: IActionModel[] } } = (action.result as PromiseReturns<typeof loadContentActions>) as any
@@ -96,7 +96,7 @@ export const actions: Reducer<IActionModel[]> = (state = [], action) => {
     }
 }
 
-export const id: Reducer<number | null> = (state = null, action) => {
+export const id: Reducer<number | null> = (state: number | null = null, action: AnyAction) => {
     switch (action.type) {
         case 'OPEN_ACTIONMENU':
             console.log(actions)
@@ -106,7 +106,7 @@ export const id: Reducer<number | null> = (state = null, action) => {
     }
 }
 
-export const title: Reducer<string, Action & { title?: string }> = (state = '', action) => {
+export const title: Reducer<string, Action & { title?: string }> = (state = '', action: AnyAction) => {
     switch (action.type) {
         case 'OPEN_ACTIONMENU':
             return action.title || state
@@ -115,7 +115,7 @@ export const title: Reducer<string, Action & { title?: string }> = (state = '', 
     }
 }
 
-export const anchorElement: Reducer<HTMLElement | null, Action & { element?: HTMLElement | null }> = (state = null, action) => {
+export const anchorElement: Reducer<HTMLElement | null, Action & { element?: HTMLElement | null }> = (state = null, action: AnyAction) => {
     switch (action.type) {
         case 'OPEN_ACTIONMENU':
             return action.element || state
@@ -124,7 +124,7 @@ export const anchorElement: Reducer<HTMLElement | null, Action & { element?: HTM
     }
 }
 
-export const position: Reducer<any, Action & { position?: any }> = (state = null, action) => {
+export const position: Reducer<any, Action & { position?: any }> = (state = null, action: AnyAction) => {
     switch (action.type) {
         case 'OPEN_ACTIONMENU':
             return action.position || null
@@ -133,7 +133,7 @@ export const position: Reducer<any, Action & { position?: any }> = (state = null
     }
 }
 
-export const rootId: Reducer<number | null> = (state = null, action) => {
+export const rootId: Reducer<number | null> = (state = null, action: AnyAction) => {
     switch (action.type) {
         case 'LOAD_CONTENT_SUCCESS':
             const result = action.result as PromiseReturns<typeof loadContent>
@@ -147,7 +147,7 @@ export const rootId: Reducer<number | null> = (state = null, action) => {
     }
 }
 
-export const currentId: Reducer<number | null, Action & { id?: number }> = (state = null, action) => {
+export const currentId: Reducer<number | null, Action & { id?: number }> = (state = null, action: AnyAction) => {
     switch (action.type) {
         case 'SET_CURRENT_ID':
             return action.id || state
@@ -156,7 +156,7 @@ export const currentId: Reducer<number | null, Action & { id?: number }> = (stat
     }
 }
 
-export const editedItemId: Reducer<number | null, Action & { id?: number }> = (state = null, action) => {
+export const editedItemId: Reducer<number | null, Action & { id?: number }> = (state = null, action: AnyAction) => {
     switch (action.type) {
         case 'SET_EDITED_ID':
             return action.id || null
@@ -167,7 +167,7 @@ export const editedItemId: Reducer<number | null, Action & { id?: number }> = (s
     }
 }
 
-export const editedFirst: Reducer<boolean, Action & { id?: number, edited?: boolean }> = (state = false, action) => {
+export const editedFirst: Reducer<boolean, Action & { id?: number, edited?: boolean }> = (state = false, action: AnyAction) => {
     switch (action.type) {
         case 'SET_EDITED_ID':
             return action.id ? true : false
@@ -182,7 +182,7 @@ export const editedFirst: Reducer<boolean, Action & { id?: number, edited?: bool
 
 export interface BreadcrumbItemType { name: string, id: number, path: string }
 
-export const breadcrumb: Reducer<BreadcrumbItemType[]> = (state = [], action) => {
+export const breadcrumb: Reducer<BreadcrumbItemType[]> = (state = [], action: AnyAction) => {
     switch (action.type) {
         case 'LOAD_CONTENT_SUCCESS':
             const result = action.result as PromiseReturns<typeof loadContent>
@@ -206,7 +206,7 @@ export const breadcrumb: Reducer<BreadcrumbItemType[]> = (state = [], action) =>
     }
 }
 
-export const isLoading: Reducer<boolean> = (state = false, action) => {
+export const isLoading: Reducer<boolean> = (state = false, action: AnyAction) => {
     switch (action.type) {
         case 'LOAD_CONTENT_SUCCESS':
             return false
@@ -217,7 +217,7 @@ export const isLoading: Reducer<boolean> = (state = false, action) => {
     }
 }
 
-export const isSelectionModeOn: Reducer<boolean> = (state = false, action) => {
+export const isSelectionModeOn: Reducer<boolean> = (state = false, action: AnyAction) => {
     switch (action.type) {
         case 'SELECTION_MODE_ON':
             return true
@@ -229,7 +229,7 @@ export const isSelectionModeOn: Reducer<boolean> = (state = false, action) => {
     }
 }
 
-export const userActions: Reducer<IActionModel[]> = (state = [], action) => {
+export const userActions: Reducer<IActionModel[]> = (state: IActionModel[] = [], action: AnyAction) => {
     switch (action.type) {
         case 'LOAD_USER_ACTIONS_SUCCESS':
             const result = action.result as PromiseReturns<typeof loadUserActions>
@@ -239,7 +239,7 @@ export const userActions: Reducer<IActionModel[]> = (state = [], action) => {
     }
 }
 
-export const addNewTypes = (state = [], action) => {
+export const addNewTypes: Reducer<IActionModel[]> = (state: IActionModel[] = [], action: AnyAction) => {
     switch (action.type) {
         case 'LOAD_TYPES_TO_ADDNEW_LIST_SUCCESS':
             const result = action.result as PromiseReturns<typeof loadTypesToAddNewList>
@@ -249,7 +249,7 @@ export const addNewTypes = (state = [], action) => {
     }
 }
 
-export const actionmenuContent: Reducer<GenericContent | null> = (state = null, action) => {
+export const actionmenuContent: Reducer<GenericContent | null> = (state: GenericContent | null = null, action: AnyAction) => {
     switch (action.type) {
         case 'OPEN_ACTIONMENU':
             return action.content
@@ -283,7 +283,7 @@ export const actionmenu = combineReducers({
     breadcrumb: breadcrumbActions,
 })
 
-export const toolbar: Reducer<{ actions: IActionModel[], isLoading: boolean, idOrPath: number | string, scenario: string }> = (state = { actions: [], isLoading: false, idOrPath: 0, scenario: '' }, action) => {
+export const toolbar: Reducer<{ actions: IActionModel[], isLoading: boolean, idOrPath: number | string, scenario: string | undefined }> = (state = { actions: [], isLoading: false, idOrPath: 0, scenario: '' }, action: AnyAction) => {
     switch (action.type) {
         case 'LOAD_LIST_ACTIONS': {
             const a: ReturnType<typeof loadListActions> = action as any
@@ -363,7 +363,7 @@ export const uploads: Reducer<{ uploads: ExtendedUploadProgressInfo[], showProgr
         return state
     }
 
-export const activeMenuItem: Reducer<string, Action & { itemName?: string }> = (state = '', action) => {
+export const activeMenuItem: Reducer<string, Action & { itemName?: string }> = (state = '', action: AnyAction) => {
     switch (action.type) {
         case 'CHOOSE_MENUITEM':
             return action.itemName || state
@@ -372,7 +372,7 @@ export const activeMenuItem: Reducer<string, Action & { itemName?: string }> = (
     }
 }
 
-export const activeSubmenu: Reducer<string | null, Action & { itemName?: string }> = (state = null, action) => {
+export const activeSubmenu: Reducer<string | null, Action & { itemName?: string }> = (state = null, action: AnyAction) => {
     switch (action.type) {
         case 'CHOOSE_SUBMENUITEM':
             return action.itemName || state
@@ -403,7 +403,7 @@ export const viewer: Reducer<{ isOpened: boolean, currentDocumentId: number }, A
     return state
 }
 
-export const isOpened = (state: boolean = false, action: AnyAction) => {
+export const isOpened: Reducer<boolean> = (state: boolean = false, action: AnyAction) => {
     switch (action.type) {
         case 'OPEN_DIALOG':
             return true
@@ -413,7 +413,7 @@ export const isOpened = (state: boolean = false, action: AnyAction) => {
     return state
 }
 
-export const onClose = (state: () => void = null, action: AnyAction) => {
+export const onClose: Reducer<() => void | undefined> = (state: () => void | undefined = () => undefined, action: AnyAction) => {
     switch (action.type) {
         case 'OPEN_DIALOG':
             return action.onClose
@@ -423,7 +423,7 @@ export const onClose = (state: () => void = null, action: AnyAction) => {
     return state
 }
 
-export const dialogContent = (state: any = '', action: AnyAction) => {
+export const dialogContent: Reducer<React.Component | undefined> = (state: React.Component | null = null, action: AnyAction) => {
     switch (action.type) {
         case 'OPEN_DIALOG':
             return action.content
@@ -433,7 +433,7 @@ export const dialogContent = (state: any = '', action: AnyAction) => {
     return state
 }
 
-export const dialogTitle = (state: string = '', action: AnyAction) => {
+export const dialogTitle: Reducer<string> = (state: string = '', action: AnyAction) => {
     switch (action.type) {
         case 'OPEN_DIALOG':
             return action.title
@@ -450,13 +450,13 @@ export const dialog = combineReducers({
     title: dialogTitle,
 })
 
-export const versions: Reducer<GenericContent[]> = (state: any[], action: AnyAction) => {
+export const versions: Reducer<GenericContent[]> = (state: GenericContent[] = [], action: AnyAction) => {
     switch (action.type) {
         case 'LOAD_VERSIONS_SUCCESS':
             const versionItems = (action.result as PromiseReturns<typeof loadVersions>).d.results as any[]
             return versionItems
         default:
-            return state || []
+            return state
     }
 }
 

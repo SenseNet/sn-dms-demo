@@ -53,7 +53,7 @@ const mapStateToProps = (state: rootStateType) => {
     return {
         isAdmin: state.dms.usersAndGroups.user.isAdmin,
         groups: state.dms.usersAndGroups.group.selected,
-        user: state.dms.usersAndGroups.user.currentUser,
+        user: state.dms.usersAndGroups.user.currentUser || null,
     }
 }
 

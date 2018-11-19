@@ -48,7 +48,7 @@ class GroupSelector extends React.Component<ReturnType<typeof mapStateToProps> &
         super(props)
         this.handleButtonClick = this.handleButtonClick.bind(this)
     }
-    public handleButtonClick = (open, away) => {
+    public handleButtonClick = (open: boolean, away: boolean) => {
         if (!away) { this.props.clearSelection() }
         this.setState({
             open: away ? false : open ? false : !this.state.open,

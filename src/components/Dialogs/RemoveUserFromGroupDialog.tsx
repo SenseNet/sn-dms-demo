@@ -1,7 +1,7 @@
 import Button from '@material-ui/core/Button'
 import withStyles from '@material-ui/core/styles/withStyles'
 import Typography from '@material-ui/core/Typography'
-import { GenericContent } from '@sensenet/default-content-types'
+import { GenericContent, User } from '@sensenet/default-content-types'
 import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -57,8 +57,8 @@ const styles = {
 
 interface RemoveUserFromGroupDialogProps {
     permanent?: boolean,
-    user: GenericContent,
-    groups: GenericContent[],
+    user: GenericContent | null,
+    groups: GenericContent[] | null,
 }
 
 interface RemoveUserFromGroupDialogState {
@@ -78,7 +78,7 @@ const mapDispatchToProps = {
     removeMemberFromGroup,
 }
 
-class RemoveUserFromGroupDialog extends React.Component<{ classes } & RemoveUserFromGroupDialogProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, RemoveUserFromGroupDialogState> {
+class RemoveUserFromGroupDialog extends React.Component<{ classes: any } & RemoveUserFromGroupDialogProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, RemoveUserFromGroupDialogState> {
     public state = {
         checked: this.props.permanent === null || !this.props.permanent ? false : true,
     }
@@ -97,7 +97,7 @@ class RemoveUserFromGroupDialog extends React.Component<{ classes } & RemoveUser
     }
     public submitCallback = () => {
         const { user, groups } = this.props
-        this.props.removeMemberFromGroup([user.Id], groups[0].Id)
+        this.props.removeMemberFromGroup([user ? user.Id : 0], groups ? groups[0].Id : 0)
         this.props.closeDialog()
     }
     public render() {
@@ -113,7 +113,7 @@ class RemoveUserFromGroupDialog extends React.Component<{ classes } & RemoveUser
                             <div style={{ opacity: .54 }}>{resources.ARE_YOU_SURE_YOU_WANT_TO_REMOVE_USER}</div>
                             <div style={selected.length > 3 ? styles.longList : styles.normalList}>
                                 <ul style={styles.list}>
-                                    {selected.map((user) => <li
+                                    {selected.map((user: User) => <li
                                         key={user.Id}
                                         style={styles.listItem}>
                                         {// tslint:disable-next-line:no-string-literal
@@ -124,13 +124,13 @@ class RemoveUserFromGroupDialog extends React.Component<{ classes } & RemoveUser
                             </div>
                             <div style={{ opacity: .54 }}>{resources.FROM_GROUP}</div>
                             <ul style={styles.list}>
-                                {this.props.groups.map((group) => <li
+                                {this.props.groups ? this.props.groups.map((group) => <li
                                     key={group.Id}
                                     style={styles.listItem}>
                                     {// tslint:disable-next-line:no-string-literal
                                         group.DisplayName}
                                 </li>,
-                                )}
+                                ) : null}
                             </ul>
                         </div>
                         <div style={styles.buttonContainer}>

@@ -1,7 +1,6 @@
 import { Typography } from '@material-ui/core'
 import Avatar from '@material-ui/core/Avatar'
 import Paper from '@material-ui/core/Paper'
-import { User } from '@sensenet/default-content-types'
 import { Icon } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -66,14 +65,14 @@ const styles = {
 
 // tslint:disable-next-line:no-empty-interface
 interface UserInfoProps {
-    user: User,
+
 }
 
 const mapStateToProps = (state: rootStateType) => {
     return {
-        user: state.dms.usersAndGroups.user.currentUser,
+        user: state.dms.usersAndGroups.user.currentUser || null,
         isLoading: state.dms.usersAndGroups.user.isLoading,
-        repositoryUrl: state.sensenet.session.repository.repositoryUrl,
+        repositoryUrl: state.sensenet.session.repository ? state.sensenet.session.repository.repositoryUrl : '',
         currentUser: state.sensenet.session.user.userName,
     }
 }
@@ -93,22 +92,25 @@ class UserInfo extends React.Component<UserInfoProps & ReturnType<typeof mapStat
     }
     public render() {
         const { isLoading, repositoryUrl, user, currentUser } = this.props
+        const avatar = user ? user.Avatar as any : null
         // tslint:disable-next-line:no-string-literal
-        const avatarUrl = !isLoading && user.Avatar['_deferred'].length > 0 ? repositoryUrl + user.Avatar['_deferred'] : defaultAvatar
+        const avatarPath = avatar ? avatar['_deferred'] as any : ''
+        // tslint:disable-next-line:no-string-literal
+        const avatarUrl = !isLoading && avatar ? avatarPath.length > 0 : false ? repositoryUrl + avatarPath : defaultAvatar
         return (
             isLoading ? null : <Paper style={styles.container as any}>
                 <div style={styles.leftColumn}>
-                    <Avatar alt={user.FullName} src={avatarUrl} style={styles.avatar} />
+                    <Avatar alt={user ? user.FullName : ''} src={avatarUrl} style={styles.avatar} />
                 </div>
                 <div style={styles.rightColumn}>
                     <div style={{ display: 'flex', flexDirection: 'row' }}>
-                        <Typography style={styles.fullName as any}>{user.FullName}</Typography>
-                        {user.Name === currentUser ?
+                        <Typography style={styles.fullName as any}>{user ? user.FullName : ''}</Typography>
+                        {user && user.Name === currentUser ?
                             <Icon iconName="edit" onClick={() => this.handleEditClick()} style={styles.editIcon} />
                             : null}
                     </div>
-                    <a href={`mailto:${user.Email}`} style={styles.email}>{user.Email}</a>
-                    <Typography><a href={`tel:${user.Phone}`} style={styles.phone}>{user.Phone}</a></Typography>
+                    <a href={`mailto:${user ? user.Email : ''}`} style={styles.email}>{user ? user.Email : ''}</a>
+                    <Typography><a href={`tel:${user ? user.Phone : ''}`} style={styles.phone}>{user ? user.Phone : ''}</a></Typography>
                 </div>
             </Paper >
         )

@@ -112,10 +112,10 @@ export const loadMore: (count?: number) => InjectableAction<rootStateType, Actio
         if (!currentDocLibState.isLoading && currentDocLibState.items.d.results.length < currentDocLibState.items.d.__count) {
             const repository = options.getInjectable(Repository)
             const parentIdOrPath = currentDocLibState.parentIdOrPath
-            options.dispatch(startLoading(parentIdOrPath))
+            options.dispatch(startLoading(parentIdOrPath ? parentIdOrPath : ''))
 
             const items = await repository.loadCollection({
-                path: currentDocLibState.parent.Path,
+                path: currentDocLibState.parent ? currentDocLibState.parent.Path : '',
                 oDataOptions: {
                     ...currentDocLibState.childrenOptions,
                     skip: currentDocLibState.items.d.results.length,
@@ -171,9 +171,9 @@ export const updateChildrenOptions = <T extends GenericContent>(odataOptions: IO
     type: 'DMS_DOCLIB_UPDATE_CHILDREN_OPTIONS',
     inject: async (options) => {
         const currentState = options.getState()
-        const parentPath = currentState.dms.documentLibrary.parent.Path
+        const parentPath = currentState.dms.documentLibrary.parent ? currentState.dms.documentLibrary.parent.Path : ''
         const repository = options.getInjectable(Repository)
-        options.dispatch(startLoading(currentState.dms.documentLibrary.parentIdOrPath))
+        options.dispatch(startLoading(currentState.dms.documentLibrary.parentIdOrPath ? currentState.dms.documentLibrary.parentIdOrPath : ''))
         try {
             const items = await repository.loadCollection({
                 path: parentPath,

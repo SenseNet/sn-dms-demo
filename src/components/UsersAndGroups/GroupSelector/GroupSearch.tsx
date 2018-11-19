@@ -1,3 +1,4 @@
+import { Theme } from '@material-ui/core'
 import FormControl from '@material-ui/core/FormControl'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles'
@@ -5,7 +6,7 @@ import TextField from '@material-ui/core/TextField'
 import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 
-const styles = (theme) => ({
+const styles = (theme: Theme) => ({
     wsSearchContainer: {
         display: 'flex',
         flexGrow: 1,
@@ -53,10 +54,10 @@ const styles = (theme) => ({
 type C = 'wsSearchInput'
 
 interface GroupSearchProps {
-    classes,
-    handleKeyup: (e) => void,
-    matches,
-    closeDropDown
+    classes: any,
+    handleKeyup: (e: any) => void,
+    matches: boolean,
+    closeDropDown: (open: boolean) => void
 }
 
 class GroupSearch extends React.Component<GroupSearchProps & WithStyles<C>, {}> {
@@ -64,7 +65,7 @@ class GroupSearch extends React.Component<GroupSearchProps & WithStyles<C>, {}> 
         super(props)
         this.handleKeyup = this.handleKeyup.bind(this)
     }
-    public handleKeyup = (e: React.KeyboardEvent) => {
+    public handleKeyup = (e: any) => {
         // tslint:disable-next-line:no-string-literal
         this.props.handleKeyup(e.target['value'])
     }

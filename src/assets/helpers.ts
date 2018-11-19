@@ -12,7 +12,7 @@ export const getExtensionFromUrl = (urlString: string) => {
     return name.split('.')[1]
 }
 
-export const fakeClick = (obj) => {
+export const fakeClick = (obj: EventTarget) => {
     const ev = document.createEvent('MouseEvents')
     ev.initMouseEvent('click', true, false,
         window,
@@ -55,7 +55,7 @@ export const versionName = (versionChar: string) => {
     }
 }
 
-export const arrayComparer = (array1, array2) => uniqueResultOne(array1, array2).concat(uniqueResultTwo(array1, array2))
+export const arrayComparer = (array1: any[], array2: any[]) => uniqueResultOne(array1, array2).concat(uniqueResultTwo(array1, array2))
 
-const uniqueResultOne = (array1, array2) => array1.filter((obj) => !array2.some((obj2) => obj.Id === obj2.Id))
-const uniqueResultTwo = (array1, array2) => array2.filter((obj) => !array1.some((obj2) => obj.Id === obj2.Id))
+const uniqueResultOne = (array1: any[], array2: any[]) => array1.filter((obj) => !array2.some((obj2) => obj.Id === obj2.Id))
+const uniqueResultTwo = (array1: any[], array2: any[]) => array2.filter((obj) => !array1.some((obj2) => obj.Id === obj2.Id))

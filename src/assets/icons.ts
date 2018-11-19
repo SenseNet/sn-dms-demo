@@ -38,4 +38,4 @@ export const icons = {
     forceundocheckout: 'undo',
     group: 'supervised_user_circle',
     orgunit: 'supervised_user_circle',
-}
+} as any

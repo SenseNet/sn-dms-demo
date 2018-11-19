@@ -23,19 +23,16 @@ const styles = {
     arrowButton: {
         marginLeft: 0,
     },
-    avatar: {
-        display: 'inline-block',
-    },
 }
 
 interface UserActionMenuState {
-    anchorEl,
+    anchorEl: JSX.Element | null,
     open: boolean,
     selectedIndex: number,
     userName: string,
 }
 
-const mapStateToProps = (state: rootStateType, match) => {
+const mapStateToProps = (state: rootStateType) => {
     return {
         loggedinUser: state.sensenet.session.user,
         actions: state.dms.actionmenu.userActions,
@@ -55,7 +52,7 @@ class UserActionMenu extends React.Component<ReturnType<typeof mapStateToProps> 
         selectedIndex: 1,
         userName: '',
     }
-    constructor(props) {
+    constructor(props: UserActionMenu['props']) {
         super(props)
         this.handleClick = this.handleClick.bind(this)
         this.handleRequestClose = this.handleRequestClose.bind(this)
@@ -69,7 +66,7 @@ class UserActionMenu extends React.Component<ReturnType<typeof mapStateToProps> 
             userName: newProps.loggedinUser.userName,
         } as UserActionMenu['state']
     }
-    public handleClick = (e) => {
+    public handleClick = (e: any) => {
         const { actions, loggedinUser } = this.props
         this.props.closeActionMenu()
         this.props.openActionMenu(actions, loggedinUser.content, loggedinUser.fullName, e.currentTarget, {
@@ -89,7 +86,7 @@ class UserActionMenu extends React.Component<ReturnType<typeof mapStateToProps> 
                         style={matches ? {} : styles.actionmenuContainer}
                         aria-owns="actionmenu"
                         onClick={(e) => this.handleClick(e)}>
-                        <UserPanel user={this.props.loggedinUser} style={styles.avatar} />
+                        <UserPanel />
                         <Icon
                             type={iconType.materialui}
                             iconName="arrow_drop_down"

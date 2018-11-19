@@ -59,8 +59,8 @@ const styles = {
 
 interface GroupListItemProps extends RouteComponentProps<any> {
     selected: boolean,
-    group: Group,
-    userName,
+    group: Group | null,
+    userName: string,
     closeDropDown: (open: boolean) => void,
 }
 
@@ -82,7 +82,7 @@ interface GroupListItemState {
     selected: boolean,
 }
 
-class GroupListItem extends React.Component<{ classes } & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & GroupListItemProps, GroupListItemState> {
+class GroupListItem extends React.Component<{ classes: any } & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & GroupListItemProps, GroupListItemState> {
     public state = {
         selected: this.props.selected,
     }
@@ -93,21 +93,21 @@ class GroupListItem extends React.Component<{ classes } & ReturnType<typeof mapS
         this.handleMouseLeave = this.handleMouseLeave.bind(this)
         this.handleClick = this.handleClick.bind(this)
     }
-    public handleClick = (path) => {
+    public handleClick = (path: string) => {
         const doclibPath = `${path}/Document_Library`
         const newPath = compile(this.props.match.path)({ folderPath: btoa(doclibPath) })
         this.props.history.push(newPath)
         this.props.closeDropDown(true)
     }
-    public checkboxClick = (group) => {
-        this.state.selected ? this.props.deselectGroup(group.Id) : this.props.selectGroup([group])
+    public checkboxClick = (group: Group | null) => {
+        this.state.selected ? this.props.deselectGroup(group ? group.Id : 0) : this.props.selectGroup(group ? [group] : [])
         this.setState({
             selected: !this.state.selected,
         })
     }
-    public handleMouseOver = (e) => e.currentTarget.style.backgroundColor = '#01A1EA'
-    public handleMouseLeave = (e) => e.currentTarget.style.backgroundColor = 'transparent'
-    public shortenPath = (path) => path.replace('/Root/IMS/', '')
+    public handleMouseOver = (e: any) => e.currentTarget.style.backgroundColor = '#01A1EA'
+    public handleMouseLeave = (e: any) => e.currentTarget.style.backgroundColor = 'transparent'
+    public shortenPath = (path: string) => path.replace('/Root/IMS/', '')
     public render() {
         const { classes, group, selected } = this.props
         return (
@@ -128,9 +128,9 @@ class GroupListItem extends React.Component<{ classes } & ReturnType<typeof mapS
                 </ListItemIcon>
                 <ListItemText
                     classes={{ primary: classes.primary, root: classes.listItemRoot, secondary: classes.secondary }}
-                    primary={group.DisplayName}
-                    secondary={this.shortenPath(group.Path)}
-                    onClick={(e) => this.handleClick(group.Path)} />
+                    primary={group ? group.DisplayName : ''}
+                    secondary={this.shortenPath(group ? group.Path : '')}
+                    onClick={(e) => this.handleClick(group ? group.Path : '')} />
             </MenuItem>
         )
     }

@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles'
 import * as React from 'react'
 import GroupList from './GroupList'
 
-const styles = (theme) => ({
+const styles = () => ({
     wsSelectorContainer: {
         position: 'absolute',
         zIndex: 10,
@@ -29,10 +29,10 @@ const styles = (theme) => ({
 interface GroupDropDownProps {
     open: boolean,
     closeDropDown: (open: boolean) => void,
-    matches,
+    matches: boolean,
 }
 
-class GroupDropDown extends React.Component<{ classes } & GroupDropDownProps, {}> {
+class GroupDropDown extends React.Component<{ classes: any } & GroupDropDownProps, {}> {
     public render() {
         const { open, classes, matches } = this.props
         return (

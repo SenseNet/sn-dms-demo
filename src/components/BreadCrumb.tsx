@@ -70,12 +70,12 @@ const mapDispatchToProps = {
 
 interface BreadCrumbProps extends RouteComponentProps<any> {
     ancestors: GenericContent[]
-    currentContent: GenericContent,
+    currentContent: GenericContent | null,
     typeFilter: string[],
 }
 
 interface BreadCrumbState {
-    currentContent: GenericContent,
+    currentContent: GenericContent | null,
 }
 
 class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToProps & ReturnType<typeof mapStateToProps>, BreadCrumbState> {
@@ -93,7 +93,7 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
         return {}
     }
 
-    public handleClick(e, content: GenericContent) {
+    public handleClick(content: GenericContent) {
         const newPath = compile(this.props.match.path)({ folderPath: btoa(content.Path) })
         this.props.history.push(newPath)
     }
@@ -102,11 +102,12 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
         const top = e.pageY - e.currentTarget.offsetTop
         const left = e.pageX - e.currentTarget.offsetLeft
         this.props.closeActionMenu()
-        this.props.openActionMenu(this.props.actions, content, content.DisplayName, e.currentTarget, { top: top + 30, left })
+        this.props.openActionMenu(this.props.actions, content, content.DisplayName || '', e.currentTarget, { top: top + 30, left })
     }
     public render() {
+        const content = this.props.currentContent || undefined
         const ancestors = this.props.ancestors
-            .filter((a) => this.props.typeFilter.indexOf(a.Type) > -1 || a.Id === this.props.currentContent.Id)
+            .filter((a) => this.props.typeFilter.indexOf(a.Type) > -1 || content && a.Id === content.Id)
         return <MediaQuery minDeviceWidth={700}>
             {(matches) => {
                 return <div style={matches ? styles.breadCrumb : styles.breadCrumbMobile}>
@@ -119,7 +120,7 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
                                         aria-owns="actionmenu"
                                         onClick={
                                             !isLast ?
-                                                (event) => this.handleClick(event, ancestor) :
+                                                () => this.handleClick(ancestor) :
                                                 (e) => this.handleActionMenuClick(e, ancestor)
                                         }
                                         key={ancestor.Id}
@@ -129,20 +130,20 @@ class BreadCrumb extends React.Component<BreadCrumbProps & typeof mapDispatchToP
                                             '' :
                                             <Icon
                                                 style={styles.breadCrumbIconLast}
-                                                onClick={(e) => this.handleActionMenuClick(e, ancestor)}
+                                                onClick={(e: React.MouseEvent<HTMLElement>) => this.handleActionMenuClick(e, ancestor)}
                                                 type={iconType.materialui}
                                                 iconName={icons.arrowDropDown}></Icon>}
                                     </Button>
                                     {!isLast ?
                                         <Icon
                                             style={styles.breadCrumbIcon}
-                                            onClick={(e) => this.handleActionMenuClick(e, ancestor)}
+                                            onClick={(e: React.MouseEvent<HTMLElement>) => this.handleActionMenuClick(e, ancestor)}
                                             type={iconType.materialui}
                                             iconName={icons.arrowRight} /> : ''}
                                 </div>
                             } else if (!matches && isLast) {
                                 return <div style={styles.item} key={i}>
-                                    <Button onClick={(event) => this.handleClick(event, ancestor)}
+                                    <Button onClick={() => this.handleClick(ancestor)}
                                         key={ancestor.Id}
                                         style={styles.breadCrumbItemMobile as any}>
                                         {ancestor.DisplayName}

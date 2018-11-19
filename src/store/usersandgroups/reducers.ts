@@ -2,7 +2,7 @@ import { IODataCollectionResponse, IODataParams } from '@sensenet/client-core'
 import { GenericContent, User } from '@sensenet/default-content-types'
 import { AnyAction, combineReducers, Reducer } from 'redux'
 
-export const currentUser: Reducer<User | null> = (state: User = null, action: AnyAction) => {
+export const currentUser: Reducer<User | undefined> = (state: User | null = null, action: AnyAction) => {
     switch (action.type) {
         case 'DMS_USERSANDGROUPS_SET_USER':
             return action.content
@@ -86,7 +86,7 @@ export const grouplistOptions: Reducer<IODataParams<GenericContent>> = (state: I
     }
 }
 
-export const active: Reducer<GenericContent | null> = (state: GenericContent = null, action: AnyAction) => {
+export const active: Reducer<GenericContent | undefined> = (state: GenericContent | null = null, action: AnyAction) => {
     switch (action.type) {
         case 'DMS_USERSANDGROUPS_SET_ACTIVE':
             return action.active

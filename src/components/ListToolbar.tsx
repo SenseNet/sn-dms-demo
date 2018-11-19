@@ -8,7 +8,7 @@ import BatchActionlist from './ActionMenu/BatchActionlist'
 import BreadCrumb from './BreadCrumb'
 
 export interface ListToolbarProps {
-    currentContent: GenericContent,
+    currentContent: GenericContent | null,
     selected: GenericContent[],
     ancestors: GenericContent[]
 }

@@ -2,7 +2,7 @@ import MenuList from '@material-ui/core/MenuList'
 import withStyles from '@material-ui/core/styles/withStyles'
 import { Group } from '@sensenet/default-content-types'
 import * as React from 'react'
-import { Scrollbars } from 'react-custom-scrollbars'
+import Scrollbars from 'react-custom-scrollbars'
 import { connect } from 'react-redux'
 import { rootStateType } from '../../..'
 import { addUserToGroups, getGroups, searchGroups } from '../../../store/usersandgroups/actions'
@@ -39,7 +39,7 @@ const mapStateToProps = (state: rootStateType) => {
         selected: state.dms.usersAndGroups.group.selected,
         term: state.dms.usersAndGroups.group.searchTerm,
         memberships: state.dms.usersAndGroups.user.memberships,
-        user: state.dms.usersAndGroups.user.currentUser,
+        user: state.dms.usersAndGroups.user.currentUser || null,
     }
 }
 
@@ -58,10 +58,10 @@ interface GroupListState {
 
 interface GroupListProps {
     closeDropDown: (open: boolean) => void,
-    matches,
+    matches: boolean,
 }
 
-class GroupList extends React.Component<{ classes } & GroupListProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, GroupListState> {
+class GroupList extends React.Component<{ classes: any } & GroupListProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, GroupListState> {
     public state = {
         groups: this.props.groups,
         filtered: [],
@@ -69,7 +69,7 @@ class GroupList extends React.Component<{ classes } & GroupListProps & ReturnTyp
         top: 0,
         term: '',
     }
-    constructor(props) {
+    constructor(props: GroupList['props']) {
         super(props)
         this.handleCloseClick = this.handleCloseClick.bind(this)
     }
@@ -86,13 +86,13 @@ class GroupList extends React.Component<{ classes } & GroupListProps & ReturnTyp
             term: newProps.term,
         } as GroupList['state']
     }
-    public handleSearch = (text) => {
+    public handleSearch = (text: string) => {
         this.props.searchGroups(text)
     }
     public handleCloseClick = () => {
         this.props.closeDropDown(true)
     }
-    public isSelected = (group) => {
+    public isSelected = (group: Group) => {
         const selected = this.props.selected.find((item) => item.Id === group.Id)
         return selected !== undefined
     }
@@ -104,10 +104,10 @@ class GroupList extends React.Component<{ classes } & GroupListProps & ReturnTyp
                 <GroupSearch matches={matches} handleKeyup={this.handleSearch} closeDropDown={this.props.closeDropDown} />
                 <Scrollbars
                     style={{ height: matches ? window.innerHeight - 400 : window.innerHeight - 88, width: 'calc(100% - 1px)' }}
-                    renderThumbVertical={({ style }) => <div style={{ ...style, borderRadius: 2, backgroundColor: '#fff', width: 10, marginLeft: -2 }}></div>}
+                    renderThumbVertical={({ style }: any) => <div style={{ ...style, borderRadius: 2, backgroundColor: '#fff', width: 10, marginLeft: -2 }}></div>}
                     thumbMinSize={180}>
                     <MenuList className={classes.workspaceList}>
-                        {filtered.map((group) => <GroupListItem
+                        {filtered.map((group: Group) => <GroupListItem
                             closeDropDown={this.props.closeDropDown}
                             key={group.Id}
                             group={group}
@@ -115,7 +115,7 @@ class GroupList extends React.Component<{ classes } & GroupListProps & ReturnTyp
                         />)}
                     </MenuList>
                 </Scrollbars>
-                <GroupButtonRow cancelClick={this.props.closeDropDown} submitClick={this.props.addUserToGroups} groups={this.props.selected} user={this.props.user} />
+                <GroupButtonRow cancelClick={this.props.closeDropDown} submitClick={this.props.addUserToGroups as any} groups={this.props.selected} user={this.props.user || null} />
             </div>
         )
     }

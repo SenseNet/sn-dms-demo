@@ -5,6 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
 import withStyles, { StyleRulesCallback } from '@material-ui/core/styles/withStyles'
 
+import { IActionModel } from '@sensenet/default-content-types'
 import { Icon, iconType } from '@sensenet/icons-react'
 import { Actions } from '@sensenet/redux'
 import * as React from 'react'
@@ -145,10 +146,10 @@ const styles: StyleRulesCallback = (theme) => ({
 })
 
 interface DashboardDrawerProps {
-    classes,
-    chooseMenuItem,
-    chooseSubmenuItem,
-    activeItem,
+    classes: any,
+    chooseMenuItem: (title: string) => void,
+    chooseSubmenuItem: (title: string) => void,
+    activeItem: string,
 }
 
 const mapStateToProps = (state: rootStateType) => {
@@ -169,18 +170,20 @@ const mapDispatchToProps = {
     userIsAdmin,
 }
 
-class DashboardDrawer extends React.Component<DashboardDrawerProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, { currentUser }> {
+class DashboardDrawer extends React.Component<DashboardDrawerProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, { currentUser: string }> {
     constructor(props: DashboardDrawer['props']) {
         super(props)
         this.state = {
             currentUser: '',
         }
     }
-    public handleClick = (name) => {
+    public handleClick = (name: string) => {
         this.props.chooseMenuItem(name)
     }
-    public toggleDrawer = () => {
-        this.props.handleDrawerMenu(false)
+    public toggleDrawer = (matches: boolean) => {
+        if (!matches) {
+            this.props.handleDrawerMenu(false)
+        }
     }
     public static getDerivedStateFromProps(newProps: DashboardDrawer['props'], lastState: DashboardDrawer['state']) {
         if (newProps.currentUser !== lastState.currentUser) {
@@ -190,7 +193,7 @@ class DashboardDrawer extends React.Component<DashboardDrawerProps & ReturnType<
             ...lastState,
         } as DashboardDrawer['state']
     }
-    public handleMenuItemClick = (e, action) => {
+    public handleMenuItemClick = (e: React.MouseEvent, action: IActionModel) => {
         if ((action as any).Action) {
             (action as any).Action()
         } else {
@@ -214,7 +217,7 @@ class DashboardDrawer extends React.Component<DashboardDrawerProps & ReturnType<
                     classes={{
                         paper: matches ? classes.drawerPaper : null,
                     }}
-                    onClose={matches ? null : () => this.toggleDrawer()}
+                    onClose={() => this.toggleDrawer(matches)}
                 >
                     {matches ? <div style={{ height: 48 }}></div> : null}
 

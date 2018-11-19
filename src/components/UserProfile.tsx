@@ -4,7 +4,7 @@ import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import TableCell from '@material-ui/core/TableCell'
 import Toolbar from '@material-ui/core/Toolbar'
 import { ConstantContent } from '@sensenet/client-core'
-import { GenericContent, IActionModel } from '@sensenet/default-content-types'
+import { GenericContent, Group, IActionModel, SchemaStore, User } from '@sensenet/default-content-types'
 import { ContentList } from '@sensenet/list-controls-react'
 import { compile } from 'path-to-regexp'
 import * as React from 'react'
@@ -58,7 +58,7 @@ const mapStateToProps = (state: rootStateType) => {
         childrenOptions: state.dms.usersAndGroups.user.grouplistOptions,
         selected: state.dms.usersAndGroups.group.selected,
         active: state.dms.usersAndGroups.user.active,
-        hostName: state.sensenet.session.repository.repositoryUrl,
+        hostName: state.sensenet.session.repository ? state.sensenet.session.repository.repositoryUrl : '',
     }
 }
 
@@ -71,7 +71,7 @@ const mapDispatchToProps = {
 }
 
 interface UserProfileProps extends RouteComponentProps<any> {
-    matchesDesktop,
+    matchesDesktop: boolean,
 }
 
 interface UserProfileState {
@@ -94,11 +94,12 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
         } catch (error) {
             /** Cannot parse current folder from URL */
             return compile(newProps.match.path)({ folderPath: '' })
+            // tslint:disable-next-line:no-empty
         }
     }
 
     public static getDerivedStateFromProps(newProps: UserProfile['props'], lastState: UserProfile['state']) {
-        if (newProps.user === null || newProps.user.Name !== lastState.userName) {
+        if (newProps.user === null || (newProps.user && newProps.user.Name !== lastState.userName)) {
             const newPath = UserProfile.updateStoreFromPath(newProps, lastState)
             if (newPath && newPath !== newProps.match.url) {
                 newProps.history.push(newPath)
@@ -115,17 +116,19 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
             const newPath = compile(this.props.match.path)({ folderPath: btoa(content.Path) })
             this.props.history.push(newPath)
         } else {
-            const newPath = compile(this.props.match.path)({ folderPath: this.props.match.params.folderPath || btoa(this.props.user.Path as any), otherActions: ['preview', btoa(content.Id as any)] })
+            const newPath = compile(this.props.match.path)({ folderPath: this.props.match.params.folderPath || btoa(this.props.user ? this.props.user.Path : ''), otherActions: ['preview', btoa(content.Id as any)] })
             this.props.history.push(newPath)
         }
     }
-    public isGroupAdmin = (actions) => {
-        const editAction = actions.find((action) => action.Name === 'Edit')
-        return !editAction.Forbidden
+    public isGroupAdmin = (actions: IActionModel[] | undefined) => {
+        const editAction = actions ? actions.find((action: IActionModel) => action.Name === 'Edit') : undefined
+        return editAction ? !editAction.Forbidden : false
     }
 
-    public isExplicitMember = (content) => {
-        const user = content.Members.filter((member) => member.Id === this.props.user.Id)[0]
+    public isExplicitMember = (content: Group) => {
+        const members = content.Members ? content.Members as User[] : []
+        const u = this.props.user ? this.props.user : undefined
+        const user = u ? members.filter((member: User) => member.Id === u.Id)[0] : undefined
         return user !== undefined
     }
 
@@ -141,7 +144,7 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
                                     <WorkspaceSelector />
                                     <BreadCrumb
                                         ancestors={this.props.ancestors}
-                                        currentContent={this.props.user}
+                                        currentContent={this.props.user || null}
                                         typeFilter={['OrganizationalUnit', 'Folder', 'Domain']} />
                                 </div>
                             </Toolbar>
@@ -152,12 +155,12 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
                             <ContentList
                                 displayRowCheckbox={matches ? true : false}
                                 items={this.props.items.d.results}
-                                schema={customSchema.find((s) => s.ContentTypeName === 'GenericContent')}
+                                schema={customSchema.find((s) => s.ContentTypeName === 'GenericContent') || SchemaStore.filter((s) => s.ContentTypeName === 'GenericContent')[0]}
                                 fieldsToDisplay={matches ? ['DisplayName', 'Workspace', 'Actions'] :
                                     ['DisplayName', 'Actions']}
                                 icons={icons}
-                                orderBy={this.props.childrenOptions.orderby[0][0] as any}
-                                orderDirection={this.props.childrenOptions.orderby[0][1] as any}
+                                orderBy={this.props.childrenOptions.orderby ? this.props.childrenOptions.orderby[0][0] : 'Id' as any}
+                                orderDirection={this.props.childrenOptions.orderby ? this.props.childrenOptions.orderby[0][1] : 'asc' as any}
                                 onRequestSelectionChange={(newSelection) => this.props.selectGroup(newSelection)}
                                 onRequestActionsMenu={(ev, content) => {
                                     ev.preventDefault()
@@ -176,20 +179,21 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
                                     })
                                 }}
                                 onItemClick={(ev, content) => {
-                                    if (ev.ctrlKey && this.isGroupAdmin(content.Actions) && this.isExplicitMember(content)) {
+                                    if (ev.ctrlKey && this.isGroupAdmin(content.Actions as IActionModel[]) && this.isExplicitMember(content)) {
                                         if (this.props.selected.find((s) => s.Id === content.Id)) {
                                             this.props.selectGroup(this.props.selected.filter((s) => s.Id !== content.Id))
                                         } else {
                                             this.props.selectGroup([...this.props.selected, content])
                                         }
-                                    } else if (ev.shiftKey && this.isGroupAdmin(content.Actions) && this.isExplicitMember(content)) {
-                                        const activeIndex = this.props.items.d.results.findIndex((s) => s.Id === this.props.active.Id)
+                                    } else if (ev.shiftKey && this.isGroupAdmin(content.Actions as IActionModel[]) && this.isExplicitMember(content)) {
+                                        const active = this.props.active || undefined
+                                        const activeIndex = active ? this.props.items.d.results.findIndex((s) => s.Id === active.Id) : -1
                                         const clickedIndex = this.props.items.d.results.findIndex((s) => s.Id === content.Id)
                                         const newSelection = Array.from(new Set([...this.props.selected, ...[...this.props.items.d.results].slice(Math.min(activeIndex, clickedIndex), Math.max(activeIndex, clickedIndex) + 1)]))
                                         this.props.selectGroup(newSelection)
-                                    } else if ((!this.props.selected.length || this.props.selected.length === 1 && this.props.selected[0].Id !== content.Id) && this.isGroupAdmin(content.Actions) && this.isExplicitMember(content)) {
+                                    } else if ((!this.props.selected.length || this.props.selected.length === 1 && this.props.selected[0].Id !== content.Id) && this.isGroupAdmin(content.Actions as IActionModel[]) && this.isExplicitMember(content)) {
                                         this.props.selectGroup([...this.props.selected, content])
-                                    } else if (this.isGroupAdmin(content.Actions) && this.isExplicitMember(content)) {
+                                    } else if (this.isGroupAdmin(content.Actions as IActionModel[]) && this.isExplicitMember(content)) {
                                         if (this.props.selected.find((s) => s.Id === content.Id)) {
                                             this.props.selectGroup(this.props.selected.filter((s) => s.Id !== content.Id))
                                         } else {
@@ -206,7 +210,7 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
                                                 return (<DisplayNameMobileCell
                                                     content={props.content}
                                                     isSelected={props.isSelected}
-                                                    hasSelected={props.selected.length > 0}
+                                                    hasSelected={props.selected ? props.selected.length > 0 : false}
                                                     icons={icons}
                                                     onActivate={(ev, content) => this.handleRowDoubleClick(ev, content)} />)
                                             } else {
@@ -218,8 +222,8 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
                                             }
                                         case 'Actions':
                                             // tslint:disable-next-line:no-string-literal
-                                            if (this.isGroupAdmin(props.content.Actions) && this.isExplicitMember(props.content)) {
-                                                return <DeleteUserFromGroup user={this.props.user} group={props.content} />
+                                            if (this.isGroupAdmin(props.content.Actions as IActionModel[]) && this.isExplicitMember(props.content)) {
+                                                return <DeleteUserFromGroup user={this.props.user || null} group={props.content} />
                                             } else {
                                                 return <TableCell></TableCell>
                                             }
@@ -231,8 +235,8 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
                                 getSelectionControl={(selected, content) => {
                                     return <Checkbox
                                         checked={this.props.selected.find((i) => i.Id === content.Id) ? true : false}
-                                        disabled={this.isGroupAdmin(content.Actions) && this.isExplicitMember(content) ? false : true}
-                                        style={this.isGroupAdmin(content.Actions) && this.isExplicitMember(content) ? { cursor: 'normal' } : null}
+                                        disabled={this.isGroupAdmin(content.Actions as IActionModel[]) && this.isExplicitMember(content) ? false : true}
+                                        style={this.isGroupAdmin(content.Actions as IActionModel[]) && this.isExplicitMember(content) ? { cursor: 'normal' } : {}}
                                     />
                                 }}
                             />
@@ -245,4 +249,4 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
     }
 }
 
-export default withRouter(connect<ReturnType<typeof mapStateToProps>, typeof mapDispatchToProps, UserProfileProps>(mapStateToProps, mapDispatchToProps)(UserProfile))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UserProfile))

@@ -12,8 +12,8 @@ const styles = {
 
 interface GroupButtonRowProps {
     cancelClick: (open: boolean) => void,
-    submitClick: (user: User, groups: Group[]) => void,
-    user: User,
+    submitClick: (user?: User | null, groups?: Group[]) => void,
+    user: User | null,
     groups: Group[]
 }
 

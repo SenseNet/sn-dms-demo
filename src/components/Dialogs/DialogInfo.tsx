@@ -5,7 +5,6 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import { GenericContent } from '@sensenet/default-content-types'
 import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import MediaQuery from 'react-responsive'
@@ -78,24 +77,24 @@ const styles = {
 }
 
 interface DialogInfoProps {
-    currentContent: GenericContent
+    currentContent: any
     hideVersionInfo?: boolean,
     repositoryUrl: string,
 }
 
-class DialogInfo extends React.Component<{ classes } & DialogInfoProps, {}> {
+class DialogInfo extends React.Component<{ classes: any } & DialogInfoProps, {}> {
     public render() {
         const { classes, currentContent, repositoryUrl } = this.props
-        const icon = currentContent.Icon || currentContent.Type
+        const icon = currentContent ? currentContent.Icon || currentContent.Type : ''
         return (
             <MediaQuery minDeviceWidth={700}>
                 {(matches) =>
                     <div style={styles.inner}>
                         <div style={styles.contentName}>
                             { // tslint:disable-next-line:no-string-literal
-                                currentContent.Type === 'User' ?
-                                // tslint:disable-next-line:no-string-literal
-                                <Avatar src={`${repositoryUrl}${currentContent['Avatar']['_deferred']}`} style={styles.avatar} /> :
+                                currentContent && currentContent.Type === 'User' ?
+                                    // tslint:disable-next-line:no-string-literal
+                                    <Avatar src={`${repositoryUrl}${currentContent ? currentContent.Avatar['_deferred'] : ''}`} style={styles.avatar} /> :
                                     <Icon
                                         color="primary"
                                         style={styles.icon}
