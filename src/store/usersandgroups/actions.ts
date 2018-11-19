@@ -5,7 +5,7 @@ import { EventHub } from '@sensenet/repository-events'
 import { Action, AnyAction } from 'redux'
 import { InjectableAction } from 'redux-di-middleware'
 import { rootStateType } from '../..'
-import { changedContent, debounceReloadOnProgress } from '../../Actions'
+import { changedContent } from '../../Actions'
 import { arrayComparer } from '../../assets/helpers'
 
 const eventObservables: Array<ValueObserver<any>> = []
@@ -41,7 +41,6 @@ export const loadUser: <T extends User = User>(idOrPath: string | number, userOp
                 options.dispatch(setUser(newUser.d))
                 const emitChange = (content: User) => {
                     changedContent.push(content)
-                    debounceReloadOnProgress(options.getState, options.dispatch)
                 }
 
                 eventObservables.push(

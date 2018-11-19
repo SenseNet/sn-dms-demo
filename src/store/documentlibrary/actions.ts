@@ -5,7 +5,7 @@ import { EventHub } from '@sensenet/repository-events'
 import { Action } from 'redux'
 import { InjectableAction } from 'redux-di-middleware'
 import { rootStateType } from '../..'
-import { changedContent, debounceReloadOnProgress } from '../../Actions'
+import { changedContent } from '../../Actions'
 import { loadChunkSize } from './reducers'
 
 const eventObservables: Array<ValueObserver<any>> = []
@@ -43,7 +43,6 @@ export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: s
                 options.dispatch(setParent(newParent.d))
                 const emitChange = (content: GenericContent) => {
                     changedContent.push(content)
-                    debounceReloadOnProgress(options.getState, options.dispatch)
                 }
 
                 eventObservables.push(
