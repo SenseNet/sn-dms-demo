@@ -8,8 +8,7 @@ import { InjectableAction } from 'redux-di-middleware'
 import { rootStateType } from '.'
 import { updateChildrenOptions } from './store/documentlibrary/actions'
 
-// tslint:disable-next-line:no-var-requires
-import debounce from 'lodash.debounce'
+import { debounce } from 'lodash'
 
 export enum MessageMode { error = 'error', warning = 'warning', info = 'info' }
 
