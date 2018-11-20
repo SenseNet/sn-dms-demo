@@ -96,7 +96,7 @@ class UserInfo extends React.Component<UserInfoProps & ReturnType<typeof mapStat
         // tslint:disable-next-line:no-string-literal
         const avatarPath = avatar ? avatar['_deferred'] as any : ''
         // tslint:disable-next-line:no-string-literal
-        const avatarUrl = !isLoading && avatar ? avatarPath.length > 0 : false ? repositoryUrl + avatarPath : defaultAvatar
+        const avatarUrl = !isLoading && avatar ? avatarPath.length > 0 ? repositoryUrl + avatarPath : defaultAvatar : defaultAvatar
         return (
             isLoading ? null : <Paper style={styles.container as any}>
                 <div style={styles.leftColumn}>
