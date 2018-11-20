@@ -1,4 +1,4 @@
-import { GenericContent, IActionModel } from '@sensenet/default-content-types'
+import { ContentListReferenceField, GenericContent, IActionModel } from '@sensenet/default-content-types'
 import { loadContent, loadContentActions, PromiseReturns } from '@sensenet/redux/dist/Actions'
 import { Action, AnyAction, combineReducers, Reducer } from 'redux'
 import { ExtendedUploadProgressInfo, loadListActions, loadTypesToAddNewList, loadUserActions, loadVersions, setListActions } from './Actions'
@@ -11,6 +11,11 @@ import { usersAndGroups } from './store/usersandgroups/reducers'
 import { workspaces } from './store/workspaces/reducers'
 
 import { logReducer } from './store/actionlog/reducers'
+
+export class Version extends GenericContent {
+    public VersionModificationDate?: string
+    public VersionModifiedBy?: ContentListReferenceField<IActionModel>
+}
 
 export const email: Reducer<string, Action & { email?: string }> = (state = '', action: AnyAction) => {
     switch (action.type) {
@@ -124,7 +129,7 @@ export const anchorElement: Reducer<HTMLElement | null, Action & { element?: HTM
     }
 }
 
-export const position: Reducer<any, Action & { position?: any }> = (state = null, action: AnyAction) => {
+export const position: Reducer<{ top: number, left: number }, Action & { position?: { top: number, left: number } }> = (state = { top: 0, left: 0 }, action: AnyAction) => {
     switch (action.type) {
         case 'OPEN_ACTIONMENU':
             return action.position || null
@@ -450,7 +455,7 @@ export const dialog = combineReducers({
     title: dialogTitle,
 })
 
-export const versions: Reducer<GenericContent[]> = (state: GenericContent[] = [], action: AnyAction) => {
+export const versions: Reducer<Version[]> = (state: Version[] = [], action: AnyAction) => {
     switch (action.type) {
         case 'LOAD_VERSIONS_SUCCESS':
             const versionItems = (action.result as PromiseReturns<typeof loadVersions>).d.results as any[]

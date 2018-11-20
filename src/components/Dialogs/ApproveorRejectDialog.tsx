@@ -113,10 +113,10 @@ class RestoreVersionDialog extends React.Component<{ classes: any } & ApproveorR
                 isRejected: true,
             })
     }
-    public handleChange = (e: any) => {
+    public handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({
             // tslint:disable-next-line:no-string-literal
-            rejectReason: e.target['value'],
+            rejectReason: (e.target as HTMLInputElement).value,
         })
     }
     public render() {
@@ -142,7 +142,7 @@ class RestoreVersionDialog extends React.Component<{ classes: any } & ApproveorR
                                 multiline
                                 rowsMax="4"
                                 value={this.state.rejectReason}
-                                onChange={(e) => this.handleChange(e)}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.handleChange(e)}
                                 margin="normal"
                                 fullWidth
                                 style={{ marginBottom: 30, marginTop: 0 }}

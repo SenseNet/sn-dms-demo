@@ -5,6 +5,7 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+import { GenericContent } from '@sensenet/default-content-types'
 import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import MediaQuery from 'react-responsive'
@@ -77,7 +78,7 @@ const styles = {
 }
 
 interface DialogInfoProps {
-    currentContent: any
+    currentContent: GenericContent | null
     hideVersionInfo?: boolean,
     repositoryUrl: string,
 }
@@ -94,7 +95,7 @@ class DialogInfo extends React.Component<{ classes: any } & DialogInfoProps, {}>
                             { // tslint:disable-next-line:no-string-literal
                                 currentContent && currentContent.Type === 'User' ?
                                     // tslint:disable-next-line:no-string-literal
-                                    <Avatar src={`${repositoryUrl}${currentContent ? currentContent.Avatar['_deferred'] : ''}`} style={styles.avatar} /> :
+                                    <Avatar src={`${repositoryUrl}${currentContent ? (currentContent as any).Avatar['_deferred'] : ''}`} style={styles.avatar} /> :
                                     <Icon
                                         color="primary"
                                         style={styles.icon}
@@ -102,7 +103,7 @@ class DialogInfo extends React.Component<{ classes: any } & DialogInfoProps, {}>
                                         type={iconType.materialui} />
                             }
                             <span className={matches ? classes.displayName : classes.displayNameMobile}>
-                                {currentContent.DisplayName}
+                                {currentContent ? currentContent.DisplayName : ''}
                             </span>
                         </div>
                         {this.props.hideVersionInfo ? null :
@@ -116,10 +117,10 @@ class DialogInfo extends React.Component<{ classes: any } & DialogInfoProps, {}>
                                 <TableBody>
                                     <TableRow className={classes.tableRow}>
                                         <TableCell className={matches ? classes.tableCell : classes.tableCellMobile} padding="none">
-                                            {resources.VERSIONING[currentContent.VersioningMode]}
+                                            {currentContent ? resources.VERSIONING[currentContent.VersioningMode || ''] : ''}
                                         </TableCell>
                                         <TableCell className={matches ? classes.tableCell : classes.tableCellMobile} padding="none">
-                                            {currentContent.Path}
+                                            {currentContent ? currentContent.Path: ''}
                                         </TableCell>
                                     </TableRow>
                                 </TableBody>

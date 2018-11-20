@@ -105,8 +105,8 @@ class GroupListItem extends React.Component<{ classes: any } & ReturnType<typeof
             selected: !this.state.selected,
         })
     }
-    public handleMouseOver = (e: any) => e.currentTarget.style.backgroundColor = '#01A1EA'
-    public handleMouseLeave = (e: any) => e.currentTarget.style.backgroundColor = 'transparent'
+    public handleMouseOver = (e: React.MouseEvent<HTMLElement>) => (e.target as HTMLElement).style.backgroundColor = '#01A1EA'
+    public handleMouseLeave = (e: React.MouseEvent<HTMLElement>) => (e.target as HTMLElement).style.backgroundColor = 'transparent'
     public shortenPath = (path: string) => path.replace('/Root/IMS/', '')
     public render() {
         const { classes, group, selected } = this.props

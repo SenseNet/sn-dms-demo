@@ -55,6 +55,11 @@ interface MobileHeaderState {
     currentContent: GenericContent | null,
 }
 
+// tslint:disable-next-line:class-name
+interface a extends IActionModel {
+    [key: string]: any,
+}
+
 class MobileHeader extends React.Component<MobileHeaderProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, MobileHeaderState> {
     public state = {
         open: this.props.menuIsOpen,
@@ -72,12 +77,12 @@ class MobileHeader extends React.Component<MobileHeaderProps & ReturnType<typeof
             open: !this.state.open,
         })
     }
-    public handleAddNewClick = (e: any) => {
+    public handleAddNewClick = (e: React.MouseEvent<HTMLElement>) => {
         const { addNewOptions } = this.state
         this.props.closeActionMenu()
         this.props.openActionMenu(addNewOptions, this.props.currentContent || null, this.props.currentContent ? this.props.currentContent.Id.toString() : '', e.currentTarget, {
-            top: e.currentTarget.offsetTop + 45,
-            left: e.currentTarget.offsetLeft,
+            top: (e.target as HTMLElement).offsetTop + 45,
+            left: (e.target as HTMLElement).offsetLeft,
         })
     }
     public static getDerivedStateFromProps(newProps: MobileHeader['props'], lastState: MobileHeader['state']) {
@@ -94,10 +99,10 @@ class MobileHeader extends React.Component<MobileHeaderProps & ReturnType<typeof
             Icon: 'folder',
             Name: 'uploadFolder',
         }]
-        const optionList: GenericContent[] = []
-        const folderList: GenericContent[] = []
+        const optionList: IActionModel[] = []
+        const folderList: IActionModel[] = []
         if (lastState.addNewOptions.length !== newProps.actions.length) {
-            newProps.actions.map((action: any) => {
+            newProps.actions.map((action: a) => {
                 const contentType = action.Url.includes('ContentType') ? getContentTypeFromUrl(action.Url) : null
                 const extension = contentType === 'File' ? getExtensionFromUrl(action.Url) : null
                 const displayName = action.DisplayName.indexOf('New') === -1 ? action.DisplayName : action.DisplayName.substring(3)

@@ -91,9 +91,9 @@ class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof map
     public isSelected = (id: number) => {
         return this.props.selectedTarget.findIndex((item) => item.Id === id) > -1
     }
-    public handleClick = (e: any, content: GenericContent) => {
-        // tslint:disable-next-line:no-string-literal
-        e.currentTarget.attributes.getNamedItem('role') && e.currentTarget.attributes.getNamedItem('role').value === 'menuitem' ?
+    public handleClick = (e: React.MouseEvent<HTMLElement>, content: GenericContent) => {
+        const role = (e.target as HTMLElement).attributes.getNamedItem('role') || ''
+        role === 'menuitem' ?
             this.props.selectPickerItem(content) :
             this.handleLoading(content.Id)
     }
@@ -165,7 +165,7 @@ class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof map
                                             type={iconType.materialui}
                                             iconName="keyboard_arrow_right"
                                             style={this.isHovered ? styles.openIcon : { display: 'none' }}
-                                            onClick={(e: React.MouseEvent) => this.handleClick(e, item)} /> :
+                                            onClick={(e: React.MouseEvent<HTMLElement>) => this.handleClick(e, item)} /> :
                                             null
                                     }
                                 </MenuItem>

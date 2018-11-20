@@ -104,7 +104,7 @@ class GroupList extends React.Component<{ classes: any } & GroupListProps & Retu
                 <GroupSearch matches={matches} handleKeyup={this.handleSearch} closeDropDown={this.props.closeDropDown} />
                 <Scrollbars
                     style={{ height: matches ? window.innerHeight - 400 : window.innerHeight - 88, width: 'calc(100% - 1px)' }}
-                    renderThumbVertical={({ style }: any) => <div style={{ ...style, borderRadius: 2, backgroundColor: '#fff', width: 10, marginLeft: -2 }}></div>}
+                    renderThumbVertical={({ style }: { style: React.CSSProperties }) => <div style={{ ...style, borderRadius: 2, backgroundColor: '#fff', width: 10, marginLeft: -2 }}></div>}
                     thumbMinSize={180}>
                     <MenuList className={classes.workspaceList}>
                         {filtered.map((group: Group) => <GroupListItem

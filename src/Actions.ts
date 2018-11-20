@@ -36,7 +36,7 @@ export const setEditedContentId = (id: number) => ({
     type: 'SET_EDITED_ID',
     id,
 })
-export const openActionMenu = (actions: IActionModel[], content: GenericContent | null, title: string, element: HTMLElement | null, position?: any, customItems?: any) => ({
+export const openActionMenu = (actions: IActionModel[], content: GenericContent | null, title: string, element: HTMLElement | EventTarget | null, position?: {left: number, top: number}, customItems?: IActionModel[]) => ({
     type: 'OPEN_ACTIONMENU',
     actions: customItems && customItems.length > 0 ? customItems : actions,
     content,
@@ -234,7 +234,7 @@ export const loadTypesToAddNewList = (idOrPath: number | string) => ({
     },
 })
 
-export const openDialog = (content: any = '', title?: string, onClose?: () => void, submitCallback?: () => void) => ({
+export const openDialog = (content: JSX.Element | React.Component | Element, title?: string, onClose?: () => void, submitCallback?: () => void) => ({
     type: 'OPEN_DIALOG',
     title: title || '',
     content,

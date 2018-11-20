@@ -124,22 +124,23 @@ class BatchActionlist extends React.Component<BatchActionListProps & ReturnType<
     public isHidden = () => {
         return this.props.selected.length > 0 ? false : true
     }
-    public handleClick = (e: any) => {
+    public handleClick = (e: React.MouseEvent<HTMLElement>) => {
         const { currentContent } = this.props
         const { options } = this.state
         this.props.closeActionMenu()
         this.props.openActionMenu(options, currentContent, currentContent ? currentContent.Id.toString() : '', e.currentTarget, {
-            top: e.currentTarget.offsetTop + 100,
-            left: e.currentTarget.offsetLeft + 100,
+            // tslint:disable-next-line:no-string-literal
+            top: (e.target as HTMLElement).offsetTop + 100,
+            left: (e.target as HTMLElement).offsetLeft + 100,
         })
     }
 
-    public handleClickMobile = (e: any) => {
+    public handleClickMobile = (e: React.MouseEvent<HTMLElement>) => {
         const { actions, currentContent } = this.props
         this.props.closeActionMenu()
         this.props.openActionMenu(actions, currentContent, currentContent ? currentContent.Id.toString() : '', e.currentTarget, {
-            top: e.currentTarget.offsetTop + 100,
-            left: e.currentTarget.offsetLeft + 100,
+            top: (e.target as HTMLElement).offsetTop + 100,
+            left: (e.target as HTMLElement).offsetLeft + 100,
         })
     }
 

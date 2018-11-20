@@ -55,7 +55,7 @@ type C = 'wsSearchInput'
 
 interface GroupSearchProps {
     classes: any,
-    handleKeyup: (e: any) => void,
+    handleKeyup: (text: string) => void,
     matches: boolean,
     closeDropDown: (open: boolean) => void
 }
@@ -65,9 +65,9 @@ class GroupSearch extends React.Component<GroupSearchProps & WithStyles<C>, {}> 
         super(props)
         this.handleKeyup = this.handleKeyup.bind(this)
     }
-    public handleKeyup = (e: any) => {
+    public handleKeyup = (e: React.ChangeEvent<HTMLInputElement>) => {
         // tslint:disable-next-line:no-string-literal
-        this.props.handleKeyup(e.target['value'])
+        this.props.handleKeyup((e.target as HTMLInputElement).value)
     }
     public closeDropdown = () => {
         this.props.closeDropDown(false)
@@ -78,7 +78,7 @@ class GroupSearch extends React.Component<GroupSearchProps & WithStyles<C>, {}> 
             <div className={matches ? classes.searchContainer : classes.searchContainerMobile}>
                 <FormControl className={matches ? classes.formControl : classes.formControlMobile}>
                     <TextField
-                        onKeyUp={(e) => this.handleKeyup(e)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.handleKeyup(e)}
                         placeholder="Search"
                         InputProps={{
                             disableUnderline: true,

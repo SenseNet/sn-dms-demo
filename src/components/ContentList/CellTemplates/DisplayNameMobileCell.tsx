@@ -1,7 +1,7 @@
 import Checkbox from '@material-ui/core/Checkbox'
 import TableCell from '@material-ui/core/TableCell'
 import Tooltip from '@material-ui/core/Tooltip'
-import { GenericContent } from '@sensenet/default-content-types'
+import { GenericContent, User } from '@sensenet/default-content-types'
 import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -92,12 +92,12 @@ class DisplayNameMobileCell extends React.Component<DisplayNameMobilCellProps & 
 
     public lockedByName = (content: GenericContent) => {
         // tslint:disable-next-line:no-string-literal
-        const checkedOutTo: any = content ? content['CheckedOutTo'] : null
-        if (checkedOutTo && checkedOutTo.Name === this.props.currentUserName) {
+        const checkedOutTo = content ? content['CheckedOutTo'] : null
+        if (checkedOutTo && (checkedOutTo as User).Name === this.props.currentUserName) {
             return 'Me'
         } else {
             // tslint:disable-next-line:no-string-literal
-            return checkedOutTo.FullName
+            return (checkedOutTo as User).FullName
         }
     }
 

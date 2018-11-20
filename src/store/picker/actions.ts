@@ -16,7 +16,7 @@ const pickerItemOptions: IODataParams<any> = {
     orderby: 'DisplayName',
 }
 
-export const openPicker = (content: any = '', mode: string = 'move', onClose?: () => void) => ({
+export const openPicker = (content: JSX.Element | React.Component | Element | null = null, mode: string = 'move', onClose?: () => void) => ({
     type: 'OPEN_PICKER',
     content,
     onClose: onClose || null,

@@ -32,6 +32,11 @@ interface AddNemMenuState {
     currentContent: GenericContent | null,
 }
 
+// tslint:disable-next-line:class-name
+interface a extends IActionModel {
+    [key: string]: any
+}
+
 class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, AddNemMenuState> {
     public state = {
         addNewOptions: [],
@@ -46,10 +51,10 @@ class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof map
         if ((newProps.currentContent && newProps.currentContent.Id && (lastState.currentContent !== newProps.currentContent)) && lastState.addNewOptions.length === 0) {
             newProps.getActions(newProps.currentContent.Id)
         }
-        const optionList: any[] = []
-        const folderList: any[] = []
+        const optionList: IActionModel[] = []
+        const folderList: IActionModel[] = []
         if (lastState.addNewOptions.length !== newProps.actions.length) {
-            newProps.actions.map((action: any) => {
+            newProps.actions.map((action: a) => {
                 const contentType = action.Url.includes('ContentType') ? getContentTypeFromUrl(action.Url) : null
                 const extension = contentType === 'File' ? getExtensionFromUrl(action.Url) : null
                 const displayName = action.DisplayName.indexOf('New') === -1 ? action.DisplayName : action.DisplayName.substring(3)
@@ -80,21 +85,21 @@ class AddNewMenu extends React.Component<AddNemMenuProps & ReturnType<typeof map
             addNewOptions: lastState.addNewOptions.length !== newProps.actions.length ? [...optionList, ...folderList] : lastState.addNewOptions,
         }
     }
-    public handleButtonClick = (e: any) => {
+    public handleButtonClick = (e: React.MouseEvent<HTMLElement>) => {
         const { addNewOptions } = this.state
         this.props.closeActionMenu()
         this.props.openActionMenu(addNewOptions, this.props.currentContent || null, this.props.currentContent ? this.props.currentContent.Id.toString() : '', e.currentTarget as HTMLElement, {
             // tslint:disable-next-line:no-string-literal
-            top: e.currentTarget['offsetTop'] + 45,
+            top: (e.target as HTMLElement).offsetTop + 200,
             // tslint:disable-next-line:no-string-literal
-            left: e.currentTarget['offsetLeft'],
+            left: (e.target as HTMLElement).offsetLeft,
         })
     }
     public render() {
         return (
             <AddNewButton
                 contentType=""
-                onClick={(e: React.MouseEvent) => this.handleButtonClick(e)} />
+                onClick={(e: React.MouseEvent<HTMLElement>) => this.handleButtonClick(e)} />
         )
     }
 }

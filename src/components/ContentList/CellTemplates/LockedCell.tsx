@@ -1,6 +1,6 @@
 import TableCell from '@material-ui/core/TableCell'
 import Tooltip from '@material-ui/core/Tooltip'
-import { GenericContent } from '@sensenet/default-content-types'
+import { GenericContent, User } from '@sensenet/default-content-types'
 import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -62,13 +62,13 @@ class LockedCell extends React.Component<LockedCellProps & ReturnType<typeof map
     }
     public lockedByName = (content: GenericContent | null) => {
         // tslint:disable-next-line:no-string-literal
-        const checkedOutTo: any = content ? content['CheckedOutTo'] : null
+        const checkedOutTo = content ? content['CheckedOutTo'] : null
         // tslint:disable-next-line:no-string-literal
-        if (checkedOutTo ? checkedOutTo.Name === this.props.currentUserName : false) {
+        if (checkedOutTo ? (checkedOutTo as User).Name === this.props.currentUserName : false) {
             return 'Me'
         } else {
             // tslint:disable-next-line:no-string-literal
-            return checkedOutTo.FullName
+            return (checkedOutTo as User).FullName
         }
     }
     public render() {

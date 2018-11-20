@@ -5,7 +5,7 @@ import { resources } from '../../assets/resources'
 
 interface AddNewButtonProps {
     contentType: string,
-    onClick: (e: React.MouseEvent) => void
+    onClick: (e: React.MouseEvent<HTMLElement>) => void
 }
 
 export class AddNewButton extends React.Component<AddNewButtonProps, {}> {
@@ -13,7 +13,7 @@ export class AddNewButton extends React.Component<AddNewButtonProps, {}> {
         super(props)
         this.handleButtonClick = this.handleButtonClick.bind(this)
     }
-    public handleButtonClick(e: React.MouseEvent) {
+    public handleButtonClick(e: React.MouseEvent<HTMLElement>) {
         if (this.props.onClick) {
             this.props.onClick(e)
         }
