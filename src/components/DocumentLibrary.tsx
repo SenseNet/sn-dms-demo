@@ -234,7 +234,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                             selected={this.props.selected}
                             active={this.props.active}
                             items={this.props.items.d.results}
-                            fieldsToDisplay={matchesDesktop ? ['DisplayName', 'Locked', 'ModificationDate', 'Owner', 'Actions'] : ['DisplayName', 'Actions']}
+                            fieldsToDisplay={matchesDesktop ? this.props.childrenOptions.query ? ['DisplayName'] : ['DisplayName', 'Locked', 'ModificationDate', 'Owner', 'Actions'] : ['DisplayName', 'Actions']}
                             orderBy={this.props.childrenOptions.orderby[0][0] as any}
                             orderDirection={this.props.childrenOptions.orderby[0][1] as any}
                             onRequestSelectionChange={(newSelection) => this.props.select(newSelection)}
