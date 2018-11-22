@@ -108,7 +108,6 @@ export const user = combineReducers({
 })
 
 export const selectedGroups: Reducer<GenericContent[]> = (state: GenericContent[] = [], action: AnyAction) => {
-    console.log(action.type)
     switch (action.type) {
         case 'DMS_USERSANDGROUPS_SELECT_GROUP':
             return [

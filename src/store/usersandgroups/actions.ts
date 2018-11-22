@@ -175,20 +175,27 @@ export const setChildrenOptions = <T extends GenericContent>(odataOptions: IODat
     odataOptions,
 })
 
-export const removeMemberFromGroup = (contentIds: number[], groupId: number) => ({
+export const removeMemberFromGroups = (contentIds: number[], groups: Group[]) => ({
     type: 'DMS_USERSANDGROUPS_REMOVE_MEMBER',
     inject: async (options) => {
         const currentState = options.getState()
         const repository = options.getInjectable(Repository)
         options.dispatch(startLoading(currentState.dms.usersAndGroups.user.currentUser ? currentState.dms.usersAndGroups.user.currentUser.Id : ''))
+
         try {
-            await repository.security.removeMembers(groupId, contentIds)
+            const remove = groups.map(async (group) => {
+                return await repository.security.removeMembers(group.Id, contentIds)
+            })
+            await Promise.all(remove)
         } catch (error) {
             options.dispatch(setError(error))
         } finally {
             options.dispatch(loadUser(contentIds[0]))
             options.dispatch(finishLoading())
         }
+
+        options.dispatch(loadUser(contentIds[0]))
+        options.dispatch(finishLoading())
     },
 } as InjectableAction<rootStateType, Action> & { odataOptions: IODataParams<GenericContent> })
 
@@ -259,9 +266,10 @@ export const addUserToGroups = (user: User, groups: Group[]) => ({
         const repository = options.getInjectable(Repository) as Repository
         options.dispatch(startLoading(currentState.dms.usersAndGroups.user.currentUser ? currentState.dms.usersAndGroups.user.currentUser.Id : ''))
         try {
-            await groups.map((group) => {
-                repository.security.addMembers(group.Id, [user.Id])
+            const add = groups.map(async (group) => {
+                return await repository.security.addMembers(group.Id, [user.Id])
             })
+            await Promise.all(add)
         } catch (error) {
             options.dispatch(setError(error))
         } finally {

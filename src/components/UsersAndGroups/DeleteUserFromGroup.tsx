@@ -1,5 +1,5 @@
 import { Button, TableCell } from '@material-ui/core'
-import { GenericContent, User } from '@sensenet/default-content-types'
+import { Group, User } from '@sensenet/default-content-types'
 import { Icon } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -21,7 +21,7 @@ const styles = {
 // tslint:disable-next-line:no-empty-interface
 interface DeleteUserFromGroupProps {
     user: User | null,
-    group: GenericContent | null,
+    group: Group,
 }
 
 // tslint:disable-next-line:no-empty-interface
@@ -40,7 +40,7 @@ const mapDispatchToProps = {
 class DeleteUserFromGroup extends React.Component<DeleteUserFromGroupProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, DeleteUserFromGroupState> {
     public handleClick = () => {
         this.props.openDialog(
-            <RemoveUserFromGroupDialog user={this.props.user} groups={this.props.group ? [this.props.group] : null} />,
+            <RemoveUserFromGroupDialog user={this.props.user} groups={[this.props.group]} />,
             resources.DELETE, this.props.closeDialog)
     }
     public render() {

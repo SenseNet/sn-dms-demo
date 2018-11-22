@@ -89,8 +89,6 @@ class GroupListItem extends React.Component<{ classes: any } & ReturnType<typeof
     constructor(props: GroupListItem['props']) {
         super(props)
 
-        this.handleMouseOver = this.handleMouseOver.bind(this)
-        this.handleMouseLeave = this.handleMouseLeave.bind(this)
         this.handleClick = this.handleClick.bind(this)
     }
     public handleClick = (path: string) => {
@@ -105,15 +103,11 @@ class GroupListItem extends React.Component<{ classes: any } & ReturnType<typeof
             selected: !this.state.selected,
         })
     }
-    public handleMouseOver = (e: React.MouseEvent<HTMLElement>) => (e.target as HTMLElement).style.backgroundColor = '#01A1EA'
-    public handleMouseLeave = (e: React.MouseEvent<HTMLElement>) => (e.target as HTMLElement).style.backgroundColor = 'transparent'
     public shortenPath = (path: string) => path.replace('/Root/IMS/', '')
     public render() {
         const { classes, group, selected } = this.props
         return (
             <MenuItem
-                onMouseOver={(e) => this.handleMouseOver(e)}
-                onMouseLeave={(e) => this.handleMouseLeave(e)}
                 style={styles.listItem}>
                 <ListItemIcon className={classes.icon}>
                     <IconButton

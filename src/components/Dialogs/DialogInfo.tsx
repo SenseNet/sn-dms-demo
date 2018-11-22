@@ -120,7 +120,7 @@ class DialogInfo extends React.Component<{ classes: any } & DialogInfoProps, {}>
                                             {currentContent ? resources.VERSIONING[currentContent.VersioningMode || ''] : ''}
                                         </TableCell>
                                         <TableCell className={matches ? classes.tableCell : classes.tableCellMobile} padding="none">
-                                            {currentContent ? currentContent.Path: ''}
+                                            {currentContent ? currentContent.Path : ''}
                                         </TableCell>
                                     </TableRow>
                                 </TableBody>

@@ -1,7 +1,7 @@
 import Button from '@material-ui/core/Button'
 import withStyles from '@material-ui/core/styles/withStyles'
 import Typography from '@material-ui/core/Typography'
-import { GenericContent, User } from '@sensenet/default-content-types'
+import { GenericContent, Group, User } from '@sensenet/default-content-types'
 import { Actions } from '@sensenet/redux'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -9,7 +9,7 @@ import MediaQuery from 'react-responsive'
 import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { resources } from '../../assets/resources'
-import { removeMemberFromGroup } from '../../store/usersandgroups/actions'
+import { removeMemberFromGroups } from '../../store/usersandgroups/actions'
 
 const styles = {
     buttonContainer: {
@@ -58,7 +58,7 @@ const styles = {
 interface RemoveUserFromGroupDialogProps {
     permanent?: boolean,
     user: GenericContent | null,
-    groups: GenericContent[] | null,
+    groups: Group[],
 }
 
 interface RemoveUserFromGroupDialogState {
@@ -75,7 +75,7 @@ const mapStateToProps = (state: rootStateType) => {
 const mapDispatchToProps = {
     closeDialog: DMSActions.closeDialog,
     deleteContent: Actions.deleteBatch,
-    removeMemberFromGroup,
+    removeMemberFromGroups,
 }
 
 class RemoveUserFromGroupDialog extends React.Component<{ classes: any } & RemoveUserFromGroupDialogProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, RemoveUserFromGroupDialogState> {
@@ -97,7 +97,7 @@ class RemoveUserFromGroupDialog extends React.Component<{ classes: any } & Remov
     }
     public submitCallback = () => {
         const { user, groups } = this.props
-        this.props.removeMemberFromGroup([user ? user.Id : 0], groups ? groups[0].Id : 0)
+        this.props.removeMemberFromGroups([user ? user.Id : 0], groups)
         this.props.closeDialog()
     }
     public render() {
