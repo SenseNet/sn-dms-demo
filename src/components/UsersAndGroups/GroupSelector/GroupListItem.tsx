@@ -6,12 +6,11 @@ import withStyles from '@material-ui/core/styles/withStyles'
 import { Group } from '@sensenet/default-content-types'
 import { Icon, iconType } from '@sensenet/icons-react'
 import { Actions } from '@sensenet/redux'
-import { compile } from 'path-to-regexp'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { rootStateType } from '../../..'
-import { deselectGroup, selectGroup } from '../../../store/usersandgroups/actions'
+import { selectGroup } from '../../../store/usersandgroups/actions'
 
 const styles = {
     listItem: {
@@ -68,12 +67,12 @@ const mapStateToProps = (state: rootStateType) => {
     return {
         userName: state.sensenet.session.user.userName,
         options: state.sensenet.currentitems.options,
+        groups: state.dms.usersAndGroups.group.selected,
     }
 }
 
 const mapDispatchToProps = {
     selectGroup,
-    deselectGroup,
     loadContent: Actions.loadContent,
     fetchContent: Actions.requestContent,
 }
@@ -89,16 +88,9 @@ class GroupListItem extends React.Component<{ classes: any } & ReturnType<typeof
     constructor(props: GroupListItem['props']) {
         super(props)
 
-        this.handleClick = this.handleClick.bind(this)
-    }
-    public handleClick = (path: string) => {
-        const doclibPath = `${path}/Document_Library`
-        const newPath = compile(this.props.match.path)({ folderPath: btoa(doclibPath) })
-        this.props.history.push(newPath)
-        this.props.closeDropDown(true)
     }
     public checkboxClick = (group: Group | null) => {
-        this.state.selected ? this.props.deselectGroup(group ? group.Id : 0) : this.props.selectGroup(group ? [group] : [])
+        this.props.selectGroup(group ? [...this.props.groups, group] : [...this.props.groups])
         this.setState({
             selected: !this.state.selected,
         })
@@ -123,8 +115,7 @@ class GroupListItem extends React.Component<{ classes: any } & ReturnType<typeof
                 <ListItemText
                     classes={{ primary: classes.primary, root: classes.listItemRoot, secondary: classes.secondary }}
                     primary={group ? group.DisplayName : ''}
-                    secondary={this.shortenPath(group ? group.Path : '')}
-                    onClick={(e) => this.handleClick(group ? group.Path : '')} />
+                    secondary={this.shortenPath(group ? group.Path : '')} />
             </MenuItem>
         )
     }
