@@ -24,6 +24,7 @@ import { DisplayNameMobileCell } from './ContentList/CellTemplates/DisplayNameMo
 import DeleteUserFromGroup from './UsersAndGroups/DeleteUserFromGroup'
 import GroupListToolbar from './UsersAndGroups/GroupListToolbar'
 import UserInfo from './UsersAndGroups/UserInfo'
+import { FullScreenLoader } from './FullScreenLoader';
 
 const styles = {
     appBar: {
@@ -59,6 +60,7 @@ const mapStateToProps = (state: rootStateType) => {
         selected: state.dms.usersAndGroups.group.selected,
         active: state.dms.usersAndGroups.user.active,
         hostName: state.sensenet.session.repository ? state.sensenet.session.repository.repositoryUrl : '',
+        isLoading: state.dms.usersAndGroups.user.isLoading,
     }
 }
 
@@ -133,7 +135,7 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
     }
 
     public render() {
-        const { matchesDesktop } = this.props
+        const { isLoading, matchesDesktop } = this.props
         return <MediaQuery minDeviceWidth={700}>
             {(matches) => {
                 return this.props.loggedinUser.content.Id !== ConstantContent.VISITOR_USER.Id ?
@@ -152,94 +154,96 @@ class UserProfile extends React.Component<UserProfileProps & ReturnType<typeof m
                         <UserInfo />
                         <GroupListToolbar />
                         <MuiThemeProvider theme={contentListTheme}>
-                            <ContentList
-                                displayRowCheckbox={matches ? true : false}
-                                items={this.props.items.d.results}
-                                schema={customSchema.find((s) => s.ContentTypeName === 'GenericContent') || SchemaStore.filter((s) => s.ContentTypeName === 'GenericContent')[0]}
-                                fieldsToDisplay={matches ? ['DisplayName', 'Workspace', 'Actions'] :
-                                    ['DisplayName', 'Actions']}
-                                icons={icons}
-                                orderBy={this.props.childrenOptions.orderby ? this.props.childrenOptions.orderby[0][0] : 'Id' as any}
-                                orderDirection={this.props.childrenOptions.orderby ? this.props.childrenOptions.orderby[0][1] : 'asc' as any}
-                                onRequestSelectionChange={(newSelection) => this.props.selectGroup(newSelection)}
-                                onRequestActionsMenu={(ev, content) => {
-                                    ev.preventDefault()
-                                    this.props.closeActionMenu()
-                                    this.props.openActionMenu(content.Actions as IActionModel[], content, '', ev.currentTarget.parentElement, { top: ev.clientY, left: ev.clientX })
-                                }}
-                                onItemContextMenu={(ev, content) => {
-                                    ev.preventDefault()
-                                    this.props.closeActionMenu()
-                                    this.props.openActionMenu(content.Actions as IActionModel[], content, '', ev.currentTarget.parentElement, { top: ev.clientY, left: ev.clientX })
-                                }}
-                                onRequestOrderChange={(field, direction) => {
-                                    this.props.updateChildrenOptions({
-                                        ...this.props.childrenOptions,
-                                        orderby: [[field, direction]],
-                                    })
-                                }}
-                                onItemClick={(ev, content) => {
-                                    if (ev.ctrlKey && this.isGroupAdmin(content.Actions as IActionModel[]) && this.isExplicitMember(content)) {
-                                        if (this.props.selected.find((s) => s.Id === content.Id)) {
-                                            this.props.selectGroup(this.props.selected.filter((s) => s.Id !== content.Id))
-                                        } else {
+                            {isLoading ?
+                                <FullScreenLoader />
+                                : <ContentList
+                                    displayRowCheckbox={matches ? true : false}
+                                    items={this.props.items.d.results}
+                                    schema={customSchema.find((s) => s.ContentTypeName === 'GenericContent') || SchemaStore.filter((s) => s.ContentTypeName === 'GenericContent')[0]}
+                                    fieldsToDisplay={matches ? ['DisplayName', 'Workspace', 'Actions'] :
+                                        ['DisplayName', 'Actions']}
+                                    icons={icons}
+                                    orderBy={this.props.childrenOptions.orderby ? this.props.childrenOptions.orderby[0][0] : 'Id' as any}
+                                    orderDirection={this.props.childrenOptions.orderby ? this.props.childrenOptions.orderby[0][1] : 'asc' as any}
+                                    onRequestSelectionChange={(newSelection) => this.props.selectGroup(newSelection)}
+                                    onRequestActionsMenu={(ev, content) => {
+                                        ev.preventDefault()
+                                        this.props.closeActionMenu()
+                                        this.props.openActionMenu(content.Actions as IActionModel[], content, '', ev.currentTarget.parentElement, { top: ev.clientY, left: ev.clientX })
+                                    }}
+                                    onItemContextMenu={(ev, content) => {
+                                        ev.preventDefault()
+                                        this.props.closeActionMenu()
+                                        this.props.openActionMenu(content.Actions as IActionModel[], content, '', ev.currentTarget.parentElement, { top: ev.clientY, left: ev.clientX })
+                                    }}
+                                    onRequestOrderChange={(field, direction) => {
+                                        this.props.updateChildrenOptions({
+                                            ...this.props.childrenOptions,
+                                            orderby: [[field, direction]],
+                                        })
+                                    }}
+                                    onItemClick={(ev, content) => {
+                                        if (ev.ctrlKey && this.isGroupAdmin(content.Actions as IActionModel[]) && this.isExplicitMember(content)) {
+                                            if (this.props.selected.find((s) => s.Id === content.Id)) {
+                                                this.props.selectGroup(this.props.selected.filter((s) => s.Id !== content.Id))
+                                            } else {
+                                                this.props.selectGroup([...this.props.selected, content])
+                                            }
+                                        } else if (ev.shiftKey && this.isGroupAdmin(content.Actions as IActionModel[]) && this.isExplicitMember(content)) {
+                                            const active = this.props.active || undefined
+                                            const activeIndex = active ? this.props.items.d.results.findIndex((s) => s.Id === active.Id) : -1
+                                            const clickedIndex = this.props.items.d.results.findIndex((s) => s.Id === content.Id)
+                                            const newSelection = Array.from(new Set([...this.props.selected, ...[...this.props.items.d.results].slice(Math.min(activeIndex, clickedIndex), Math.max(activeIndex, clickedIndex) + 1)]))
+                                            this.props.selectGroup(newSelection)
+                                        } else if ((!this.props.selected.length || this.props.selected.length === 1 && this.props.selected[0].Id !== content.Id) && this.isGroupAdmin(content.Actions as IActionModel[]) && this.isExplicitMember(content)) {
                                             this.props.selectGroup([...this.props.selected, content])
+                                        } else if (this.isGroupAdmin(content.Actions as IActionModel[]) && this.isExplicitMember(content)) {
+                                            if (this.props.selected.find((s) => s.Id === content.Id)) {
+                                                this.props.selectGroup(this.props.selected.filter((s) => s.Id !== content.Id))
+                                            } else {
+                                                this.props.selectGroup([...this.props.selected, content])
+                                            }
                                         }
-                                    } else if (ev.shiftKey && this.isGroupAdmin(content.Actions as IActionModel[]) && this.isExplicitMember(content)) {
-                                        const active = this.props.active || undefined
-                                        const activeIndex = active ? this.props.items.d.results.findIndex((s) => s.Id === active.Id) : -1
-                                        const clickedIndex = this.props.items.d.results.findIndex((s) => s.Id === content.Id)
-                                        const newSelection = Array.from(new Set([...this.props.selected, ...[...this.props.items.d.results].slice(Math.min(activeIndex, clickedIndex), Math.max(activeIndex, clickedIndex) + 1)]))
-                                        this.props.selectGroup(newSelection)
-                                    } else if ((!this.props.selected.length || this.props.selected.length === 1 && this.props.selected[0].Id !== content.Id) && this.isGroupAdmin(content.Actions as IActionModel[]) && this.isExplicitMember(content)) {
-                                        this.props.selectGroup([...this.props.selected, content])
-                                    } else if (this.isGroupAdmin(content.Actions as IActionModel[]) && this.isExplicitMember(content)) {
-                                        if (this.props.selected.find((s) => s.Id === content.Id)) {
-                                            this.props.selectGroup(this.props.selected.filter((s) => s.Id !== content.Id))
-                                        } else {
-                                            this.props.selectGroup([...this.props.selected, content])
+                                    }}
+                                    selected={this.props.selected}
+                                    onItemDoubleClick={this.handleRowDoubleClick}
+                                    fieldComponent={(props) => {
+                                        switch (props.field) {
+                                            case 'DisplayName':
+                                                if (!matchesDesktop) {
+                                                    return (<DisplayNameMobileCell
+                                                        content={props.content}
+                                                        isSelected={props.isSelected}
+                                                        hasSelected={props.selected ? props.selected.length > 0 : false}
+                                                        icons={icons}
+                                                        onActivate={(ev, content) => this.handleRowDoubleClick(ev, content)} />)
+                                                } else {
+                                                    return (<DisplayNameCell
+                                                        content={props.content}
+                                                        isSelected={props.isSelected}
+                                                        icons={icons}
+                                                        hostName={this.props.hostName} />)
+                                                }
+                                            case 'Actions':
+                                                // tslint:disable-next-line:no-string-literal
+                                                if (this.isGroupAdmin(props.content.Actions as IActionModel[]) && this.isExplicitMember(props.content)) {
+                                                    return <DeleteUserFromGroup user={this.props.user || null} group={props.content} />
+                                                } else {
+                                                    return <TableCell></TableCell>
+                                                }
+                                            default:
+                                                return null
                                         }
                                     }
-                                }}
-                                selected={this.props.selected}
-                                onItemDoubleClick={this.handleRowDoubleClick}
-                                fieldComponent={(props) => {
-                                    switch (props.field) {
-                                        case 'DisplayName':
-                                            if (!matchesDesktop) {
-                                                return (<DisplayNameMobileCell
-                                                    content={props.content}
-                                                    isSelected={props.isSelected}
-                                                    hasSelected={props.selected ? props.selected.length > 0 : false}
-                                                    icons={icons}
-                                                    onActivate={(ev, content) => this.handleRowDoubleClick(ev, content)} />)
-                                            } else {
-                                                return (<DisplayNameCell
-                                                    content={props.content}
-                                                    isSelected={props.isSelected}
-                                                    icons={icons}
-                                                    hostName={this.props.hostName} />)
-                                            }
-                                        case 'Actions':
-                                            // tslint:disable-next-line:no-string-literal
-                                            if (this.isGroupAdmin(props.content.Actions as IActionModel[]) && this.isExplicitMember(props.content)) {
-                                                return <DeleteUserFromGroup user={this.props.user || null} group={props.content} />
-                                            } else {
-                                                return <TableCell></TableCell>
-                                            }
-                                        default:
-                                            return null
                                     }
-                                }
-                                }
-                                getSelectionControl={(selected, content) => {
-                                    return <Checkbox
-                                        checked={this.props.selected.find((i) => i.Id === content.Id) ? true : false}
-                                        disabled={this.isGroupAdmin(content.Actions as IActionModel[]) && this.isExplicitMember(content) ? false : true}
-                                        style={this.isGroupAdmin(content.Actions as IActionModel[]) && this.isExplicitMember(content) ? { cursor: 'normal' } : {}}
-                                    />
-                                }}
-                            />
+                                    getSelectionControl={(selected, content) => {
+                                        return <Checkbox
+                                            checked={this.props.selected.find((i) => i.Id === content.Id) ? true : false}
+                                            disabled={this.isGroupAdmin(content.Actions as IActionModel[]) && this.isExplicitMember(content) ? false : true}
+                                            style={this.isGroupAdmin(content.Actions as IActionModel[]) && this.isExplicitMember(content) ? { cursor: 'normal' } : {}}
+                                        />
+                                    }}
+                                />}
                         </MuiThemeProvider>
                     </div>
                     : null
