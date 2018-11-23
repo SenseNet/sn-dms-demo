@@ -69,11 +69,10 @@ export const selected: Reducer<GenericContent[]> = (state: GenericContent[] = []
 export const loadChunkSize = 25
 
 const defaultOptions = {
-    select: ['Id', 'Path', 'DisplayName', 'ModificationDate', 'Type', 'Icon', 'IsFolder', 'Actions', 'Owner', 'VersioningMode', 'ParentId', 'CheckedOutTo', 'Approvable'],
-    expand: ['Actions', 'Owner', 'CheckedOutTo'],
+    select: ['Id', 'Path', 'Name','Type','ParentId','Actions','Avatar','Owner','DisplayName','Workspace','Icon','Members'],
+    expand: ['Actions', 'Workspace', 'Members'],
     orderby: [['IsFolder', 'desc'], ['DisplayName', 'asc']],
-    filter: 'ContentType ne \'SystemFolder\'',
-    scenario: 'DMSListItem',
+    filter: `isOf('Group')`,
     top: loadChunkSize,
 } as IODataParams<GenericContent>
 

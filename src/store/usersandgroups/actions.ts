@@ -143,27 +143,28 @@ export const setActive = <T extends GenericContent>(active?: T) => ({
     active,
 })
 
-export const updateChildrenOptions = <T extends GenericContent>(odataOptions: IODataParams<T>) => ({
+export const updateChildrenOptions = <T extends GenericContent>(o: IODataParams<T>) => ({
     type: 'DMS_USERSANDGROUPS_UPDATE_CHILDREN_OPTIONS',
     inject: async (options) => {
         const currentState = options.getState()
-        const parentPath = currentState.dms.usersAndGroups.user.currentUser ? currentState.dms.usersAndGroups.user.currentUser.Path : ''
         const repository = options.getInjectable(Repository)
         options.dispatch(startLoading(currentState.dms.usersAndGroups.user.currentUser ? currentState.dms.usersAndGroups.user.currentUser.Id : ''))
         try {
-            const items = await repository.loadCollection({
-                path: parentPath,
-                oDataOptions: {
-                    ...options.getState().dms.usersAndGroups.user.grouplistOptions,
-                    ...odataOptions,
-                },
+            const items = await repository.security.getParentGroups({
+                contentIdOrPath: currentState.dms.usersAndGroups.user.currentUser ? currentState.dms.usersAndGroups.user.currentUser.Id : 0,
+                directOnly: false,
+                oDataOptions: {...{
+                    select: ['Workspace', 'DisplayName', 'Type', 'Id', 'Path', 'Actions', 'Icon', 'Members'],
+                    expand: ['Workspace', 'Actions', 'Members'],
+                    filter: `isOf('Group')`,
+                }, ...o as any},
             })
             options.dispatch(setMemberships(items))
         } catch (error) {
             options.dispatch(setError(error))
         } finally {
             options.dispatch(finishLoading())
-            options.dispatch(setChildrenOptions(odataOptions))
+            options.dispatch(setChildrenOptions(o))
         }
 
         /** */

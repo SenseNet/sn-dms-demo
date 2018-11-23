@@ -21,10 +21,10 @@ import { loadUser, selectGroup, updateChildrenOptions } from '../store/usersandg
 import BreadCrumb from './BreadCrumb'
 import { DisplayNameCell } from './ContentList/CellTemplates/DisplayNameCell'
 import { DisplayNameMobileCell } from './ContentList/CellTemplates/DisplayNameMobileCell'
+import { FullScreenLoader } from './FullScreenLoader'
 import DeleteUserFromGroup from './UsersAndGroups/DeleteUserFromGroup'
 import GroupListToolbar from './UsersAndGroups/GroupListToolbar'
 import UserInfo from './UsersAndGroups/UserInfo'
-import { FullScreenLoader } from './FullScreenLoader';
 
 const styles = {
     appBar: {
