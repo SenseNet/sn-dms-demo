@@ -15,6 +15,8 @@ export const memberships: Reducer<IODataCollectionResponse<GenericContent>> = (s
     switch (action.type) {
         case 'DMS_USERSANDGROUPS_SET_MEMBERSHIPS':
             return action.items
+        case 'DMS_USERSANDGROUPS_UPDATE_GROUPS':
+            return action.groups
         default:
             return state
     }

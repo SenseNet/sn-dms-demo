@@ -153,11 +153,13 @@ export const updateChildrenOptions = <T extends GenericContent>(o: IODataParams<
             const items = await repository.security.getParentGroups({
                 contentIdOrPath: currentState.dms.usersAndGroups.user.currentUser ? currentState.dms.usersAndGroups.user.currentUser.Id : 0,
                 directOnly: false,
-                oDataOptions: {...{
-                    select: ['Workspace', 'DisplayName', 'Type', 'Id', 'Path', 'Actions', 'Icon', 'Members'],
-                    expand: ['Workspace', 'Actions', 'Members'],
-                    filter: `isOf('Group')`,
-                }, ...o as any},
+                oDataOptions: {
+                    ...{
+                        select: ['Workspace', 'DisplayName', 'Type', 'Id', 'Path', 'Actions', 'Icon', 'Members'],
+                        expand: ['Workspace', 'Actions', 'Members'],
+                        filter: `isOf('Group')`,
+                    }, ...o as any,
+                },
             })
             options.dispatch(setMemberships(items))
         } catch (error) {
@@ -182,7 +184,6 @@ export const removeMemberFromGroups = (contentIds: number[], groups: Group[]) =>
         const currentState = options.getState()
         const repository = options.getInjectable(Repository)
         options.dispatch(startLoading(currentState.dms.usersAndGroups.user.currentUser ? currentState.dms.usersAndGroups.user.currentUser.Id : ''))
-
         try {
             const remove = groups.map(async (group) => {
                 return await repository.security.removeMembers(group.Id, contentIds)
@@ -191,12 +192,12 @@ export const removeMemberFromGroups = (contentIds: number[], groups: Group[]) =>
         } catch (error) {
             options.dispatch(setError(error))
         } finally {
+            const comparedList: Group[] = arrayComparer(groups, currentState.dms.usersAndGroups.user.memberships.d.results)
+            options.dispatch(updateGroupList({ d: { __count: comparedList.length, results: comparedList } }))
             options.dispatch(loadUser(contentIds[0]))
             options.dispatch(finishLoading())
+            options.dispatch(getGroups(currentState.dms.usersAndGroups.user.memberships))
         }
-
-        options.dispatch(loadUser(contentIds[0]))
-        options.dispatch(finishLoading())
     },
 } as InjectableAction<rootStateType, Action> & { odataOptions: IODataParams<GenericContent> })
 
@@ -276,6 +277,13 @@ export const addUserToGroups = (user: User, groups: Group[]) => ({
         } finally {
             options.dispatch(finishLoading())
             options.dispatch(loadUser(user.Id))
+            const comparedList: Group[] = arrayComparer(groups, currentState.dms.usersAndGroups.user.memberships.d.results)
+            options.dispatch(updateGroupList({ d: { __count: comparedList.length, results: comparedList } }))
         }
     },
 } as InjectableAction<rootStateType, Action> & { odataOptions: IODataParams<GenericContent> })
+
+export const updateGroupList = (groups: IODataCollectionResponse<Group>) => ({
+    type: 'DMS_USERSANDGROUPS_UPDATE_GROUPS',
+    groups,
+})

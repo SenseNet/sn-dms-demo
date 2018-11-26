@@ -54,6 +54,7 @@ interface GroupListState {
     top: number,
     term: string,
     filtered: Group[],
+    members: Group[],
 }
 
 interface GroupListProps {
@@ -68,6 +69,7 @@ class GroupList extends React.Component<{ classes: any } & GroupListProps & Retu
         selected: this.props.selected,
         top: 0,
         term: '',
+        members: this.props.memberships.d.results,
     }
     constructor(props: GroupList['props']) {
         super(props)
@@ -75,6 +77,8 @@ class GroupList extends React.Component<{ classes: any } & GroupListProps & Retu
     }
     public static getDerivedStateFromProps(newProps: GroupList['props'], lastState: GroupList['state']) {
         if (newProps.groups.length !== lastState.groups.length || lastState.groups.length === 0) {
+            newProps.getGroups(newProps.memberships as any)
+        } else if (newProps.memberships.d.__count !== lastState.members.length) {
             newProps.getGroups(newProps.memberships as any)
         }
 
@@ -84,6 +88,7 @@ class GroupList extends React.Component<{ classes: any } & GroupListProps & Retu
             filtered: newProps.term.length > 0 ? newProps.groups.filter((group) => group.Name.indexOf(newProps.term) > -1) : newProps.groups,
             selected: newProps.selected,
             term: newProps.term,
+            members: newProps.memberships.d.results,
         } as GroupList['state']
     }
     public handleSearch = (text: string) => {
