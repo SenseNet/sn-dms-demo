@@ -36,7 +36,8 @@ const mapStateToProps = (state: rootStateType) => ({
     parent: state.dms.documentLibrary.parent,
     searchState: state.dms.documentLibrary.searchState,
     selectedTypeRoot: state.dms.picker.selected,
-    isLoading: state.dms.documentLibrary.isLoading,
+    isLoadingParent: state.dms.documentLibrary.isLoadingParent,
+    isLoadingChildren: state.dms.documentLibrary.isLoadingChildren,
 })
 
 const mapDispatchToProps = {
@@ -49,12 +50,13 @@ const mapDispatchToProps = {
 }
 
 interface SearchDocumentsState {
-    parent: GenericContent
-    isOpen: boolean, query: string
+    parent?: GenericContent
+    isOpen: boolean,
+    query?: string
 }
 
 class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & { style?: React.CSSProperties }, SearchDocumentsState> {
-    constructor(props) {
+    constructor(props: SearchDocuments['props']) {
         super(props)
         this.state = {
             parent: this.props.parent,
@@ -92,7 +94,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
     }
 
     private handleFieldQueryChanged(key: keyof DocumentLibraryState['searchState'], value: Query<any>, plainValue: string, callback: (key: string, value: Query<any>) => void) {
-        const update = {}
+        const update: any = {}
         update[key] = plainValue
         this.props.updateSearchValues(update)
         callback(key, value)
@@ -104,15 +106,15 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
         if (this.state.query !== this.props.query) {
             this.props.setChildrenOptions({
                 // path: this.props.searchState.rootPath,
-                query: this.state.query.toString(),
+                query: this.state.query && this.state.query.toString(),
             })
-            this.props.loadParent(this.state.parent ? this.state.parent.Id : this.props.parent.Id)
+            this.props.parent && this.props.loadParent(this.state.parent ? this.state.parent.Id : this.props.parent.Id)
             this.handleClose()
         }
     }
 
     private handlePickLocation(ev: React.MouseEvent, options: AdvancedSearchOptions<any>) {
-        this.props.setPickerParent(this.props.parent)
+        this.props.parent && this.props.setPickerParent(this.props.parent)
         this.props.openPicker(
             <PathPicker
                 showAddFolder={false}
@@ -166,7 +168,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                         if (matches) {
                             return <form style={{ ...matches ? null : styles.searchContainerMobile, ...this.props.style }} onSubmit={this.handleOnSubmit}>
                                 <QuickSearchBox {...this.props}
-                                    isLoading={this.state.query && this.props.isLoading}
+                                    isLoading={this.state.query && this.props.isLoadingParent || this.props.isLoadingChildren ? true : false}
                                     isOpen={matches ? this.state.isOpen : true}
                                     onClick={this.onClick}
                                     startAdornmentRef={(r) => { (this.elementRef = r) }}
@@ -206,7 +208,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
                                     }}
                                     PaperProps={{
                                         style: {
-                                            width: this.searchBoxContainerRef && this.searchBoxContainerRef.offsetWidth,
+                                            width: this.searchBoxContainerRef && this.searchBoxContainerRef.offsetWidth || 0,
                                             overflow: 'hidden',
                                         },
                                     }}

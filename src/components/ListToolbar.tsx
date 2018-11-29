@@ -8,7 +8,7 @@ import BatchActionlist from './ActionMenu/BatchActionlist'
 import BreadCrumb from './BreadCrumb'
 
 export interface ListToolbarProps {
-    currentContent: GenericContent,
+    currentContent?: GenericContent,
     selected: GenericContent[],
     ancestors: GenericContent[]
 }
@@ -44,7 +44,7 @@ export class ListToolbar extends React.Component<ListToolbarProps, {}> {
                     <Toolbar style={matches ? styles.toolbar as any : styles.toolbarMobile as any}>
                         <div style={{ flex: 1, display: 'flex' }}>
                             <WorkspaceSelector />
-                            <BreadCrumb ancestors={this.props.ancestors} currentContent={this.props.currentContent} />
+                            <BreadCrumb ancestors={this.props.ancestors} currentContent={this.props.currentContent} typeFilter={['DocumentLibrary', 'Folder']} />
                         </div>
                         <BatchActionlist currentContent={this.props.currentContent} selected={this.props.selected} />
                     </Toolbar>
@@ -52,7 +52,7 @@ export class ListToolbar extends React.Component<ListToolbarProps, {}> {
                     <AppBar position="static" style={matches ? styles.appBar : styles.appBarMobile}>
                         <Toolbar style={matches ? styles.toolbar as any : styles.toolbarMobile as any}>
                             <WorkspaceSelector />
-                            <BreadCrumb ancestors={this.props.ancestors} currentContent={this.props.currentContent} />
+                            <BreadCrumb ancestors={this.props.ancestors} currentContent={this.props.currentContent} typeFilter={['DocumentLibrary', 'Folder']} />
                             <BatchActionlist currentContent={this.props.currentContent} selected={this.props.selected} />
                         </Toolbar>
                     </AppBar>

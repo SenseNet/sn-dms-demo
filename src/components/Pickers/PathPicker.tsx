@@ -12,7 +12,7 @@ import { IODataParams } from '@sensenet/client-core'
 import { GenericContent } from '@sensenet/default-content-types'
 import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
-import { Scrollbars } from 'react-custom-scrollbars'
+import Scrollbars from 'react-custom-scrollbars'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { rootStateType } from '../..'
@@ -67,7 +67,7 @@ const mapDispatchToProps = {
 }
 
 interface PathPickerState {
-    hovered: number,
+    hovered: number | null,
 }
 
 class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, PathPickerState> {
@@ -76,8 +76,8 @@ class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof map
         items: this.props.items,
     }
     public static getDerivedStateFromProps(newProps: PathPicker['props'], lastState: PathPicker['state']) {
-        if (lastState.items.length !== newProps.items.length) {
-            newProps.loadPickerItems(newProps.parent.Path, newProps.parent, newProps.loadOptions)
+        if (newProps.parent && lastState.items.length !== newProps.items.length) {
+            newProps.loadPickerItems(newProps.parent.Path)
         }
         return {
             ...lastState,
@@ -98,9 +98,9 @@ class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof map
     public isSelected = (id: number) => {
         return this.props.selectedTarget.findIndex((item) => item.Id === id) > -1
     }
-    public handleClick = (e, content: GenericContent) => {
-        // tslint:disable-next-line:no-string-literal
-        e.currentTarget.attributes.getNamedItem('role') && e.currentTarget.attributes.getNamedItem('role').value === 'menuitem' ?
+    public handleClick = (e: React.MouseEvent<HTMLElement>, content: GenericContent) => {
+        const role = (e.target as HTMLElement).attributes.getNamedItem('role') || ''
+        role === 'menuitem' ?
             this.props.selectPickerItem(content) :
             this.handleLoading(content.Id)
     }
@@ -118,14 +118,14 @@ class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof map
         return this.state.hovered === id
     }
     public hasChildren = (id: number) => {
-        const content = this.props.items.find((item) => item.Id === id)
+        const content = this.props.items.find((item) => item.Id === id) as any
         // tslint:disable-next-line:no-string-literal
-        return content['Children'] ? content['Children'].filter((child) => child.IsFolder).length > 0 ? true : false : false
+        return content['Children'] ? content['Children'].filter((child: GenericContent) => child.IsFolder).length > 0 ? true : false : false
     }
     public handleLoading = (id: number) => {
-        const content = this.props.items.find((item) => item.Id === id)
+        const content = this.props.items.find((item) => item.Id === id) as GenericContent
         this.props.loadPickerParent(id)
-        this.props.loadPickerItems(content.Path, content, this.props.loadOptions)
+        this.props.loadPickerItems(content ? content.Path : '')
         this.props.setBackLink(true)
     }
     public handleAddNewClose = () => {
@@ -134,7 +134,7 @@ class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof map
     public handleAddNewClick = () => {
         const { parent, openDialog } = this.props
         openDialog(<AddNewDialog
-            parentPath={parent.Path}
+            parentPath={parent ? parent.Path : ''}
             contentTypeName="Folder"
             title="folder" />,
             resources.ADD_NEW, this.handleAddNewClose)
@@ -153,12 +153,12 @@ class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof map
                             {items.map((item) => {
                                 return <MenuItem button
                                     key={item.Id}
-                                    style={this.isSelected(item.Id) ? styles.selected : null}
+                                    style={this.isSelected(item.Id) ? styles.selected : {}}
                                     onClick={(e) => this.handleClick(e, item)}
                                     onMouseEnter={() => this.handleMouseOver(item.Id)}
                                     onMouseLeave={() => this.handleMouseOut()}
                                     selected={this.isSelected(item.Id)}>
-                                    <ListItemIcon style={this.isSelected(item.Id) ? styles.iconsSelected : null}>
+                                    <ListItemIcon style={this.isSelected(item.Id) ? styles.iconsSelected : {}}>
                                         <Icon type={iconType.materialui} iconName="folder" />
                                     </ListItemIcon>
                                     <ListItemText
@@ -172,7 +172,7 @@ class PathPicker extends React.Component<PathPickerProps & ReturnType<typeof map
                                             type={iconType.materialui}
                                             iconName="keyboard_arrow_right"
                                             style={this.isHovered ? styles.openIcon : { display: 'none' }}
-                                            onClick={(e) => this.handleClick(e, item)} /> :
+                                            onClick={(e: React.MouseEvent<HTMLElement>) => this.handleClick(e, item)} /> :
                                             null
                                     }
                                 </MenuItem>

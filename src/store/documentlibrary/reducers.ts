@@ -1,14 +1,15 @@
 import { IODataCollectionResponse, IODataParams } from '@sensenet/client-core'
 import { GenericContent } from '@sensenet/default-content-types'
 import { Reducer } from 'redux'
-import { select, setActive, setAncestors, setError, setItems, setParent, startLoading, updateChildrenOptions, updateSearchValues } from './actions'
+import { select, setActive, setAncestors, setError, setItems, setParent, startLoadingChildren, startLoadingParent, updateChildrenOptions, updateSearchValues } from './actions'
 
 export interface DocumentLibraryState {
     parent?: GenericContent
     ancestors: GenericContent[]
     parentIdOrPath?: string | number,
     items: IODataCollectionResponse<GenericContent>
-    isLoading: boolean
+    isLoadingParent: boolean
+    isLoadingChildren: boolean
     error?: any
     selected: GenericContent[]
     active?: GenericContent
@@ -29,7 +30,8 @@ export interface DocumentLibraryState {
 export const loadChunkSize = 25
 
 export const defaultState: DocumentLibraryState = {
-    isLoading: true,
+    isLoadingParent: false,
+    isLoadingChildren: false,
     items: { d: { __count: 0, results: [] } },
     selected: [],
     ancestors: [],
@@ -62,16 +64,27 @@ export const defaultState: DocumentLibraryState = {
 
 export const documentLibrary: Reducer<DocumentLibraryState> = (state = defaultState, action) => {
     switch (action.type) {
-        case 'DMS_DOCLIB_LOADING':
+        case 'DMS_DOCLIB_LOADING_PARENT':
             return {
                 ...state,
-                isLoading: true,
-                parentIdOrPath: (action as ReturnType<typeof startLoading>).idOrPath,
+                isLoadingParent: true,
+                parentIdOrPath: (action as ReturnType<typeof startLoadingParent>).idOrPath,
             }
-        case 'DMS_DOCLIB_FINISH_LOADING':
+        case 'DMS_DOCLIB_FINISH_LOADING_PARENT':
             return {
                 ...state,
-                isLoading: false,
+                isLoadingParent: false,
+            }
+        case 'DMS_DOCLIB_LOADING_CHILDREN':
+            return {
+                ...state,
+                isLoadingChildren: true,
+                parentIdOrPath: (action as ReturnType<typeof startLoadingChildren>).idOrPath,
+            }
+        case 'DMS_DOCLIB_FINISH_LOADING_CHILDREN':
+            return {
+                ...state,
+                isLoadingChildren: false,
             }
         case 'DMS_DOCLIB_SET_PARENT':
             return {
@@ -87,7 +100,7 @@ export const documentLibrary: Reducer<DocumentLibraryState> = (state = defaultSt
             return {
                 ...state,
                 items: (action as ReturnType<typeof setItems>).items,
-                selected: [...state.selected.filter((s) => action.items.d.results.find((i) => i.Id === s.Id) ? true : false)],
+                selected: [...state.selected.filter((s) => action.items.d.results.find((i: GenericContent) => i.Id === s.Id) ? true : false)],
             }
         case 'DMS_DOCLIB_SET_ERROR':
             return {

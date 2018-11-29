@@ -2,12 +2,10 @@ import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Drawer from '@material-ui/core/Drawer'
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
-
 import IconButton from '@material-ui/core/IconButton'
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
-import { GenericContent } from '@sensenet/default-content-types'
 import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -92,7 +90,7 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps> & typeof
     }
     public isLastItem = () => {
         const { parent, closestWs } = this.props
-        return parent.Path === closestWs
+        return parent && closestWs ? parent.Path === closestWs.Path : false
     }
     public handleClickBack = () => {
         const { parent } = this.props
@@ -103,9 +101,9 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps> & typeof
                 Workspace: {
                     Path: null,
                 },
-            } as GenericContent
+            } as any
             this.props.setPickerParent(snContent)
-            this.props.loadPickerItems('/', snContent,
+            this.props.loadPickerItems('/',
                 {
                     query: 'TypeIs:Workspace -TypeIs:Site',
                     select: ['DisplayName', 'Id', 'Path', 'Children'],
@@ -113,8 +111,8 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps> & typeof
                 })
             this.props.deselectPickeritem()
         } else {
-            this.props.loadPickerParent(parent.ParentId)
-            this.props.loadPickerItems(parent.Path.substr(0, parent.Path.length - (parent.Name.length + 1)), { Id: parent.ParentId } as GenericContent)
+            this.props.loadPickerParent(parent && parent.ParentId ? parent.ParentId : '')
+            this.props.loadPickerItems(parent ? parent.Path.substr(0, parent.Path.length - (parent.Name.length + 1)) : '')
             this.props.deselectPickeritem()
         }
     }

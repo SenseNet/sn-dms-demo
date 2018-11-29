@@ -104,18 +104,29 @@ const styles: StyleRulesCallback = () => ({
 })
 
 interface DocumentMenuProps extends RouteComponentProps<any> {
-    active,
-    subactive,
-    classes,
-    item,
-    uploadFileList: typeof uploadFileList,
-    currentContent: IContent,
+    active: boolean,
+    subactive: string,
+    classes: any,
+    item: any,
     uploadItems: IUploadProgressInfo[]
     showUploads: boolean
     hideUploadProgress: () => void,
     removeUploadItem: typeof removeUploadItem,
-    chooseMenuItem,
-    chooseSubmenuItem,
+    chooseMenuItem: (title: string) => void,
+    chooseSubmenuItem: (title: string) => void,
+}
+
+const mapStateToProps = (state: rootStateType) => {
+    return {
+        currentContent: state.dms.documentLibrary.parent,
+        currentWorkspace: state.sensenet.currentworkspace,
+        query: state.dms.documentLibrary.childrenOptions.query,
+    }
+}
+
+const mapDispatchToProps = {
+    uploadFileList,
+    updateChildrenOptions,
 }
 
 const subMenu = [
@@ -137,7 +148,7 @@ const subMenu = [
 ]
 
 class DocumentsMenu extends React.Component<DocumentMenuProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, {}> {
-    public handleMenuItemClick = (title) => {
+    public handleMenuItemClick = (title: string) => {
         this.props.updateChildrenOptions({ query: '' })
         if (this.props.currentWorkspace) {
             this.props.history.push(`/documents/${btoa(this.props.currentWorkspace.Path + '/Document_Library')}`)
@@ -146,7 +157,7 @@ class DocumentsMenu extends React.Component<DocumentMenuProps & ReturnType<typeo
         }
         this.props.chooseMenuItem(title)
     }
-    public handleSubmenuItemClick = (title) => {
+    public handleSubmenuItemClick = (title: string) => {
         this.props.history.push(`/documents/${title}`)
         this.props.chooseSubmenuItem(title)
     }
@@ -184,7 +195,7 @@ class DocumentsMenu extends React.Component<DocumentMenuProps & ReturnType<typeo
                                             contentTypeName: 'File',
                                             binaryPropertyName: 'Binary',
                                             overwrite: false,
-                                            parentPath: this.props.currentContent.Path,
+                                            parentPath: (this.props.currentContent as IContent).Path,
                                         })}
                                     />
                                     <AddNewMenu currentContent={this.props.currentContent} />
@@ -209,20 +220,6 @@ class DocumentsMenu extends React.Component<DocumentMenuProps & ReturnType<typeo
             }}
         </MediaQuery>
     }
-}
-
-const mapStateToProps = (state: rootStateType) => {
-    return {
-        subactive: state.dms.menu.activeSubmenu,
-        currentContent: state.dms.documentLibrary.parent,
-        currentWorkspace: state.sensenet.currentworkspace,
-        query: state.dms.documentLibrary.childrenOptions.query,
-    }
-}
-
-const mapDispatchToProps = {
-    uploadFileList,
-    updateChildrenOptions,
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(DocumentsMenu)))
