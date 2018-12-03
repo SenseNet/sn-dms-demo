@@ -5,10 +5,10 @@ export const GridPlaceholder = (props: { rows?: number, columns?: number, style?
 
     return (<div style={props.style}>
         {
-            (Array.apply(null, { length: props.columns || 10 }).map(Number.call, Number) as number[])
+            (Array.apply(null, { length: props.columns || 10 } as any).map(Number.call, Number) as number[])
                 .map((c) => <div key={c} className="column" style={{ display: 'flex', ...props.columnStyle }}>
                     {
-                        (Array.apply(null, { length: props.rows || 5 }).map(Number.call, Number) as number[])
+                        (Array.apply(null, { length: props.rows || 5 } as any).map(Number.call, Number) as number[])
                             .map((r) =>
                                 <div
                                     key={r}
