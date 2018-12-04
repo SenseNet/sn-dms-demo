@@ -15,10 +15,10 @@ import * as React from 'react'
 import Scrollbars from 'react-custom-scrollbars'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
-import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { resources } from '../../assets/resources'
 import { loadPickerItems, loadPickerParent, selectPickerItem, setBackLink } from '../../store/picker/actions'
+import { rootStateType } from '../../store/rootReducer'
 import AddNewDialog from '../Dialogs/AddNewDialog'
 
 const styles = {

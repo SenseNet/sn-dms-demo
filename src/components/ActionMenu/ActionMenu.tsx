@@ -13,13 +13,13 @@ import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { v1 } from 'uuid'
-import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { downloadFile } from '../../assets/helpers'
 import { icons } from '../../assets/icons'
 import { resources } from '../../assets/resources'
 import { select } from '../../store/documentlibrary/actions'
 import { closePicker, loadPickerItems, openPicker, setBackLink, setPickerParent } from '../../store/picker/actions'
+import { rootStateType } from '../../store/rootReducer'
 import ApproveorRejectDialog from '../Dialogs/ApproveorRejectDialog'
 import CopyToConfirmDialog from '../Dialogs/CopyToConfirmDialog'
 import DeleteDialog from '../Dialogs/DeleteDialog'
@@ -197,7 +197,7 @@ class ActionMenu extends React.Component<ActionMenuProps & ReturnType<typeof map
                     break
                 case 'ShareContent':
                     this.handleClose()
-                    this.props.currentContent &&  this.props.openDialog(<ShareDialog currentContent={this.props.currentContent} />)
+                    this.props.currentContent && this.props.openDialog(<ShareDialog currentContent={this.props.currentContent} />)
                     break
                 case 'Profile':
                     this.handleClose()

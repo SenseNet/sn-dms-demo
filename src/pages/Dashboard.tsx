@@ -11,7 +11,6 @@ import * as Loadable from 'react-loadable'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { Route, RouteComponentProps, Switch } from 'react-router-dom'
-import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
 import { ContentTemplates } from '../components/ContentTemplates'
 import { ContentTypes } from '../components/ContentTypes'
@@ -27,6 +26,7 @@ import { Settings } from '../components/Settings'
 import { Shared } from '../components/Shared'
 import { Trash } from '../components/Trash'
 import UserProfile from '../components/UserProfile'
+import { rootStateType } from '../store/rootReducer'
 
 const styles = {
     dashBoardInner: {

@@ -1,12 +1,12 @@
 import { IContent, IUploadFromEventOptions, IUploadFromFileListOptions, IUploadProgressInfo, Repository, Upload } from '@sensenet/client-core'
 import { ObservableValue, usingAsync } from '@sensenet/client-utils'
-import {debounce} from '@sensenet/client-utils'
+import { debounce } from '@sensenet/client-utils'
 import { File as SnFile, GenericContent } from '@sensenet/default-content-types'
 import { IActionModel } from '@sensenet/default-content-types/dist/IActionModel'
 import { Action, AnyAction, Dispatch } from 'redux'
 import { InjectableAction } from 'redux-di-middleware'
-import { rootStateType } from '.'
 import { updateChildrenOptions } from './store/documentlibrary/actions'
+import { rootStateType } from './store/rootReducer'
 
 export enum MessageMode { error = 'error', warning = 'warning', info = 'info' }
 
@@ -37,7 +37,7 @@ export const setEditedContentId = (id: number) => ({
     type: 'SET_EDITED_ID',
     id,
 })
-export const openActionMenu = (actions: IActionModel[], content: GenericContent, title: string, element: HTMLElement | EventTarget | null, position?: {left: number, top: number}, customItems?: IActionModel[]) => ({
+export const openActionMenu = (actions: IActionModel[], content: GenericContent, title: string, element: HTMLElement | EventTarget | null, position?: { left: number, top: number }, customItems?: IActionModel[]) => ({
     type: 'OPEN_ACTIONMENU',
     actions: customItems && customItems.length > 0 ? customItems : actions,
     content,

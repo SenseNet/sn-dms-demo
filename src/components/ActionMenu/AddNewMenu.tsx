@@ -1,9 +1,9 @@
 import { GenericContent, IActionModel } from '@sensenet/default-content-types'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { rootStateType } from '../..'
 import * as DMSActions from '../../Actions'
 import { getContentTypeFromUrl, getExtensionFromUrl } from '../../assets/helpers'
+import { rootStateType } from '../../store/rootReducer'
 import AddNewDialog from '../Dialogs/AddNewDialog'
 import { AddNewButton } from '../Menu/AddNewButton'
 

@@ -4,8 +4,8 @@ import { GenericContent } from '@sensenet/default-content-types'
 import { EventHub } from '@sensenet/repository-events'
 import { Action } from 'redux'
 import { InjectableAction } from 'redux-di-middleware'
-import { rootStateType } from '../..'
 import { changedContent, debounceReloadOnProgress } from '../../Actions'
+import { rootStateType } from '../../store/rootReducer'
 import { DocumentLibraryState, loadChunkSize } from './reducers'
 
 const eventObservables: Array<ValueObserver<any>> = []
@@ -97,10 +97,12 @@ export const loadParent: <T extends GenericContent = GenericContent>(idOrPath: s
                 })
                 options.dispatch(setAncestors([...ancestors.d.results, newParent.d]))
 
-                options.dispatch(setItems({d: {
-                    __count: 0,
-                    results: [],
-                }}))
+                options.dispatch(setItems({
+                    d: {
+                        __count: 0,
+                        results: [],
+                    },
+                }))
                 options.dispatch(finishLoadingChildren())
                 options.dispatch(loadMore())
             } catch (error) {

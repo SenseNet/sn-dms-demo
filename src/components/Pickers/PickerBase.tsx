@@ -10,10 +10,10 @@ import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
-import { rootStateType } from '../..'
 import { pickerTheme } from '../../assets/picker'
 import { resources } from '../../assets/resources'
 import { deselectPickeritem, loadPickerItems, loadPickerParent, selectPickerItem, setBackLink, setPickerParent } from '../../store/picker/actions'
+import { rootStateType } from '../../store/rootReducer'
 
 // tslint:disable-next-line:no-var-requires
 const sensenetLogo = require('../../assets/sensenet_white.png')
@@ -129,7 +129,7 @@ class Picker extends React.Component<ReturnType<typeof mapStateToProps> & typeof
                                 <Toolbar>
                                     {backLink ?
                                         <IconButton color="inherit" onClick={() => this.handleClickBack()}>
-                                            <Icon type={iconType.materialui} iconName="arrow_back"  style={{ color: '#fff' }} />
+                                            <Icon type={iconType.materialui} iconName="arrow_back" style={{ color: '#fff' }} />
                                         </IconButton> :
                                         <div style={styles.snButton}>
                                             <img src={sensenetLogo} alt="sensenet" aria-label="sensenet" style={styles.snLogo} />

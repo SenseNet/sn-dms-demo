@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid'
 import IconButton from '@material-ui/core/IconButton'
 import Popover from '@material-ui/core/Popover'
 import Typography from '@material-ui/core/Typography'
+import { Repository } from '@sensenet/client-core'
 import { File as SnFile, Folder, GenericContent } from '@sensenet/default-content-types'
 import { Icon, iconType } from '@sensenet/icons-react'
 import { Query } from '@sensenet/query'
@@ -11,11 +12,11 @@ import { AdvancedSearch, AdvancedSearchOptions, PresetField, TextField } from '@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
-import { repository, rootStateType } from '../..'
 import { resources } from '../../assets/resources'
 import { loadParent, setChildrenOptions, updateSearchValues } from '../../store/documentlibrary/actions'
 import { DocumentLibraryState } from '../../store/documentlibrary/reducers'
 import { closePicker, openPicker, setPickerParent } from '../../store/picker/actions'
+import { rootStateType } from '../../store/rootReducer'
 import PathPicker from '../Pickers/PathPicker'
 import QuickSearchBox from './SearchInput'
 
@@ -148,6 +149,9 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
     private elementRef: HTMLElement | null = null
     private searchBoxContainerRef: HTMLElement | null = null
 
+    // todo: DI?
+    private readonly repository: Repository = new Repository()
+
     public render() {
         const titleWidth = 2
         const contentWidth = 7
@@ -160,7 +164,7 @@ class SearchDocuments extends React.Component<ReturnType<typeof mapStateToProps>
         }
         return (
             <AdvancedSearch
-                schema={repository.schemas.getSchema(GenericContent)}
+                schema={this.repository.schemas.getSchema(GenericContent)}
                 onQueryChanged={this.handleQueryChanged}
                 style={{ width: '100%' }}
                 fields={(options) => <MediaQuery minDeviceWidth={700}>

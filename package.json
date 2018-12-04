@@ -72,7 +72,8 @@
     "react-responsive": "^5.0.0",
     "react-router-dom": "^4.3.1",
     "redux": "^4.0.1",
-    "redux-di-middleware": "^1.0.2",
+    "redux-di-middleware": "^2.0.2",
+    "reflect-metadata": "^0.1.12",
     "source-map-loader": "^0.2.4",
     "style-loader": "^0.23.1",
     "ts-jest": "^23.10.4",
@@ -121,8 +122,7 @@
   "scripts": {
     "start": "webpack-dev-server --port 3000 --display-error-details",
     "build": "rimraf build && webpack",
-    "test": "node scripts/test.js --env=jsdom --setupTestFrameworkScriptFile=raf/polyfill",
-    "check-coverage": "npm test --env=jsdom --setupTestFrameworkScriptFile=raf/polyfill -- --coverage",
+    "test": "jest",
     "lint": "node tslint --project ./tsconfig.json",
     "commit": "git-cz",
     "report-coverage": "cat ./coverage/lcov.info | codecov"
@@ -150,7 +150,7 @@
       "<rootDir>/src/__tests__/**/*.ts?(x)",
       "<rootDir>/src/**/*.test.ts?(x)"
     ],
-    "testEnvironment": "node",
+    "testEnvironment": "jsdom",
     "testURL": "http://localhost",
     "transform": {
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
@@ -166,7 +166,7 @@
     },
     "globals": {
       "ts-jest": {
-        "tsConfigFile": "tsconfig.test.json"
+        "tsConfig": "tsconfig.test.json"
       }
     }
   },

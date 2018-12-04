@@ -11,7 +11,6 @@ import { compile } from 'path-to-regexp'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
-import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
 import { contentListTheme } from '../assets/contentlist'
 import { icons } from '../assets/icons'
@@ -19,6 +18,7 @@ import { resources } from '../assets/resources'
 import { customSchema } from '../assets/schema'
 import { ListToolbar } from '../components/ListToolbar'
 import { loadMore, loadParent, select, setActive, updateChildrenOptions, updateSearchValues } from '../store/documentlibrary/actions'
+import { rootStateType } from '../store/rootReducer'
 import ActionMenu from './ActionMenu/ActionMenu'
 import { DisplayNameCell } from './ContentList/CellTemplates/DisplayNameCell'
 import { DisplayNameMobileCell } from './ContentList/CellTemplates/DisplayNameMobileCell'
@@ -193,7 +193,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
         const { matchesDesktop } = this.props
         return this.props.currentUser.content.Id !== ConstantContent.VISITOR_USER.Id ?
             <div onDragOver={(ev) => ev.preventDefault()} onDrop={this.handleFileDrop}>
-        {
+                {
                     this.props.childrenOptions.query ?
                         <Typography variant="h4" style={{ margin: '.5em' }}>
                             {resources.SEARCH_RESULTS}
@@ -208,7 +208,7 @@ class DocumentLibrary extends React.Component<DocumentLibraryProps & ReturnType<
                             ancestors={this.props.ancestors}
                         />
                 }
-        <ConnectedUploadBar />
+                <ConnectedUploadBar />
                 <GridPlaceholder
                     columns={5}
                     rows={3}

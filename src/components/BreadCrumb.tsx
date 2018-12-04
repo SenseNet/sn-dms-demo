@@ -6,9 +6,9 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
-import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
 import { icons } from '../assets/icons'
+import { rootStateType } from '../store/rootReducer'
 
 const styles = {
     breadCrumb: {

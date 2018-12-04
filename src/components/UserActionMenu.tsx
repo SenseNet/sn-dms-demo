@@ -2,8 +2,8 @@ import { Icon, iconType } from '@sensenet/icons-react'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
-import { rootStateType } from '..'
 import * as DMSActions from '../Actions'
+import { rootStateType } from '../store/rootReducer'
 import UserPanel from './UserPanel'
 
 const styles = {
