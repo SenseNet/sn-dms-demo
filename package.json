@@ -42,7 +42,7 @@
     "@sensenet/repository-events": "^1.2.0",
     "autoprefixer": "^9.1.5",
     "css-loader": "^1.0.0",
-    "dotenv": "6.0.0",
+    "dotenv": "6.2.0",
     "file-loader": "2.0.0",
     "fs-extra": "^7.0.0",
     "history": "^4.7.2",
