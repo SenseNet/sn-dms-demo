@@ -1,5 +1,9 @@
 # sn-dms-demo
 
+------
+### This package is not under active development. You can find our latest packages in the [sensenset/sn-client](https://github.com/sensenet/sn-client) monorepo.
+------
+
 [![Join the chat at https://gitter.im/SenseNet/sn-dms-demo](https://badges.gitter.im/SenseNet/sn-dms-demo.svg)](https://gitter.im/SenseNet/sn-dms-demo?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/SenseNet/sn-dms-demo.svg?branch=master)](https://travis-ci.org/SenseNet/sn-dms-demo)
 [![codecov](https://codecov.io/gh/SenseNet/sn-dms-demo/branch/master/graph/badge.svg)](https://codecov.io/gh/SenseNet/sn-dms-demo)
